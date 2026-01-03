@@ -1,0 +1,989 @@
+{
+  "contents": [
+    {
+      "id": "saas-claude-teaser",
+      "type": "short",
+      "title": "I built a SaaS in 1 hour with Claude",
+      "topic": "AI & Tools",
+      "status": "script",
+      "scheduledDate": "2026-01-12",
+      "publishedDate": null,
+      "sourceVideoId": "saas-claude-full",
+      "hook": "1 hour. 10 prompts. Complete SaaS.",
+      "notes": "Short teaser for the full SaaS tutorial. Quick clips showing what we build.",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 12,
+        "lectureFolder": "EleventhLecture-SaaSWithClaude",
+        "folderName": "saas-teaser",
+        "scriptFile": null,
+        "devPort": 5190,
+        "totalSlides": 5,
+        "estimatedDuration": "< 60 sec",
+        "techStack": ["Next.js 15", "Claude", "Prisma", "Supabase"],
+        "bulletPoints": [
+          "Quick teaser clips",
+          "What we build",
+          "CTA to full tutorial"
+        ],
+        "slides": [
+          "Hook - Build SaaS with Claude",
+          "What We're Building (features)",
+          "Tech Stack",
+          "What We'll Build (7 steps)",
+          "CTA - Watch Full Tutorial"
+        ]
+      }
+    },
+    {
+      "id": "saas-claude-full",
+      "type": "long",
+      "title": "Build a Complete SaaS with Claude - Step by Step",
+      "topic": "AI & Tools",
+      "status": "script",
+      "scheduledDate": "2026-01-12",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "10 prompts. 1 hour. Complete SaaS deployed.",
+      "notes": "Full step-by-step tutorial building TaskFlow SaaS with Claude. Next.js 15, Prisma, NextAuth, Supabase, Vercel.",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 11,
+        "lectureFolder": "EleventhLecture-SaaSWithClaude",
+        "folderName": "saas-full-tutorial",
+        "scriptFile": null,
+        "devPort": 5191,
+        "totalSlides": 15,
+        "estimatedDuration": "45-60 min",
+        "techStack": ["Next.js 15", "TypeScript", "Prisma", "NextAuth v5", "Supabase", "Tailwind", "Vercel"],
+        "bulletPoints": [
+          "Project setup with Next.js 15",
+          "Supabase PostgreSQL database",
+          "Prisma schema for tasks",
+          "NextAuth v5 with Google OAuth",
+          "Protected dashboard routes",
+          "Task CRUD API routes",
+          "Kanban board UI",
+          "Landing page",
+          "Deploy to Vercel"
+        ],
+        "slides": [
+          "Hook - Build SaaS with Claude",
+          "What We're Building (TaskFlow)",
+          "Tech Stack",
+          "Step 1 - Project Setup",
+          "Step 2 - Supabase Database",
+          "Step 3 - Database Schema",
+          "Step 4 - Authentication",
+          "Step 5 - Protected Routes",
+          "Step 6 - Dashboard Layout",
+          "Step 7 - Task API Routes",
+          "Step 8 - Task UI Components",
+          "Step 9 - Landing Page",
+          "Step 10 - Deploy",
+          "Recap (10 Prompts)",
+          "CTA"
+        ]
+      }
+    },
+    {
+      "id": "saas-with-ai",
+      "type": "long",
+      "title": "Build a Complete SaaS with AI in 1 Hour",
+      "topic": "AI & Tools",
+      "status": "script",
+      "scheduledDate": "2026-01-10",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "60 minutes. Authentication, payments, database, dashboard - all deployed live.",
+      "notes": "Complete SaaS tutorial: TaskFlow Pro. T3 Stack, Stripe payments, NextAuth, Prisma, Vercel deployment. Production-ready template.",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 11,
+        "lectureFolder": "TenthLecture-BuildWithAI",
+        "folderName": "saas-with-ai-demo",
+        "scriptFile": "SCRIPT.md",
+        "devPort": 5181,
+        "totalSlides": 14,
+        "estimatedDuration": "15-18 min",
+        "techStack": ["Next.js 14", "TypeScript", "Prisma", "NextAuth", "Stripe", "Tailwind", "Vercel"],
+        "bulletPoints": [
+          "T3 Stack - production-ready from day one",
+          "NextAuth with Google OAuth - complete auth in 30 lines",
+          "Stripe integration - checkout, webhooks, customer portal",
+          "Database schema with Prisma - users, tasks, subscriptions",
+          "Professional dashboard with Kanban board",
+          "High-converting landing page with pricing",
+          "~1,200 lines of code, 80% AI-generated"
+        ],
+        "slides": [
+          "Hook - Build SaaS in 1 Hour",
+          "What We're Building (TaskFlow Pro)",
+          "Tech Stack Overview (T3 Stack)",
+          "Step 1 - Project Setup",
+          "Step 2 - Database Schema",
+          "Step 3 - Authentication",
+          "Step 4 - Stripe Payments",
+          "Step 5 - Dashboard Preview",
+          "Task Management Logic",
+          "Step 6 - Landing Page",
+          "Step 7 - Deploy to Production",
+          "Timeline Recap (60 Minutes)",
+          "Key Takeaways (AI Power)",
+          "CTA - Get Source Code"
+        ]
+      }
+    },
+    {
+      "id": "build-with-ai",
+      "type": "long",
+      "title": "Build a Full-Stack App with AI in 30 Minutes",
+      "topic": "AI & Tools",
+      "status": "script",
+      "scheduledDate": "2026-01-08",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "What if you could build a complete app in 30 minutes? Let me show you.",
+      "notes": "Practical tutorial: Build a Notes app with Next.js, Prisma, Tailwind using AI. Step-by-step with prompts shown.",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 10,
+        "lectureFolder": "TenthLecture-BuildWithAI",
+        "folderName": "build-with-ai-demo",
+        "scriptFile": "SCRIPT.md",
+        "devPort": 5180,
+        "totalSlides": 12,
+        "estimatedDuration": "10-12 min",
+        "techStack": ["Next.js", "Prisma", "Tailwind", "Vercel"],
+        "bulletPoints": [
+          "AI writes 80% of the code, you focus on what matters",
+          "4-step workflow: Describe → Generate → Review → Iterate",
+          "Build complete CRUD app with database in 30 min",
+          "Each step shows the actual AI prompt used",
+          "Deploy to Vercel with live URL"
+        ],
+        "slides": [
+          "Hook - Build Full-Stack in 30 Min",
+          "What We're Building (Notes App)",
+          "The AI Workflow (4 Steps)",
+          "Step 1 - Project Setup",
+          "Step 2 - Database Schema",
+          "Step 3 - API Routes",
+          "Step 4 - UI Components",
+          "Step 5 - Main Page",
+          "Step 6 - Add Note Form",
+          "Step 7 - Make it Beautiful",
+          "Step 8 - Deploy to Vercel",
+          "Recap & CTA"
+        ]
+      }
+    },
+    {
+      "id": "react19-features",
+      "type": "long",
+      "title": "React 19 - 5 Features That Change Everything",
+      "topic": "React 19",
+      "status": "script",
+      "scheduledDate": "2026-01-07",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "React 19 removes 50% of boilerplate code. Here's how.",
+      "notes": "Covers: React Compiler, use() hook, Actions, Server Components, useOptimistic. Code comparisons for each.",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 9,
+        "lectureFolder": "NinthLecture-React19",
+        "folderName": "react19-features-demo",
+        "scriptFile": "SCRIPT.md",
+        "devPort": 5179,
+        "totalSlides": 9,
+        "estimatedDuration": "8-10 min",
+        "techStack": ["React 19", "Next.js"],
+        "bulletPoints": [
+          "React Compiler - automatic memoization, no more useMemo/useCallback",
+          "use() hook - read promises anywhere, no useEffect for data",
+          "Actions - simplified form handling with useActionState",
+          "Server Components - zero JS sent to browser, direct DB access",
+          "useOptimistic - instant UI updates with auto-rollback"
+        ],
+        "slides": [
+          "Hook - React 19 is Here",
+          "Why React 19 Matters",
+          "Feature 1 - React Compiler",
+          "Feature 2 - use() Hook",
+          "Feature 3 - Actions",
+          "Feature 4 - Server Components",
+          "Feature 5 - useOptimistic",
+          "How to Migrate",
+          "Summary & CTA"
+        ]
+      }
+    },
+    {
+      "id": "ai-guide-2026",
+      "type": "long",
+      "title": "Complete AI Guide for Developers 2026 - From Zero to Job Ready",
+      "topic": "AI & Tools",
+      "status": "script",
+      "scheduledDate": "2026-01-05",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "77% of devs use AI daily. Here's what you need to learn.",
+      "notes": "Practical AI roadmap for beginners & mid-level devs. Covers prompting, tools, APIs, RAG, agents.",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 7,
+        "lectureFolder": "SeventhLecture-AIGuide2026",
+        "folderName": "ai-guide-demo",
+        "scriptFile": "SCRIPT.md",
+        "devPort": 5177,
+        "totalSlides": 8,
+        "estimatedDuration": "6-8 min",
+        "techStack": ["Cursor", "Claude Code", "Copilot", "v0.dev", "OpenAI API"],
+        "bulletPoints": [
+          "77% of devs use AI tools daily",
+          "AI won't replace you - devs who USE AI will",
+          "5 skills: Prompting → Tools → API → RAG → Agents",
+          "Tools: Cursor, Claude Code, Copilot, v0.dev",
+          "RAG = AI + YOUR data (no hallucinations)"
+        ],
+        "slides": [
+          "Hook - Do You Need AI in 2026?",
+          "AI Won't Replace You (But...)",
+          "What to Learn (In Order)",
+          "Tools You Need Right Now",
+          "Practical Roadmap (Day by Day)",
+          "What is RAG?",
+          "Common Mistakes",
+          "Start Today - Call to Action"
+        ]
+      }
+    },
+    {
+      "id": "dev-motivation-2026",
+      "type": "long",
+      "title": "You're NOT Behind - Every Developer Needs to Hear This",
+      "topic": "Motivation",
+      "status": "script",
+      "scheduledDate": "2026-01-06",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "97% of developers feel like imposters. Here's the truth.",
+      "notes": "Motivational video for devs struggling with imposter syndrome. Real stories, practical advice.",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 8,
+        "lectureFolder": "EighthLecture-Motivation2026",
+        "folderName": "motivation-demo",
+        "scriptFile": "SCRIPT.md",
+        "devPort": 5178,
+        "totalSlides": 10,
+        "estimatedDuration": "5-7 min",
+        "techStack": [],
+        "bulletPoints": [
+          "97% of developers feel imposter syndrome",
+          "Famous devs failed too (Evan You, DHH, Dan Abramov)",
+          "Compare to yesterday's YOU, not others",
+          "1% daily = 37x better in a year",
+          "Consistency beats intensity"
+        ],
+        "slides": [
+          "Hook - You're Not Behind",
+          "Sound Familiar? (Common struggles)",
+          "They Failed Too (Famous dev stories)",
+          "Your Real Enemy (Comparison)",
+          "The 1% Rule",
+          "Consistency Beats Intensity",
+          "The Learning Curve (The Dip)",
+          "Your Timeline",
+          "The Truth Nobody Tells You",
+          "You've Got This - CTA"
+        ]
+      }
+    },
+    {
+      "id": "pub-1",
+      "type": "long",
+      "title": "Master React Optimization with These Simple Tips",
+      "topic": "Performance",
+      "status": "published",
+      "scheduledDate": "2025-12-23",
+      "publishedDate": "2025-12-29T14:13:26.075Z",
+      "sourceVideoId": null,
+      "hook": "",
+      "notes": "First optimization video - 38 views",
+      "createdAt": "2025-12-23T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "folderName": "react-rendering-demo",
+        "bulletPoints": [
+          "Re-render ≠ DOM Update",
+          "Inline objects/functions cause re-renders",
+          "React.memo skips re-render if props unchanged",
+          "useMemo caches expensive calculations",
+          "useCallback caches function references"
+        ],
+        "slides": [
+          "Introduction",
+          "Re-render basics",
+          "Common mistakes",
+          "Solutions explained",
+          "Live demo",
+          "Conclusion"
+        ]
+      }
+    },
+    {
+      "id": "pub-2",
+      "type": "long",
+      "title": "When NOT to Use useMemo & useCallback (Most React Devs Get This Wrong)",
+      "topic": "Performance",
+      "status": "published",
+      "scheduledDate": "2025-12-24",
+      "publishedDate": "2025-12-24T00:00:00Z",
+      "sourceVideoId": null,
+      "hook": "",
+      "notes": "147% retention - people rewatching! 30 views",
+      "createdAt": "2025-12-24T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "folderName": "usememo-mistakes-demo",
+        "bulletPoints": [
+          "useMemo/useCallback are NOT performance boosters",
+          "Cost of memoization (memory, comparison overhead)",
+          "Don't memoize simple calculations",
+          "useCallback needs React.memo to work",
+          "Measure First, Optimize Second"
+        ],
+        "slides": [
+          "Introduction",
+          "The Big Misunderstanding",
+          "When NOT to Use useMemo",
+          "When NOT to Use useCallback",
+          "When You SHOULD Use Them",
+          "The Senior Developer Rule"
+        ]
+      }
+    },
+    {
+      "id": "pub-3",
+      "type": "long",
+      "title": "Stop Using React memo Wrong",
+      "topic": "Performance",
+      "status": "published",
+      "scheduledDate": "2025-12-25",
+      "publishedDate": "2025-12-25T00:00:00Z",
+      "sourceVideoId": null,
+      "hook": "",
+      "notes": "18 views - 34% retention",
+      "createdAt": "2025-12-25T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "folderName": "react-memo-demo",
+        "bulletPoints": [
+          "React.memo does shallow comparison, not deep",
+          "Objects/functions create new references each render",
+          "Memoization itself has a cost",
+          "Only works with stable props (useMemo/useCallback)",
+          "Always measure, never guess"
+        ],
+        "slides": [
+          "Hook/Intro",
+          "Set Expectation",
+          "Problem #1 - Props change by reference",
+          "Problem #2 - Functions as props",
+          "Problem #3 - Parent re-renders anyway",
+          "Why React.memo Can Hurt",
+          "When It Actually Works",
+          "How to Know If It Works",
+          "Final Takeaway"
+        ]
+      }
+    },
+    {
+      "id": "pub-4",
+      "type": "long",
+      "title": "STOP Using useEffect Like This! 5 Mistakes (Hindi)",
+      "topic": "React Hooks",
+      "status": "published",
+      "scheduledDate": "2025-12-27",
+      "publishedDate": "2025-12-27T00:00:00Z",
+      "sourceVideoId": null,
+      "hook": "",
+      "notes": "useEffect bugs lecture - CTR 1.7% needs better thumbnail",
+      "createdAt": "2025-12-27T00:00:00Z",
+      "comments": [],
+      "urls": [
+        {
+          "id": "e5ed6dbc-67e1-4328-8fbd-5af17318a400",
+          "url": "https://www.youtube.com/watch?v=CgvRfvNCWM4",
+          "label": "",
+          "type": "youtube"
+        }
+      ],
+      "presentationReady": true,
+      "slideDetails": {
+        "folderName": "useeffect-bugs-demo",
+        "bulletPoints": [
+          "Infinite Loops (missing dependency array)",
+          "Missing Dependencies (stale closures)",
+          "Memory Leaks (not cleaning up)",
+          "Race Conditions (wrong data shows up)",
+          "Running Too Often (performance killer)"
+        ],
+        "slides": [
+          "Intro",
+          "Bug #1 - Infinite Loops",
+          "Bug #2 - Missing Dependencies",
+          "Bug #3 - Memory Leaks",
+          "Bug #4 - Race Conditions",
+          "Bug #5 - Running Too Often",
+          "When NOT to use useEffect",
+          "Correct patterns",
+          "Summary"
+        ]
+      }
+    },
+    {
+      "id": "short-1",
+      "type": "short",
+      "title": "Infinite loop fix in 10 seconds",
+      "topic": "React Hooks",
+      "status": "script",
+      "scheduledDate": "2025-12-29",
+      "publishedDate": null,
+      "sourceVideoId": "pub-4",
+      "hook": "Your useEffect is crashing? Here's why...",
+      "notes": "Clip from useEffect 5 Mistakes video",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-2",
+      "type": "short",
+      "title": "useEffect cleanup one-liner",
+      "topic": "React Hooks",
+      "status": "idea",
+      "scheduledDate": "2025-12-29",
+      "publishedDate": null,
+      "sourceVideoId": "pub-4",
+      "hook": "Memory leak fix in 1 line of code",
+      "notes": "Clip from useEffect 5 Mistakes video asdfasfd",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-3",
+      "type": "short",
+      "title": "useState vs useRef - Interview answer",
+      "topic": "Interview Prep",
+      "status": "idea",
+      "scheduledDate": "2025-12-31",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "Google asked me this React question",
+      "notes": "Original short for interview series",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-4",
+      "type": "short",
+      "title": "React.memo - When NOT to use",
+      "topic": "Performance",
+      "status": "idea",
+      "scheduledDate": "2025-12-29",
+      "publishedDate": null,
+      "sourceVideoId": "pub-3",
+      "hook": "Stop wasting performance with React.memo",
+      "notes": "Clip from React memo video",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-5",
+      "type": "short",
+      "title": "This code has 2 bugs - can you spot them?",
+      "topic": "React Hooks",
+      "status": "idea",
+      "scheduledDate": "2025-12-31",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "Challenge: Find the bugs!",
+      "notes": "Engagement short - quiz format",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-6",
+      "type": "short",
+      "title": "React 19 killed this hook",
+      "topic": "React 19",
+      "status": "idea",
+      "scheduledDate": "2025-12-31",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "useEffect is dead in React 19?",
+      "notes": "Teaser for React 19 content",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-7",
+      "type": "short",
+      "title": "Junior vs Senior: useEffect edition",
+      "topic": "React Hooks",
+      "status": "idea",
+      "scheduledDate": "2026-01-02",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "POV: Your senior reviews your useEffect",
+      "notes": "Comparison format - popular style",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "new-year-2026",
+      "type": "long",
+      "title": "5 React Mistakes Jo 2026 Mein BAND Karo",
+      "topic": "React 19",
+      "status": "script",
+      "scheduledDate": "2025-12-31",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "New Year, Clean Code!",
+      "notes": "New Year special - 5 outdated patterns + 2026 alternatives. React 19 features covered.",
+      "createdAt": "2025-12-30T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "folderName": "react-2026-mistakes-demo",
+        "bulletPoints": [
+          "useEffect for data fetching → TanStack Query",
+          "Manual memoization → React Compiler",
+          "Client-side everything → Server Components",
+          "Forms with useState → Server Actions",
+          "Prop drilling → Context + use() or Zustand"
+        ],
+        "slides": [
+          "Intro + Overview",
+          "Mistake #1 - useEffect Fetching",
+          "Mistake #2 - Manual Memoization",
+          "Mistake #3 - Client-Side Everything",
+          "Mistake #4 - Forms with useState",
+          "Mistake #5 - Prop Drilling",
+          "Recap + Outro"
+        ]
+      }
+    },
+    {
+      "id": "upcoming-1",
+      "type": "long",
+      "title": "React Interview: Top 5 Questions They Always Ask",
+      "topic": "Interview Prep",
+      "status": "idea",
+      "scheduledDate": "2026-01-02",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "",
+      "notes": "Part 1 of Interview Series - 5 basic questions",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "upcoming-2",
+      "type": "long",
+      "title": "React 19: 5 Features That Change Everything",
+      "topic": "React 19",
+      "status": "idea",
+      "scheduledDate": "2026-01-06",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "",
+      "notes": "use() hook, Server Components, Actions, useOptimistic, Compiler",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "upcoming-3",
+      "type": "long",
+      "title": "Virtual DOM Explained in 10 Minutes (Hindi)",
+      "topic": "React Basics",
+      "status": "idea",
+      "scheduledDate": "2026-01-09",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "",
+      "notes": "Interview question + deep explanation",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-w2-1",
+      "type": "short",
+      "title": "useCallback vs useMemo - 30 sec explanation",
+      "topic": "Performance",
+      "status": "idea",
+      "scheduledDate": "2026-01-03",
+      "publishedDate": null,
+      "sourceVideoId": "pub-2",
+      "hook": "Stop confusing these two hooks",
+      "notes": "Clip from useMemo/useCallback video",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-w2-2",
+      "type": "short",
+      "title": "Array index as key - Why it's BAD",
+      "topic": "React Basics",
+      "status": "idea",
+      "scheduledDate": "2026-01-03",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "This mistake breaks your React app",
+      "notes": "Common interview question",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-w2-3",
+      "type": "short",
+      "title": "Controlled vs Uncontrolled - Quick Answer",
+      "topic": "Interview Prep",
+      "status": "idea",
+      "scheduledDate": "2026-01-04",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "Interview question in 30 seconds",
+      "notes": "Forms interview question",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-w2-4",
+      "type": "short",
+      "title": "use() hook in React 19 - Mind blown",
+      "topic": "React 19",
+      "status": "idea",
+      "scheduledDate": "2026-01-05",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "useEffect is officially replaced",
+      "notes": "Teaser for React 19 video",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "short-w2-5",
+      "type": "short",
+      "title": "Context API pitfall everyone misses",
+      "topic": "React Hooks",
+      "status": "idea",
+      "scheduledDate": "2026-01-05",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "Your Context is re-rendering everything",
+      "notes": "Performance tip",
+      "createdAt": "2025-12-29T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [],
+        "slides": []
+      }
+    },
+    {
+      "id": "upcoming-usecontext",
+      "type": "long",
+      "title": "useContext Complete Guide - Props Drilling Ka Solution (Hindi)",
+      "topic": "React Hooks",
+      "status": "idea",
+      "scheduledDate": "2026-01-15",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "Props drilling se pareshan? useContext seekho 10 min mein",
+      "notes": "Full useContext tutorial - createContext, Provider, useContext hook, best practices",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [
+          "Props drilling problem kya hai",
+          "createContext aur Provider setup",
+          "useContext hook usage",
+          "Multiple contexts handle karna",
+          "Context vs Zustand/Redux - kab kya use karein"
+        ],
+        "slides": []
+      }
+    },
+    {
+      "id": "upcoming-react-problems",
+      "type": "long",
+      "title": "5 React Coding Challenges - Problem Solving Practice (Hindi)",
+      "topic": "Interview Prep",
+      "status": "idea",
+      "scheduledDate": "2026-01-18",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "Ye 5 problems solve kar liye toh React samajh gaye",
+      "notes": "Practical coding challenges - counter, todo, fetch, debounce, infinite scroll",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [
+          "Problem 1: Counter with undo/redo",
+          "Problem 2: Todo with filters",
+          "Problem 3: Data fetching with loading states",
+          "Problem 4: Debounced search input",
+          "Problem 5: Infinite scroll list"
+        ],
+        "slides": []
+      }
+    },
+    {
+      "id": "upcoming-search-react",
+      "type": "long",
+      "title": "Search Functionality in React - Complete Implementation (Hindi)",
+      "topic": "React Basics",
+      "status": "idea",
+      "scheduledDate": "2026-01-20",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "Har React app mein search chahiye - yahan seekho",
+      "notes": "Filter, debounce, highlight, API search - sab covered",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [
+          "Basic filter search",
+          "Debouncing for performance",
+          "Search with API calls",
+          "Highlight matching text",
+          "Search with keyboard shortcuts"
+        ],
+        "slides": []
+      }
+    },
+    {
+      "id": "upcoming-react-timeline",
+      "type": "long",
+      "title": "React Seekhne Mein Kitna Time Lagta Hai? Honest Answer (Hindi)",
+      "topic": "Motivation",
+      "status": "idea",
+      "scheduledDate": "2026-01-22",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "3 mahine? 6 mahine? Sach batata hoon",
+      "notes": "Realistic timeline, learning path, common mistakes in learning journey",
+      "createdAt": "2026-01-03T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": false,
+      "slideDetails": {
+        "folderName": "",
+        "bulletPoints": [
+          "Basics (1-2 weeks): Components, Props, State",
+          "Intermediate (2-4 weeks): Hooks, Routing, API calls",
+          "Advanced (4-8 weeks): Performance, Testing, Patterns",
+          "Job Ready: Portfolio projects + interview prep",
+          "Common mistakes jo slow karte hain"
+        ],
+        "slides": []
+      }
+    }
+  ],
+  "settings": {
+    "goalsEnabled": true,
+    "weeklyGoals": {
+      "long": 2,
+      "shorts": 5
+    },
+    "topics": [
+      "React Hooks",
+      "React 19",
+      "Performance",
+      "Interview Prep",
+      "JavaScript",
+      "React Basics",
+      "AI & Tools",
+      "Motivation",
+      "Other"
+    ],
+    "videoVariants": [
+      {
+        "id": "cozy-screen",
+        "name": "Cozy Screen",
+        "icon": "monitor",
+        "color": "#8B5CF6",
+        "description": "Faceless, VS Code, lo-fi music",
+        "bestFor": ["Coding tutorials", "Debugging", "Live code"],
+        "tools": ["OBS", "VS Code", "Lo-fi playlist"]
+      },
+      {
+        "id": "whiteboard",
+        "name": "Whiteboard",
+        "icon": "pencil",
+        "color": "#F59E0B",
+        "description": "Hand-drawn explainer style",
+        "bestFor": ["Concepts", "Architecture", "Roadmaps"],
+        "tools": ["Excalidraw", "Screen recorder"]
+      },
+      {
+        "id": "slides-face",
+        "name": "Slides + Face",
+        "icon": "user",
+        "color": "#10B981",
+        "description": "Minimal slides, face in corner",
+        "bestFor": ["Tips", "Opinions", "Career advice"],
+        "tools": ["OBS", "Slides", "Webcam"]
+      },
+      {
+        "id": "notion-doc",
+        "name": "Notion Doc",
+        "icon": "file-text",
+        "color": "#3B82F6",
+        "description": "Aesthetic doc scroll, voiceover",
+        "bestFor": ["Lists", "Resources", "Guides"],
+        "tools": ["Notion", "Screen recorder"]
+      }
+    ]
+  }
+}

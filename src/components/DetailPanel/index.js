@@ -1,0 +1,1 @@
+export { ContentDetailPanel } from './ContentDetailPanel'
