@@ -2,11 +2,13 @@ import { useReducer, useCallback, useMemo, memo, useState } from 'react'
 import { Plus, Calendar, LayoutGrid, AlertTriangle, Clock, List, Clock3, Table2, Sun, Moon } from 'lucide-react'
 import { useSchedule } from './hooks/useSchedule'
 import { useTheme } from './hooks/useTheme'
+import { useConfirmDialog } from './hooks/useConfirmDialog'
 import { WeekView } from './components/Calendar'
 import { StatsBar } from './components/Dashboard'
+import { TaskFlow } from './components/TaskFlow'
 import { AddContentModal, SettingsModal, VariantGuideModal } from './components/Forms'
 import { BookOpen } from 'lucide-react'
-import { Button } from './components/UI'
+import { Button, AlertDialog } from './components/UI'
 import { ListView, TimelineView, TableView } from './components/Views'
 import { ContentDetailPanel } from './components/DetailPanel'
 import { format, isPast, parseISO } from 'date-fns'
@@ -19,7 +21,8 @@ const initialState = {
   selectedDate: null,
   editingContent: null,
   detailContent: null,
-  view: 'calendar'
+  view: 'calendar',
+  filterStage: null
 }
 
 function appReducer(state, action) {
@@ -44,6 +47,8 @@ function appReducer(state, action) {
       return { ...state, detailContent: action.content }
     case 'CLOSE_DETAIL':
       return { ...state, detailContent: null }
+    case 'SET_FILTER_STAGE':
+      return { ...state, filterStage: state.filterStage === action.stage ? null : action.stage }
     default:
       return state
   }
@@ -68,6 +73,7 @@ function App() {
   } = useSchedule()
 
   const { theme, toggleTheme } = useTheme()
+  const { dialogState, confirm, close: closeDialog } = useConfirmDialog()
   const [state, dispatch] = useReducer(appReducer, initialState)
 
   // Memoized stats and streak
@@ -104,11 +110,18 @@ function App() {
     dispatch({ type: 'CLOSE_MODAL' })
   }, [state.editingContent, updateContent, addContent])
 
-  const handleDeleteContent = useCallback((id) => {
-    if (window.confirm('Delete this content?')) {
+  const handleDeleteContent = useCallback(async (id) => {
+    const confirmed = await confirm({
+      title: 'Delete Content',
+      message: 'Are you sure you want to delete this content? This action cannot be undone.',
+      variant: 'danger',
+      confirmText: 'Delete',
+      cancelText: 'Cancel'
+    })
+    if (confirmed) {
       deleteContent(id)
     }
-  }, [deleteContent])
+  }, [deleteContent, confirm])
 
   const handleViewChange = useCallback((view) => {
     dispatch({ type: 'SET_VIEW', view })
@@ -179,6 +192,16 @@ function App() {
         {/* Stats Bar */}
         <div className="mb-6">
           <StatsBar stats={stats} streak={streak} onOpenSettings={handleOpenSettings} goalsEnabled={settings.goalsEnabled !== false} />
+        </div>
+
+        {/* Task Flow Pipeline */}
+        <div className="mb-6">
+          <TaskFlow
+            contents={contents}
+            activeStage={state.filterStage}
+            onStageClick={(stage) => dispatch({ type: 'SET_FILTER_STAGE', stage })}
+            showStats={true}
+          />
         </div>
 
         {/* Main Content */}
@@ -265,6 +288,12 @@ function App() {
           onAddUrl={addUrl}
           onRemoveUrl={removeUrl}
           onUpdateContent={handleUpdateContentFromDetail}
+        />
+
+        {/* Alert Dialog for confirmations */}
+        <AlertDialog
+          {...dialogState}
+          onClose={closeDialog}
         />
       </div>
     </div>
