@@ -4,19 +4,26 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"pnpm run server\" \"pnpm run client\"",
+    "dev": "concurrently \"pnpm run db\" \"pnpm run api\" \"pnpm run client\"",
     "client": "vite --port 5175",
-    "server": "json-server --watch db.json --port 3001",
+    "db": "json-server --watch db.json --port 3001",
+    "api": "node server/index.js",
+    "server": "concurrently \"pnpm run db\" \"pnpm run api\"",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@lottiefiles/react-lottie-player": "^3.6.0",
+    "cors": "^2.8.5",
     "date-fns": "^4.1.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
     "framer-motion": "^12.23.26",
     "json-server": "1.0.0-beta.3",
     "lucide-react": "^0.562.0",
+    "multer": "^2.0.2",
+    "nodemailer": "^6.10.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "uuid": "^13.0.0"

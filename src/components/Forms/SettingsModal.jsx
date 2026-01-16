@@ -1,8 +1,14 @@
 import { useState, useEffect, useCallback, memo } from 'react'
 import { Modal, Button } from '../UI'
-import { Video, Smartphone, Tag, Plus, X, Target } from 'lucide-react'
+import { Video, Smartphone, Tag, Plus, X, Target, Settings, Mail } from 'lucide-react'
+import { EmailSettingsTab } from './EmailSettingsTab'
 
 const DEFAULT_TOPICS = ['React Hooks', 'React 19', 'Performance', 'Interview Prep', 'JavaScript', 'React Basics', 'Other']
+
+const tabs = [
+  { id: 'general', label: 'General', icon: Settings },
+  { id: 'email', label: 'Email', icon: Mail }
+]
 
 export const SettingsModal = memo(function SettingsModal({
   isOpen,
@@ -10,6 +16,7 @@ export const SettingsModal = memo(function SettingsModal({
   settings,
   onSave
 }) {
+  const [activeTab, setActiveTab] = useState('general')
   const [goalsEnabled, setGoalsEnabled] = useState(true)
   const [longGoal, setLongGoal] = useState(2)
   const [shortsGoal, setShortsGoal] = useState(5)
@@ -24,6 +31,13 @@ export const SettingsModal = memo(function SettingsModal({
       setTopics(settings.topics || DEFAULT_TOPICS)
     }
   }, [isOpen, settings])
+
+  // Reset to general tab when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setActiveTab('general')
+    }
+  }, [isOpen])
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault()
@@ -66,7 +80,34 @@ export const SettingsModal = memo(function SettingsModal({
   }, [handleAddTopic])
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Settings">
+    <Modal isOpen={isOpen} onClose={onClose} title="Settings" size="lg">
+      {/* Tab Navigation */}
+      <div className="flex gap-1 mb-6 p-1 bg-bg-tertiary rounded-xl">
+        {tabs.map(tab => {
+          const Icon = tab.icon
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === tab.id
+                  ? 'bg-accent-primary text-white'
+                  : 'text-text-muted hover:text-text-primary'
+              }`}
+            >
+              <Icon size={16} />
+              {tab.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Email Tab */}
+      {activeTab === 'email' && <EmailSettingsTab />}
+
+      {/* General Tab */}
+      {activeTab === 'general' && (
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Weekly Goals Section */}
         <div>
@@ -194,6 +235,7 @@ export const SettingsModal = memo(function SettingsModal({
           </Button>
         </div>
       </form>
+      )}
     </Modal>
   )
 })

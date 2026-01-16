@@ -1,11 +1,225 @@
 {
   "contents": [
     {
+      "id": "coding-agents-teaser",
+      "type": "short",
+      "title": "This AI Agent builds a complete project in 10 minutes",
+      "topic": "AI & Tools",
+      "status": "recording",
+      "scheduledDate": "2026-01-06",
+      "publishedDate": null,
+      "sourceVideoId": "coding-agents-beginner",
+      "hook": "10 minutes. Complete project. AI does the work.",
+      "notes": "Short teaser for Coding Agents series. Hook for beginner guide video.",
+      "createdAt": "2026-01-05T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 13,
+        "lectureFolder": "CodingAgentsSeries",
+        "folderName": "presentation",
+        "route": "/short",
+        "scriptFile": "SHORT-SCRIPT.md",
+        "devPort": 5192,
+        "totalSlides": 5,
+        "estimatedDuration": "30-60 sec",
+        "techStack": [
+          "Claude Code",
+          "Cursor",
+          "Cline",
+          "Windsurf"
+        ],
+        "bulletPoints": [
+          "Hook - AI builds projects",
+          "Problem - manual coding takes hours",
+          "Solution - coding agents",
+          "Proof - built with Claude Code",
+          "CTA - full tutorial coming"
+        ],
+        "slides": [
+          "Hook - 10 minutes complete project",
+          "Problem - hours on single feature",
+          "Solution - Coding Agents",
+          "Proof - Claude Code demo",
+          "CTA - Subscribe"
+        ]
+      }
+    },
+    {
+      "id": "coding-agents-beginner",
+      "type": "long",
+      "title": "What Are Coding Agents? Complete Beginner Guide 2026",
+      "topic": "AI & Tools",
+      "status": "recording",
+      "scheduledDate": "2026-01-07",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "77% of devs use AI daily. Here's what you need to know about coding agents.",
+      "notes": "Beginner-friendly intro to coding agents. Covers what they are, free options, Cline and Claude Code setup.",
+      "createdAt": "2026-01-05T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 13,
+        "lectureFolder": "CodingAgentsSeries",
+        "folderName": "presentation",
+        "route": "/beginner",
+        "scriptFile": "VIDEO1-BEGINNER-GUIDE.md",
+        "devPort": 5192,
+        "totalSlides": 12,
+        "estimatedDuration": "20-30 min",
+        "techStack": [
+          "Cline",
+          "Claude Code",
+          "Cursor",
+          "Windsurf"
+        ],
+        "bulletPoints": [
+          "What is a coding agent",
+          "Traditional AI vs Agentic AI",
+          "Pricing overview 2026",
+          "Cline setup (VS Code)",
+          "Claude Code setup (CLI)",
+          "When to use agents",
+          "Pro tips for beginners"
+        ],
+        "slides": [
+          "Hook - What Are Coding Agents",
+          "Agenda",
+          "What Is a Coding Agent",
+          "Traditional vs Agentic AI",
+          "Pricing Overview 2026",
+          "Cline Intro",
+          "Cline Setup Steps",
+          "Claude Code Intro",
+          "Claude Code Setup",
+          "When To Use",
+          "Pro Tips",
+          "CTA"
+        ]
+      }
+    },
+    {
+      "id": "coding-agents-comparison",
+      "type": "long",
+      "title": "Best Coding Agents 2026 - Complete Comparison (Claude Code vs Cursor vs Cline vs Copilot vs Windsurf)",
+      "topic": "AI & Tools",
+      "status": "recording",
+      "scheduledDate": "2026-01-08",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "5 coding agents compared. Which one is best for YOU?",
+      "notes": "Deep comparison of 5 coding agents with pros/cons for each. Includes recommendation matrix.",
+      "createdAt": "2026-01-05T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 13,
+        "lectureFolder": "CodingAgentsSeries",
+        "folderName": "presentation",
+        "route": "/comparison",
+        "scriptFile": "VIDEO2-COMPARISON.md",
+        "devPort": 5192,
+        "totalSlides": 11,
+        "estimatedDuration": "45-60 min",
+        "techStack": [
+          "Claude Code",
+          "Cursor",
+          "Cline",
+          "Copilot",
+          "Windsurf"
+        ],
+        "bulletPoints": [
+          "5 agents overview",
+          "Quick comparison table",
+          "Claude Code pros/cons",
+          "Cursor pros/cons",
+          "Cline pros/cons",
+          "Copilot pros/cons",
+          "Windsurf pros/cons",
+          "Final verdict by use case",
+          "Recommendations by skill level"
+        ],
+        "slides": [
+          "Hook - Best Coding Agents 2026",
+          "5 Agents Overview",
+          "Quick Comparison Table",
+          "Claude Code",
+          "Cursor",
+          "Cline",
+          "Copilot",
+          "Windsurf",
+          "Final Verdict",
+          "Recommendations",
+          "CTA"
+        ]
+      }
+    },
+    {
+      "id": "claude-code-masterclass",
+      "type": "long",
+      "title": "Claude Code Masterclass - Zero to Pro Complete Tutorial 2026",
+      "topic": "AI & Tools",
+      "status": "recording",
+      "scheduledDate": "2026-01-09",
+      "publishedDate": null,
+      "sourceVideoId": null,
+      "hook": "Master Claude Code in one video. Installation to live project build.",
+      "notes": "Complete Claude Code tutorial. Installation, commands, advanced features, workflow, pro tips, live demo.",
+      "createdAt": "2026-01-05T00:00:00Z",
+      "comments": [],
+      "urls": [],
+      "presentationReady": true,
+      "slideDetails": {
+        "lectureNumber": 13,
+        "lectureFolder": "CodingAgentsSeries",
+        "folderName": "presentation",
+        "route": "/masterclass",
+        "scriptFile": "VIDEO3-CLAUDE-CODE-MASTERCLASS.md",
+        "devPort": 5192,
+        "totalSlides": 11,
+        "estimatedDuration": "30-45 min",
+        "techStack": [
+          "Claude Code",
+          "Express.js",
+          "TypeScript",
+          "JWT",
+          "Prisma"
+        ],
+        "bulletPoints": [
+          "Installation & setup",
+          "Basic commands",
+          "File operations",
+          "Advanced features (multi-file, context, git)",
+          "Feature development workflow",
+          "Pro tips 2026 (CLAUDE.md, /clear, planning)",
+          "Effective prompting examples",
+          "Live demo - Task Manager API"
+        ],
+        "slides": [
+          "Hook - Claude Code Masterclass",
+          "Agenda",
+          "Installation",
+          "Basic Commands",
+          "File Operations",
+          "Advanced Features",
+          "Workflow",
+          "Pro Tips 2026",
+          "Effective Prompting",
+          "Live Demo",
+          "CTA"
+        ]
+      }
+    },
+    {
       "id": "saas-claude-teaser",
       "type": "short",
       "title": "I built a SaaS in 1 hour with Claude",
       "topic": "AI & Tools",
-      "status": "script",
+      "status": "recording",
       "scheduledDate": "2026-01-12",
       "publishedDate": null,
       "sourceVideoId": "saas-claude-full",
@@ -23,7 +237,12 @@
         "devPort": 5190,
         "totalSlides": 5,
         "estimatedDuration": "< 60 sec",
-        "techStack": ["Next.js 15", "Claude", "Prisma", "Supabase"],
+        "techStack": [
+          "Next.js 15",
+          "Claude",
+          "Prisma",
+          "Supabase"
+        ],
         "bulletPoints": [
           "Quick teaser clips",
           "What we build",
@@ -61,7 +280,15 @@
         "devPort": 5191,
         "totalSlides": 15,
         "estimatedDuration": "45-60 min",
-        "techStack": ["Next.js 15", "TypeScript", "Prisma", "NextAuth v5", "Supabase", "Tailwind", "Vercel"],
+        "techStack": [
+          "Next.js 15",
+          "TypeScript",
+          "Prisma",
+          "NextAuth v5",
+          "Supabase",
+          "Tailwind",
+          "Vercel"
+        ],
         "bulletPoints": [
           "Project setup with Next.js 15",
           "Supabase PostgreSQL database",
@@ -97,7 +324,7 @@
       "type": "long",
       "title": "Build a Complete SaaS with AI in 1 Hour",
       "topic": "AI & Tools",
-      "status": "script",
+      "status": "editing",
       "scheduledDate": "2026-01-10",
       "publishedDate": null,
       "sourceVideoId": null,
@@ -115,7 +342,15 @@
         "devPort": 5181,
         "totalSlides": 14,
         "estimatedDuration": "15-18 min",
-        "techStack": ["Next.js 14", "TypeScript", "Prisma", "NextAuth", "Stripe", "Tailwind", "Vercel"],
+        "techStack": [
+          "Next.js 14",
+          "TypeScript",
+          "Prisma",
+          "NextAuth",
+          "Stripe",
+          "Tailwind",
+          "Vercel"
+        ],
         "bulletPoints": [
           "T3 Stack - production-ready from day one",
           "NextAuth with Google OAuth - complete auth in 30 lines",
@@ -166,7 +401,12 @@
         "devPort": 5180,
         "totalSlides": 12,
         "estimatedDuration": "10-12 min",
-        "techStack": ["Next.js", "Prisma", "Tailwind", "Vercel"],
+        "techStack": [
+          "Next.js",
+          "Prisma",
+          "Tailwind",
+          "Vercel"
+        ],
         "bulletPoints": [
           "AI writes 80% of the code, you focus on what matters",
           "4-step workflow: Describe → Generate → Review → Iterate",
@@ -213,7 +453,10 @@
         "devPort": 5179,
         "totalSlides": 9,
         "estimatedDuration": "8-10 min",
-        "techStack": ["React 19", "Next.js"],
+        "techStack": [
+          "React 19",
+          "Next.js"
+        ],
         "bulletPoints": [
           "React Compiler - automatic memoization, no more useMemo/useCallback",
           "use() hook - read promises anywhere, no useEffect for data",
@@ -257,7 +500,13 @@
         "devPort": 5177,
         "totalSlides": 8,
         "estimatedDuration": "6-8 min",
-        "techStack": ["Cursor", "Claude Code", "Copilot", "v0.dev", "OpenAI API"],
+        "techStack": [
+          "Cursor",
+          "Claude Code",
+          "Copilot",
+          "v0.dev",
+          "OpenAI API"
+        ],
         "bulletPoints": [
           "77% of devs use AI tools daily",
           "AI won't replace you - devs who USE AI will",
@@ -334,7 +583,14 @@
       "hook": "",
       "notes": "First optimization video - 38 views",
       "createdAt": "2025-12-23T00:00:00Z",
-      "comments": [],
+      "comments": [
+        {
+          "id": "52c14835-bec2-45bc-b86c-701def6ee036",
+          "text": "dfsf",
+          "author": "User",
+          "createdAt": "2026-01-07T19:47:06.593Z"
+        }
+      ],
       "urls": [],
       "presentationReady": true,
       "slideDetails": {
@@ -361,7 +617,7 @@
       "type": "long",
       "title": "When NOT to Use useMemo & useCallback (Most React Devs Get This Wrong)",
       "topic": "Performance",
-      "status": "published",
+      "status": "thumbnail",
       "scheduledDate": "2025-12-24",
       "publishedDate": "2025-12-24T00:00:00Z",
       "sourceVideoId": null,
@@ -930,6 +1186,2200 @@
       }
     }
   ],
+  "leads": [
+    {
+      "id": "lead-stylemeupdubai",
+      "name": "Style Me Up UAE",
+      "contactPerson": "Ali Fadda",
+      "email": "alifadda@hotmail.com",
+      "phone": "+971 50 600 6242",
+      "website": "https://stylemeupdubai.com",
+      "industry": "salon",
+      "status": "new",
+      "source": "google",
+      "notes": "Nail salon and hair care in Al Jaddaf, Dubai. Website needs booking system and modern design.",
+      "websiteIssues": [
+        "no-booking",
+        "outdated"
+      ],
+      "tags": [
+        "small-business",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T13:00:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-almazarqa",
+      "name": "Al Majarah Al Zarqa Ladies Salon",
+      "contactPerson": "Admin",
+      "email": "admin@almazarqals.com",
+      "phone": "+971 55 832 3686",
+      "website": "https://almazarqals.com",
+      "industry": "salon",
+      "status": "new",
+      "source": "google",
+      "notes": "Ladies salon in Muwaileh, Sharjah. Open daily until 11pm. Website could use improvements.",
+      "websiteIssues": [
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "verified",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T13:05:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-auraladiessalon",
+      "name": "Aura Ladies Salon",
+      "contactPerson": "Owner",
+      "email": "info@auraladiessalon.com",
+      "phone": "+971 50 761 3634",
+      "website": "https://auraladiessalon.com",
+      "industry": "salon",
+      "status": "new",
+      "source": "google",
+      "notes": "Ladies salon in Muwaileh Commercial, Sharjah. Small independent salon.",
+      "websiteIssues": [
+        "no-booking",
+        "slow"
+      ],
+      "tags": [
+        "small-business",
+        "verified",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T13:10:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-sareenasalon",
+      "name": "Sareena Ladies Salon",
+      "contactPerson": "Owner",
+      "email": "info@sareenaladiessalon.com",
+      "phone": "+971 50 000 0000",
+      "website": "https://sareenaladiessalon.com",
+      "industry": "salon",
+      "status": "new",
+      "source": "google",
+      "notes": "Ladies salon in Muwaileh, Sharjah. Hair, skin, nail care services.",
+      "websiteIssues": [
+        "no-booking"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T13:15:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-zahratalsalon",
+      "name": "Zahrat Al Ruman Ladies Salon",
+      "contactPerson": "Owner",
+      "email": "info@zahratalruman.com",
+      "phone": "+971 50 000 0000",
+      "website": "https://zahratalruman.com",
+      "industry": "salon",
+      "status": "new",
+      "source": "google",
+      "notes": "Premier ladies salon in Sharjah specializing in eyelash and eyebrow services.",
+      "websiteIssues": [
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T13:20:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-simplybeauty",
+      "name": "Simply Beauty Salon & Spa",
+      "contactPerson": "Manager",
+      "email": "info@simplybeautysalon.ae",
+      "phone": "+971 50 282 3788",
+      "website": "https://simplybeautysalon.ae",
+      "industry": "salon",
+      "status": "new",
+      "source": "google",
+      "notes": "Salon and spa in Bu Daniq Area, Sharjah. Near Mega Mall.",
+      "websiteIssues": [
+        "no-booking",
+        "outdated"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T13:25:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-emansalon",
+      "name": "Eman Ladies Salon",
+      "contactPerson": "Manager",
+      "email": "manager@emansalon.com",
+      "phone": "+971 56 484 9879",
+      "website": "https://emansalon.com",
+      "industry": "salon",
+      "status": "new",
+      "source": "google",
+      "notes": "Ladies salon near J3 Mall, Al Manara Dubai. Website has contact form but needs booking system.",
+      "websiteIssues": [
+        "no-booking",
+        "outdated"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T13:30:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-fidelityfitness",
+      "name": "Fidelity Fitness Club",
+      "contactPerson": "Owner",
+      "email": "info@fidelityfitnessclub.com",
+      "phone": "+971 4 451 1133",
+      "website": "https://fidelityfitnessclub.com",
+      "industry": "gym",
+      "status": "new",
+      "source": "google",
+      "notes": "Independent gym in JLT Almas Tower. Needs membership portal and class booking.",
+      "websiteIssues": [
+        "no-booking",
+        "outdated"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T13:35:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-voltfitness",
+      "name": "Volt Fitness",
+      "contactPerson": "Owner",
+      "email": "info@voltfitness.ae",
+      "phone": "+971 50 300 8585",
+      "website": "https://voltfitness.ae",
+      "industry": "gym",
+      "status": "new",
+      "source": "google",
+      "notes": "Boutique fitness studio at Fairmont Bab Al Bahr, Abu Dhabi.",
+      "websiteIssues": [
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "abudhabi",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T13:40:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-iconscoffee",
+      "name": "Icons Coffee Couture",
+      "contactPerson": "Elena Weber",
+      "email": "info@iconscoffee.ae",
+      "phone": "+971 6 574 5967",
+      "website": "",
+      "industry": "restaurant",
+      "status": "new",
+      "source": "google",
+      "notes": "German artisan coffee shop in Sahara Centre, Sharjah. Lifestyle concept by European fashion icon.",
+      "websiteIssues": [
+        "no-website"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah",
+        "hot-lead"
+      ],
+      "createdAt": "2026-01-13T14:05:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-benchmarkcoffee",
+      "name": "Benchmark Coffee",
+      "contactPerson": "Owner",
+      "email": "hello@benchmarkcoffee.ae",
+      "phone": "+971 50 000 0000",
+      "website": "https://benchmarkcoffee.ae",
+      "industry": "restaurant",
+      "status": "new",
+      "source": "google",
+      "notes": "Specialty cafe in Al Jada, Sharjah. Community hotspot concept.",
+      "websiteIssues": [
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T14:10:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-smilecare",
+      "name": "Smilecare Medical Center",
+      "contactPerson": "Admin",
+      "email": "info@smilecaredubai.com",
+      "phone": "+971 6 577 5262",
+      "website": "https://smilecaredubai.com",
+      "industry": "healthcare",
+      "status": "new",
+      "source": "google",
+      "notes": "Dental clinic in Al-Majaz, Sharjah. Website needs modernization.",
+      "websiteIssues": [
+        "outdated",
+        "no-booking"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T14:15:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-aldhamanmedical",
+      "name": "Al Dhaman Medical Centre",
+      "contactPerson": "Admin",
+      "email": "mail@aldhamanmedical.com",
+      "phone": "+971 6 568 6814",
+      "website": "https://aldhamanmedical.com",
+      "industry": "healthcare",
+      "status": "new",
+      "source": "google",
+      "notes": "Dental clinic in Sharjah for 16+ years. Website could use refresh.",
+      "websiteIssues": [
+        "outdated",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T14:20:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-crowndentalclinic",
+      "name": "Crown Dental Clinic",
+      "contactPerson": "Admin",
+      "email": "info@crowndentalclinic.co",
+      "phone": "+971 6 000 0000",
+      "website": "https://crowndentalclinic.co",
+      "industry": "healthcare",
+      "status": "new",
+      "source": "google",
+      "notes": "Dental clinic in Al Majaz 2, Sharjah. Since 1995.",
+      "websiteIssues": [
+        "outdated"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T14:25:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-maccarwash",
+      "name": "MAC Mobile Car Wash",
+      "contactPerson": "Owner",
+      "email": "info@macmobilecarwash.com",
+      "phone": "+971 50 405 3275",
+      "website": "https://macmobilecarwash.com",
+      "industry": "automotive",
+      "status": "new",
+      "source": "google",
+      "notes": "Mobile car wash in Naif, Dubai. Corporate and residential services.",
+      "websiteIssues": [
+        "poor-seo",
+        "no-booking"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T14:30:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-babacarwash",
+      "name": "Baba Car Washing & Cleaning",
+      "contactPerson": "Owner",
+      "email": "customerregistartion@babagroup.ae",
+      "phone": "+971 50 809 1289",
+      "website": "https://babagroup.ae",
+      "industry": "automotive",
+      "status": "new",
+      "source": "google",
+      "notes": "Professional car cleaning since 2008. Large network in Dubai.",
+      "websiteIssues": [
+        "outdated",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T14:35:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-snashcarcare",
+      "name": "SNASH Car Care",
+      "contactPerson": "Owner",
+      "email": "info@snash.ae",
+      "phone": "+971 50 506 0671",
+      "website": "https://snash.ae",
+      "industry": "automotive",
+      "status": "new",
+      "source": "google",
+      "notes": "Mobile car care in Al Quoz, Dubai. Doorstep service.",
+      "websiteIssues": [
+        "no-booking"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T14:40:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-tailorme",
+      "name": "Tailor Me",
+      "contactPerson": "Owner",
+      "email": "info@tailorme.ae",
+      "phone": "+971 50 397 9706",
+      "website": "https://tailorme.ae",
+      "industry": "retail",
+      "status": "new",
+      "source": "google",
+      "notes": "Clothing alterations across UAE. Home service available.",
+      "websiteIssues": [
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T14:45:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-tailoruae",
+      "name": "Tailor UAE",
+      "contactPerson": "Owner",
+      "email": "info@tailoruae.com",
+      "phone": "+971 50 000 0000",
+      "website": "https://tailoruae.com",
+      "industry": "retail",
+      "status": "new",
+      "source": "google",
+      "notes": "Tailoring in Sharjah and Dubai. 18 years experience. Ladies specialist.",
+      "websiteIssues": [
+        "outdated",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T14:50:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-800tailor",
+      "name": "800 Tailor",
+      "contactPerson": "Owner",
+      "email": "info@800tailor.com",
+      "phone": "+971 56 663 1050",
+      "website": "https://800tailor.com",
+      "industry": "retail",
+      "status": "new",
+      "source": "google",
+      "notes": "Tailoring service in Al Quoz, Dubai. Free pickup/delivery.",
+      "websiteIssues": [
+        "no-booking"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T14:55:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-yasmintailor",
+      "name": "Yasmin Tailoring",
+      "contactPerson": "Owner",
+      "email": "info@yasmintailor.com",
+      "phone": "+971 50 000 0000",
+      "website": "https://yasmintailor.com",
+      "industry": "retail",
+      "status": "new",
+      "source": "google",
+      "notes": "Complete tailoring and alterations in Dubai. Customized stitching.",
+      "websiteIssues": [
+        "outdated",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "dubai"
+      ],
+      "createdAt": "2026-01-13T15:00:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-zooandpet",
+      "name": "Zoo and Pet",
+      "contactPerson": "Owner",
+      "email": "info@zooandpet.com",
+      "phone": "+971 50 000 0000",
+      "website": "https://zooandpet.com",
+      "industry": "retail",
+      "status": "new",
+      "source": "google",
+      "notes": "Pet shop in Sharjah. Free delivery above 100 AED. Website could use improvements.",
+      "websiteIssues": [
+        "outdated",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T15:05:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-petcorner",
+      "name": "Pet Corner Dubai",
+      "contactPerson": "Manager",
+      "email": "info@petcornerdubai.com",
+      "phone": "+971 4 581 4443",
+      "website": "https://petcornerdubai.com",
+      "industry": "retail",
+      "status": "new",
+      "source": "google",
+      "notes": "Pet shop on Sheikh Zayed Road. 18+ years, 500k+ pets groomed. Website needs booking.",
+      "websiteIssues": [
+        "no-booking",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T15:10:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-smlaundry",
+      "name": "SM Automatic Laundry",
+      "contactPerson": "Owner",
+      "email": "info@smautomaticlaundry.com",
+      "phone": "+971 54 445 2555",
+      "website": "https://smautomaticlaundry.com",
+      "industry": "services",
+      "status": "new",
+      "source": "google",
+      "notes": "Laundry in Sharjah. Carpet, wedding dress, abaya cleaning.",
+      "websiteIssues": [
+        "outdated",
+        "no-booking"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T15:15:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-ashraflaundry",
+      "name": "Ashraf Laundry",
+      "contactPerson": "Owner",
+      "email": "info@ashraflaundry.com",
+      "phone": "+971 50 000 0000",
+      "website": "https://ashraflaundry.com",
+      "industry": "services",
+      "status": "new",
+      "source": "google",
+      "notes": "Leading laundry in Sharjah and Dubai. Eco-friendly cleaning, carpet, sofa.",
+      "websiteIssues": [
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T15:20:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-imagelaundry",
+      "name": "Image Laundry",
+      "contactPerson": "Owner",
+      "email": "info@imagelaundry.ae",
+      "phone": "+971 55 577 6608",
+      "website": "https://imagelaundry.ae",
+      "industry": "services",
+      "status": "new",
+      "source": "google",
+      "notes": "Laundry service in Sharjah for 20+ years. Affordable and convenient.",
+      "websiteIssues": [
+        "outdated",
+        "no-booking"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T15:25:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-mmlaundry",
+      "name": "MM Laundry",
+      "contactPerson": "Manager",
+      "email": "info@mmlaundry.com",
+      "phone": "+971 50 000 0000",
+      "website": "https://mmlaundry.com",
+      "industry": "services",
+      "status": "new",
+      "source": "google",
+      "notes": "Dry cleaning in Dubai and Sharjah. Business Bay, Marina, DIFC, Muwaileh.",
+      "websiteIssues": [
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business"
+      ],
+      "createdAt": "2026-01-13T15:30:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-kamiestudio",
+      "name": "Kamie Photography Studio",
+      "contactPerson": "Owner",
+      "email": "info@kamiephotography.com",
+      "phone": "+971 50 000 0000",
+      "website": "https://kamiephotography.com",
+      "industry": "services",
+      "status": "new",
+      "source": "google",
+      "notes": "Commercial photographer in Al Warsan, Dubai. Website could use booking system.",
+      "websiteIssues": [
+        "no-booking",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "dubai"
+      ],
+      "createdAt": "2026-01-13T15:35:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-uthmanstudio",
+      "name": "Uthman Studio",
+      "contactPerson": "Owner",
+      "email": "info@uthmanstudio.com",
+      "phone": "+971 50 000 0000",
+      "website": "https://uthmanstudio.com",
+      "industry": "services",
+      "status": "new",
+      "source": "google",
+      "notes": "Photography studio in Dubai. Wedding, family, corporate photography.",
+      "websiteIssues": [
+        "no-booking"
+      ],
+      "tags": [
+        "small-business",
+        "dubai"
+      ],
+      "createdAt": "2026-01-13T15:40:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-4dsstudio",
+      "name": "4Dimensions Studio",
+      "contactPerson": "Owner",
+      "email": "info@4ds.studio",
+      "phone": "+971 50 000 0000",
+      "website": "https://4ds.studio",
+      "industry": "services",
+      "status": "new",
+      "source": "google",
+      "notes": "Photography studio in JLT, Dubai. Family photography specialist. 10+ years.",
+      "websiteIssues": [
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "dubai"
+      ],
+      "createdAt": "2026-01-13T15:45:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-tutoringclubdubai",
+      "name": "Tutoring Club Dubai",
+      "contactPerson": "Manager",
+      "email": "info@tutoringclub.ae",
+      "phone": "+971 50 000 0000",
+      "website": "https://tutoringclub.ae",
+      "industry": "education",
+      "status": "new",
+      "source": "google",
+      "notes": "Tutoring center in Dubai since 2014. American, IB, UK curriculum support.",
+      "websiteIssues": [
+        "no-booking",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "dubai"
+      ],
+      "createdAt": "2026-01-13T15:50:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-guruathome",
+      "name": "GuruAtHome",
+      "contactPerson": "Owner",
+      "email": "info@guruathome.org",
+      "phone": "+971 50 000 0000",
+      "website": "https://guruathome.org",
+      "industry": "education",
+      "status": "new",
+      "source": "google",
+      "notes": "Online Indian tutoring for UAE students. CBSE Science and Math. Starts 21.90 AED/hr.",
+      "websiteIssues": [
+        "outdated",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "online"
+      ],
+      "createdAt": "2026-01-13T15:55:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-littlewonders",
+      "name": "Little Wonders Nursery",
+      "contactPerson": "Owner",
+      "email": "info@littlewonders.ae",
+      "phone": "+971 52 521 4018",
+      "website": "https://littlewonders.ae",
+      "industry": "education",
+      "status": "new",
+      "source": "google",
+      "notes": "Nursery/preschool in Sharjah. Joy of Learning Nursery branch.",
+      "websiteIssues": [
+        "outdated"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T16:00:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-bumblebeenursery",
+      "name": "Bumble Bee Nursery",
+      "contactPerson": "Owner",
+      "email": "info@bumblebeenursery.net",
+      "phone": "+971 50 000 0000",
+      "website": "https://bumblebeenursery.net",
+      "industry": "education",
+      "status": "new",
+      "source": "google",
+      "notes": "Preschool and daycare in Sharjah since 2008. EYFS curriculum.",
+      "websiteIssues": [
+        "outdated",
+        "no-booking"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah"
+      ],
+      "createdAt": "2026-01-13T16:05:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-fissionfusion",
+      "name": "Fission Fusion Fitness",
+      "contactPerson": "Amir Siddiqui",
+      "email": "info@fissionfusionfitness.com",
+      "phone": "+971 4 346 6479",
+      "website": "https://fissionfusionfitness.com",
+      "industry": "gym",
+      "status": "new",
+      "source": "google",
+      "notes": "FOUNDER: Amir Siddiqui, 20+ years coaching, calls himself Dubais most expensive personal trainer. LOCATION: Suite 16, Building 5, Gold & Diamond Park, Sheikh Zayed Rd. TARGET: CEOs, C-suite execs, entrepreneurs, solo business operators - people with money but physique doesnt match status. SERVICES: 3 membership tiers (Apprentice, Senior, Master), personalized nutrition plans, monthly fitness assessments. METHOD: Proprietary Fission~Fusion system - intelligent effective strength training, not trendy classes. PHILOSOPHY: Work for it, train hard, results matter. MEDIA: Khaleej Times, Gulf News, TimeOut Dubai, GQ, Esquire, Arabian Business. UNIQUE ANGLE: Premium positioning = needs premium website. Targets wealthy clients = high budget for services. PAIN POINTS: Booking system, client portal, membership management, premium brand website. Source: https://fissionfusionfitness.com/",
+      "websiteIssues": [
+        "no-booking",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "fitness",
+        "premium",
+        "ceo-clients",
+        "media-featured",
+        "gold-diamond-park",
+        "high-ticket"
+      ],
+      "createdAt": "2026-01-13T16:10:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-fortius",
+      "name": "Fortius Dubai",
+      "contactPerson": "Milos Tanasic",
+      "email": "info@fortiusdubai.com",
+      "phone": "+971 56 161 6213",
+      "website": "https://fortiusdubai.com",
+      "industry": "gym",
+      "status": "new",
+      "source": "google",
+      "notes": "FOUNDER: Milos Tanasic, 15+ years fitness, BSc Sports Science, ex-pro footballer (Europe). LOCATION: 6 4th Street, Al Quoz Industrial Area 3, Dubai. HOURS: Mon-Fri 6AM-8PM, Sat-Sun 8AM-6PM. SERVICES: Personal training, online body transformation, nutrition coaching, yoga, martial arts, life coaching, free consultations. TARGET: Busy professionals, high performers, weight loss seekers. APPROACH: Science-backed, personalized programs, sustainable lifestyle changes. RESULTS: Multiple transformations documented - Joey (10wk muscle gain), Rusana (30kg loss/16mo), Ali (model physique 8wk). TEAM: All trainers have BSc Sports Science, walked the walk themselves. UNIQUE: Empathetic guidance from trainers who transformed themselves. PAIN POINTS: Website could showcase results better, needs booking system, client portal for tracking. Source: https://www.fortiusdubai.com/",
+      "websiteIssues": [
+        "no-booking",
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "fitness",
+        "science-backed",
+        "al-quoz",
+        "transformation-specialist",
+        "ex-athlete"
+      ],
+      "createdAt": "2026-01-13T16:15:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-invogue",
+      "name": "In Vogue Beauty Salon",
+      "contactPerson": "Alia Al-Ali",
+      "email": "info@invoguedubai.ae",
+      "phone": "+971 50 000 0000",
+      "website": "",
+      "industry": "salon",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Beauty salon in UAE. Owner Alia Al-Ali found on LinkedIn. No website - great opportunity!",
+      "websiteIssues": [
+        "no-website"
+      ],
+      "tags": [
+        "small-business",
+        "hot-lead",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T16:20:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-alkadi",
+      "name": "Al Kadi Beauty Salon & SPA",
+      "contactPerson": "Rukhsar Khan",
+      "email": "info@alkadispa.ae",
+      "phone": "+971 50 000 0000",
+      "website": "",
+      "industry": "salon",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Beauty salon and spa in Sharjah. Founder Rukhsar Khan. No website - perfect client!",
+      "websiteIssues": [
+        "no-website"
+      ],
+      "tags": [
+        "small-business",
+        "sharjah",
+        "hot-lead",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T16:25:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-boho",
+      "name": "Boho Salon Dubai",
+      "contactPerson": "Layla AlHajjaj",
+      "email": "hello@bohosalon.ae",
+      "phone": "+971 50 000 0000",
+      "website": "https://bohosalon.ae",
+      "industry": "salon",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "First sustainable hair salon in Middle East. Founder is business strategist. Dubai branch opened 2023.",
+      "websiteIssues": [
+        "poor-seo"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified"
+      ],
+      "createdAt": "2026-01-13T16:30:00Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-nest-salon",
+      "name": "The Nest Salon",
+      "contactPerson": "Jennie Davies",
+      "email": "hello@thenestsalon.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://thenestsalon.ae",
+      "industry": "salon",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "BACKGROUND: Started hairstyling at 14 (part-time UK salon), full-time apprentice at 16. Worked luxury cruise ships, Ritz-Carlton Cayman Islands, Bermuda, New Zealand. In Dubai since 2009. CAREER: Styled celebrities and royalty, fashion shows, photo shoots, magazine features. Managed 2 high-end salons before own business. FOUNDED: 2022 with business partner Inger (met in Cayman Islands in 20s). Started with 3 chairs in cozy space. NAME STORY: Bird built nest on Inger balcony same evening they chose name - felt like sign. CHALLENGES: Transitioning from stylist to businesswoman - no training in finances, marketing, operations, leadership. PERSONAL: Early riser (5AM), has dog, loves cooking, describes self as girly girl. VALUES: Creativity, making people feel good. 2025 PLANS: Expansion, new opportunities. PAIN POINTS: Business operations, marketing, likely needs professional website with booking. Source: https://graziamagazine.com/me/articles/the-nest-beauty-salon-dubai/",
+      "websiteIssues": [
+        "could-improve-booking",
+        "seo-opportunity"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "hot-lead",
+        "featured-press",
+        "celebrity-stylist",
+        "expanding",
+        "uk-expat",
+        "established-2022"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-tara-rose-salon",
+      "name": "Tara Rose Salon",
+      "contactPerson": "Tara Rose Kidd",
+      "email": "info@tararosesalon.com",
+      "phone": "+971 2 XXX XXXX",
+      "website": "https://tararosesalon.com",
+      "industry": "salon",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "BACKGROUND: British expat, 14 years in UAE. Nearly decade as professional hairdresser before business. FOUNDED: 2015 in villa, Khalifa City A, Abu Dhabi. INVESTMENT: Started with 400K AED (personal loan + savings). Rent was 300K AED. GROWTH: Now 4 salons, 60+ employees. 5th location opening in Al Quoz Dubai. 3rd salon (Mamsha Al Saadiyat 2020) cost 1.7M AED. CHALLENGES: Lacked business management experience - had to hire specialists. STRATEGY: Reinvests profits, lives on 60% salary, diversified into husband car dealership and UK property. FAMILY: Married, husband involved in business decisions. PAIN POINTS: Multi-location management, staff scheduling, inventory across branches. Source: https://gulfnews.com/your-money/community-tips/british-hairdresser-turns-owner-of-4-salons-in-7-years-in-the-uae-heres-how-1.1680101471485",
+      "websiteIssues": [
+        "multi-location-seo",
+        "booking-system"
+      ],
+      "tags": [
+        "small-business",
+        "abu-dhabi",
+        "verified",
+        "hot-lead",
+        "multi-location",
+        "60-employees",
+        "expanding-dubai",
+        "high-investment",
+        "british-expat"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-dentaldate",
+      "name": "DentalDate",
+      "contactPerson": "Dr. Liliia Zhernova",
+      "email": "info@dentaldate.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://dentaldate.ae",
+      "industry": "dental",
+      "status": "new",
+      "source": "google",
+      "notes": "FOUNDER: Dr. Liliia Zhernova - orthodontist-gnathologist and therapist. APPROACH: Developed proprietary treatment protocols based on Austrian-German school principles. PHILOSOPHY: Modern techniques + high quality standards = aesthetic and functional balance. SPECIALTIES: Orthodontics, gnathology (jaw disorders), therapy. UNIQUE: Proprietary protocols = innovative, likely values cutting-edge approach. Austrian-German school = precision, quality - European standards. PAIN POINTS: SEO improvement, patient portal for appointments, showcase treatment results. EMAIL ANGLE: Mention her unique protocols deserve better online visibility. Source: https://dentaldate.ae/",
+      "websiteIssues": [
+        "seo-improvement",
+        "patient-portal"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "healthcare",
+        "founder-led",
+        "proprietary-method",
+        "european-trained"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-germandent",
+      "name": "German Dental Clinic",
+      "contactPerson": "Dr. Abdolreza Nassouti",
+      "email": "info@germandent.com",
+      "phone": "+971 4 399 9199",
+      "website": "https://germandent.com",
+      "industry": "dental",
+      "status": "new",
+      "source": "google",
+      "notes": "FOUNDER: Dr. Abdolreza Nassouti - Founder & Medical Director. INNOVATION: First to offer 3D dental technology in Dubai. LOCATION: JLT (Jumeirah Lake Towers). USP: German precision, 3D technology pioneer in Dubai market. UNIQUE ANGLE: Tech-forward = appreciates innovation, early adopter. German = quality, precision branding. JLT location = business hub, professional clientele. PAIN POINTS: Modernize design to match tech-forward image, patient booking system, showcase 3D technology capabilities. EMAIL ANGLE: Website should reflect being a technology pioneer. Source: https://germandent.com/",
+      "websiteIssues": [
+        "modernize-design",
+        "patient-booking"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "healthcare",
+        "founder-led",
+        "jlt",
+        "tech-pioneer",
+        "german-quality"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-abhifit",
+      "name": "AbhiFit Lifestyle Coaching",
+      "contactPerson": "Abhinav Malhotra",
+      "email": "info@abhifit.com",
+      "phone": "+971 50 XXX XXXX",
+      "website": "https://abhifit.com",
+      "industry": "gym",
+      "status": "new",
+      "source": "google",
+      "notes": "FOUNDER: Abhinav Malhotra. AWARDS: Top Personal Trainer UAE - FIT AWARDS 2019. Personalized Fitness Innovation Award 2024 by Skillopaedia. EXPERIENCE: Ex-Elite Master Personal Trainer at Fitness First Middle East Dubai. RECOGNITION: Industry recognition for innovative approach. SERVICES: Body transformation, personalized fitness coaching. UNIQUE ANGLE: Award-winning = proven credibility, good for case studies. Multiple industry recognitions = likely values professional image. PAIN POINTS: Booking system, client portal, showcase awards/results on website. Source: https://abhifit.com/ + FIT Awards + Skillopaedia recognition",
+      "websiteIssues": [
+        "booking-system",
+        "client-portal"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "fitness",
+        "award-winner",
+        "hot-lead",
+        "ex-fitness-first",
+        "industry-recognized"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-4dimensions",
+      "name": "4Dimensions Photo Studio",
+      "contactPerson": "Tarek Haddad",
+      "email": "info@4dimensionsstudio.com",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://www.4dimensionsstudio.com",
+      "industry": "photography",
+      "status": "new",
+      "source": "google",
+      "notes": "Founder with Fine Art Degree. Experience in Graphic Design. Professional family and corporate photography.",
+      "websiteIssues": [
+        "gallery-optimization",
+        "booking-system"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "creative",
+        "founder-led"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-christophe-photo",
+      "name": "Christophe Viseux Photography",
+      "contactPerson": "Christophe Viseux",
+      "email": "hello@christopheweddingphoto.com",
+      "phone": "+971 50 XXX XXXX",
+      "website": "https://christopheweddingphoto.com",
+      "industry": "photography",
+      "status": "new",
+      "source": "google",
+      "notes": "Dubai Wedding Photographer. Photojournalism background. Former Art Director in New York and Paris. Candid heartfelt moments specialist.",
+      "websiteIssues": [
+        "seo-improvement",
+        "portfolio-speed"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "creative",
+        "international-background",
+        "hot-lead"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-nel-ruelo",
+      "name": "Nel Ruelo Photography",
+      "contactPerson": "Nel Ruelo",
+      "email": "hello@nelruelophotography.com",
+      "phone": "+971 50 XXX XXXX",
+      "website": "https://www.nelruelophotography.com",
+      "industry": "photography",
+      "status": "new",
+      "source": "google",
+      "notes": "Portrait and wedding photographer based in Dubai. Specializes in timeless elegance and unforgettable moments.",
+      "websiteIssues": [
+        "booking-system",
+        "gallery-optimization"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "creative",
+        "wedding-specialist"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-power-tutoring",
+      "name": "Power Tutoring",
+      "contactPerson": "Clive Power",
+      "email": "info@powertutoring.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://powertutoring.ae",
+      "industry": "education",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "British founder. Started 2006, Knowledge Village location for 7+ years. Specializes in UK curriculum English and maths tuition. Featured in The National.",
+      "websiteIssues": [
+        "booking-system",
+        "parent-portal",
+        "online-scheduling"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "education",
+        "uk-curriculum",
+        "founder-led"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-pet-corner",
+      "name": "Pet Corner UAE",
+      "contactPerson": "Sidarth Mahindra",
+      "email": "info@petcorner.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://petcorner.ae",
+      "industry": "pet-services",
+      "status": "new",
+      "source": "google",
+      "notes": "ROLE: Chief Pet Officer (unique title - conversation starter). GROWTH: Business doubled during pandemic. EXPANSION: 7→10 stores since 2021, tripled mobile grooming vans, 120 employees (doubled). SERVICES: Pet supplies, grooming, mobile grooming vans. PREMIUM LINE: The Pet Corner Elite Club (launched 2022) - diamond/gemstone collars starting AED37,000. MARKET INSIGHT: Couples choosing pets over children during pandemic drove demand. Strong luxury segment in UAE. TARGET: Affluent clientele seeking high-end pet products. PAIN POINTS: Multi-location management, e-commerce for premium products, mobile van scheduling/booking. Source: https://www.agbi.com/articles/from-chauf-fur-to-diamond-dog-collars-uae-pet-sector-booms/",
+      "websiteIssues": [
+        "e-commerce-optimization",
+        "booking-system"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "pet-services",
+        "growing-fast",
+        "multi-location",
+        "120-employees",
+        "luxury-segment",
+        "mobile-service"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-my-second-home",
+      "name": "My Second Home Pet Resort",
+      "contactPerson": "Sanjiv Dhiman",
+      "email": "info@mysecondhomedubai.com",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://mysecondhomedubai.com",
+      "industry": "pet-services",
+      "status": "new",
+      "source": "google",
+      "notes": "Co-founder. $2.7M investment. 5,800 sqm pet resort at Dubai Investment Park. High-end boarding facility opened 2015.",
+      "websiteIssues": [
+        "booking-optimization",
+        "virtual-tour"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "pet-services",
+        "premium",
+        "founder-led"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-dubai-love-story",
+      "name": "Dubai Love Story Photography",
+      "contactPerson": "Agnes",
+      "email": "hello@dubailovestory.com",
+      "phone": "+971 50 XXX XXXX",
+      "website": "https://dubailovestory.com",
+      "industry": "photography",
+      "status": "new",
+      "source": "google",
+      "notes": "Full-time lifestyle and intimate wedding photographer. Editorial style inspired by film and nature. Based in Dubai.",
+      "websiteIssues": [
+        "seo-optimization",
+        "booking-system"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "creative",
+        "wedding-specialist",
+        "editorial-style"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-bma-studio",
+      "name": "BMA Studio",
+      "contactPerson": "Leila Sobek",
+      "email": "info@bmastudio.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://www.bmastudio.ae",
+      "industry": "interior-design",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Founder & Director. Speaker at Design Perspective Dubai Edition 2025. Luxury Architecture & Interior Design.",
+      "websiteIssues": [
+        "portfolio-enhancement",
+        "seo-optimization"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "design",
+        "founder-led",
+        "speaker"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-vs-design",
+      "name": "VS Design Studio",
+      "contactPerson": "Veena",
+      "email": "info@vsdesignstudio.me",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://www.vsdesignstudio.me",
+      "industry": "interior-design",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Founder & Design Director. Highly Commended Interior Designer of the Year - Design Middle East KSA Awards 2025.",
+      "websiteIssues": [
+        "portfolio-showcase",
+        "contact-forms"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "design",
+        "award-winner",
+        "hot-lead"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-roar-design",
+      "name": "Roar Design Studio",
+      "contactPerson": "Pallavi Dean",
+      "email": "info@roar.design",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://roar.design",
+      "industry": "interior-design",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Founder and Creative Director. High-profile commercial and hospitality projects across MENA region. One of UAE most promising designers.",
+      "websiteIssues": [
+        "booking-system",
+        "project-showcase"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "design",
+        "hospitality-specialist",
+        "hot-lead"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-balans-studio",
+      "name": "Balans Studio",
+      "contactPerson": "Victoriia",
+      "email": "hello@balansstudio.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://balansstudio.ae",
+      "industry": "fitness",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "BACKGROUND: Ex-Emirates Airlines cabin crew (6+ years). Started as sales assistant at Warsaw Airport Duty Free. Polish origin. STORY: Noticed women felt intimidated in traditional gyms, created safe space for women. LOCATION: Dubai Marina. SERVICES: Pilates (mat+reformer), TRX, aerial, cold plunges, sauna, muscle treatments, organic matcha. PHILOSOPHY: Build community not just business. CHALLENGES: Standing out in competitive Dubai fitness market. PERSONAL: Mother, balances family with business. VALUES: Quality over quantity, functional luxury. EXPANSION PLANS: Events, training programs, additional locations. PAIN POINTS: Likely needs booking system, class scheduling, membership management. Source: https://emirateswoman.com/how-i-got-my-job-as-the-founder-of-dubais-most-aesthetic-pilates-studio/",
+      "websiteIssues": [
+        "booking-system",
+        "class-scheduling"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "fitness",
+        "boutique",
+        "hot-lead",
+        "featured-press",
+        "women-focused",
+        "ex-emirates",
+        "expanding"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-dhyana-dubai",
+      "name": "Dhyana Dubai",
+      "contactPerson": "Regina Mazhar",
+      "email": "info@dhyanadubai.com",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://dhyanadubai.com",
+      "industry": "fitness",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "BACKGROUND: Started career at Taj Hotels Group India as fitness instructor. 10+ years yoga practice. FOUNDED: November 2015. LOCATION: 5-star hotel in Business Bay with Burj Khalifa views. SERVICES: Hatha yoga, Kundalini, Vinyasa, Ashtanga, Pilates Reformer, Meditation - group and private. USP: Multilingual staff (8+ languages: Hindi, English, Russian, Arabic, French, Spanish, Punjabi, Romanian). PHILOSOPHY: Empower clients to discover inner strength. WHY BUSINESS BAY: Convenient for office workers, pedestrian accessible, prestigious. VIBE: Clean, welcoming - clients call it second home. PAIN POINTS: Premium location = needs premium website, online booking for busy professionals. Source: https://focus.hidubai.com/interview-with-regina-mazhar-studio-owner-at-dhyana-yoga-and-pilates-studio/",
+      "websiteIssues": [
+        "booking-optimization",
+        "class-scheduling"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "fitness",
+        "yoga",
+        "founder-led",
+        "premium-location",
+        "multilingual",
+        "business-bay",
+        "established-2015"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-pilates-academy",
+      "name": "Pilates Academy Dubai",
+      "contactPerson": "Cloe",
+      "email": "info@pilatesacademydubai.com",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://pilatesacademydubai.com",
+      "industry": "fitness",
+      "status": "new",
+      "source": "google",
+      "notes": "Owner and Founder since 2014. P.A.I. and Balanced Body Master Trainer. Teaches across Middle East. Partnered with Anjali (Light Commune) EO member.",
+      "websiteIssues": [
+        "booking-system",
+        "student-portal"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "fitness",
+        "pilates",
+        "training-academy"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-hwh-studio",
+      "name": "HWH Studio",
+      "contactPerson": "Adrienne Everett",
+      "email": "hello@hwhstudio.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://hwhstudio.ae",
+      "industry": "fitness",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "BACKGROUND: Ex-Wall Street Equity Derivatives Sales Trader. Transitioned from finance to wellness. Favorite subject: English (loves stories and creativity). WHY DUBAI: Saw it as hub of innovation for wellness industry. FOUNDED: HWH Studio in Delano Dubai hotel. CONCEPT: More than a space - connection, community, sanctuary. Clients come as they are, feel seen, leave feeling more like themselves. SERVICES: Yoga, Pilates, holistic wellness treatments, mind-body-soul alignment. PHILOSOPHY: The mat is my anchor. Have clear vision and flow into it. CHALLENGE: Learning to delegate - cant do everything, leaning on team was growth point. VISION: Expand globally, create worldwide ripple effect of wellness. UNIQUE ANGLE: Finance background = understands business metrics, ROI - speak her language. PAIN POINTS: Booking system, membership portal, global expansion website. Source: https://emirateswoman.com/how-i-got-my-job-as-founder-of-this-uae-based-wellness-studio/",
+      "websiteIssues": [
+        "booking-system",
+        "membership-portal"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "fitness",
+        "yoga",
+        "luxury",
+        "hotel-location",
+        "featured-press",
+        "ex-wall-street",
+        "global-expansion-plans"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-the-pad",
+      "name": "The PAD",
+      "contactPerson": "Shaazia Qureishi Kanchwala",
+      "email": "info@thepad.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://thepad.ae",
+      "industry": "fitness",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Managing Director. Co-founded with husband Abbas. Unique classes: Bhangralates and Bollywood Cardiolates. Reformer Pilates specialist.",
+      "websiteIssues": [
+        "booking-system",
+        "class-calendar"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "fitness",
+        "pilates",
+        "unique-concept",
+        "couple-owned"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-mane-salon",
+      "name": "Mane Salon Dubai",
+      "contactPerson": "Anthony Walsh",
+      "email": "info@manesalon.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://manesalon.ae",
+      "industry": "salon",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "FOUNDER: Anthony Walsh - award-winning salon owner. PHILOSOPHY: Passionate about blended effortless looks + amazing guest experience. DUAL ROLE: Hairstylist AND Educator - teaches other stylists and salon owners. UNIQUE: Education focus = values knowledge, professional development. Award-winning = quality-focused, cares about reputation. TARGET: Other hairstylists and salon owners as students. PAIN POINTS: Booking system, online portfolio showcasing work, possibly course booking for education business. EMAIL ANGLE: Education side needs professional platform to sell courses. Source: https://www.linkedin.com/in/anthony-walsh-0b5a6292/",
+      "websiteIssues": [
+        "booking-system",
+        "online-portfolio"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "award-winner",
+        "founder-led",
+        "linkedin-verified",
+        "educator",
+        "dual-business"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-the-salon-dubai",
+      "name": "The Salon Dubai",
+      "contactPerson": "Lily Raffan",
+      "email": "info@thesalondubai.com",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://thesalondubai.com",
+      "industry": "salon",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Owner. American University Dubai educated. Source: https://www.linkedin.com/in/lily-raffan-b79b9093/",
+      "websiteIssues": [
+        "booking-system",
+        "social-integration"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "founder-led",
+        "linkedin-verified"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-havie-moon",
+      "name": "Havie & Moon",
+      "contactPerson": "Christie Hunter",
+      "email": "hello@havieandmoon.com",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://havieandmoon.com",
+      "industry": "salon",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "CEO & Founder. Lifestyle brand and concept salon. Luxury organic sanctuary for women. Source: https://www.linkedin.com/in/christie-hunter-662418252/",
+      "websiteIssues": [
+        "e-commerce",
+        "booking-system"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "luxury",
+        "founder-led",
+        "linkedin-verified",
+        "lifestyle-brand"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-gorgeous-flower",
+      "name": "Gorgeous Flower Co.",
+      "contactPerson": "Samantha Middleton",
+      "email": "hello@gorgeousflowerco.com",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://gorgeousflowerco.com",
+      "industry": "florist",
+      "status": "new",
+      "source": "google",
+      "notes": "BACKGROUND: Studied Arabic at Durham University. First in Dubai 1984 with parents, returned 2009. Ex-account executive at marketing agency. FOUNDED: 2014 at age 40. HUSBAND: Co-founder, had flower business in UK - brings industry experience. WHY STARTED: Struggled to find quality flowers with good vase life in Dubai. Wanted to follow passion. LOCATION: Main shop and distribution center in Studio City. Online ordering available. PHILOSOPHY: Know your customers and market well. Build reputation for quality and service. Best advice: Always hire best people you can. CHALLENGES: Pandemic - maintaining team morale during uncertainty. TEAM FOCUS: Operations, product quality, packaging, employee motivation. GOALS: Continue excellent products and service for growth. PAIN POINTS: E-commerce optimization, delivery tracking, inventory management. Source: https://emirateswoman.com/got-job-founder-top-dubai-based-florist/",
+      "websiteIssues": [
+        "e-commerce",
+        "delivery-tracking"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "florist",
+        "founder-led",
+        "featured-press",
+        "couple-owned",
+        "studio-city",
+        "e-commerce"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-home-bakery",
+      "name": "Home Bakery",
+      "contactPerson": "Abdullah Al Mulla",
+      "email": "info@homebakery.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://homebakery.ae",
+      "industry": "bakery",
+      "status": "new",
+      "source": "google",
+      "notes": "BACKGROUND: Abdullah studied law, sister Hind studied graphic design. Family of 4 siblings (2 active, 2 silent partners). ORIGIN: Hind started baking mini chewy melt cookies as hobby from home. Started with Twitter account for orders. GROWTH: Home kitchen → rented villa kitchen in Jumeirah → full café. Expanded from desserts to breakfast menu. ROLES: Hind = creative/kitchen/menu, Abdullah = operations/management. PHILOSOPHY: Passion over profit, never compromise quality. Abdullah worked as waiter for 2 months to learn every role. CHALLENGES: No F&B experience, learned from friends with franchise chains. Goal: every customer leaves satisfied. MENU STRATEGY: Intentionally small menu with frequent changes to encourage repeat visits. EXPANSION: Dubai and Abu Dhabi locations planned. REVENUE: $15.8M annually. EMIRATI-OWNED: Local family business - good angle for pitching. PAIN POINTS: Multi-location management, online ordering, delivery integration. Source: https://sailemagazine.com/2017/01/interview-with-abdullah-al-mulla-co-owner-of-home_bakery/",
+      "websiteIssues": [
+        "online-ordering",
+        "delivery-integration"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "bakery",
+        "family-owned",
+        "featured-press",
+        "high-revenue",
+        "emirati-owned",
+        "multi-location",
+        "expanding"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-fitness-potion",
+      "name": "The Fitness Potion",
+      "contactPerson": "Sandeep Bhivania",
+      "email": "info@thefitnesspotion.com",
+      "phone": "+971 50 XXX XXXX",
+      "website": "https://thefitnesspotion.com",
+      "industry": "gym",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Founder. 15 years fitness industry. REPs UAE Level 3, EREPS Level 4. Ex Fitness First Dubai. Source: https://www.linkedin.com/in/sandeepbhivania/",
+      "websiteIssues": [
+        "booking-system",
+        "client-portal"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "fitness",
+        "certified-trainer",
+        "linkedin-verified"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-elite-fitness-fze",
+      "name": "Elite Fitness FZE",
+      "contactPerson": "Vojislav Budrovac",
+      "email": "info@fitnesstrainerdubai.com",
+      "phone": "+971 50 XXX XXXX",
+      "website": "https://fitnesstrainerdubai.com",
+      "industry": "gym",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "CEO. 8 years Dubai. 15+ years fitness industry. 6000+ clients. Multiple brands: fitnesstrainers.ae, LeanBody 90days. Source: https://www.linkedin.com/in/vojislav-budrovac-316a1398/",
+      "websiteIssues": [
+        "booking-system",
+        "program-portal"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "fitness",
+        "multi-brand",
+        "linkedin-verified",
+        "hot-lead"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-rye-cafe",
+      "name": "Rye Cafe and Juice Bar",
+      "contactPerson": "Robert Stokes",
+      "email": "hello@ryecafe.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://ryecafe.ae",
+      "industry": "cafe",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Small Business Owner. 28 years culinary experience. Family-run business. Source: https://www.linkedin.com/in/chefrobertstokes/",
+      "websiteIssues": [
+        "online-ordering",
+        "menu-system"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "cafe",
+        "family-owned",
+        "linkedin-verified"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-limelight-restaurant",
+      "name": "Limelight Restaurant & Lounge",
+      "contactPerson": "Hicham Alami",
+      "email": "info@limelightdubai.com",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://limelightdubai.com",
+      "industry": "restaurant",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Founder & Owner. 20+ years catering, hotel, restaurant operations. Source: https://www.linkedin.com/in/hicham-alami-7a0bb410/",
+      "websiteIssues": [
+        "reservation-system",
+        "menu-optimization"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "restaurant",
+        "experienced",
+        "linkedin-verified"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-sushi-buzz",
+      "name": "Sushi Buzz Restaurant",
+      "contactPerson": "Mohamed Khalil",
+      "email": "info@sushibuzz.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://sushibuzz.ae",
+      "industry": "restaurant",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Entrepreneur, CEO & Founder. Growing restaurant market in Dubai. Source: https://www.linkedin.com/in/mohamed-khalil-57981444/",
+      "websiteIssues": [
+        "online-ordering",
+        "delivery-integration"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "restaurant",
+        "founder-led",
+        "linkedin-verified"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-arabian-tea-house",
+      "name": "Arabian Tea House",
+      "contactPerson": "Ali M. Alrais",
+      "email": "info@arabianteahouse.com",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://arabianteahouse.com",
+      "industry": "restaurant",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Founder. Since 1997. 5 branches in UAE (Sharjah, Mercato Mall Jumeirah, others). Source: https://www.linkedin.com/company/arabian-tea-house-restaurant-cafe",
+      "websiteIssues": [
+        "multi-location-site",
+        "reservation-system"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "restaurant",
+        "established",
+        "multi-location",
+        "linkedin-verified"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    },
+    {
+      "id": "lead-menza-cafe",
+      "name": "Menza Café",
+      "contactPerson": "Anwar Bouzaher",
+      "email": "hello@menzacafe.ae",
+      "phone": "+971 4 XXX XXXX",
+      "website": "https://menzacafe.ae",
+      "industry": "cafe",
+      "status": "new",
+      "source": "linkedin",
+      "notes": "Owner. Dubai based. Source: https://www.linkedin.com/in/anwar-bouzaher-970721257/",
+      "websiteIssues": [
+        "online-menu",
+        "ordering-system"
+      ],
+      "tags": [
+        "small-business",
+        "dubai",
+        "verified",
+        "cafe",
+        "owner",
+        "linkedin-verified"
+      ],
+      "createdAt": "2025-01-13T10:00:00.000Z",
+      "lastContactedAt": null,
+      "linkedBoardId": null
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-demo-1",
+      "leadId": null,
+      "type": "sent",
+      "channel": "email",
+      "subject": "Quick question about Glamour Beauty's website",
+      "body": "Hi Fatima,\n\nI noticed your salon website could benefit from an online booking system...",
+      "templateId": "template-initial",
+      "status": "sent",
+      "openedAt": null,
+      "repliedAt": null,
+      "createdAt": "2026-01-12T09:00:00Z"
+    }
+  ],
+  "emailTemplates": [
+    {
+      "id": "template-website-audit",
+      "name": "Free Website Audit Offer",
+      "subject": "{{contactPerson}}, quick question about {{company}}'s website",
+      "body": "Hi {{contactPerson}},\n\nI was looking at {{industry}} businesses in the UAE and came across {{company}}.\n\nI noticed a few things on your website that might be affecting your bookings:\n\n• Mobile experience could be smoother\n• Booking/contact process has some friction\n• Loading speed could be improved\n\nI help {{industry}} business owners like yourself get more customers through better websites.\n\nWould a free 5-minute video showing exactly what I found be helpful? No strings attached.\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company",
+        "industry"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-value-first",
+      "name": "Value First - Quick Wins",
+      "subject": "3 things {{company}} could fix today",
+      "body": "Hi {{contactPerson}},\n\nI specialize in helping {{industry}} businesses in Dubai get more customers online.\n\nI checked out {{company}}'s website and found 3 quick wins you could implement today:\n\n1. Add a clear \"Book Now\" button above the fold\n2. Include customer reviews on the homepage\n3. Optimize images for faster loading\n\nThese take about 10 minutes each and can make a real difference.\n\nInterested in hearing about some bigger improvements that could really move the needle?\n\nJust reply \"yes\" and I'll share more.\n\nCheers,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company",
+        "industry"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-case-study",
+      "name": "Case Study Approach",
+      "subject": "How a {{industry}} business got 40% more customers",
+      "body": "Hi {{contactPerson}},\n\nI recently helped a {{industry}} business similar to {{company}} increase their online bookings by 40% in just 2 months.\n\nHere's what we did:\n- Added online booking (customers book 24/7)\n- Made the site mobile-friendly (70% of visitors are on phones)\n- Improved Google ranking (now on page 1)\n\nI'd love to do the same for {{company}}.\n\nWould you be open to a quick 10-minute call to see if this could work for you?\n\nBest,\nHanzla\nWeb Developer | Dubai",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company",
+        "industry"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-fitness-premium",
+      "name": "Premium Fitness - CEO Clients",
+      "subject": "{{contactPerson}}, your clients expect premium - does your website deliver?",
+      "body": "Hi {{contactPerson}},\n\nI came across {{company}} and noticed you work with CEOs and high-performers who demand excellence.\n\nYour training methodology is clearly premium - but I noticed your website might not be reflecting that same level.\n\nFor clients paying top-tier rates, every touchpoint matters:\n• Seamless online booking (24/7 for busy executives)\n• Client portal for progress tracking\n• Professional brand presence that matches your reputation\n\nI help premium fitness businesses like yours build digital experiences that match their service quality.\n\nWorth a quick chat to see if I can help?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-fissionfusion"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-transformation-showcase",
+      "name": "Transformation Results Showcase",
+      "subject": "{{contactPerson}}, your client transformations deserve better visibility",
+      "body": "Hi {{contactPerson}},\n\nI saw the incredible transformation results from {{company}} - Joey's 10-week journey, Rusana's 30kg loss... those results speak for themselves.\n\nBut here's the thing - potential clients are searching for proof before they commit. A website that showcases these transformations properly can be your best salesperson.\n\nI help fitness professionals turn their client success stories into conversion machines:\n• Before/after galleries that build trust\n• Client testimonial videos\n• Easy booking for consultations\n\nYour results are already doing the hard work - let's make sure the world sees them.\n\nInterested in a quick chat?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-fortius",
+        "lead-abhifit"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-ex-corporate",
+      "name": "Ex-Corporate Professional",
+      "subject": "{{contactPerson}}, fellow career-changer here",
+      "body": "Hi {{contactPerson}},\n\nI read about your journey from corporate to wellness entrepreneurship - that takes real courage.\n\nAs someone who also transitioned into running my own business, I know how different the challenges are. You understand ROI, metrics, and what it takes to scale.\n\nBut building a digital presence that matches your vision? That's a different skillset.\n\nI help business owners like you build websites that:\n• Convert visitors into paying clients\n• Automate bookings so you can focus on what you do best\n• Scale with you as you expand globally\n\nYour business acumen got you here - let me help with the tech side.\n\nWorth 15 minutes to explore?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-hwh-studio"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-ex-airline",
+      "name": "Ex-Airline Professional",
+      "subject": "{{contactPerson}}, from Emirates to entrepreneur",
+      "body": "Hi {{contactPerson}},\n\nI loved reading about your journey from Emirates cabin crew to building {{company}}.\n\nYou saw a gap in the market - women feeling intimidated in gyms - and created something special. That's exactly the kind of purpose-driven business I love working with.\n\nNow that you're expanding with events and new locations, your digital presence needs to keep up:\n• Online booking that fills your classes\n• Membership management without the spreadsheets\n• A website that captures your community vibe\n\nI help wellness founders like you build tech that supports growth without losing that personal touch.\n\nWant to chat about how I can help?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-balans-studio"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-multilingual-studio",
+      "name": "Multilingual Business",
+      "subject": "{{contactPerson}}, reaching clients in 8 languages",
+      "body": "Hi {{contactPerson}},\n\nI came across {{company}} and was impressed - a team that teaches in 8 languages serving Business Bay's diverse professionals.\n\nWith your 5-star hotel location and Burj Khalifa views, you're clearly positioned for premium clients. But is your website doing that positioning justice?\n\nFor busy professionals in Business Bay, convenience is everything:\n• One-click booking between meetings\n• Clear class schedules they can check on mobile\n• Multiple language options on your site\n\nI help premium wellness businesses convert their location advantage into more bookings.\n\nWorth a quick call to discuss?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-dhyana-dubai"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-multi-location-salon",
+      "name": "Multi-Location Salon Growth",
+      "subject": "{{contactPerson}}, managing 4 salons is hard - your website should help",
+      "body": "Hi {{contactPerson}},\n\nI read about your incredible growth - from a villa in Khalifa City to 4 salons with 60+ employees. And now a 5th location in Al Quoz!\n\nYou mentioned the challenge of going from hairdresser to businesswoman. I help salon owners like you solve one piece of that puzzle:\n\nA website that works across all locations:\n• Centralized booking for all branches\n• Staff scheduling visibility\n• Consistent brand experience everywhere\n\nWith your expansion rate, you need systems that scale with you.\n\nWant to chat about making your digital presence as impressive as your growth story?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-tara-rose-salon"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-celebrity-stylist",
+      "name": "Celebrity Stylist Background",
+      "subject": "{{contactPerson}}, from Ritz-Carlton to The Nest",
+      "body": "Hi {{contactPerson}},\n\nYour journey is incredible - from styling at the Ritz-Carlton to celebrities and royalty, and now building The Nest with Inger.\n\nYou mentioned the biggest challenge was transitioning from stylist to businesswoman - no training in finances, marketing, or operations.\n\nI can't help with all of that, but I CAN take the website piece off your plate:\n• A booking system so you're not managing appointments manually\n• An online presence that reflects your celebrity-level work\n• Marketing-ready pages that you can share with confidence\n\nLet me handle the tech so you can focus on what you do best - creating beautiful hair.\n\n15 minutes for a quick chat?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-nest-salon"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-emirati-family",
+      "name": "Emirati Family Business",
+      "subject": "{{contactPerson}}, your family's story deserves a better website",
+      "body": "Hi {{contactPerson}},\n\nI love the story of {{company}} - starting with Hind's cookies from home, growing through social media, and now a $15M+ business with expansion plans.\n\nYour philosophy of \"passion over profit\" and \"never compromise quality\" - that's exactly what makes local businesses special.\n\nAs you expand to more locations, your website needs to carry that same quality:\n• Online ordering that works smoothly\n• A brand story that connects with customers\n• Systems that scale with your growth\n\nI help family businesses build digital presence that matches their values.\n\nWant to chat about {{company}}'s next chapter?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-home-bakery"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-tech-pioneer",
+      "name": "Tech Pioneer Dental",
+      "subject": "{{contactPerson}}, first 3D dental tech in Dubai deserves a matching website",
+      "body": "Hi {{contactPerson}},\n\nI came across {{company}} and noticed something impressive - you were the FIRST to bring 3D dental technology to Dubai.\n\nThat's innovation leadership. But here's my question: does your website tell that story?\n\nPatients choosing premium dental care want to see:\n• Your cutting-edge technology in action\n• Easy online booking (convenience matters to JLT professionals)\n• Before/after results showcasing your work\n\nYou're positioned as a tech leader - your digital presence should reinforce that.\n\nWant to chat about bringing your website up to the same standard as your technology?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-germandent"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-pet-luxury",
+      "name": "Luxury Pet Business",
+      "subject": "{{contactPerson}}, from 7 stores to 10 - what's next for Pet Corner?",
+      "body": "Hi {{contactPerson}},\n\n\"Chief Pet Officer\" - love that title! I saw how {{company}} doubled during the pandemic and you're now at 10 stores with 120 employees.\n\nPlus the Elite Club with AED37,000 diamond collars - you're clearly targeting the premium segment.\n\nWith that kind of growth, I'm curious: is your website keeping up?\n\n• E-commerce for your premium products\n• Mobile van booking system\n• Multi-location inventory management\n\nYour affluent clients expect seamless digital experiences. I help luxury pet businesses deliver exactly that.\n\nWorth a quick chat?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-pet-corner"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-educator-dual",
+      "name": "Educator + Business Owner",
+      "subject": "{{contactPerson}}, your education business needs its own platform",
+      "body": "Hi {{contactPerson}},\n\nI noticed you're not just running {{company}} - you're also educating other salon owners and stylists.\n\nThat's two businesses in one: the salon AND the education/coaching side.\n\nMost salon owners doing this struggle with:\n• Selling courses online (no proper platform)\n• Managing workshop bookings\n• Building authority in the industry\n\nI help professionals like you build digital platforms that serve BOTH sides of your business.\n\nWant to chat about turning your expertise into a scalable education business?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-mane-salon"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-proprietary-method",
+      "name": "Proprietary Method Showcase",
+      "subject": "{{contactPerson}}, your unique protocols deserve visibility",
+      "body": "Hi {{contactPerson}},\n\nI came across {{company}} and noticed you've developed proprietary treatment protocols based on the Austrian-German school.\n\nThat's not something every clinic can say. It's a genuine differentiator.\n\nBut here's the thing - patients searching for dental care don't know this yet. Your website should be educating them:\n\n• What makes your approach different\n• The science behind your methods\n• Why European-trained means better outcomes\n\nI help healthcare professionals turn their expertise into patient-attracting content.\n\nWant to chat about showcasing your unique approach?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-dentaldate"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-couple-florist",
+      "name": "Couple-Owned Florist",
+      "subject": "{{contactPerson}}, Studio City flowers to all of Dubai",
+      "body": "Hi {{contactPerson}},\n\nI loved reading about {{company}} - started because you couldn't find quality flowers in Dubai, now you're delivering across the city.\n\nYour husband's UK flower business experience + your marketing background = the perfect combo.\n\nAs someone who understands both quality AND customer experience, you know websites matter:\n\n• Smooth e-commerce for quick orders\n• Delivery tracking (customers love knowing where their flowers are)\n• Mobile-first design (most orders are impulse)\n\nI help e-commerce businesses turn browsers into buyers.\n\nWant to chat about growing {{company}}'s online presence?\n\nBest,\nHanzla",
+      "category": "initial",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "targetLeads": [
+        "lead-gorgeous-flower"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-followup-gentle",
+      "name": "Gentle Follow-up (3 days)",
+      "subject": "Re: {{previousSubject}}",
+      "body": "Hi {{contactPerson}},\n\nJust bumping this up in case it got buried.\n\nI know you're busy running {{company}}, so I'll keep this short:\n\nWould a free website review be helpful? No sales pitch, just actionable feedback you can use.\n\nEither way, no worries - just wanted to make sure you saw this.\n\nBest,\nHanzla",
+      "category": "followup",
+      "variables": [
+        "contactPerson",
+        "company",
+        "previousSubject"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-followup-value",
+      "name": "Value Follow-up (7 days)",
+      "subject": "{{contactPerson}}, found something for {{company}}",
+      "body": "Hi {{contactPerson}},\n\nI was doing some research and found a few things that might help {{company}}:\n\n1. Your Google Business listing could use some optimization\n2. A few competitors are ranking above you for key terms\n3. There's a quick fix for your page speed\n\nI put together a quick doc with specifics - want me to send it over?\n\nNo strings attached, just thought it might be useful.\n\nBest,\nHanzla",
+      "category": "followup",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-breakup",
+      "name": "Breakup Email (14 days)",
+      "subject": "Should I close your file, {{contactPerson}}?",
+      "body": "Hi {{contactPerson}},\n\nI've reached out a couple of times about helping {{company}} with your website, but I haven't heard back.\n\nNo worries at all - I know timing isn't always right.\n\nI'm going to assume you're either:\n• Happy with your current website\n• Too busy right now\n• Not interested\n\nAll totally fine! I'll close your file for now.\n\nIf things change down the road, feel free to reach out.\n\nWishing you continued success with {{company}}!\n\nBest,\nHanzla",
+      "category": "followup",
+      "variables": [
+        "contactPerson",
+        "company"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    }
+  ],
+  "taskBoards": [
+    {
+      "id": "board-demo-1",
+      "name": "Website Redesign Project",
+      "leadId": null,
+      "columns": [
+        {
+          "id": "todo",
+          "name": "To Do",
+          "color": "#6B7280"
+        },
+        {
+          "id": "inprogress",
+          "name": "In Progress",
+          "color": "#3B82F6"
+        },
+        {
+          "id": "review",
+          "name": "Review",
+          "color": "#F59E0B"
+        },
+        {
+          "id": "done",
+          "name": "Done",
+          "color": "#10B981"
+        }
+      ],
+      "createdAt": "2026-01-10T00:00:00Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task-demo-1",
+      "boardId": "board-demo-1",
+      "columnId": "todo",
+      "title": "Design homepage mockup",
+      "description": "Create wireframe and high-fidelity mockup for homepage",
+      "priority": "high",
+      "dueDate": "2026-01-20T00:00:00Z",
+      "subtasks": [
+        {
+          "id": "st-1",
+          "text": "Research competitors",
+          "done": true
+        },
+        {
+          "id": "st-2",
+          "text": "Create wireframe",
+          "done": false
+        },
+        {
+          "id": "st-3",
+          "text": "Design mockup in Figma",
+          "done": false
+        }
+      ],
+      "assignee": null,
+      "leadId": null,
+      "createdAt": "2026-01-10T00:00:00Z",
+      "position": 0
+    }
+  ],
+  "emailSettings": {
+    "provider": "sendgrid",
+    "gmail": {
+      "user": "",
+      "appPassword": ""
+    },
+    "sendgrid": {
+      "apiKey": ""
+    },
+    "ses": {
+      "accessKeyId": "",
+      "secretAccessKey": "",
+      "region": "us-east-1"
+    },
+    "resend": {
+      "apiKey": ""
+    },
+    "custom": {
+      "host": "",
+      "port": 587,
+      "user": "",
+      "pass": "",
+      "secure": false
+    },
+    "fromName": "",
+    "fromEmail": "",
+    "dailyLimit": 50,
+    "delayBetweenEmails": 30
+  },
   "settings": {
     "goalsEnabled": true,
     "weeklyGoals": {
@@ -954,8 +3404,16 @@
         "icon": "monitor",
         "color": "#8B5CF6",
         "description": "Faceless, VS Code, lo-fi music",
-        "bestFor": ["Coding tutorials", "Debugging", "Live code"],
-        "tools": ["OBS", "VS Code", "Lo-fi playlist"]
+        "bestFor": [
+          "Coding tutorials",
+          "Debugging",
+          "Live code"
+        ],
+        "tools": [
+          "OBS",
+          "VS Code",
+          "Lo-fi playlist"
+        ]
       },
       {
         "id": "whiteboard",
@@ -963,8 +3421,15 @@
         "icon": "pencil",
         "color": "#F59E0B",
         "description": "Hand-drawn explainer style",
-        "bestFor": ["Concepts", "Architecture", "Roadmaps"],
-        "tools": ["Excalidraw", "Screen recorder"]
+        "bestFor": [
+          "Concepts",
+          "Architecture",
+          "Roadmaps"
+        ],
+        "tools": [
+          "Excalidraw",
+          "Screen recorder"
+        ]
       },
       {
         "id": "slides-face",
@@ -972,8 +3437,16 @@
         "icon": "user",
         "color": "#10B981",
         "description": "Minimal slides, face in corner",
-        "bestFor": ["Tips", "Opinions", "Career advice"],
-        "tools": ["OBS", "Slides", "Webcam"]
+        "bestFor": [
+          "Tips",
+          "Opinions",
+          "Career advice"
+        ],
+        "tools": [
+          "OBS",
+          "Slides",
+          "Webcam"
+        ]
       },
       {
         "id": "notion-doc",
@@ -981,9 +3454,1252 @@
         "icon": "file-text",
         "color": "#3B82F6",
         "description": "Aesthetic doc scroll, voiceover",
-        "bestFor": ["Lists", "Resources", "Guides"],
-        "tools": ["Notion", "Screen recorder"]
+        "bestFor": [
+          "Lists",
+          "Resources",
+          "Guides"
+        ],
+        "tools": [
+          "Notion",
+          "Screen recorder"
+        ]
       }
     ]
+  },
+  "jobs": [
+    {
+      "id": "job-blackbird-2026",
+      "company": "Blackbird Dev Shop",
+      "role": "Senior Full Stack Engineer / CTO Consultant",
+      "location": "Worldwide",
+      "locationType": "remote",
+      "salaryMin": 150000,
+      "salaryMax": 200000,
+      "salaryCurrency": "$",
+      "description": "Build web + mobile apps for startups. Greenfield projects with small, veteran teams. Low-drama, highly collaborative culture.",
+      "requirements": [
+        "5+ years experience",
+        "Full stack expertise",
+        "Startup experience"
+      ],
+      "skills": [
+        "TypeScript",
+        "React",
+        "PostgreSQL",
+        "AWS"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://news.ycombinator.com/item?id=46466074",
+      "status": "saved",
+      "contactPerson": "Vance",
+      "contactEmail": "vance@blackbird.us",
+      "priority": "high",
+      "notes": "HN Who is Hiring January 2026. Remote contractors (US or Europe). 4-day work week mentioned.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-hatchet-2026",
+      "company": "Hatchet",
+      "role": "Founding Engineer",
+      "location": "NYC or US/EU Remote",
+      "locationType": "remote",
+      "salaryMin": 150000,
+      "salaryMax": 200000,
+      "salaryCurrency": "$",
+      "description": "Building developer infrastructure. Early-stage opportunity with founding team.",
+      "requirements": [
+        "Strong TypeScript",
+        "React experience",
+        "Kubernetes knowledge"
+      ],
+      "skills": [
+        "TypeScript",
+        "React",
+        "Kubernetes",
+        "Go"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://news.ycombinator.com/item?id=46466074",
+      "status": "saved",
+      "contactPerson": "Alexander",
+      "contactEmail": "alexander@hatchet.run",
+      "priority": "high",
+      "notes": "HN Who is Hiring January 2026. Founding engineer role - high impact.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-matcha-2026",
+      "company": "Matcha.fm",
+      "role": "Full-stack Software Engineer",
+      "location": "US/Canada/EU",
+      "locationType": "remote",
+      "salaryMin": 140000,
+      "salaryMax": 290000,
+      "salaryCurrency": "$",
+      "description": "Building podcast discovery platform. High compensation with equity.",
+      "requirements": [
+        "Full stack experience",
+        "GraphQL knowledge",
+        "Strong TypeScript"
+      ],
+      "skills": [
+        "TypeScript",
+        "React",
+        "Node.js",
+        "GraphQL",
+        "PostgreSQL"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://matcha.fm/apply/se",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "urgent",
+      "notes": "HN January 2026. Very high salary range $140K-$290K + Equity. Apply via website.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-stack-influence-2026",
+      "company": "Stack Influence",
+      "role": "Senior Full Stack JavaScript Developer",
+      "location": "Worldwide",
+      "locationType": "remote",
+      "salaryMin": 125000,
+      "salaryMax": 200000,
+      "salaryCurrency": "$",
+      "description": "VC-backed creator marketplace. 4-day work week. Individual contributor on small team.",
+      "requirements": [
+        "Senior JS experience",
+        "React expertise",
+        "Node.js backend"
+      ],
+      "skills": [
+        "React",
+        "Node.js",
+        "Next.js",
+        "Azure",
+        "TypeScript"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://stack-influence.breezy.hr/",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "high",
+      "notes": "HN January 2026. 4-DAY WORK WEEK! No mentoring duties. Remote worldwide.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-prophet-town-2026",
+      "company": "Prophet Town LLC",
+      "role": "Full-Stack Software Engineer",
+      "location": "US",
+      "locationType": "remote",
+      "salaryMin": 150000,
+      "salaryMax": 250000,
+      "salaryCurrency": "$",
+      "description": "Boutique indie tech agency. Ex-Fortune 100 leadership. Recent projects: Anduril internal tools, voltagepark.com auction system.",
+      "requirements": [
+        "5-10+ years experience",
+        "Full stack expertise",
+        "React/Next.js"
+      ],
+      "skills": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "Python",
+        "Ruby on Rails"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://forms.gle/Dxpj7eTwcHpjiGT39",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "urgent",
+      "notes": "HN January 2026. APPLY BEFORE JAN 15 for reply by Jan 31! Tier3: $150-175k, Tier4: $210-250k.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-charityvest-2026",
+      "company": "Foundation Source / Charityvest",
+      "role": "Senior Software Engineer, Front-end (DAFs)",
+      "location": "US, Canada",
+      "locationType": "remote",
+      "salaryMin": 140000,
+      "salaryMax": 180000,
+      "salaryCurrency": "$",
+      "description": "Craft exceptional, high-performing UIs for DAF platform using React 18+ and Next.js 14+.",
+      "requirements": [
+        "React 18+ experience",
+        "Next.js 14+ knowledge",
+        "Frontend architecture"
+      ],
+      "skills": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "AWS"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://news.ycombinator.com/item?id=46466074",
+      "status": "saved",
+      "contactPerson": "Edmundo",
+      "contactEmail": "edmundo+hn@charityvest.org",
+      "priority": "high",
+      "notes": "HN January 2026. Direct email contact! Modern React 18+ and Next.js 14+ stack.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-legion-health-2026",
+      "company": "Legion Health",
+      "role": "Founding Engineer (AI-Native Ops Infra)",
+      "location": "San Francisco",
+      "locationType": "onsite",
+      "salaryMin": 130000,
+      "salaryMax": 190000,
+      "salaryCurrency": "$",
+      "description": "AI-Native Operations Infrastructure. Founding engineer with equity.",
+      "requirements": [
+        "Node.js expertise",
+        "TypeScript",
+        "Next.js 15 experience"
+      ],
+      "skills": [
+        "Node.js",
+        "TypeScript",
+        "Next.js",
+        "AI/LLM"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://news.ycombinator.com/item?id=46466074",
+      "status": "saved",
+      "contactPerson": "Yash",
+      "contactEmail": "yash@legion.health",
+      "priority": "medium",
+      "notes": "HN January 2026. Direct email! Onsite SF but founding role with equity.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-photon-health-2026",
+      "company": "Photon Health",
+      "role": "Senior Software Engineer",
+      "location": "Brooklyn, NYC",
+      "locationType": "hybrid",
+      "salaryMin": 180000,
+      "salaryMax": 210000,
+      "salaryCurrency": "$",
+      "description": "Healthcare tech company. Hybrid in Brooklyn.",
+      "requirements": [
+        "Senior engineering experience",
+        "TypeScript",
+        "AWS/Terraform"
+      ],
+      "skills": [
+        "TypeScript",
+        "React",
+        "Terraform",
+        "AWS"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://jobs.gem.com/photon/am9icG9zdDpL4xgxKjrEK2H6aICx8Qye",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "medium",
+      "notes": "HN January 2026. $180-210K salary. Brooklyn hybrid.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-pelairo-2026",
+      "company": "Pelairo Inc.",
+      "role": "Senior Full Stack Developer",
+      "location": "US",
+      "locationType": "remote",
+      "salaryMin": 100000,
+      "salaryMax": 150000,
+      "salaryCurrency": "$",
+      "description": "Design and deliver core product experiences. TypeScript + NestJS backend, Next.js frontend.",
+      "requirements": [
+        "Full stack experience",
+        "TypeScript",
+        "NestJS or Node.js"
+      ],
+      "skills": [
+        "TypeScript",
+        "NestJS",
+        "Next.js",
+        "React"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://news.ycombinator.com/item?id=46466074",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "hiring@pelairo.com",
+      "priority": "high",
+      "notes": "HN January 2026. Direct email - mention 'HN Who's Hiring January 2026' in subject.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-thothmind-2026",
+      "company": "Thothmind",
+      "role": "Frontend Engineer",
+      "location": "Worldwide",
+      "locationType": "remote",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryCurrency": "$",
+      "description": "AI/LLM product company. Performance-focused UI architecture with LLM integrations.",
+      "requirements": [
+        "TypeScript",
+        "React/Next.js",
+        "LLM/AI integration experience"
+      ],
+      "skills": [
+        "TypeScript",
+        "React",
+        "Next.js",
+        "OpenAI API",
+        "LangChain"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://thothmind.ai/careers",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "high",
+      "notes": "HN January 2026. Fully remote worldwide. AI/LLM focus.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-starbridge-2026",
+      "company": "Starbridge",
+      "role": "Product Engineer (React/TypeScript)",
+      "location": "NYC or Remote",
+      "locationType": "remote",
+      "salaryMin": 150000,
+      "salaryMax": 200000,
+      "salaryCurrency": "$",
+      "description": "AI platform turning large-scale data into sales insights. Work with product and design on user-facing features.",
+      "requirements": [
+        "React expertise",
+        "TypeScript",
+        "Product engineering mindset"
+      ],
+      "skills": [
+        "React",
+        "TypeScript",
+        "Kotlin",
+        "Java"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://news.ycombinator.com/item?id=46466074",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "high",
+      "notes": "HN January 2026. AI platform, early stage, building from zero to one.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-join-2026",
+      "company": "Join",
+      "role": "Staff Full Stack Engineer",
+      "location": "US",
+      "locationType": "remote",
+      "salaryMin": 175000,
+      "salaryMax": 205000,
+      "salaryCurrency": "$",
+      "description": "B2B SaaS for construction teams. React + Go + Postgres platform. Deep frontend/React expertise needed.",
+      "requirements": [
+        "Staff level experience",
+        "Deep React expertise",
+        "Full stack capabilities"
+      ],
+      "skills": [
+        "React",
+        "Go",
+        "PostgreSQL",
+        "TypeScript"
+      ],
+      "experienceLevel": "staff",
+      "source": "hackernews",
+      "sourceUrl": "https://join.build/company/careers-se/",
+      "status": "saved",
+      "contactPerson": "Mark Deutsch",
+      "contactEmail": "mark.deutsch@join.build",
+      "priority": "urgent",
+      "notes": "HN January 2026. DIRECT EMAIL! $175k-$205k + equity + full benefits. Fully remote.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-estuary-2026",
+      "company": "Estuary",
+      "role": "Software Engineer",
+      "location": "Remote",
+      "locationType": "remote",
+      "salaryMin": 140000,
+      "salaryMax": 200000,
+      "salaryCurrency": "$",
+      "description": "Real-time data integration platform. Building reliable, maintainable systems. Value curiosity and clear communication.",
+      "requirements": [
+        "Systems engineering",
+        "Clear communication",
+        "Curiosity and willingness to learn"
+      ],
+      "skills": [
+        "TypeScript",
+        "React",
+        "Go",
+        "PostgreSQL"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://estuary.dev/careers",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "careers@estuary.dev",
+      "priority": "high",
+      "notes": "HN January 2026. DIRECT EMAIL to careers@estuary.dev. Data infrastructure company.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-repspark-2026",
+      "company": "RepSpark",
+      "role": "Software Engineer",
+      "location": "Remote",
+      "locationType": "remote",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryCurrency": "$",
+      "description": "B2B wholesale commerce platform. Building software for brands and retailers.",
+      "requirements": [
+        "Full stack experience",
+        "React/TypeScript",
+        "API development"
+      ],
+      "skills": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "PostgreSQL"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://repspark.com/careers",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "careers@repspark.com",
+      "priority": "high",
+      "notes": "HN January 2026. DIRECT EMAIL! Include resume and GitHub/portfolio.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-shortwave-2026",
+      "company": "Shortwave (Tasklet)",
+      "role": "Senior Software Engineer",
+      "location": "US",
+      "locationType": "remote",
+      "salaryMin": 260000,
+      "salaryMax": 330000,
+      "salaryCurrency": "$",
+      "description": "AI-powered email client. Building with TypeScript, React, GCP, Kubernetes, Claude. 5+ years production experience required.",
+      "requirements": [
+        "5+ years production experience",
+        "TypeScript expertise",
+        "AI/LLM integration"
+      ],
+      "skills": [
+        "TypeScript",
+        "React",
+        "GCP",
+        "Kubernetes",
+        "Claude API"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://www.shortwave.com/careers",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "urgent",
+      "notes": "HN January 2026. HIGHEST SALARY! $260k-$330k + 0.8-1.6% equity. Medical, dental, vision, 401k, 4 weeks PTO.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-narrative-io-2026",
+      "company": "Narrative I/O",
+      "role": "Senior Frontend Engineer",
+      "location": "US & Canada",
+      "locationType": "remote",
+      "salaryMin": 120000,
+      "salaryMax": 200000,
+      "salaryCurrency": "$",
+      "description": "Data collaboration platform and marketplace. Building since 2016 with automatic data standardization.",
+      "requirements": [
+        "Senior frontend experience",
+        "React/TypeScript",
+        "4-hour overlap with EST"
+      ],
+      "skills": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "Data visualization"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://narrative.io/careers",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "high",
+      "notes": "HN January 2026. $120k-$200k USD. 4-hour overlap with EST required.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-shorebird-2026",
+      "company": "Shorebird",
+      "role": "Mid-Senior Dart/Cloud Engineer",
+      "location": "North America",
+      "locationType": "remote",
+      "salaryMin": 150000,
+      "salaryMax": 230000,
+      "salaryCurrency": "$",
+      "description": "Flutter tooling SAAS used by 1000s of businesses. On track to profitability early 2026.",
+      "requirements": [
+        "Dart expertise",
+        "Cloud infrastructure",
+        "Flutter knowledge"
+      ],
+      "skills": [
+        "Dart",
+        "Flutter",
+        "TypeScript",
+        "Cloud Infrastructure"
+      ],
+      "experienceLevel": "senior",
+      "source": "hackernews",
+      "sourceUrl": "https://shorebird.dev/careers",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "medium",
+      "notes": "HN January 2026. $150-230k + equity + benefits. Flutter ecosystem company.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-qonto-2026",
+      "company": "Qonto",
+      "role": "Senior Frontend Engineer (React)",
+      "location": "Europe",
+      "locationType": "remote",
+      "salaryMin": 80000,
+      "salaryMax": 130000,
+      "salaryCurrency": "€",
+      "description": "European business finance management. Remote-friendly with modern React stack.",
+      "requirements": [
+        "Senior React experience",
+        "TypeScript",
+        "Frontend architecture"
+      ],
+      "skills": [
+        "React",
+        "TypeScript",
+        "GraphQL",
+        "Testing"
+      ],
+      "experienceLevel": "senior",
+      "source": "lever",
+      "sourceUrl": "https://jobs.lever.co/qonto/8e9c22ba-f9d9-4021-8831-a008d3ac5292",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "medium",
+      "notes": "Lever posting. European fintech, remote-friendly. Apply via Lever.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-veeva-2026",
+      "company": "Veeva Systems",
+      "role": "Senior Frontend Engineer - React",
+      "location": "Remote",
+      "locationType": "remote",
+      "salaryMin": 150000,
+      "salaryMax": 200000,
+      "salaryCurrency": "$",
+      "description": "Life sciences cloud company. Building enterprise software for pharma and biotech.",
+      "requirements": [
+        "Senior React experience",
+        "Enterprise software",
+        "TypeScript"
+      ],
+      "skills": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "AWS"
+      ],
+      "experienceLevel": "senior",
+      "source": "lever",
+      "sourceUrl": "https://jobs.lever.co/veeva/866d4776-9d23-4311-ab16-4ebff725984d",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "high",
+      "notes": "Lever posting. Public company (NYSE: VEEV). Stable, well-funded.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-splash-2026",
+      "company": "Splash Financial",
+      "role": "Senior Frontend Engineer - React (Full Stack Friendly)",
+      "location": "Remote US",
+      "locationType": "remote",
+      "salaryMin": 140000,
+      "salaryMax": 190000,
+      "salaryCurrency": "$",
+      "description": "Student loan refinancing platform. Full stack friendly frontend role.",
+      "requirements": [
+        "Senior React experience",
+        "Full stack capabilities",
+        "Financial tech interest"
+      ],
+      "skills": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "PostgreSQL"
+      ],
+      "experienceLevel": "senior",
+      "source": "greenhouse",
+      "sourceUrl": "https://job-boards.greenhouse.io/splashfinancial/jobs/4583691006",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "high",
+      "notes": "Greenhouse posting. Fintech company, remote US. Full stack friendly.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-knock-2026",
+      "company": "Knock",
+      "role": "Senior Full Stack Software Engineer",
+      "location": "Remote US",
+      "locationType": "remote",
+      "salaryMin": 160000,
+      "salaryMax": 210000,
+      "salaryCurrency": "$",
+      "description": "Notification infrastructure for developers. Building APIs and dashboards.",
+      "requirements": [
+        "Full stack experience",
+        "API development",
+        "React/TypeScript"
+      ],
+      "skills": [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "PostgreSQL",
+        "Redis"
+      ],
+      "experienceLevel": "senior",
+      "source": "greenhouse",
+      "sourceUrl": "https://job-boards.greenhouse.io/knock/jobs/5745759004",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "high",
+      "notes": "Greenhouse posting. Developer tools company. Notification infrastructure.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-wizard-2026",
+      "company": "Wizard Commerce",
+      "role": "Senior Software Engineer - Fullstack (Node.js + React)",
+      "location": "Remote",
+      "locationType": "remote",
+      "salaryMin": 150000,
+      "salaryMax": 200000,
+      "salaryCurrency": "$",
+      "description": "E-commerce platform. Building with Node.js and React.",
+      "requirements": [
+        "Full stack experience",
+        "Node.js expertise",
+        "React proficiency"
+      ],
+      "skills": [
+        "React",
+        "Node.js",
+        "TypeScript",
+        "PostgreSQL"
+      ],
+      "experienceLevel": "senior",
+      "source": "greenhouse",
+      "sourceUrl": "https://job-boards.greenhouse.io/wizardcommerce/jobs/5650793004",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "high",
+      "notes": "Greenhouse posting. E-commerce platform. Node.js + React stack.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "job-perpay-2026",
+      "company": "Perpay",
+      "role": "Senior Software Engineer, Frontend (React)",
+      "location": "Philadelphia or Remote",
+      "locationType": "remote",
+      "salaryMin": 140000,
+      "salaryMax": 180000,
+      "salaryCurrency": "$",
+      "description": "Financial wellness platform. Building consumer-facing React applications.",
+      "requirements": [
+        "Senior React experience",
+        "Consumer fintech",
+        "TypeScript"
+      ],
+      "skills": [
+        "React",
+        "TypeScript",
+        "Redux",
+        "Testing"
+      ],
+      "experienceLevel": "senior",
+      "source": "greenhouse",
+      "sourceUrl": "https://job-boards.greenhouse.io/perpay/jobs/4328621007",
+      "status": "saved",
+      "contactPerson": "Hiring Team",
+      "contactEmail": "",
+      "priority": "high",
+      "notes": "Greenhouse posting. Financial wellness fintech. Philadelphia or Remote.",
+      "createdAt": "2026-01-13T00:00:00Z",
+      "updatedAt": "2026-01-13T00:00:00Z"
+    }
+  ],
+  "jobTemplates": [
+    {
+      "id": "template-cover-letter",
+      "name": "Cover Letter",
+      "subject": "Application for {{role}} at {{company}}",
+      "body": "Hi {{contactPerson}},\n\nI'm a {{experienceLevel}} developer with {{yearsExperience}}+ years specializing in {{skills}}.\n\n{{customParagraph}}\n\nI'm drawn to {{company}} because {{companyReason}}.\n\nPortfolio: {{portfolioUrl}}\nGitHub: {{githubUrl}}\n\nBest regards,\n{{yourName}}",
+      "category": "application",
+      "variables": [
+        "role",
+        "company",
+        "contactPerson",
+        "experienceLevel",
+        "yearsExperience",
+        "skills",
+        "customParagraph",
+        "companyReason",
+        "portfolioUrl",
+        "githubUrl",
+        "yourName"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-followup",
+      "name": "Follow-up (3 days)",
+      "subject": "Following up - {{role}} at {{company}}",
+      "body": "Hi {{contactPerson}},\n\nI wanted to follow up on my application from {{applicationDate}} for the {{role}} position.\n\nI'm still very interested in contributing to {{company}} and would love the opportunity to discuss how my experience with {{skills}} could benefit your team.\n\nPlease let me know if you need any additional information.\n\nBest regards,\n{{yourName}}",
+      "category": "followup",
+      "variables": [
+        "contactPerson",
+        "applicationDate",
+        "role",
+        "company",
+        "skills",
+        "yourName"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-recruiter",
+      "name": "Recruiter Outreach",
+      "subject": "{{experienceLevel}} React Developer - Open to Opportunities",
+      "body": "Hi {{contactPerson}},\n\nI noticed you recruit for {{company}}. I'm a {{experienceLevel}} developer with expertise in:\n\n{{skillsList}}\n\nI'm particularly interested in remote opportunities where I can contribute to challenging frontend/full-stack projects.\n\nWould you be open to a 15-minute chat to explore potential fits?\n\nPortfolio: {{portfolioUrl}}\nLinkedIn: {{linkedInUrl}}\n\n{{yourName}}",
+      "category": "outreach",
+      "variables": [
+        "contactPerson",
+        "company",
+        "experienceLevel",
+        "skillsList",
+        "portfolioUrl",
+        "linkedInUrl",
+        "yourName"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    },
+    {
+      "id": "template-thankyou",
+      "name": "Thank You (Post-Interview)",
+      "subject": "Thank you - {{role}} Interview",
+      "body": "Hi {{interviewerName}},\n\nThank you for taking the time to speak with me about the {{role}} position at {{company}} today.\n\nI enjoyed learning about {{discussedTopic}} and am even more excited about the opportunity to contribute to your team.\n\n{{specificPoint}}\n\nPlease don't hesitate to reach out if you need any additional information.\n\nLooking forward to the next steps.\n\nBest regards,\n{{yourName}}",
+      "category": "interview",
+      "variables": [
+        "interviewerName",
+        "role",
+        "company",
+        "discussedTopic",
+        "specificPoint",
+        "yourName"
+      ],
+      "createdAt": "2026-01-13T00:00:00Z"
+    }
+  ],
+  "jobSearchPrompts": [
+    {
+      "id": "remoteok-react",
+      "name": "RemoteOK - React Jobs",
+      "source": "remoteok",
+      "url": "https://remoteok.com/remote-react-jobs",
+      "description": "Remote React developer positions",
+      "tags": [
+        "react",
+        "remote"
+      ]
+    },
+    {
+      "id": "remoteok-frontend",
+      "name": "RemoteOK - Frontend Jobs",
+      "source": "remoteok",
+      "url": "https://remoteok.com/remote-front-end-jobs",
+      "description": "Remote frontend developer positions",
+      "tags": [
+        "frontend",
+        "remote"
+      ]
+    },
+    {
+      "id": "wwr-fullstack",
+      "name": "We Work Remotely - Full Stack",
+      "source": "weworkremotely",
+      "url": "https://weworkremotely.com/categories/remote-full-stack-programming-jobs",
+      "description": "Full stack programming jobs",
+      "tags": [
+        "fullstack",
+        "remote"
+      ]
+    },
+    {
+      "id": "wwr-frontend",
+      "name": "We Work Remotely - Frontend",
+      "source": "weworkremotely",
+      "url": "https://weworkremotely.com/categories/remote-front-end-programming-jobs",
+      "description": "Frontend programming jobs",
+      "tags": [
+        "frontend",
+        "remote"
+      ]
+    },
+    {
+      "id": "linkedin-senior-react",
+      "name": "LinkedIn - Senior React Remote",
+      "source": "linkedin",
+      "url": "https://linkedin.com/jobs/search/?keywords=react%20senior&f_WT=2&f_E=4",
+      "description": "Senior React positions, remote only",
+      "tags": [
+        "react",
+        "senior",
+        "remote"
+      ]
+    },
+    {
+      "id": "linkedin-nextjs",
+      "name": "LinkedIn - Next.js TypeScript",
+      "source": "linkedin",
+      "url": "https://linkedin.com/jobs/search/?keywords=next.js%20typescript&f_WT=2",
+      "description": "Next.js and TypeScript positions",
+      "tags": [
+        "nextjs",
+        "typescript",
+        "remote"
+      ]
+    },
+    {
+      "id": "wellfound-frontend",
+      "name": "Wellfound - Frontend Engineer",
+      "source": "wellfound",
+      "url": "https://wellfound.com/role/r/frontend-engineer?remote=true",
+      "description": "Frontend engineer at startups",
+      "tags": [
+        "frontend",
+        "startup",
+        "remote"
+      ]
+    },
+    {
+      "id": "wellfound-senior",
+      "name": "Wellfound - Senior Software Engineer",
+      "source": "wellfound",
+      "url": "https://wellfound.com/role/r/senior-software-engineer?remote=true",
+      "description": "Senior software engineer at startups",
+      "tags": [
+        "senior",
+        "startup",
+        "remote"
+      ]
+    },
+    {
+      "id": "yc-frontend",
+      "name": "Y Combinator - Frontend",
+      "source": "ycombinator",
+      "url": "https://www.workatastartup.com/jobs?role=eng&subRole=frontend&remote=true",
+      "description": "Frontend at YC companies",
+      "tags": [
+        "frontend",
+        "yc",
+        "startup",
+        "remote"
+      ]
+    },
+    {
+      "id": "vercel-careers",
+      "name": "Vercel Careers",
+      "source": "direct",
+      "url": "https://vercel.com/careers",
+      "description": "Vercel - Next.js creators",
+      "tags": [
+        "vercel",
+        "nextjs",
+        "direct"
+      ]
+    },
+    {
+      "id": "stripe-careers",
+      "name": "Stripe Careers",
+      "source": "direct",
+      "url": "https://stripe.com/jobs/search?remote_locations=Remote",
+      "description": "Stripe - Payments infrastructure",
+      "tags": [
+        "stripe",
+        "fintech",
+        "direct",
+        "remote"
+      ]
+    },
+    {
+      "id": "github-careers",
+      "name": "GitHub Careers",
+      "source": "direct",
+      "url": "https://github.com/about/careers",
+      "description": "GitHub - Developer platform",
+      "tags": [
+        "github",
+        "devtools",
+        "direct"
+      ]
+    },
+    {
+      "id": "linear-careers",
+      "name": "Linear Careers",
+      "source": "direct",
+      "url": "https://linear.app/careers",
+      "description": "Linear - Project management",
+      "tags": [
+        "linear",
+        "saas",
+        "direct"
+      ]
+    },
+    {
+      "id": "shopify-careers",
+      "name": "Shopify Careers",
+      "source": "direct",
+      "url": "https://www.shopify.com/careers",
+      "description": "Shopify - E-commerce platform",
+      "tags": [
+        "shopify",
+        "ecommerce",
+        "direct",
+        "remote"
+      ]
+    },
+    {
+      "id": "lever-veeva",
+      "name": "Veeva Systems - Senior Frontend React",
+      "source": "lever",
+      "url": "https://jobs.lever.co/veeva/866d4776-9d23-4311-ab16-4ebff725984d",
+      "description": "Remote - React, 5+ years experience",
+      "tags": [
+        "react",
+        "remote",
+        "senior",
+        "lever"
+      ]
+    },
+    {
+      "id": "lever-qonto",
+      "name": "Qonto - Senior Frontend Engineer",
+      "source": "lever",
+      "url": "https://jobs.lever.co/qonto/c946b5e0-c7e8-43af-98ad-0ee6e7411630",
+      "description": "Remote friendly - React migration from Ember",
+      "tags": [
+        "react",
+        "remote",
+        "fintech",
+        "lever"
+      ]
+    },
+    {
+      "id": "lever-metabase",
+      "name": "Metabase - Software Engineer Frontend",
+      "source": "lever",
+      "url": "https://jobs.lever.co/metabase/8f02d3fa-edf4-4433-a6d1-4f9e517ac8f9",
+      "description": "Fully distributed, React + Redux",
+      "tags": [
+        "react",
+        "redux",
+        "remote",
+        "lever"
+      ]
+    },
+    {
+      "id": "greenhouse-remote-com",
+      "name": "Remote.com - Senior Frontend (Next.js)",
+      "source": "greenhouse",
+      "url": "https://job-boards.greenhouse.io/remotecom/jobs/7580237003",
+      "description": "React, Next.js, TypeScript, SEO",
+      "tags": [
+        "nextjs",
+        "react",
+        "typescript",
+        "greenhouse"
+      ]
+    },
+    {
+      "id": "greenhouse-webflow",
+      "name": "Webflow - Senior Frontend Engineer",
+      "source": "greenhouse",
+      "url": "https://job-boards.greenhouse.io/webflow/jobs/7244152",
+      "description": "TypeScript, React, Next.js - US/Canada",
+      "tags": [
+        "react",
+        "nextjs",
+        "typescript",
+        "greenhouse"
+      ]
+    },
+    {
+      "id": "ashby-wundergraph",
+      "name": "WunderGraph - Senior Frontend (EMEA)",
+      "source": "ashby",
+      "url": "https://jobs.ashbyhq.com/WunderGraph/812aef9f-aa40-436f-8dc3-6a9d15c5174d",
+      "description": "Next.js, React, Tailwind - Remote EMEA",
+      "tags": [
+        "nextjs",
+        "react",
+        "tailwind",
+        "remote"
+      ]
+    },
+    {
+      "id": "ashby-httpie",
+      "name": "HTTPie - Senior Frontend Engineer",
+      "source": "ashby",
+      "url": "https://jobs.ashbyhq.com/httpie/17de9aae-7a3c-40fb-a352-ddbbd7c14385",
+      "description": "TypeScript, React, Next.js, Electron",
+      "tags": [
+        "react",
+        "nextjs",
+        "electron",
+        "remote"
+      ]
+    },
+    {
+      "id": "ashby-leonardo",
+      "name": "Leonardo.Ai - Senior Frontend (Next.js)",
+      "source": "ashby",
+      "url": "https://jobs.ashbyhq.com/leonardo.ai/71a9595d-bb45-4f8d-9948-a3e12c5eb869",
+      "description": "React.js & Next.js - AI company",
+      "tags": [
+        "nextjs",
+        "react",
+        "ai",
+        "remote"
+      ]
+    },
+    {
+      "id": "ashby-deel",
+      "name": "Deel - Senior Frontend React.js",
+      "source": "ashby",
+      "url": "https://jobs.ashbyhq.com/deel/a7a014cc-d632-451c-af9d-b652a85539cd",
+      "description": "Global HR platform - React.js",
+      "tags": [
+        "react",
+        "fintech",
+        "remote"
+      ]
+    },
+    {
+      "id": "ashby-windranger",
+      "name": "Windranger Labs - Senior Fullstack",
+      "source": "ashby",
+      "url": "https://jobs.ashbyhq.com/windranger/4a6ce867-ac8b-4544-be6c-b2acc616b2a8",
+      "description": "React, Next.js, Node.js, PostgreSQL",
+      "tags": [
+        "fullstack",
+        "nextjs",
+        "nodejs",
+        "remote"
+      ]
+    },
+    {
+      "id": "linear-frontend",
+      "name": "Linear - Senior/Staff Frontend Engineer",
+      "source": "direct",
+      "url": "https://linear.app/careers",
+      "description": "React, MobX, TypeScript - Remote NA/EU",
+      "tags": [
+        "react",
+        "typescript",
+        "remote",
+        "dream"
+      ]
+    },
+    {
+      "id": "vercel-frontend-platform",
+      "name": "Vercel - Software Engineer Frontend",
+      "source": "direct",
+      "url": "https://vercel.com/careers/software-engineer-frontend-platform-us-5204022004",
+      "description": "React, TypeScript - $137k-$207k",
+      "tags": [
+        "react",
+        "nextjs",
+        "typescript",
+        "dream"
+      ]
+    },
+    {
+      "id": "vercel-consultant",
+      "name": "Vercel - Senior Front End Consultant",
+      "source": "direct",
+      "url": "https://vercel.com/careers/senior-front-end-consultant-us-5342034004",
+      "description": "Next.js expert - $137k-$207k",
+      "tags": [
+        "nextjs",
+        "react",
+        "consulting",
+        "dream"
+      ]
+    },
+    {
+      "id": "notion-careers",
+      "name": "Notion - All Engineering Roles",
+      "source": "direct",
+      "url": "https://www.notion.com/careers",
+      "description": "React, Next.js, TypeScript, Electron",
+      "tags": [
+        "react",
+        "nextjs",
+        "electron",
+        "dream"
+      ]
+    },
+    {
+      "id": "hnhiring-react",
+      "name": "Hacker News Who's Hiring - React",
+      "source": "hackernews",
+      "url": "https://hnhiring.com/technologies/react",
+      "description": "Monthly HN hiring thread - React jobs",
+      "tags": [
+        "react",
+        "startup",
+        "monthly"
+      ]
+    },
+    {
+      "id": "glassdoor-senior-react",
+      "name": "Glassdoor - Senior React Remote",
+      "source": "glassdoor",
+      "url": "https://www.glassdoor.com/Job/remote-senior-react-jobs-SRCH_IL.0,6_IS11047_KO7,19.htm",
+      "description": "565+ senior React remote jobs",
+      "tags": [
+        "react",
+        "senior",
+        "remote",
+        "aggregator"
+      ]
+    }
+  ],
+  "jobOutreachHistory": [],
+  "cvFiles": [
+    {
+      "id": "cv-1768288537165",
+      "name": "My Resume - Google Drive",
+      "filename": null,
+      "originalName": null,
+      "type": "cloud",
+      "url": null,
+      "cloudUrl": "https://drive.google.com/file/d/example123",
+      "size": null,
+      "isDefault": true,
+      "createdAt": "2026-01-13T07:15:37.165Z"
+    },
+    {
+      "id": "cv-1768288566061",
+      "name": "Test Developer CV",
+      "filename": "cv-1768288566059-738068736.pdf",
+      "originalName": "test-cv.pdf",
+      "type": "uploaded",
+      "url": "/uploads/cv-1768288566059-738068736.pdf",
+      "cloudUrl": null,
+      "size": 313,
+      "isDefault": false,
+      "createdAt": "2026-01-13T07:16:06.061Z"
+    }
+  ],
+  "userProfile": {
+    "name": "Hanzla Developer",
+    "email": "hanzla@example.com",
+    "phone": "+1-555-0123",
+    "portfolioUrl": "https://hanzla.dev",
+    "linkedInUrl": "https://linkedin.com/in/hanzla",
+    "githubUrl": "https://github.com/hanzla",
+    "yearsExperience": 7,
+    "primarySkills": [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "Node.js",
+      "Python"
+    ],
+    "experienceLevel": "SENIOR",
+    "defaultCvId": "cv-1768288566061"
   }
 }

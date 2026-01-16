@@ -1,5 +1,5 @@
 import { useReducer, useCallback, useMemo, memo, useState } from 'react'
-import { Plus, Calendar, LayoutGrid, AlertTriangle, Clock, List, Clock3, Table2, Sun, Moon } from 'lucide-react'
+import { Plus, Calendar, LayoutGrid, AlertTriangle, Clock, List, Clock3, Table2, Sun, Moon, Users } from 'lucide-react'
 import { useSchedule } from './hooks/useSchedule'
 import { useTheme } from './hooks/useTheme'
 import { useConfirmDialog } from './hooks/useConfirmDialog'
@@ -9,8 +9,9 @@ import { TaskFlow } from './components/TaskFlow'
 import { AddContentModal, SettingsModal, VariantGuideModal } from './components/Forms'
 import { BookOpen } from 'lucide-react'
 import { Button, AlertDialog } from './components/UI'
-import { ListView, TimelineView, TableView } from './components/Views'
+import { ListView, TimelineView, TableView, LeadsView, TaskBoardsView, JobsView } from './components/Views'
 import { ContentDetailPanel } from './components/DetailPanel'
+import { ModuleSwitcher } from './shared/components/ModuleSwitcher'
 import { format, isPast, parseISO } from 'date-fns'
 
 // App State Reducer
@@ -22,7 +23,8 @@ const initialState = {
   editingContent: null,
   detailContent: null,
   view: 'calendar',
-  filterStage: null
+  filterStage: null,
+  activeModule: 'schedule' // 'schedule' | 'leads' | 'taskboards'
 }
 
 function appReducer(state, action) {
@@ -49,6 +51,8 @@ function appReducer(state, action) {
       return { ...state, detailContent: null }
     case 'SET_FILTER_STAGE':
       return { ...state, filterStage: state.filterStage === action.stage ? null : action.stage }
+    case 'SET_MODULE':
+      return { ...state, activeModule: action.module }
     default:
       return state
   }
@@ -79,6 +83,12 @@ function App() {
   // Memoized stats and streak
   const stats = useMemo(() => getStats(), [contents])
   const streak = useMemo(() => getStreak(), [contents])
+
+  // Filtered contents based on selected stage
+  const filteredContents = useMemo(() => {
+    if (!state.filterStage) return contents
+    return contents.filter(c => c.status === state.filterStage)
+  }, [contents, state.filterStage])
 
   // Get last used video variant for auto-rotation
   const lastUsedVariant = useMemo(() => {
@@ -147,6 +157,10 @@ function App() {
     dispatch({ type: 'CLOSE_VARIANT_GUIDE' })
   }, [])
 
+  const handleModuleChange = useCallback((module) => {
+    dispatch({ type: 'SET_MODULE', module })
+  }, [])
+
   const handleOpenDetail = useCallback((content) => {
     dispatch({ type: 'OPEN_DETAIL', content })
   }, [])
@@ -187,66 +201,86 @@ function App() {
           theme={theme}
           onToggleTheme={toggleTheme}
           onOpenVariantGuide={handleOpenVariantGuide}
+          activeModule={state.activeModule}
+          onModuleChange={handleModuleChange}
         />
 
-        {/* Stats Bar */}
-        <div className="mb-6">
-          <StatsBar stats={stats} streak={streak} onOpenSettings={handleOpenSettings} goalsEnabled={settings.goalsEnabled !== false} />
-        </div>
+        {/* Schedule Module - Stats Bar */}
+        {state.activeModule === 'schedule' && (
+          <div className="mb-6">
+            <StatsBar stats={stats} streak={streak} onOpenSettings={handleOpenSettings} goalsEnabled={settings.goalsEnabled !== false} />
+          </div>
+        )}
 
-        {/* Task Flow Pipeline */}
-        <div className="mb-6">
-          <TaskFlow
-            contents={contents}
-            activeStage={state.filterStage}
-            onStageClick={(stage) => dispatch({ type: 'SET_FILTER_STAGE', stage })}
-            showStats={true}
-          />
-        </div>
+        {/* Schedule Module - Task Flow Pipeline */}
+        {state.activeModule === 'schedule' && (
+          <div className="mb-6">
+            <TaskFlow
+              contents={contents}
+              activeStage={state.filterStage}
+              onStageClick={(stage) => dispatch({ type: 'SET_FILTER_STAGE', stage })}
+              showStats={true}
+            />
+          </div>
+        )}
 
         {/* Main Content */}
         <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-          {state.view === 'calendar' && (
-            <WeekView
-              contents={contents}
-              onAddContent={handleAddContent}
-              onEditContent={handleEditContent}
-              onDeleteContent={handleDeleteContent}
-              onDateChange={scheduleContent}
-              onOpenDetail={handleOpenDetail}
-            />
+          {/* Schedule Module Views */}
+          {state.activeModule === 'schedule' && (
+            <>
+              {state.view === 'calendar' && (
+                <WeekView
+                  contents={filteredContents}
+                  onAddContent={handleAddContent}
+                  onEditContent={handleEditContent}
+                  onDeleteContent={handleDeleteContent}
+                  onDateChange={scheduleContent}
+                  onOpenDetail={handleOpenDetail}
+                />
+              )}
+              {state.view === 'pipeline' && (
+                <PipelineView
+                  contents={filteredContents}
+                  onEditContent={handleEditContent}
+                  onStatusChange={moveToStatus}
+                />
+              )}
+              {state.view === 'list' && (
+                <ListView
+                  contents={filteredContents}
+                  onEdit={handleEditContent}
+                  onDelete={handleDeleteContent}
+                  onOpenDetail={handleOpenDetail}
+                />
+              )}
+              {state.view === 'timeline' && (
+                <TimelineView
+                  contents={filteredContents}
+                  onEdit={handleEditContent}
+                  onSchedule={scheduleContent}
+                  onOpenDetail={handleOpenDetail}
+                />
+              )}
+              {state.view === 'table' && (
+                <TableView
+                  contents={filteredContents}
+                  onEdit={handleEditContent}
+                  onUpdateStatus={handleUpdateStatus}
+                  onOpenDetail={handleOpenDetail}
+                />
+              )}
+            </>
           )}
-          {state.view === 'pipeline' && (
-            <PipelineView
-              contents={contents}
-              onEditContent={handleEditContent}
-              onStatusChange={moveToStatus}
-            />
-          )}
-          {state.view === 'list' && (
-            <ListView
-              contents={contents}
-              onEdit={handleEditContent}
-              onDelete={handleDeleteContent}
-              onOpenDetail={handleOpenDetail}
-            />
-          )}
-          {state.view === 'timeline' && (
-            <TimelineView
-              contents={contents}
-              onEdit={handleEditContent}
-              onSchedule={scheduleContent}
-              onOpenDetail={handleOpenDetail}
-            />
-          )}
-          {state.view === 'table' && (
-            <TableView
-              contents={contents}
-              onEdit={handleEditContent}
-              onUpdateStatus={handleUpdateStatus}
-              onOpenDetail={handleOpenDetail}
-            />
-          )}
+
+          {/* Leads Module */}
+          {state.activeModule === 'leads' && <LeadsView />}
+
+          {/* Task Boards Module */}
+          {state.activeModule === 'taskboards' && <TaskBoardsView />}
+
+          {/* Jobs Module */}
+          {state.activeModule === 'jobs' && <JobsView />}
         </main>
 
         {/* Add/Edit Modal */}
@@ -301,31 +335,31 @@ function App() {
 }
 
 // Memoized Header Component
-const Header = memo(function Header({ view, onViewChange, onAddContent, theme, onToggleTheme, onOpenVariantGuide }) {
+const Header = memo(function Header({ view, onViewChange, onAddContent, theme, onToggleTheme, onOpenVariantGuide, activeModule, onModuleChange }) {
+  const isScheduleModule = activeModule === 'schedule'
+
   return (
     <header className="flex items-center justify-between mb-6">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
-          <Calendar size={20} className="text-white" />
+      <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
+            <Calendar size={20} className="text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-text-primary">Business Hub</h1>
+            <p className="text-sm text-text-muted">Productivity Platform</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-xl font-bold text-text-primary">Code with Hanzla</h1>
-          <p className="text-sm text-text-muted">Content Schedule</p>
-        </div>
+
+        {/* Module Switcher */}
+        <ModuleSwitcher
+          activeModule={activeModule}
+          onModuleChange={onModuleChange}
+        />
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Variants Guide */}
-        <button
-          onClick={onOpenVariantGuide}
-          className="p-2.5 rounded-xl bg-bg-secondary border border-border text-text-muted hover:text-accent-primary hover:border-accent-primary transition-colors flex items-center gap-2"
-          title="Video Variants Guide"
-        >
-          <BookOpen size={18} />
-          <span className="text-sm hidden sm:inline">Variants</span>
-        </button>
-
-        {/* Theme Toggle */}
+        {/* Theme Toggle - always visible */}
         <button
           onClick={onToggleTheme}
           className="p-2.5 rounded-xl bg-bg-secondary border border-border text-text-muted hover:text-text-primary hover:border-accent-primary transition-colors"
@@ -334,73 +368,88 @@ const Header = memo(function Header({ view, onViewChange, onAddContent, theme, o
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
-        {/* Calendar Views */}
-        <div className="flex items-center bg-bg-secondary rounded-xl border border-border p-1">
-          <button
-            onClick={() => onViewChange('calendar')}
-            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              view === 'calendar'
-                ? 'bg-accent-primary text-white'
-                : 'text-text-muted hover:text-text-primary'
-            }`}
-          >
-            <Calendar size={16} className="inline mr-1.5" />
-            Calendar
-          </button>
-          <button
-            onClick={() => onViewChange('pipeline')}
-            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              view === 'pipeline'
-                ? 'bg-accent-primary text-white'
-                : 'text-text-muted hover:text-text-primary'
-            }`}
-          >
-            <LayoutGrid size={16} className="inline mr-1.5" />
-            Pipeline
-          </button>
-          <button
-            onClick={() => onViewChange('timeline')}
-            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              view === 'timeline'
-                ? 'bg-accent-primary text-white'
-                : 'text-text-muted hover:text-text-primary'
-            }`}
-          >
-            <Clock3 size={16} className="inline mr-1.5" />
-            Timeline
-          </button>
-        </div>
+        {/* Schedule-specific controls */}
+        {isScheduleModule && (
+          <>
+            {/* Variants Guide */}
+            <button
+              onClick={onOpenVariantGuide}
+              className="p-2.5 rounded-xl bg-bg-secondary border border-border text-text-muted hover:text-accent-primary hover:border-accent-primary transition-colors flex items-center gap-2"
+              title="Video Variants Guide"
+            >
+              <BookOpen size={18} />
+              <span className="text-sm hidden sm:inline">Variants</span>
+            </button>
 
-        {/* Data Views */}
-        <div className="flex items-center bg-bg-secondary rounded-xl border border-border p-1">
-          <button
-            onClick={() => onViewChange('list')}
-            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              view === 'list'
-                ? 'bg-accent-primary text-white'
-                : 'text-text-muted hover:text-text-primary'
-            }`}
-          >
-            <List size={16} className="inline mr-1.5" />
-            List
-          </button>
-          <button
-            onClick={() => onViewChange('table')}
-            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              view === 'table'
-                ? 'bg-accent-primary text-white'
-                : 'text-text-muted hover:text-text-primary'
-            }`}
-          >
-            <Table2 size={16} className="inline mr-1.5" />
-            Table
-          </button>
-        </div>
+            {/* Calendar Views */}
+            <div className="flex items-center bg-bg-secondary rounded-xl border border-border p-1">
+              <button
+                onClick={() => onViewChange('calendar')}
+                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  view === 'calendar'
+                    ? 'bg-accent-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
+                }`}
+              >
+                <Calendar size={16} className="inline mr-1.5" />
+                Calendar
+              </button>
+              <button
+                onClick={() => onViewChange('pipeline')}
+                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  view === 'pipeline'
+                    ? 'bg-accent-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
+                }`}
+              >
+                <LayoutGrid size={16} className="inline mr-1.5" />
+                Pipeline
+              </button>
+              <button
+                onClick={() => onViewChange('timeline')}
+                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  view === 'timeline'
+                    ? 'bg-accent-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
+                }`}
+              >
+                <Clock3 size={16} className="inline mr-1.5" />
+                Timeline
+              </button>
+            </div>
 
-        <Button onClick={onAddContent}>
-          <Plus size={18} />
-          Add Content
-        </Button>
+            {/* Data Views */}
+            <div className="flex items-center bg-bg-secondary rounded-xl border border-border p-1">
+              <button
+                onClick={() => onViewChange('list')}
+                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  view === 'list'
+                    ? 'bg-accent-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
+                }`}
+              >
+                <List size={16} className="inline mr-1.5" />
+                List
+              </button>
+              <button
+                onClick={() => onViewChange('table')}
+                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  view === 'table'
+                    ? 'bg-accent-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
+                }`}
+              >
+                <Table2 size={16} className="inline mr-1.5" />
+                Table
+              </button>
+            </div>
+
+            <Button onClick={onAddContent}>
+              <Plus size={18} />
+              Add Content
+            </Button>
+          </>
+        )}
       </div>
     </header>
   )

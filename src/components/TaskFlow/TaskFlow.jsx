@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Lightbulb, FileText, Video, Scissors, Image, CheckCircle, TrendingUp
+  Lightbulb, FileText, Video, Scissors, Image, CheckCircle, TrendingUp, X, Filter
 } from 'lucide-react'
 import { flowNodeReveal } from '../../lib/animations'
 
@@ -74,17 +74,35 @@ export const TaskFlow = memo(function TaskFlow({
             </div>
           </div>
 
-          {/* Completion percentage */}
-          <div className="text-right">
-            <motion.span
-              key={stats.percentage}
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-2xl font-bold text-gradient"
-            >
-              {stats.percentage}%
-            </motion.span>
-            <p className="text-xs text-text-muted">Published</p>
+          {/* Active Filter Badge + Completion percentage */}
+          <div className="flex items-center gap-4">
+            <AnimatePresence mode="wait">
+              {activeStage && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8, x: 20 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, x: 20 }}
+                  onClick={() => onStageClick?.(activeStage)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-accent-primary/20 text-accent-primary text-sm font-medium hover:bg-accent-primary/30 transition-colors"
+                >
+                  <Filter size={14} />
+                  <span>Filtering: {STAGES.find(s => s.id === activeStage)?.label}</span>
+                  <X size={14} className="opacity-70 hover:opacity-100" />
+                </motion.button>
+              )}
+            </AnimatePresence>
+
+            <div className="text-right">
+              <motion.span
+                key={stats.percentage}
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="text-2xl font-bold text-gradient"
+              >
+                {stats.percentage}%
+              </motion.span>
+              <p className="text-xs text-text-muted">Published</p>
+            </div>
           </div>
         </div>
       )}
@@ -134,6 +152,11 @@ export const TaskFlow = memo(function TaskFlow({
             value={stats.published}
             color="accent-success"
           />
+          {!activeStage && (
+            <span className="text-xs text-text-muted/60 italic">
+              Click a stage to filter
+            </span>
+          )}
         </div>
       )}
     </div>
