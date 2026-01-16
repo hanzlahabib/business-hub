@@ -8,7 +8,7 @@ const sourceIcons = {
   remoteok: { icon: Globe, color: 'text-green-400', bg: 'bg-green-500/20' },
   weworkremotely: { icon: Briefcase, color: 'text-blue-400', bg: 'bg-blue-500/20' },
   linkedin: { icon: '🔗', color: 'text-cyan-400', bg: 'bg-cyan-500/20' },
-  wellfound: { icon: Rocket, color: 'text-purple-400', bg: 'bg-purple-500/20' },
+  wellfound: { icon: Rocket, color: 'text-blue-400', bg: 'bg-blue-500/20' },
   ycombinator: { icon: '🚀', color: 'text-orange-400', bg: 'bg-orange-500/20' },
   direct: { icon: Building2, color: 'text-pink-400', bg: 'bg-pink-500/20' }
 }
@@ -70,13 +70,13 @@ export function JobSearchPanel({ isOpen, onClose }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-4xl max-h-[85vh] bg-[#1a1a2e] rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
+          className="w-full max-w-4xl max-h-[85vh] bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
         >
           {/* Header */}
           <div className="p-6 border-b border-white/10">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-purple-500 to-violet-500 rounded-xl">
+                <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl">
                   <Search className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -101,7 +101,7 @@ export function JobSearchPanel({ isOpen, onClose }) {
                   placeholder="Search job boards..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-purple-500"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div className="flex items-center gap-2">
@@ -109,7 +109,7 @@ export function JobSearchPanel({ isOpen, onClose }) {
                 <select
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
-                  className="px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                  className="px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
                 >
                   <option value="all">All Sources</option>
                   {sources.map(source => (
@@ -126,7 +126,7 @@ export function JobSearchPanel({ isOpen, onClose }) {
           <div className="p-6 overflow-y-auto max-h-[calc(85vh-180px)]">
             {loading ? (
               <div className="flex items-center justify-center py-12">
-                <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
               </div>
             ) : (
               <div className="space-y-8">
@@ -161,7 +161,7 @@ export function JobSearchPanel({ isOpen, onClose }) {
                           >
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                <h4 className="font-medium text-white group-hover:text-purple-300 transition-colors">
+                                <h4 className="font-medium text-white group-hover:text-blue-300 transition-colors">
                                   {prompt.name}
                                 </h4>
                                 <p className="text-sm text-white/50 mt-1">
@@ -172,7 +172,7 @@ export function JobSearchPanel({ isOpen, onClose }) {
                                     {prompt.tags.map(tag => (
                                       <span
                                         key={tag}
-                                        className="px-1.5 py-0.5 bg-purple-500/20 text-purple-300 text-xs rounded"
+                                        className="px-1.5 py-0.5 bg-blue-500/20 text-blue-300 text-xs rounded"
                                       >
                                         {tag}
                                       </span>
@@ -180,7 +180,7 @@ export function JobSearchPanel({ isOpen, onClose }) {
                                   </div>
                                 )}
                               </div>
-                              <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-purple-400 transition-colors flex-shrink-0 ml-2" />
+                              <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-blue-400 transition-colors flex-shrink-0 ml-2" />
                             </div>
                           </a>
                         ))}

@@ -13,7 +13,7 @@ const STAGES = [
   { id: 'idea', label: 'Idea', icon: Lightbulb, color: '#94a3b8', description: 'Initial concept' },
   { id: 'script', label: 'Script', icon: FileText, color: '#3b82f6', description: 'Writing content' },
   { id: 'recording', label: 'Recording', icon: Video, color: '#f59e0b', description: 'Filming' },
-  { id: 'editing', label: 'Editing', icon: Scissors, color: '#8b5cf6', description: 'Post-production' },
+  { id: 'editing', label: 'Editing', icon: Scissors, color: '#3b82f6', description: 'Post-production' },
   { id: 'thumbnail', label: 'Thumbnail', icon: Image, color: '#f97316', description: 'Final touches' },
   { id: 'published', label: 'Published', icon: CheckCircle, color: '#22c55e', description: 'Live!' }
 ]

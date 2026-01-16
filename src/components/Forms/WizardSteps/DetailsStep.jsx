@@ -9,7 +9,7 @@ import { staggerContainer, staggerItem } from '../../../lib/animations'
 const URL_TYPE_CONFIG = {
   youtube: { icon: Youtube, color: 'text-red-500', bgColor: 'bg-red-500/10' },
   doc: { icon: FileText, color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
-  github: { icon: FileCode, color: 'text-purple-500', bgColor: 'bg-purple-500/10' },
+  github: { icon: FileCode, color: 'text-blue-500', bgColor: 'bg-blue-500/10' },
   other: { icon: Link2, color: 'text-gray-400', bgColor: 'bg-gray-500/10' }
 }
 

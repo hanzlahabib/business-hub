@@ -25,7 +25,7 @@ function BoardCard({ board, onClick, onDelete }) {
       </button>
 
       {/* Icon */}
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/10 flex items-center justify-center mb-4">
+      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center mb-4">
         <LayoutGrid className="w-6 h-6 text-blue-400" />
       </div>
 
@@ -34,7 +34,7 @@ function BoardCard({ board, onClick, onDelete }) {
 
       {/* Lead link */}
       {board.leadId && (
-        <div className="flex items-center gap-1 text-xs text-purple-400 mb-2">
+        <div className="flex items-center gap-1 text-xs text-blue-400 mb-2">
           <Users className="w-3 h-3" />
           <span>Linked to lead</span>
         </div>

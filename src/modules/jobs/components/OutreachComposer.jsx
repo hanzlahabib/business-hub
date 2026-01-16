@@ -199,13 +199,13 @@ export function OutreachComposer({ isOpen, onClose, job }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl max-h-[90vh] bg-[#1a1a2e] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+          className="w-full max-w-2xl max-h-[90vh] bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
           <div className="p-6 border-b border-white/10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-purple-500 to-violet-500 rounded-xl">
+                <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl">
                   <Send className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -230,7 +230,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {loading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
+                <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
               </div>
             ) : (
               <>
@@ -252,7 +252,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                   </button>
 
                   {showTemplates && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-[#1a1a2e] border border-white/10 rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-zinc-900 border border-white/10 rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
                       {templates.map(template => (
                         <button
                           key={template.id}
@@ -265,7 +265,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                               <p className="text-xs text-white/40 mt-0.5">{template.category}</p>
                             </div>
                             {selectedTemplate?.id === template.id && (
-                              <Check className="w-4 h-4 text-purple-400" />
+                              <Check className="w-4 h-4 text-blue-400" />
                             )}
                           </div>
                         </button>
@@ -288,7 +288,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                     <span className={selectedCv ? 'text-white' : 'text-white/40'}>
                       {selectedCv ? (
                         <span className="flex items-center gap-2">
-                          <FileIcon className="w-4 h-4 text-purple-400" />
+                          <FileIcon className="w-4 h-4 text-blue-400" />
                           {selectedCv.name}
                         </span>
                       ) : (
@@ -299,7 +299,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                   </button>
 
                   {showCvSelector && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-[#1a1a2e] border border-white/10 rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-zinc-900 border border-white/10 rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
                       <button
                         onClick={() => {
                           setSelectedCvId(null)
@@ -309,7 +309,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-white/60">No attachment</span>
-                          {!selectedCvId && <Check className="w-4 h-4 text-purple-400" />}
+                          {!selectedCvId && <Check className="w-4 h-4 text-blue-400" />}
                         </div>
                       </button>
                       {cvFiles.length === 0 ? (
@@ -328,7 +328,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <FileIcon className="w-4 h-4 text-purple-400" />
+                                <FileIcon className="w-4 h-4 text-blue-400" />
                                 <div>
                                   <p className="text-white font-medium">{cv.name}</p>
                                   <p className="text-xs text-white/40 mt-0.5">
@@ -338,7 +338,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                                 </div>
                               </div>
                               {selectedCvId === cv.id && (
-                                <Check className="w-4 h-4 text-purple-400" />
+                                <Check className="w-4 h-4 text-blue-400" />
                               )}
                             </div>
                           </button>
@@ -358,7 +358,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                     type="email"
                     value={formData.to}
                     onChange={(e) => setFormData(prev => ({ ...prev, to: e.target.value }))}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-purple-500"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
                     placeholder="recipient@company.com"
                   />
                 </div>
@@ -370,7 +370,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                     type="text"
                     value={formData.subject}
                     onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-purple-500"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
                     placeholder="Email subject..."
                   />
                 </div>
@@ -382,7 +382,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                     <button
                       type="button"
                       onClick={() => setShowPreview(!showPreview)}
-                      className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300"
+                      className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300"
                     >
                       <Eye className="w-3 h-3" />
                       {showPreview ? 'Edit' : 'Preview'}
@@ -398,7 +398,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                       value={formData.body}
                       onChange={(e) => setFormData(prev => ({ ...prev, body: e.target.value }))}
                       rows={10}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-purple-500 resize-none"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500 resize-none"
                       placeholder="Write your message..."
                     />
                   )}
@@ -440,7 +440,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
             <button
               onClick={handleSend}
               disabled={sending || !formData.to || !formData.subject || !formData.body}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-violet-500 rounded-lg text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {sending ? (
                 <>

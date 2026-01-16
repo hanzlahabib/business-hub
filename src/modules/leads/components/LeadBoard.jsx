@@ -7,7 +7,7 @@ import { useLeads } from '../hooks/useLeads'
 const statusConfig = {
   new: { label: 'New', color: 'from-gray-500 to-slate-600', emoji: '🆕' },
   contacted: { label: 'Contacted', color: 'from-blue-500 to-cyan-600', emoji: '📧' },
-  replied: { label: 'Replied', color: 'from-purple-500 to-violet-600', emoji: '💬' },
+  replied: { label: 'Replied', color: 'from-blue-500 to-cyan-600', emoji: '💬' },
   meeting: { label: 'Meeting', color: 'from-amber-500 to-orange-600', emoji: '📅' },
   won: { label: 'Won', color: 'from-green-500 to-emerald-600', emoji: '🎉' },
   lost: { label: 'Lost', color: 'from-red-500 to-rose-600', emoji: '❌' }

@@ -158,7 +158,7 @@ export function CVManager({ isOpen, onClose }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl max-h-[85vh] bg-[#1a1a2e] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+          className="w-full max-w-2xl max-h-[85vh] bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
           <div className="p-6 border-b border-white/10">
@@ -292,10 +292,10 @@ export function CVManager({ isOpen, onClose }) {
                       }`}
                     >
                       <div className={`p-2 rounded-lg ${
-                        cv.type === 'uploaded' ? 'bg-purple-500/20' : 'bg-cyan-500/20'
+                        cv.type === 'uploaded' ? 'bg-blue-500/20' : 'bg-cyan-500/20'
                       }`}>
                         {cv.type === 'uploaded' ? (
-                          <FileText className="w-4 h-4 text-purple-400" />
+                          <FileText className="w-4 h-4 text-blue-400" />
                         ) : (
                           <Cloud className="w-4 h-4 text-cyan-400" />
                         )}

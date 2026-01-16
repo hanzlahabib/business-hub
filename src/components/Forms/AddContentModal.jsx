@@ -14,7 +14,7 @@ import { CommentSection } from '../Comments'
 const DEFAULT_TOPICS = ['React Hooks', 'React 19', 'Performance', 'Interview Prep', 'JavaScript', 'React Basics', 'AI & Tools', 'Motivation', 'Other']
 
 const DEFAULT_VIDEO_VARIANTS = [
-  { id: 'cozy-screen', name: 'Cozy Screen', icon: 'monitor', color: '#8B5CF6', description: 'Faceless, VS Code, lo-fi music' },
+  { id: 'cozy-screen', name: 'Cozy Screen', icon: 'monitor', color: '#3B82F6', description: 'Faceless, VS Code, lo-fi music' },
   { id: 'whiteboard', name: 'Whiteboard', icon: 'pencil', color: '#F59E0B', description: 'Hand-drawn explainer style' },
   { id: 'slides-face', name: 'Slides + Face', icon: 'user', color: '#10B981', description: 'Minimal slides, face in corner' },
   { id: 'notion-doc', name: 'Notion Doc', icon: 'file-text', color: '#3B82F6', description: 'Aesthetic doc scroll, voiceover' }

@@ -113,7 +113,7 @@ export function ProfileEditor({ isOpen, onClose }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl max-h-[85vh] bg-[#1a1a2e] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+          className="w-full max-w-2xl max-h-[85vh] bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
           <div className="p-6 border-b border-white/10">
@@ -265,7 +265,7 @@ export function ProfileEditor({ isOpen, onClose }) {
                         className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-green-500"
                       >
                         {EXPERIENCE_LEVELS.map(level => (
-                          <option key={level.id} value={level.id} className="bg-[#1a1a2e]">
+                          <option key={level.id} value={level.id} className="bg-zinc-900">
                             {level.label}
                           </option>
                         ))}

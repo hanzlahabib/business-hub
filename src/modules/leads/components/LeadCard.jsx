@@ -7,7 +7,7 @@ const industryColors = {
   salon: 'from-pink-500/20 to-rose-500/20 border-pink-500/30',
   gym: 'from-green-500/20 to-emerald-500/20 border-green-500/30',
   realestate: 'from-blue-500/20 to-cyan-500/20 border-blue-500/30',
-  retail: 'from-purple-500/20 to-violet-500/20 border-purple-500/30',
+  retail: 'from-blue-500/20 to-violet-500/20 border-blue-500/30',
   hotel: 'from-amber-500/20 to-yellow-500/20 border-amber-500/30',
   default: 'from-gray-500/20 to-slate-500/20 border-gray-500/30'
 }

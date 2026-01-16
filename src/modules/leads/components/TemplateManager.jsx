@@ -5,7 +5,7 @@ import { useEmailTemplates } from '../../../shared/hooks/useEmailTemplates'
 
 const categories = [
   { value: 'initial', label: 'Initial Outreach', color: 'bg-blue-500/20 text-blue-300' },
-  { value: 'followup', label: 'Follow-up', color: 'bg-purple-500/20 text-purple-300' },
+  { value: 'followup', label: 'Follow-up', color: 'bg-blue-500/20 text-blue-300' },
   { value: 'proposal', label: 'Proposal', color: 'bg-green-500/20 text-green-300' },
   { value: 'closing', label: 'Closing', color: 'bg-amber-500/20 text-amber-300' }
 ]

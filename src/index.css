@@ -1,32 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #0f0d1a;
-  --color-bg-secondary: #1a1625;
-  --color-bg-tertiary: #252033;
-  --color-accent-primary: #8b5cf6;
-  --color-accent-secondary: #3b82f6;
+  /* Backgrounds - Modern Neutral (no purple tint) */
+  --color-bg-primary: #09090b;
+  --color-bg-secondary: #18181b;
+  --color-bg-tertiary: #27272a;
+  --color-bg-elevated: #3f3f46;
+
+  /* Accent - Blue Primary */
+  --color-accent-primary: #3b82f6;
+  --color-accent-secondary: #60a5fa;
+  --color-accent-hover: #2563eb;
+
+  /* Semantic Colors */
   --color-accent-success: #22c55e;
   --color-accent-warning: #f59e0b;
   --color-accent-danger: #ef4444;
-  --color-text-primary: #f8fafc;
-  --color-text-muted: #94a3b8;
-  --color-border: #2e2844;
-}
+  --color-accent-info: #06b6d4;
 
-/* Light theme overrides */
-:root.light {
-  --color-bg-primary: #f8fafc;
-  --color-bg-secondary: #ffffff;
-  --color-bg-tertiary: #f1f5f9;
-  --color-accent-primary: #7c3aed;
-  --color-accent-secondary: #2563eb;
-  --color-accent-success: #16a34a;
-  --color-accent-warning: #d97706;
-  --color-accent-danger: #dc2626;
-  --color-text-primary: #1e293b;
-  --color-text-muted: #64748b;
-  --color-border: #e2e8f0;
+  /* Text */
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+
+  /* Border */
+  --color-border: #27272a;
+  --color-border-hover: #3f3f46;
 }
 
 * {
@@ -65,8 +64,8 @@ body {
    GLOW EFFECTS - Premium glowing states
    ============================================================================ */
 
-.glow-purple {
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+.glow-primary {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
 }
 
 .glow-blue {
@@ -76,9 +75,9 @@ body {
 /* Active state glow - for focused/active elements */
 .glow-active {
   box-shadow:
-    0 0 20px rgba(139, 92, 246, 0.4),
-    0 0 40px rgba(139, 92, 246, 0.2),
-    inset 0 0 20px rgba(139, 92, 246, 0.05);
+    0 0 20px rgba(59, 130, 246, 0.4),
+    0 0 40px rgba(59, 130, 246, 0.2),
+    inset 0 0 20px rgba(59, 130, 246, 0.05);
 }
 
 /* Success glow */
@@ -106,8 +105,8 @@ body {
 .focus-glow:focus {
   outline: none;
   box-shadow:
-    0 0 0 3px rgba(139, 92, 246, 0.3),
-    0 0 20px rgba(139, 92, 246, 0.2);
+    0 0 0 3px rgba(59, 130, 246, 0.3),
+    0 0 20px rgba(59, 130, 246, 0.2);
 }
 
 /* ============================================================================
@@ -115,10 +114,10 @@ body {
    ============================================================================ */
 
 .glass {
-  background: rgba(26, 22, 37, 0.7);
+  background: rgba(24, 24, 27, 0.8);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.15);
 }
 
 .glass-light {
@@ -163,12 +162,12 @@ body {
 
 @keyframes border-pulse {
   0%, 100% {
-    border-color: rgba(139, 92, 246, 0.3);
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
   }
   50% {
-    border-color: rgba(139, 92, 246, 0.8);
-    box-shadow: 0 0 20px 0 rgba(139, 92, 246, 0.3);
+    border-color: rgba(59, 130, 246, 0.8);
+    box-shadow: 0 0 20px 0 rgba(59, 130, 246, 0.3);
   }
 }
 
@@ -214,7 +213,7 @@ body {
 }
 
 .gradient-premium {
-  background: linear-gradient(135deg, #8b5cf6, #6366f1, #3b82f6);
+  background: linear-gradient(135deg, #3b82f6, #2563eb, #1d4ed8);
 }
 
 /* Animated gradient */
@@ -228,7 +227,7 @@ body {
     -45deg,
     var(--color-accent-primary),
     var(--color-accent-secondary),
-    #6366f1,
+    #2563eb,
     var(--color-accent-primary)
   );
   background-size: 400% 400%;
@@ -256,7 +255,7 @@ body {
   transform: translateY(-4px);
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.3),
-    0 0 30px rgba(139, 92, 246, 0.2);
+    0 0 30px rgba(59, 130, 246, 0.2);
 }
 
 /* ============================================================================
@@ -326,13 +325,13 @@ body {
 
 @keyframes ring-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
   }
 }
 
@@ -346,8 +345,8 @@ body {
 
 .progress-glow {
   box-shadow:
-    0 0 10px rgba(139, 92, 246, 0.5),
-    0 0 20px rgba(139, 92, 246, 0.3);
+    0 0 10px rgba(59, 130, 246, 0.5),
+    0 0 20px rgba(59, 130, 246, 0.3);
 }
 
 /* ============================================================================

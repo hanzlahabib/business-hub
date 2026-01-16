@@ -4,10 +4,10 @@ import { Calendar, Monitor, Pencil, User, FileText } from 'lucide-react'
 import { staggerContainer, staggerItem } from '../../../lib/animations'
 
 const STATUS_OPTIONS = [
-  { value: 'idea', label: 'Idea', color: '#94a3b8', description: 'Initial concept' },
+  { value: 'idea', label: 'Idea', color: '#71717a', description: 'Initial concept' },
   { value: 'script', label: 'Script', color: '#3b82f6', description: 'Writing content' },
   { value: 'recording', label: 'Recording', color: '#f59e0b', description: 'Filming/screen capture' },
-  { value: 'editing', label: 'Editing', color: '#8b5cf6', description: 'Post-production' },
+  { value: 'editing', label: 'Editing', color: '#06b6d4', description: 'Post-production' },
   { value: 'thumbnail', label: 'Thumbnail', color: '#f97316', description: 'Final touches' },
   { value: 'published', label: 'Published', color: '#22c55e', description: 'Live on YouTube' }
 ]
@@ -20,10 +20,10 @@ const VIDEO_VARIANT_ICONS = {
 }
 
 const DEFAULT_VIDEO_VARIANTS = [
-  { id: 'cozy-screen', name: 'Cozy Screen', icon: 'monitor', color: '#8B5CF6', description: 'Faceless, VS Code, lo-fi music' },
+  { id: 'cozy-screen', name: 'Cozy Screen', icon: 'monitor', color: '#3B82F6', description: 'Faceless, VS Code, lo-fi music' },
   { id: 'whiteboard', name: 'Whiteboard', icon: 'pencil', color: '#F59E0B', description: 'Hand-drawn explainer style' },
   { id: 'slides-face', name: 'Slides + Face', icon: 'user', color: '#10B981', description: 'Minimal slides, face in corner' },
-  { id: 'notion-doc', name: 'Notion Doc', icon: 'file-text', color: '#3B82F6', description: 'Aesthetic doc scroll, voiceover' }
+  { id: 'notion-doc', name: 'Notion Doc', icon: 'file-text', color: '#06B6D4', description: 'Aesthetic doc scroll, voiceover' }
 ]
 
 export const ScheduleStep = memo(function ScheduleStep({

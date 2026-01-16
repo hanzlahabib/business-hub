@@ -21,7 +21,7 @@ const activityColors = {
   call: 'text-emerald-400 bg-emerald-500/20',
   whatsapp: 'text-green-400 bg-green-500/20',
   linkedin: 'text-indigo-400 bg-indigo-500/20',
-  lead_created: 'text-purple-400 bg-purple-500/20',
+  lead_created: 'text-blue-400 bg-blue-500/20',
   lead_updated: 'text-yellow-400 bg-yellow-500/20',
   status_changed: 'text-orange-400 bg-orange-500/20',
   meeting_scheduled: 'text-cyan-400 bg-cyan-500/20',

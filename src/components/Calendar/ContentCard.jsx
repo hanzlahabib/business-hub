@@ -6,15 +6,15 @@ import { useState, useCallback, useMemo, memo } from 'react'
 const URL_ICONS = {
   youtube: { icon: Youtube, color: 'text-red-500' },
   doc: { icon: FileText, color: 'text-blue-500' },
-  github: { icon: FileCode, color: 'text-purple-500' },
+  github: { icon: FileCode, color: 'text-gray-400' },
   other: { icon: Link2, color: 'text-gray-400' }
 }
 
 const VIDEO_VARIANT_CONFIG = {
-  'cozy-screen': { icon: Monitor, color: '#8B5CF6', label: 'Cozy' },
+  'cozy-screen': { icon: Monitor, color: '#3B82F6', label: 'Cozy' },
   'whiteboard': { icon: Pencil, color: '#F59E0B', label: 'Whiteboard' },
   'slides-face': { icon: User, color: '#10B981', label: 'Slides' },
-  'notion-doc': { icon: FileText, color: '#3B82F6', label: 'Notion' }
+  'notion-doc': { icon: FileText, color: '#06B6D4', label: 'Notion' }
 }
 
 // Video Variant Badge Component

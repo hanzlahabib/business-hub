@@ -17,7 +17,7 @@ const STATUS_COLORS = {
 const URL_ICONS = {
   youtube: { icon: Youtube, color: 'text-red-500' },
   doc: { icon: FileText, color: 'text-blue-500' },
-  github: { icon: FileCode, color: 'text-purple-500' },
+  github: { icon: FileCode, color: 'text-blue-500' },
   other: { icon: Link2, color: 'text-gray-400' }
 }
 

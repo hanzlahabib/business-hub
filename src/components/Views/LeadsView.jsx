@@ -87,7 +87,7 @@ export function LeadsView() {
       {/* Template Manager Button */}
       <button
         onClick={() => setShowTemplateManager(true)}
-        className="fixed bottom-6 right-6 flex items-center gap-2 px-4 py-3 bg-purple-500/20 text-purple-400 rounded-xl border border-purple-500/30 hover:bg-purple-500/30 transition-colors shadow-lg"
+        className="fixed bottom-6 right-6 flex items-center gap-2 px-4 py-3 bg-blue-500/20 text-blue-400 rounded-xl border border-blue-500/30 hover:bg-blue-500/30 transition-colors shadow-lg"
       >
         <FileText className="w-5 h-5" />
         Email Templates

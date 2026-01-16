@@ -69,7 +69,7 @@ export function JobDetailPanel({
           exit={{ x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-lg h-full bg-[#1a1a2e] border-l border-white/10 shadow-2xl overflow-hidden flex flex-col"
+          className="w-full max-w-lg h-full bg-zinc-900 border-l border-white/10 shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
           <div className="p-6 border-b border-white/10">
@@ -117,7 +117,7 @@ export function JobDetailPanel({
               {job.contactEmail && (
                 <button
                   onClick={() => onSendEmail(job)}
-                  className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-sm text-purple-300 hover:bg-purple-500/30 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg text-sm text-blue-300 hover:bg-blue-500/30 transition-colors"
                 >
                   <Send className="w-4 h-4" />
                   Send Email
@@ -155,7 +155,7 @@ export function JobDetailPanel({
                     onClick={() => onStatusChange(job.id, s.id)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                       job.status === s.id
-                        ? 'ring-2 ring-offset-2 ring-offset-[#1a1a2e]'
+                        ? 'ring-2 ring-offset-2 ring-offset-zinc-900'
                         : 'hover:opacity-80'
                     }`}
                     style={{

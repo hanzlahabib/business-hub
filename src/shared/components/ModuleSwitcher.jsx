@@ -7,14 +7,14 @@ const modules = [
     name: 'Schedule',
     icon: Calendar,
     description: 'Content calendar & pipeline',
-    color: 'from-violet-500 to-purple-600'
+    color: 'from-blue-500 to-cyan-600'
   },
   {
     id: 'leads',
     name: 'Leads',
     icon: Users,
     description: 'Lead management & outreach',
-    color: 'from-blue-500 to-cyan-600'
+    color: 'from-emerald-500 to-teal-600'
   },
   {
     id: 'taskboards',
@@ -28,7 +28,7 @@ const modules = [
     name: 'Jobs',
     icon: Briefcase,
     description: 'Job search & applications',
-    color: 'from-purple-500 to-pink-600'
+    color: 'from-blue-600 to-indigo-600'
   }
 ]
 
@@ -113,7 +113,7 @@ export function ModuleSwitcherDropdown({ activeModule, onModuleChange, open, onO
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="absolute top-full left-0 mt-2 w-64 bg-[#1a1a2e] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50"
+          className="absolute top-full left-0 mt-2 w-64 bg-zinc-900 border border-white/10 rounded-xl shadow-xl overflow-hidden z-50"
         >
           {modules.map(module => {
             const ModuleIcon = module.icon

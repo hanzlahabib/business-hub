@@ -4,7 +4,7 @@ export const JOB_STATUSES = [
   { id: 'interview', label: 'Interview', color: '#F59E0B', emoji: '🎯', gradient: 'from-amber-500 to-orange-600' },
   { id: 'offer', label: 'Offer', color: '#10B981', emoji: '🎉', gradient: 'from-green-500 to-emerald-600' },
   { id: 'rejected', label: 'Rejected', color: '#EF4444', emoji: '❌', gradient: 'from-red-500 to-rose-600' },
-  { id: 'accepted', label: 'Accepted', color: '#8B5CF6', emoji: '✅', gradient: 'from-purple-500 to-violet-600' }
+  { id: 'accepted', label: 'Accepted', color: '#06B6D4', emoji: '✅', gradient: 'from-cyan-500 to-teal-600' }
 ]
 
 export const JOB_STATUS_MAP = JOB_STATUSES.reduce((acc, status) => {
@@ -35,5 +35,5 @@ export const PRIORITY_LEVELS = [
   { id: 'low', label: 'Low', color: '#6B7280' },
   { id: 'medium', label: 'Medium', color: '#F59E0B' },
   { id: 'high', label: 'High', color: '#EF4444' },
-  { id: 'urgent', label: 'Dream Job', color: '#8B5CF6' }
+  { id: 'urgent', label: 'Dream Job', color: '#3B82F6' }
 ]

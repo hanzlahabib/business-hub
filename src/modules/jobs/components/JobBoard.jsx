@@ -134,7 +134,7 @@ export function JobBoard({
       <div className="flex items-center justify-between p-4 border-b border-white/10">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Briefcase className="w-6 h-6 text-purple-400" />
+            <Briefcase className="w-6 h-6 text-blue-400" />
             <h2 className="text-xl font-bold text-white">Jobs Board</h2>
           </div>
 
@@ -182,7 +182,7 @@ export function JobBoard({
           {/* Add Job */}
           <button
             onClick={onAddClick}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-violet-500 rounded-lg text-sm font-medium text-white hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg text-sm font-medium text-white hover:opacity-90 transition-opacity"
           >
             <Plus className="w-4 h-4" />
             Add Job

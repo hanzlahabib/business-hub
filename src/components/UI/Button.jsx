@@ -20,7 +20,7 @@ export const Button = memo(forwardRef(function Button({
   const variants = {
     primary: `
       bg-accent-primary text-white
-      hover:shadow-[0_0_30px_rgba(139,92,246,0.4)]
+      hover:shadow-[0_0_30px_rgba(59,130,246,0.4)]
       active:bg-accent-primary/90
     `,
     secondary: `

@@ -21,9 +21,9 @@ const URL_TYPE_CONFIG = {
   },
   github: {
     icon: FileCode,
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10',
-    borderColor: 'border-purple-500/30',
+    color: 'text-blue-500',
+    bgColor: 'bg-blue-500/10',
+    borderColor: 'border-blue-500/30',
     label: 'View Repo'
   },
   other: {

@@ -6,7 +6,7 @@ const VARIANT_GUIDES = {
   'cozy-screen': {
     name: 'Cozy Screen Recording',
     icon: Monitor,
-    color: '#8B5CF6',
+    color: '#3B82F6',
     vibe: 'Late night coding session, calm, focused',
     description: 'Faceless voiceover with VS Code and lo-fi music',
     checklist: [

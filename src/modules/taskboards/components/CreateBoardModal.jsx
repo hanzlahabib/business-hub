@@ -4,7 +4,7 @@ import { X, LayoutGrid, Users, Plus, Trash2 } from 'lucide-react'
 
 const presetColors = [
   '#6B7280', '#3B82F6', '#10B981', '#F59E0B',
-  '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'
+  '#EF4444', '#3B82F6', '#EC4899', '#06B6D4'
 ]
 
 export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
@@ -211,7 +211,7 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
                   onClick={() => setColumns([
                     { id: 'backlog', name: 'Backlog', color: '#6B7280' },
                     { id: 'todo', name: 'To Do', color: '#3B82F6' },
-                    { id: 'inprogress', name: 'In Progress', color: '#8B5CF6' },
+                    { id: 'inprogress', name: 'In Progress', color: '#3B82F6' },
                     { id: 'review', name: 'Review', color: '#F59E0B' },
                     { id: 'done', name: 'Done', color: '#10B981' }
                   ])}

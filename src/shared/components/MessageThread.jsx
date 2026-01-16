@@ -60,7 +60,7 @@ function MessageCard({ message }) {
               <span className={`px-2 py-0.5 rounded-full ${
                 message.status === 'sent' ? 'bg-blue-500/20 text-blue-300' :
                 message.status === 'delivered' ? 'bg-green-500/20 text-green-300' :
-                message.status === 'opened' ? 'bg-purple-500/20 text-purple-300' :
+                message.status === 'opened' ? 'bg-blue-500/20 text-blue-300' :
                 message.status === 'replied' ? 'bg-yellow-500/20 text-yellow-300' :
                 message.status === 'failed' ? 'bg-red-500/20 text-red-300' :
                 'bg-gray-500/20 text-gray-300'
