@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, User, Mail, Phone, Globe, Linkedin, Github,
   Briefcase, Code, Loader2, CheckCircle, AlertCircle, Plus
@@ -113,25 +113,25 @@ export function ProfileEditor({ isOpen, onClose }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl max-h-[85vh] bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+          className="w-full max-w-2xl max-h-[85vh] bg-bg-primary rounded-2xl border border-border shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="p-6 border-b border-white/10">
+          <div className="p-6 border-b border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl">
                   <User className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">Edit Profile</h2>
-                  <p className="text-sm text-white/50">Update your details for email templates</p>
+                  <h2 className="text-xl font-bold text-text-primary">Edit Profile</h2>
+                  <p className="text-sm text-text-muted">Update your details for email templates</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-white/60" />
+                <X className="w-5 h-5 text-text-secondary" />
               </button>
             </div>
           </div>
@@ -146,45 +146,45 @@ export function ProfileEditor({ isOpen, onClose }) {
               <>
                 {/* Basic Info */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-white/80 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-text-secondary flex items-center gap-2">
                     <User className="w-4 h-4" />
                     Basic Information
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs text-white/50 mb-1 block">Full Name</label>
+                      <label className="text-xs text-text-muted mb-1 block">Full Name</label>
                       <input
                         type="text"
                         value={profile.name}
                         onChange={(e) => handleChange('name', e.target.value)}
                         placeholder="John Doe"
-                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-green-500"
+                        className="w-full px-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-green-500"
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-white/50 mb-1 block">Email</label>
+                      <label className="text-xs text-text-muted mb-1 block">Email</label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                         <input
                           type="email"
                           value={profile.email}
                           onChange={(e) => handleChange('email', e.target.value)}
                           placeholder="you@example.com"
-                          className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-green-500"
+                          className="w-full pl-10 pr-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-green-500"
                         />
                       </div>
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-white/50 mb-1 block">Phone (optional)</label>
+                    <label className="text-xs text-text-muted mb-1 block">Phone (optional)</label>
                     <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                       <input
                         type="tel"
                         value={profile.phone}
                         onChange={(e) => handleChange('phone', e.target.value)}
                         placeholder="+1 (555) 000-0000"
-                        className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-green-500"
+                        className="w-full pl-10 pr-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-green-500"
                       />
                     </div>
                   </div>
@@ -192,47 +192,47 @@ export function ProfileEditor({ isOpen, onClose }) {
 
                 {/* Online Presence */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-white/80 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-text-secondary flex items-center gap-2">
                     <Globe className="w-4 h-4" />
                     Online Presence
                   </h3>
                   <div>
-                    <label className="text-xs text-white/50 mb-1 block">Portfolio URL</label>
+                    <label className="text-xs text-text-muted mb-1 block">Portfolio URL</label>
                     <div className="relative">
-                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                       <input
                         type="url"
                         value={profile.portfolioUrl}
                         onChange={(e) => handleChange('portfolioUrl', e.target.value)}
                         placeholder="https://yourportfolio.com"
-                        className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-green-500"
+                        className="w-full pl-10 pr-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-green-500"
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs text-white/50 mb-1 block">LinkedIn URL</label>
+                      <label className="text-xs text-text-muted mb-1 block">LinkedIn URL</label>
                       <div className="relative">
-                        <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                        <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                         <input
                           type="url"
                           value={profile.linkedInUrl}
                           onChange={(e) => handleChange('linkedInUrl', e.target.value)}
                           placeholder="https://linkedin.com/in/you"
-                          className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-green-500"
+                          className="w-full pl-10 pr-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-green-500"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs text-white/50 mb-1 block">GitHub URL</label>
+                      <label className="text-xs text-text-muted mb-1 block">GitHub URL</label>
                       <div className="relative">
-                        <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                        <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                         <input
                           type="url"
                           value={profile.githubUrl}
                           onChange={(e) => handleChange('githubUrl', e.target.value)}
                           placeholder="https://github.com/you"
-                          className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-green-500"
+                          className="w-full pl-10 pr-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-green-500"
                         />
                       </div>
                     </div>
@@ -241,31 +241,31 @@ export function ProfileEditor({ isOpen, onClose }) {
 
                 {/* Experience */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-white/80 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-text-secondary flex items-center gap-2">
                     <Briefcase className="w-4 h-4" />
                     Experience
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs text-white/50 mb-1 block">Years of Experience</label>
+                      <label className="text-xs text-text-muted mb-1 block">Years of Experience</label>
                       <input
                         type="number"
                         min="0"
                         max="40"
                         value={profile.yearsExperience}
                         onChange={(e) => handleChange('yearsExperience', parseInt(e.target.value) || 0)}
-                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-green-500"
+                        className="w-full px-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-green-500"
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-white/50 mb-1 block">Experience Level</label>
+                      <label className="text-xs text-text-muted mb-1 block">Experience Level</label>
                       <select
                         value={profile.experienceLevel}
                         onChange={(e) => handleChange('experienceLevel', e.target.value)}
-                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-green-500"
+                        className="w-full px-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-green-500"
                       >
                         {EXPERIENCE_LEVELS.map(level => (
-                          <option key={level.id} value={level.id} className="bg-zinc-900">
+                          <option key={level.id} value={level.id} className="bg-bg-primary">
                             {level.label}
                           </option>
                         ))}
@@ -276,7 +276,7 @@ export function ProfileEditor({ isOpen, onClose }) {
 
                 {/* Skills */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-white/80 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-text-secondary flex items-center gap-2">
                     <Code className="w-4 h-4" />
                     Primary Skills
                   </h3>
@@ -303,7 +303,7 @@ export function ProfileEditor({ isOpen, onClose }) {
                       onChange={(e) => setNewSkill(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
                       placeholder="Add a skill (e.g., React, TypeScript)"
-                      className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-green-500"
+                      className="flex-1 px-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-green-500"
                     />
                     <button
                       onClick={handleAddSkill}
@@ -335,10 +335,10 @@ export function ProfileEditor({ isOpen, onClose }) {
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-white/10 flex gap-3">
+          <div className="p-6 border-t border-border flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white/70 hover:bg-white/10 transition-colors"
+              className="flex-1 px-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-secondary hover:bg-bg-tertiary transition-colors"
             >
               Cancel
             </button>

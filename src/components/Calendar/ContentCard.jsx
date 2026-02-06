@@ -142,43 +142,49 @@ export const ContentCard = memo(function ContentCard({ content, viewMode = 'defa
     )
   }
 
-  // Detailed View - Full info with notes and hook
+  // Detailed View - Full info with better organization and readability
   if (viewMode === 'detailed') {
     return (
       <motion.div
         layout
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
+        exit={{ opacity: 0, scale: 0.95 }}
         draggable
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onClick={onClick}
-        className={`${baseClasses} p-4 rounded-xl border cursor-pointer`}
+        className={`${baseClasses} p-4 rounded-xl border cursor-pointer space-y-3`}
       >
-        <div className="flex items-start gap-2">
-          <div className="flex items-center gap-1">
-            <GripVertical size={12} className="text-text-muted/50" />
-            <div className={`p-2 rounded-lg ${isLong ? 'bg-accent-secondary/20' : 'bg-accent-primary/20'}`}>
-              <Icon size={16} className={isLong ? 'text-accent-secondary' : 'text-accent-primary'} />
+        {/* Header Section */}
+        <div className="flex items-start gap-3">
+          <div className="flex items-center gap-2">
+            <GripVertical size={14} className="text-text-muted/50" />
+            <div className={`p-2.5 rounded-xl ${isLong ? 'bg-accent-secondary/20' : 'bg-accent-primary/20'}`}>
+              <Icon size={18} className={isLong ? 'text-accent-secondary' : 'text-accent-primary'} />
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-text-primary">{content.title || 'Untitled'}</p>
+            <h3 className="text-base font-bold text-text-primary leading-tight">
+              {content.title || 'Untitled'}
+            </h3>
             {content.topic && (
-              <p className="text-xs text-text-muted mt-0.5">{content.topic}</p>
+              <p className="text-sm text-text-muted mt-1">{content.topic}</p>
             )}
           </div>
-          <div className="relative">
-            <button onClick={toggleMenu} className="p-1 rounded hover:bg-bg-tertiary text-text-muted hover:text-text-primary">
-              <MoreVertical size={14} />
+          <div className="relative flex-shrink-0">
+            <button
+              onClick={toggleMenu}
+              className="p-2 rounded-lg hover:bg-bg-tertiary text-text-muted hover:text-text-primary transition-colors"
+            >
+              <MoreVertical size={16} />
             </button>
             {showMenu && (
-              <div className="absolute right-0 top-6 bg-bg-secondary border border-border rounded-lg shadow-xl z-10 py-1 min-w-[120px]">
-                <button onClick={handleEdit} className="w-full px-3 py-2 text-left text-sm hover:bg-bg-tertiary flex items-center gap-2 text-text-primary">
+              <div className="absolute right-0 top-10 bg-bg-secondary border border-border rounded-lg shadow-xl z-10 py-1 min-w-[130px]">
+                <button onClick={handleEdit} className="w-full px-4 py-2.5 text-left text-sm hover:bg-bg-tertiary flex items-center gap-2 text-text-primary">
                   <Edit size={14} /> Edit
                 </button>
-                <button onClick={handleDelete} className="w-full px-3 py-2 text-left text-sm hover:bg-bg-tertiary flex items-center gap-2 text-accent-danger">
+                <button onClick={handleDelete} className="w-full px-4 py-2.5 text-left text-sm hover:bg-bg-tertiary flex items-center gap-2 text-accent-danger">
                   <Trash2 size={14} /> Delete
                 </button>
               </div>
@@ -186,37 +192,47 @@ export const ContentCard = memo(function ContentCard({ content, viewMode = 'defa
           </div>
         </div>
 
-        <div className="mt-3 flex items-center gap-2 flex-wrap">
-          <Badge variant={isLong ? 'long' : 'short'} size="xs">{isLong ? 'Long' : 'Short'}</Badge>
-          <Badge variant={statusColors[content.status]} size="xs">{content.status}</Badge>
+        {/* Status & Metadata Section */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <Badge variant={statusColors[content.status]} size="sm">{content.status}</Badge>
           <VideoVariantBadge variant={content.videoVariant} />
           {content.presentationReady && (
-            <span className="flex items-center gap-1 text-xs text-accent-success">
-              <Presentation size={12} />
-              Ready
+            <span className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-md bg-accent-success/10 text-accent-success">
+              <Presentation size={13} />
+              Presentation Ready
             </span>
           )}
         </div>
 
+        {/* Hook Section */}
         {content.hook && (
-          <div className="mt-3 p-2 rounded-lg bg-bg-tertiary/50">
-            <p className="text-xs text-text-muted flex items-center gap-1">
-              <MessageSquare size={10} /> Hook
+          <div className="p-3 rounded-lg bg-bg-tertiary/50 border border-border/30">
+            <p className="text-xs font-medium text-text-muted flex items-center gap-1.5 mb-1.5">
+              <MessageSquare size={12} /> Hook
             </p>
-            <p className="text-xs text-text-primary mt-0.5 italic">"{content.hook}"</p>
+            <p className="text-sm text-text-primary italic leading-relaxed">
+              "{content.hook}"
+            </p>
           </div>
         )}
 
+        {/* Notes Section */}
         {content.notes && (
-          <p className="mt-2 text-xs text-text-muted/80 line-clamp-2">{content.notes}</p>
+          <div className="p-3 rounded-lg bg-bg-primary/50 border border-border/20">
+            <p className="text-xs font-medium text-text-muted mb-1.5">Notes</p>
+            <p className="text-xs text-text-primary leading-relaxed line-clamp-3">
+              {content.notes}
+            </p>
+          </div>
         )}
 
-        {/* URL badges & Comment count */}
+        {/* URLs & Comments Footer */}
         {(content.urls?.length > 0 || content.comments?.length > 0) && (
-          <div className="mt-3 pt-2 border-t border-border/50 flex items-center gap-3">
+          <div className="pt-3 border-t border-border/40 flex items-center justify-between">
             {content.urls?.length > 0 && (
-              <div className="flex items-center gap-1">
-                {content.urls.slice(0, 3).map(urlItem => {
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-text-muted mr-1">Resources:</span>
+                {content.urls.slice(0, 4).map(urlItem => {
                   const { icon: UrlIcon, color } = URL_ICONS[urlItem.type] || URL_ICONS.other
                   return (
                     <a
@@ -225,22 +241,24 @@ export const ContentCard = memo(function ContentCard({ content, viewMode = 'defa
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className={`p-1 rounded hover:bg-bg-tertiary ${color}`}
+                      className={`p-1.5 rounded-lg hover:bg-bg-tertiary ${color} transition-colors`}
                       title={urlItem.label || urlItem.url}
                     >
-                      <UrlIcon size={12} />
+                      <UrlIcon size={14} />
                     </a>
                   )
                 })}
-                {content.urls.length > 3 && (
-                  <span className="text-[10px] text-text-muted">+{content.urls.length - 3}</span>
+                {content.urls.length > 4 && (
+                  <span className="text-xs text-text-muted bg-bg-tertiary px-2 py-1 rounded-md">
+                    +{content.urls.length - 4}
+                  </span>
                 )}
               </div>
             )}
             {content.comments?.length > 0 && (
-              <span className="text-xs text-text-muted flex items-center gap-1">
-                <MessageSquare size={12} />
-                {content.comments.length}
+              <span className="text-sm text-text-muted flex items-center gap-1.5 bg-bg-tertiary px-2.5 py-1.5 rounded-lg">
+                <MessageSquare size={13} />
+                <span className="font-medium">{content.comments.length}</span>
               </span>
             )}
           </div>
@@ -249,7 +267,7 @@ export const ContentCard = memo(function ContentCard({ content, viewMode = 'defa
     )
   }
 
-  // Default View
+  // Default View - Improved with better readability
   return (
     <motion.div
       layout
@@ -262,25 +280,25 @@ export const ContentCard = memo(function ContentCard({ content, viewMode = 'defa
       onClick={onClick}
       className={`${baseClasses} p-3 rounded-xl border cursor-pointer`}
     >
-      <div className="flex items-start gap-2">
-        <div className="flex items-center gap-1">
+      {/* Header with icon and menu */}
+      <div className="flex items-start gap-2 mb-2">
+        <div className="flex items-center gap-1.5">
           <GripVertical size={12} className="text-text-muted/50" />
-          <div className={`p-1.5 rounded-lg ${isLong ? 'bg-accent-secondary/20' : 'bg-accent-primary/20'}`}>
-            <Icon size={14} className={isLong ? 'text-accent-secondary' : 'text-accent-primary'} />
+          <div className={`p-2 rounded-lg ${isLong ? 'bg-accent-secondary/20' : 'bg-accent-primary/20'}`}>
+            <Icon size={16} className={isLong ? 'text-accent-secondary' : 'text-accent-primary'} />
           </div>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-text-primary truncate">{content.title || 'Untitled'}</p>
-          {content.topic && (
-            <p className="text-xs text-text-muted truncate mt-0.5">{content.topic}</p>
-          )}
+          <p className="text-sm font-semibold text-text-primary leading-tight line-clamp-2">
+            {content.title || 'Untitled'}
+          </p>
         </div>
-        <div className="relative">
-          <button onClick={toggleMenu} className="p-1 rounded hover:bg-bg-tertiary text-text-muted hover:text-text-primary">
-            <MoreVertical size={14} />
+        <div className="relative flex-shrink-0">
+          <button onClick={toggleMenu} className="p-1.5 rounded-lg hover:bg-bg-tertiary text-text-muted hover:text-text-primary transition-colors">
+            <MoreVertical size={16} />
           </button>
           {showMenu && (
-            <div className="absolute right-0 top-6 bg-bg-secondary border border-border rounded-lg shadow-xl z-10 py-1 min-w-[120px]">
+            <div className="absolute right-0 top-8 bg-bg-secondary border border-border rounded-lg shadow-xl z-10 py-1 min-w-[120px]">
               <button onClick={handleEdit} className="w-full px-3 py-2 text-left text-sm hover:bg-bg-tertiary flex items-center gap-2 text-text-primary">
                 <Edit size={14} /> Edit
               </button>
@@ -291,29 +309,45 @@ export const ContentCard = memo(function ContentCard({ content, viewMode = 'defa
           )}
         </div>
       </div>
-      <div className="mt-2 flex items-center gap-2 flex-wrap">
-        <Badge variant={isLong ? 'long' : 'short'} size="xs">{isLong ? 'Long' : 'Short'}</Badge>
+
+      {/* Topic */}
+      {content.topic && (
+        <p className="text-xs text-text-muted mb-2 line-clamp-1 px-0.5">{content.topic}</p>
+      )}
+
+      {/* Badges and status */}
+      <div className="flex items-center gap-1.5 flex-wrap mb-2">
         <Badge variant={statusColors[content.status]} size="xs">{content.status}</Badge>
         <VideoVariantBadge variant={content.videoVariant} size="small" />
         {content.presentationReady && (
-          <Presentation size={12} className="text-accent-success" title="Presentation Ready" />
-        )}
-        {/* URL & Comment indicators */}
-        {content.urls?.length > 0 && (
-          <div className="flex items-center gap-0.5 ml-auto">
-            {[...new Set(content.urls.map(u => u.type))].slice(0, 3).map(type => {
-              const { icon: UrlIcon, color } = URL_ICONS[type] || URL_ICONS.other
-              return <UrlIcon key={type} size={12} className={color} />
-            })}
-          </div>
-        )}
-        {content.comments?.length > 0 && (
-          <span className="text-[10px] text-text-muted flex items-center gap-0.5">
-            <MessageSquare size={10} />
-            {content.comments.length}
+          <span className="flex items-center gap-1 text-xs text-accent-success">
+            <Presentation size={11} />
           </span>
         )}
       </div>
+
+      {/* URL & Comment indicators */}
+      {(content.urls?.length > 0 || content.comments?.length > 0) && (
+        <div className="flex items-center gap-2 pt-2 border-t border-border/30">
+          {content.urls?.length > 0 && (
+            <div className="flex items-center gap-1">
+              {[...new Set(content.urls.map(u => u.type))].slice(0, 3).map(type => {
+                const { icon: UrlIcon, color } = URL_ICONS[type] || URL_ICONS.other
+                return <UrlIcon key={type} size={12} className={color} />
+              })}
+              {content.urls.length > 3 && (
+                <span className="text-[10px] text-text-muted">+{content.urls.length - 3}</span>
+              )}
+            </div>
+          )}
+          {content.comments?.length > 0 && (
+            <span className="text-xs text-text-muted flex items-center gap-1">
+              <MessageSquare size={11} />
+              {content.comments.length}
+            </span>
+          )}
+        </div>
+      )}
     </motion.div>
   )
 })

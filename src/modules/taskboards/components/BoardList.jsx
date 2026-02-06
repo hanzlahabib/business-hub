@@ -11,7 +11,7 @@ function BoardCard({ board, onClick, onDelete }) {
       exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ scale: 1.02 }}
       onClick={() => onClick(board)}
-      className="group relative cursor-pointer bg-gradient-to-br from-white/5 to-white/10 border border-white/10 rounded-xl p-5 hover:border-white/20 transition-all"
+      className="group relative cursor-pointer bg-gradient-to-br from-bg-secondary to-bg-tertiary border border-border rounded-xl p-5 hover:border-border-hover transition-all"
     >
       {/* Delete button */}
       <button
@@ -25,12 +25,12 @@ function BoardCard({ board, onClick, onDelete }) {
       </button>
 
       {/* Icon */}
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center mb-4">
+      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/20 border border-border flex items-center justify-center mb-4">
         <LayoutGrid className="w-6 h-6 text-blue-400" />
       </div>
 
       {/* Title */}
-      <h3 className="font-semibold text-white mb-1 pr-8">{board.name}</h3>
+      <h3 className="font-semibold text-text-primary mb-1 pr-8">{board.name}</h3>
 
       {/* Lead link */}
       {board.leadId && (
@@ -51,12 +51,12 @@ function BoardCard({ board, onClick, onDelete }) {
           />
         ))}
         {board.columns?.length > 4 && (
-          <span className="text-[10px] text-white/40">+{board.columns.length - 4}</span>
+          <span className="text-[10px] text-text-muted">+{board.columns.length - 4}</span>
         )}
       </div>
 
       {/* Footer */}
-      <div className="flex items-center gap-3 text-xs text-white/40">
+      <div className="flex items-center gap-3 text-xs text-text-muted">
         <div className="flex items-center gap-1">
           <Calendar className="w-3 h-3" />
           <span>{format(new Date(board.createdAt), 'MMM d, yyyy')}</span>
@@ -82,10 +82,10 @@ export function BoardList({ onSelectBoard, onCreateBoard }) {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-white/10">
+      <div className="flex items-center justify-between p-4 border-b border-border">
         <div>
-          <h2 className="text-xl font-bold text-white">Task Boards</h2>
-          <p className="text-sm text-white/50">{boards.length} boards</p>
+          <h2 className="text-xl font-bold text-text-primary">Task Boards</h2>
+          <p className="text-sm text-text-muted">{boards.length} boards</p>
         </div>
 
         <button
@@ -102,20 +102,20 @@ export function BoardList({ onSelectBoard, onCreateBoard }) {
         {loading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map(i => (
-              <div key={i} className="animate-pulse bg-white/5 border border-white/10 rounded-xl p-5">
-                <div className="w-12 h-12 bg-white/10 rounded-xl mb-4" />
-                <div className="h-4 bg-white/10 rounded w-2/3 mb-2" />
-                <div className="h-3 bg-white/10 rounded w-1/2" />
+              <div key={i} className="animate-pulse bg-bg-secondary border border-border rounded-xl p-5">
+                <div className="w-12 h-12 bg-bg-tertiary rounded-xl mb-4" />
+                <div className="h-4 bg-bg-tertiary rounded w-2/3 mb-2" />
+                <div className="h-3 bg-bg-tertiary rounded w-1/2" />
               </div>
             ))}
           </div>
         ) : boards.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
-              <LayoutGrid className="w-10 h-10 text-white/20" />
+            <div className="w-20 h-20 rounded-2xl bg-bg-secondary border border-border flex items-center justify-center mb-4">
+              <LayoutGrid className="w-10 h-10 text-text-muted" />
             </div>
-            <h3 className="text-lg font-medium text-white mb-2">No boards yet</h3>
-            <p className="text-sm text-white/50 mb-4 max-w-sm">
+            <h3 className="text-lg font-medium text-text-primary mb-2">No boards yet</h3>
+            <p className="text-sm text-text-muted mb-4 max-w-sm">
               Create your first board to start organizing tasks. You can also create boards from leads.
             </p>
             <button

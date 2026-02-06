@@ -1,9 +1,12 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, Filter, ExternalLink, Briefcase, TrendingUp, Target, Calendar } from 'lucide-react'
+import { Plus, Search, ExternalLink, Briefcase, TrendingUp, Target, Calendar, AlertCircle } from 'lucide-react'
 import { JobCard } from './JobCard'
 import { useJobs } from '../hooks/useJobs'
 import { JOB_STATUS_MAP } from '../constants/pipelineStages'
+import { JobGlobalSearch } from './JobGlobalSearch'
+import { LoadingSkeleton } from '../../../components/UI/LoadingSkeleton'
+import { EmptyState } from '../../../components/UI/EmptyState'
 
 function StatusColumn({ status, jobs, onJobClick, onAddClick, onDrop }) {
   const config = JOB_STATUS_MAP[status]
@@ -29,8 +32,8 @@ function StatusColumn({ status, jobs, onJobClick, onAddClick, onDrop }) {
 
   return (
     <div
-      className={`flex-1 min-w-[280px] max-w-[320px] flex flex-col bg-white/5 rounded-xl border transition-colors ${
-        isDragOver ? 'border-white/30 bg-white/10' : 'border-white/10'
+      className={`flex-1 min-w-[280px] max-w-[320px] flex flex-col bg-bg-secondary rounded-xl border transition-colors ${
+        isDragOver ? 'border-accent-primary bg-bg-tertiary' : 'border-border'
       }`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -77,7 +80,7 @@ function StatusColumn({ status, jobs, onJobClick, onAddClick, onDrop }) {
         </AnimatePresence>
 
         {jobs.length === 0 && (
-          <div className="text-center py-8 text-white/30">
+          <div className="text-center py-8 text-text-muted">
             <p className="text-sm">No jobs</p>
             {status === 'saved' && (
               <button
@@ -97,30 +100,31 @@ function StatusColumn({ status, jobs, onJobClick, onAddClick, onDrop }) {
 export function JobBoard({
   onJobClick,
   onAddClick,
-  onSearchClick,
-  searchQuery = ''
+  onSearchClick
 }) {
-  const { jobs, jobsByStatus, moveJob, getStats } = useJobs()
-  const [localSearch, setLocalSearch] = useState(searchQuery)
+  const { jobs, jobsByStatus, loading, error, moveJob, getStats, fetchJobs } = useJobs()
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
 
-  const filteredJobs = useMemo(() => {
-    if (!localSearch) return jobs
-    const q = localSearch.toLowerCase()
-    return jobs.filter(j =>
-      j.company?.toLowerCase().includes(q) ||
-      j.role?.toLowerCase().includes(q) ||
-      j.skills?.some(s => s.toLowerCase().includes(q)) ||
-      j.location?.toLowerCase().includes(q)
-    )
-  }, [jobs, localSearch])
+  // Keyboard shortcut: Ctrl+K to open search
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault()
+        setIsSearchOpen(true)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   const filteredJobsByStatus = useMemo(() => {
     const grouped = {}
     Object.keys(JOB_STATUS_MAP).forEach(status => {
-      grouped[status] = filteredJobs.filter(j => j.status === status)
+      grouped[status] = jobs.filter(j => j.status === status)
     })
     return grouped
-  }, [filteredJobs])
+  }, [jobs])
 
   const handleDrop = async (jobId, newStatus) => {
     await moveJob(jobId, newStatus)
@@ -128,18 +132,57 @@ export function JobBoard({
 
   const stats = getStats()
 
+  // Show loading state
+  if (loading && jobs.length === 0) {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <div className="flex items-center gap-2">
+            <Briefcase className="w-6 h-6 text-blue-400" />
+            <h2 className="text-xl font-bold text-text-primary">Jobs Board</h2>
+          </div>
+        </div>
+        <div className="flex-1 p-4 overflow-x-auto">
+          <div className="flex gap-4 h-full">
+            {[...Array(5)].map((_, i) => (
+              <LoadingSkeleton key={i} variant="board" />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <EmptyState
+          icon={AlertCircle}
+          title="Failed to Load Jobs"
+          description={error}
+          action={{
+            label: 'Try Again',
+            onClick: fetchJobs,
+            variant: 'primary'
+          }}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-white/10">
+      <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <Briefcase className="w-6 h-6 text-blue-400" />
-            <h2 className="text-xl font-bold text-white">Jobs Board</h2>
+            <h2 className="text-xl font-bold text-text-primary">Jobs Board</h2>
           </div>
 
           {/* Quick Stats */}
-          <div className="flex items-center gap-4 text-sm text-white/50">
+          <div className="flex items-center gap-4 text-sm text-text-muted">
             <div className="flex items-center gap-1.5">
               <Target className="w-4 h-4 text-blue-400" />
               <span>{stats.total} total</span>
@@ -158,22 +201,20 @@ export function JobBoard({
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-            <input
-              type="text"
-              placeholder="Search jobs..."
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-              className="pl-9 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 w-64"
-            />
-          </div>
+          {/* Search Button (Ctrl+K) */}
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="flex items-center gap-2 px-3 py-2 bg-bg-secondary hover:bg-bg-tertiary border border-border rounded-lg text-sm text-text-muted transition-colors"
+          >
+            <Search className="w-4 h-4" />
+            <span className="hidden sm:inline">Search</span>
+            <kbd className="hidden sm:inline px-1.5 py-0.5 bg-bg-tertiary rounded text-xs">Ctrl+K</kbd>
+          </button>
 
           {/* Find Jobs */}
           <button
             onClick={onSearchClick}
-            className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+            className="flex items-center gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors"
           >
             <ExternalLink className="w-4 h-4" />
             Find Jobs
@@ -205,6 +246,18 @@ export function JobBoard({
           ))}
         </div>
       </div>
+
+      {/* Global Search Modal */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <JobGlobalSearch
+            jobs={jobs}
+            isOpen={isSearchOpen}
+            onClose={() => setIsSearchOpen(false)}
+            onSelectJob={(job) => onJobClick(job)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

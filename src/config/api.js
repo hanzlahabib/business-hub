@@ -6,7 +6,7 @@ const env = import.meta.env.MODE || 'development'
 // Configuration by environment
 const config = {
   development: {
-    JSON_SERVER: 'http://localhost:3001',
+    JSON_SERVER: 'http://localhost:3005',
     API_SERVER: 'http://localhost:3002'
   },
   staging: {
@@ -45,7 +45,13 @@ export const ENDPOINTS = {
   EMAIL_SETTINGS: `${JSON_SERVER}/emailSettings`,
   LEADS: `${JSON_SERVER}/leads`,
   MESSAGES: `${JSON_SERVER}/messages`,
-  EMAIL_TEMPLATES: `${JSON_SERVER}/emailTemplates`
+  EMAIL_TEMPLATES: `${JSON_SERVER}/emailTemplates`,
+
+  // Templates Module
+  TEMPLATES: `${JSON_SERVER}/templates`,
+  TEMPLATE_FOLDERS: `${JSON_SERVER}/templateFolders`,
+  TEMPLATE_HISTORY: `${JSON_SERVER}/templateHistory`,
+  TEMPLATE_COMMENTS: `${JSON_SERVER}/templateComments`
 }
 
 export default {

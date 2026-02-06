@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, Upload, FileText, Link2, Star, Trash2, Loader2,
   CheckCircle, AlertCircle, Cloud, HardDrive, ExternalLink
@@ -158,25 +158,25 @@ export function CVManager({ isOpen, onClose }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl max-h-[85vh] bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+          className="w-full max-w-2xl max-h-[85vh] bg-bg-primary rounded-2xl border border-border shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="p-6 border-b border-white/10">
+          <div className="p-6 border-b border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">CV Manager</h2>
-                  <p className="text-sm text-white/50">Upload and manage your CVs</p>
+                  <h2 className="text-xl font-bold text-text-primary">CV Manager</h2>
+                  <p className="text-sm text-text-muted">Upload and manage your CVs</p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-white/60" />
+                <X className="w-5 h-5 text-text-secondary" />
               </button>
             </div>
           </div>
@@ -185,7 +185,7 @@ export function CVManager({ isOpen, onClose }) {
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {/* Upload Section */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-white/80 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-text-secondary flex items-center gap-2">
                 <Upload className="w-4 h-4" />
                 Upload CV (PDF)
               </h3>
@@ -203,7 +203,7 @@ export function CVManager({ isOpen, onClose }) {
                   className={`flex items-center justify-center gap-3 p-8 border-2 border-dashed rounded-xl cursor-pointer transition-colors ${
                     uploading
                       ? 'border-blue-500/50 bg-blue-500/10'
-                      : 'border-white/20 hover:border-blue-500/50 hover:bg-white/5'
+                      : 'border-border-hover hover:border-blue-500/50 hover:bg-bg-secondary'
                   }`}
                 >
                   {uploading ? (
@@ -213,8 +213,8 @@ export function CVManager({ isOpen, onClose }) {
                     </>
                   ) : (
                     <>
-                      <HardDrive className="w-6 h-6 text-white/40" />
-                      <span className="text-white/60">Click to upload PDF (max 5MB)</span>
+                      <HardDrive className="w-6 h-6 text-text-muted" />
+                      <span className="text-text-secondary">Click to upload PDF (max 5MB)</span>
                     </>
                   )}
                 </label>
@@ -223,7 +223,7 @@ export function CVManager({ isOpen, onClose }) {
 
             {/* Cloud Link Section */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-white/80 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-text-secondary flex items-center gap-2">
                 <Cloud className="w-4 h-4" />
                 Add Cloud Link (Google Drive, Dropbox, etc.)
               </h3>
@@ -233,14 +233,14 @@ export function CVManager({ isOpen, onClose }) {
                   placeholder="CV Name"
                   value={linkForm.name}
                   onChange={(e) => setLinkForm(prev => ({ ...prev, name: e.target.value }))}
-                  className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                  className="flex-1 px-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                 />
                 <input
                   type="url"
                   placeholder="Cloud URL"
                   value={linkForm.cloudUrl}
                   onChange={(e) => setLinkForm(prev => ({ ...prev, cloudUrl: e.target.value }))}
-                  className="flex-[2] px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                  className="flex-[2] px-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                 />
                 <button
                   onClick={handleAddLink}
@@ -270,14 +270,14 @@ export function CVManager({ isOpen, onClose }) {
 
             {/* CV List */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-white/80">Your CVs</h3>
+              <h3 className="text-sm font-semibold text-text-secondary">Your CVs</h3>
 
               {loading ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
                 </div>
               ) : cvFiles.length === 0 ? (
-                <div className="text-center py-8 text-white/40">
+                <div className="text-center py-8 text-text-muted">
                   No CVs uploaded yet. Upload your first CV above.
                 </div>
               ) : (
@@ -288,7 +288,7 @@ export function CVManager({ isOpen, onClose }) {
                       className={`flex items-center gap-3 p-4 rounded-xl border transition-colors ${
                         cv.isDefault
                           ? 'bg-blue-500/10 border-blue-500/30'
-                          : 'bg-white/5 border-white/10 hover:bg-white/10'
+                          : 'bg-bg-secondary border-border hover:bg-bg-tertiary'
                       }`}
                     >
                       <div className={`p-2 rounded-lg ${
@@ -303,14 +303,14 @@ export function CVManager({ isOpen, onClose }) {
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="text-white font-medium truncate">{cv.name}</p>
+                          <p className="text-text-primary font-medium truncate">{cv.name}</p>
                           {cv.isDefault && (
                             <span className="px-2 py-0.5 text-xs bg-blue-500/30 text-blue-300 rounded-full">
                               Default
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-white/40">
+                        <p className="text-xs text-text-muted">
                           {cv.type === 'uploaded' ? (
                             <>Uploaded {formatFileSize(cv.size)}</>
                           ) : (
@@ -327,7 +327,7 @@ export function CVManager({ isOpen, onClose }) {
                             href={cv.cloudUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 hover:bg-white/10 rounded-lg text-white/40 hover:text-white transition-colors"
+                            className="p-2 hover:bg-bg-tertiary rounded-lg text-text-muted hover:text-text-primary transition-colors"
                             title="Open in new tab"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -336,7 +336,7 @@ export function CVManager({ isOpen, onClose }) {
                         {!cv.isDefault && (
                           <button
                             onClick={() => handleSetDefault(cv.id)}
-                            className="p-2 hover:bg-white/10 rounded-lg text-white/40 hover:text-yellow-400 transition-colors"
+                            className="p-2 hover:bg-bg-tertiary rounded-lg text-text-muted hover:text-yellow-400 transition-colors"
                             title="Set as default"
                           >
                             <Star className="w-4 h-4" />
@@ -344,7 +344,7 @@ export function CVManager({ isOpen, onClose }) {
                         )}
                         <button
                           onClick={() => handleDelete(cv.id)}
-                          className="p-2 hover:bg-red-500/20 rounded-lg text-white/40 hover:text-red-400 transition-colors"
+                          className="p-2 hover:bg-red-500/20 rounded-lg text-text-muted hover:text-red-400 transition-colors"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -358,10 +358,10 @@ export function CVManager({ isOpen, onClose }) {
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-white/10">
+          <div className="p-6 border-t border-border">
             <button
               onClick={onClose}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white hover:bg-white/10 transition-colors"
+              className="w-full px-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-primary hover:bg-bg-tertiary transition-colors"
             >
               Done
             </button>

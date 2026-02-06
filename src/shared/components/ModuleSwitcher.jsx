@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { Calendar, Users, LayoutGrid, Briefcase } from 'lucide-react'
+import { NavLink } from 'react-router-dom'
+import { Calendar, Users, LayoutGrid, Briefcase, FileText, GraduationCap } from 'lucide-react'
 
 const modules = [
   {
@@ -7,46 +8,66 @@ const modules = [
     name: 'Schedule',
     icon: Calendar,
     description: 'Content calendar & pipeline',
-    color: 'from-blue-500 to-cyan-600'
+    color: 'from-blue-500 to-cyan-600',
+    path: '/'
   },
   {
     id: 'leads',
     name: 'Leads',
     icon: Users,
     description: 'Lead management & outreach',
-    color: 'from-emerald-500 to-teal-600'
+    color: 'from-emerald-500 to-teal-600',
+    path: '/leads'
   },
   {
     id: 'taskboards',
     name: 'Task Boards',
     icon: LayoutGrid,
     description: 'Project task management',
-    color: 'from-orange-500 to-amber-600'
+    color: 'from-orange-500 to-amber-600',
+    path: '/taskboards'
   },
   {
     id: 'jobs',
     name: 'Jobs',
     icon: Briefcase,
     description: 'Job search & applications',
-    color: 'from-blue-600 to-indigo-600'
+    color: 'from-blue-600 to-indigo-600',
+    path: '/jobs'
+  },
+  {
+    id: 'templates',
+    name: 'Templates',
+    icon: FileText,
+    description: 'Reusable content templates',
+    color: 'from-purple-500 to-pink-600',
+    path: '/templates'
+  },
+  {
+    id: 'skillmastery',
+    name: 'Skill Mastery',
+    icon: GraduationCap,
+    description: 'Learn & master new skills',
+    color: 'from-violet-500 to-purple-600',
+    path: '/skills'
   }
 ]
 
-export function ModuleSwitcher({ activeModule, onModuleChange }) {
+export function ModuleSwitcher({ activeModule }) {
   return (
-    <div className="flex items-center gap-1 p-1 bg-white/5 rounded-xl border border-white/10">
+    <div className="flex items-center gap-1 p-1 bg-bg-secondary rounded-xl border border-border">
       {modules.map(module => {
         const Icon = module.icon
         const isActive = activeModule === module.id
 
         return (
-          <button
+          <NavLink
             key={module.id}
-            onClick={() => onModuleChange(module.id)}
+            to={module.path}
             className={`relative flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
               isActive
                 ? 'text-white'
-                : 'text-white/50 hover:text-white/80 hover:bg-white/5'
+                : 'text-text-muted hover:text-text-secondary hover:bg-bg-secondary'
             }`}
           >
             {isActive && (
@@ -59,7 +80,7 @@ export function ModuleSwitcher({ activeModule, onModuleChange }) {
             )}
             <Icon className="relative w-4 h-4" />
             <span className="relative text-sm font-medium">{module.name}</span>
-          </button>
+          </NavLink>
         )
       })}
     </div>
@@ -67,26 +88,26 @@ export function ModuleSwitcher({ activeModule, onModuleChange }) {
 }
 
 // Compact version for smaller screens
-export function ModuleSwitcherCompact({ activeModule, onModuleChange }) {
+export function ModuleSwitcherCompact({ activeModule }) {
   return (
-    <div className="flex items-center gap-1 p-1 bg-white/5 rounded-lg border border-white/10">
+    <div className="flex items-center gap-1 p-1 bg-bg-secondary rounded-lg border border-border">
       {modules.map(module => {
         const Icon = module.icon
         const isActive = activeModule === module.id
 
         return (
-          <button
+          <NavLink
             key={module.id}
-            onClick={() => onModuleChange(module.id)}
+            to={module.path}
             title={module.name}
             className={`relative p-2 rounded-md transition-all ${
               isActive
                 ? 'text-white bg-gradient-to-r ' + module.color
-                : 'text-white/50 hover:text-white/80 hover:bg-white/5'
+                : 'text-text-muted hover:text-text-secondary hover:bg-bg-secondary'
             }`}
           >
             <Icon className="w-5 h-5" />
-          </button>
+          </NavLink>
         )
       })}
     </div>
@@ -94,7 +115,7 @@ export function ModuleSwitcherCompact({ activeModule, onModuleChange }) {
 }
 
 // Dropdown version
-export function ModuleSwitcherDropdown({ activeModule, onModuleChange, open, onOpenChange }) {
+export function ModuleSwitcherDropdown({ activeModule, open, onOpenChange }) {
   const active = modules.find(m => m.id === activeModule)
   const Icon = active?.icon || Calendar
 
@@ -102,10 +123,10 @@ export function ModuleSwitcherDropdown({ activeModule, onModuleChange, open, onO
     <div className="relative">
       <button
         onClick={() => onOpenChange(!open)}
-        className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
+        className="flex items-center gap-2 px-4 py-2 bg-bg-secondary rounded-lg border border-border hover:bg-bg-tertiary transition-colors"
       >
-        <Icon className="w-4 h-4 text-white/60" />
-        <span className="text-sm font-medium text-white">{active?.name}</span>
+        <Icon className="w-4 h-4 text-text-secondary" />
+        <span className="text-sm font-medium text-text-primary">{active?.name}</span>
       </button>
 
       {open && (
@@ -113,23 +134,21 @@ export function ModuleSwitcherDropdown({ activeModule, onModuleChange, open, onO
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="absolute top-full left-0 mt-2 w-64 bg-zinc-900 border border-white/10 rounded-xl shadow-xl overflow-hidden z-50"
+          className="absolute top-full left-0 mt-2 w-64 bg-bg-primary border border-border rounded-xl shadow-xl overflow-hidden z-50"
         >
           {modules.map(module => {
             const ModuleIcon = module.icon
             const isActive = activeModule === module.id
 
             return (
-              <button
+              <NavLink
                 key={module.id}
-                onClick={() => {
-                  onModuleChange(module.id)
-                  onOpenChange(false)
-                }}
+                to={module.path}
+                onClick={() => onOpenChange(false)}
                 className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${
                   isActive
-                    ? 'bg-white/10 text-white'
-                    : 'text-white/60 hover:bg-white/5 hover:text-white'
+                    ? 'bg-bg-tertiary text-text-primary'
+                    : 'text-text-secondary hover:bg-bg-secondary hover:text-text-primary'
                 }`}
               >
                 <div className={`p-2 rounded-lg bg-gradient-to-r ${module.color}`}>
@@ -139,7 +158,7 @@ export function ModuleSwitcherDropdown({ activeModule, onModuleChange, open, onO
                   <p className="font-medium">{module.name}</p>
                   <p className="text-xs opacity-60">{module.description}</p>
                 </div>
-              </button>
+              </NavLink>
             )
           })}
         </motion.div>

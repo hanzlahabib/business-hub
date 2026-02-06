@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 
-const JSON_SERVER = 'http://localhost:3001'
+const JSON_SERVER = 'http://localhost:3005'
 
 const DEFAULT_COLUMNS = [
   { id: 'todo', name: 'To Do', color: '#6B7280' },

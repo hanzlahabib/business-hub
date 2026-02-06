@@ -348,7 +348,7 @@ export const DetailsStep = memo(function DetailsStep({
                             href={urlItem.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`p-1 rounded hover:bg-white/10 ${config.color}`}
+                            className={`p-1 rounded hover:bg-bg-tertiary ${config.color}`}
                           >
                             <ExternalLink size={12} />
                           </a>

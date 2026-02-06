@@ -1,22 +1,43 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import {
   BoardList,
   TaskBoard,
   CreateBoardModal,
+  BoardSettingsModal,
   TaskDetailPanel,
   useTaskBoards,
   useTasks
 } from '../../modules/taskboards'
 import { useLeads } from '../../modules/leads'
 
-export function TaskBoardsView() {
-  const { boards, createBoard, deleteBoard } = useTaskBoards()
+export function TaskBoardsView({ initialBoardId, onBoardViewed }) {
+  const { boardId } = useParams()
+  const navigate = useNavigate()
+  const { boards, createBoard, updateBoard, deleteBoard, getBoardById } = useTaskBoards()
   const { leads } = useLeads()
 
-  const [selectedBoard, setSelectedBoard] = useState(null)
+  // Get selected board from URL params
+  const selectedBoard = useMemo(() => {
+    if (!boardId) return null
+    return getBoardById(boardId) || boards.find(b => b.id === boardId) || null
+  }, [boardId, boards, getBoardById])
+
   const [selectedTask, setSelectedTask] = useState(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [addingToColumn, setAddingToColumn] = useState(null)
+
+  // Auto-select board when navigating from leads (legacy support for initialBoardId prop)
+  useEffect(() => {
+    if (initialBoardId && boards.length > 0) {
+      const board = getBoardById(initialBoardId) || boards.find(b => b.id === initialBoardId)
+      if (board) {
+        navigate(`/taskboards/${board.id}`)
+        onBoardViewed?.() // Clear the initialBoardId after viewing
+      }
+    }
+  }, [initialBoardId, boards, getBoardById, onBoardViewed, navigate])
 
   // Task operations for selected board
   const {
@@ -30,11 +51,11 @@ export function TaskBoardsView() {
   } = useTasks(selectedBoard?.id)
 
   const handleSelectBoard = (board) => {
-    setSelectedBoard(board)
+    navigate(`/taskboards/${board.id}`)
   }
 
   const handleBackToList = () => {
-    setSelectedBoard(null)
+    navigate('/taskboards')
     setSelectedTask(null)
   }
 
@@ -77,6 +98,16 @@ export function TaskBoardsView() {
     }
   }
 
+  const handleUpdateBoard = async (boardId, updates) => {
+    await updateBoard(boardId, updates)
+    // Board will be updated via the boards state, no need to manually update selectedBoard
+  }
+
+  const handleDeleteBoard = async (boardId) => {
+    await deleteBoard(boardId)
+    navigate('/taskboards')
+  }
+
   return (
     <div className="h-[calc(100vh-200px)]">
       {selectedBoard ? (
@@ -85,7 +116,7 @@ export function TaskBoardsView() {
           onBack={handleBackToList}
           onTaskClick={handleTaskClick}
           onAddTask={handleAddTask}
-          onSettings={() => {}}
+          onSettings={() => setShowSettingsModal(true)}
         />
       ) : (
         <BoardList
@@ -100,6 +131,15 @@ export function TaskBoardsView() {
         onClose={() => setShowCreateModal(false)}
         onCreate={handleCreateBoard}
         leads={leads}
+      />
+
+      {/* Board Settings Modal */}
+      <BoardSettingsModal
+        isOpen={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
+        board={selectedBoard}
+        onUpdate={handleUpdateBoard}
+        onDelete={handleDeleteBoard}
       />
 
       {/* Task Detail Panel */}

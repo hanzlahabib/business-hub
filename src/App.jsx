@@ -1,30 +1,27 @@
 import { useReducer, useCallback, useMemo, memo, useState } from 'react'
-import { Plus, Calendar, LayoutGrid, AlertTriangle, Clock, List, Clock3, Table2, Sun, Moon, Users } from 'lucide-react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Toaster, toast } from 'sonner'
+import { Plus, Calendar, List, Sun, Moon } from 'lucide-react'
 import { useSchedule } from './hooks/useSchedule'
+import { useCalendarItems } from './hooks/useCalendarItems'
 import { useTheme } from './hooks/useTheme'
 import { useConfirmDialog } from './hooks/useConfirmDialog'
-import { WeekView } from './components/Calendar'
-import { StatsBar } from './components/Dashboard'
-import { TaskFlow } from './components/TaskFlow'
-import { AddContentModal, SettingsModal, VariantGuideModal } from './components/Forms'
-import { BookOpen } from 'lucide-react'
+import { WeekView, CalendarFilters } from './components/Calendar'
+import { AddContentModal } from './components/Forms'
 import { Button, AlertDialog } from './components/UI'
-import { ListView, TimelineView, TableView, LeadsView, TaskBoardsView, JobsView } from './components/Views'
+import { ListView, LeadsView, TaskBoardsView, JobsView, TemplatesView } from './components/Views'
 import { ContentDetailPanel } from './components/DetailPanel'
-import { ModuleSwitcher } from './shared/components/ModuleSwitcher'
-import { format, isPast, parseISO } from 'date-fns'
+import { Sidebar, SidebarToggleButton } from './shared/components/Sidebar'
+import { SkillMasteryView } from './modules/skillMastery'
+import { ContentStudioView } from './modules/contentStudio'
+import { getModuleFromPath, getViewFromPath, getViewRoute } from './routes'
 
-// App State Reducer
+// App State Reducer - activeModule and view are now derived from URL
 const initialState = {
   showAddModal: false,
-  showSettingsModal: false,
-  showVariantGuide: false,
   selectedDate: null,
   editingContent: null,
-  detailContent: null,
-  view: 'calendar',
-  filterStage: null,
-  activeModule: 'schedule' // 'schedule' | 'leads' | 'taskboards'
+  detailContent: null
 }
 
 function appReducer(state, action) {
@@ -35,41 +32,30 @@ function appReducer(state, action) {
       return { ...state, showAddModal: true, editingContent: action.content, selectedDate: action.content.scheduledDate, detailContent: null }
     case 'CLOSE_MODAL':
       return { ...state, showAddModal: false, editingContent: null }
-    case 'OPEN_SETTINGS':
-      return { ...state, showSettingsModal: true }
-    case 'CLOSE_SETTINGS':
-      return { ...state, showSettingsModal: false }
-    case 'OPEN_VARIANT_GUIDE':
-      return { ...state, showVariantGuide: true }
-    case 'CLOSE_VARIANT_GUIDE':
-      return { ...state, showVariantGuide: false }
-    case 'SET_VIEW':
-      return { ...state, view: action.view }
     case 'OPEN_DETAIL':
       return { ...state, detailContent: action.content }
     case 'CLOSE_DETAIL':
       return { ...state, detailContent: null }
-    case 'SET_FILTER_STAGE':
-      return { ...state, filterStage: state.filterStage === action.stage ? null : action.stage }
-    case 'SET_MODULE':
-      return { ...state, activeModule: action.module }
     default:
       return state
   }
 }
 
 function App() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  // Derive activeModule and view from URL
+  const activeModule = getModuleFromPath(location.pathname)
+  const view = activeModule === 'schedule' ? getViewFromPath(location.pathname) : 'calendar'
+
   const {
     contents,
     settings,
     addContent,
     updateContent,
     deleteContent,
-    moveToStatus,
     scheduleContent,
-    getStats,
-    getStreak,
-    updateSettings,
     addComment,
     deleteComment,
     addUrl,
@@ -80,15 +66,23 @@ function App() {
   const { dialogState, confirm, close: closeDialog } = useConfirmDialog()
   const [state, dispatch] = useReducer(appReducer, initialState)
 
-  // Memoized stats and streak
-  const stats = useMemo(() => getStats(), [contents])
-  const streak = useMemo(() => getStreak(), [contents])
+  // Calendar filters state - only contents enabled by default
+  const [calendarFilters, setCalendarFilters] = useState({
+    contents: true,
+    tasks: false,
+    jobs: false,
+    leads: false,
+    milestones: false
+  })
 
-  // Filtered contents based on selected stage
-  const filteredContents = useMemo(() => {
-    if (!state.filterStage) return contents
-    return contents.filter(c => c.status === state.filterStage)
-  }, [contents, state.filterStage])
+  // Fetch calendar items based on filters
+  const { items: calendarItems, rescheduleItem } = useCalendarItems(calendarFilters)
+
+  // Sidebar state - open by default on desktop, closed on mobile
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const toggleSidebar = useCallback(() => setSidebarOpen(prev => !prev), [])
+  const toggleSidebarCollapse = useCallback(() => setSidebarCollapsed(prev => !prev), [])
 
   // Get last used video variant for auto-rotation
   const lastUsedVariant = useMemo(() => {
@@ -133,33 +127,17 @@ function App() {
     }
   }, [deleteContent, confirm])
 
-  const handleViewChange = useCallback((view) => {
-    dispatch({ type: 'SET_VIEW', view })
-  }, [])
+  const handleViewChange = useCallback((newView) => {
+    navigate(getViewRoute(newView))
+  }, [navigate])
 
-  const handleOpenSettings = useCallback(() => {
-    dispatch({ type: 'OPEN_SETTINGS' })
-  }, [])
+  // State for navigating to a specific board from leads
+  const [navigateToBoardId, setNavigateToBoardId] = useState(null)
 
-  const handleCloseSettings = useCallback(() => {
-    dispatch({ type: 'CLOSE_SETTINGS' })
-  }, [])
-
-  const handleSaveSettings = useCallback((newSettings) => {
-    updateSettings(newSettings)
-  }, [updateSettings])
-
-  const handleOpenVariantGuide = useCallback(() => {
-    dispatch({ type: 'OPEN_VARIANT_GUIDE' })
-  }, [])
-
-  const handleCloseVariantGuide = useCallback(() => {
-    dispatch({ type: 'CLOSE_VARIANT_GUIDE' })
-  }, [])
-
-  const handleModuleChange = useCallback((module) => {
-    dispatch({ type: 'SET_MODULE', module })
-  }, [])
+  const handleNavigateToBoard = useCallback((boardId) => {
+    setNavigateToBoardId(boardId)
+    navigate(`/taskboards/${boardId}`)
+  }, [navigate])
 
   const handleOpenDetail = useCallback((content) => {
     dispatch({ type: 'OPEN_DETAIL', content })
@@ -178,9 +156,50 @@ function App() {
     updateContent(contentData.id, contentData)
   }, [updateContent])
 
-  const handleUpdateStatus = useCallback((id, newStatus) => {
-    moveToStatus(id, newStatus)
-  }, [moveToStatus])
+  // Handle calendar filter changes
+  const handleCalendarFilterChange = useCallback((newFilters) => {
+    setCalendarFilters(newFilters)
+  }, [])
+
+  // Handle calendar item date change (drag and drop)
+  const handleItemDateChange = useCallback(async (item, newDate) => {
+    const success = await rescheduleItem(item, newDate)
+    if (success) {
+      toast.success(`${item.title} moved to ${newDate}`)
+    } else {
+      toast.error('Failed to reschedule item')
+    }
+  }, [rescheduleItem])
+
+  // Handle calendar item click - navigate to appropriate module
+  const handleCalendarItemClick = useCallback((item) => {
+    switch (item.module) {
+      case 'schedule':
+        // Open content detail
+        handleOpenDetail(item.sourceData)
+        break
+      case 'taskboards':
+        // Navigate to taskboards with the board
+        if (item.boardId) {
+          setNavigateToBoardId(item.boardId)
+          navigate(`/taskboards/${item.boardId}`)
+        } else {
+          navigate('/taskboards')
+        }
+        break
+      case 'jobs':
+        navigate('/jobs')
+        break
+      case 'leads':
+        navigate('/leads')
+        break
+      case 'skillmastery':
+        navigate('/skillmastery')
+        break
+      default:
+        break
+    }
+  }, [navigate, handleOpenDetail])
 
   // Keep detail content in sync with contents array
   const currentDetailContent = useMemo(() => {
@@ -191,156 +210,199 @@ function App() {
   const todayDate = useMemo(() => new Date().toISOString().split('T')[0], [])
 
   return (
-    <div className="min-h-screen bg-bg-primary p-6">
-      <div className="max-w-[1600px] mx-auto">
-        {/* Header */}
-        <Header
-          view={state.view}
-          onViewChange={handleViewChange}
-          onAddContent={() => handleAddContent(todayDate)}
-          theme={theme}
-          onToggleTheme={toggleTheme}
-          onOpenVariantGuide={handleOpenVariantGuide}
-          activeModule={state.activeModule}
-          onModuleChange={handleModuleChange}
-        />
+    <div className="min-h-screen bg-bg-primary">
+      {/* Sidebar - always rendered, positioned off-screen on mobile when closed */}
+      <Sidebar
+        activeModule={activeModule}
+        isOpen={sidebarOpen}
+        onToggle={toggleSidebar}
+        isCollapsed={sidebarCollapsed}
+        onCollapse={toggleSidebarCollapse}
+      />
 
-        {/* Schedule Module - Stats Bar */}
-        {state.activeModule === 'schedule' && (
-          <div className="mb-6">
-            <StatsBar stats={stats} streak={streak} onOpenSettings={handleOpenSettings} goalsEnabled={settings.goalsEnabled !== false} />
-          </div>
-        )}
+      {/* Main content area - add padding for desktop sidebar */}
+      <div className={`${sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-52'} transition-all duration-300`}>
+        <div className="p-6">
+          <div className="max-w-[1600px] mx-auto">
+            {/* Header */}
+            <Header
+              theme={theme}
+              onToggleTheme={toggleTheme}
+              onToggleSidebar={toggleSidebar}
+            />
 
-        {/* Schedule Module - Task Flow Pipeline */}
-        {state.activeModule === 'schedule' && (
-          <div className="mb-6">
-            <TaskFlow
-              contents={contents}
-              activeStage={state.filterStage}
-              onStageClick={(stage) => dispatch({ type: 'SET_FILTER_STAGE', stage })}
-              showStats={true}
+            {/* Content Studio Module - Self-contained with its own UI */}
+            {activeModule === 'contentstudio' && <ContentStudioView />}
+
+            {/* Calendar Module - Clean unified scheduling */}
+            {activeModule === 'schedule' && (
+              <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                {/* Calendar Module Toolbar */}
+                <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
+                  {/* View Switcher - Calendar and List only */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleViewChange('calendar')}
+                      className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${
+                        view === 'calendar'
+                          ? 'bg-accent-primary text-white'
+                          : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
+                      }`}
+                    >
+                      <Calendar size={14} />
+                      <span>Calendar</span>
+                    </button>
+                    <button
+                      onClick={() => handleViewChange('list')}
+                      className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${
+                        view === 'list'
+                          ? 'bg-accent-primary text-white'
+                          : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
+                      }`}
+                    >
+                      <List size={14} />
+                      <span>List</span>
+                    </button>
+                  </div>
+
+                  {/* Calendar/List Item Filters */}
+                  <CalendarFilters
+                    filters={calendarFilters}
+                    onChange={handleCalendarFilterChange}
+                  />
+
+                  {/* Add Item Button */}
+                  <Button onClick={() => handleAddContent(todayDate)}>
+                    <Plus size={16} />
+                    <span className="text-xs">Add Item</span>
+                  </Button>
+                </div>
+
+                {view === 'calendar' && (
+                  <WeekView
+                    contents={contents}
+                    items={calendarItems}
+                    calendarFilters={calendarFilters}
+                    onAddContent={handleAddContent}
+                    onEditContent={handleEditContent}
+                    onDeleteContent={handleDeleteContent}
+                    onDateChange={scheduleContent}
+                    onItemDateChange={handleItemDateChange}
+                    onOpenDetail={handleOpenDetail}
+                    onItemClick={handleCalendarItemClick}
+                  />
+                )}
+                {view === 'list' && (
+                  <ListView
+                    contents={contents}
+                    items={calendarItems}
+                    calendarFilters={calendarFilters}
+                    onEdit={handleEditContent}
+                    onDelete={handleDeleteContent}
+                    onOpenDetail={handleOpenDetail}
+                    onItemClick={handleCalendarItemClick}
+                  />
+                )}
+              </main>
+            )}
+
+            {/* Leads Module */}
+            {activeModule === 'leads' && (
+              <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                <LeadsView onNavigateToBoard={handleNavigateToBoard} />
+              </main>
+            )}
+
+            {/* Task Boards Module */}
+            {activeModule === 'taskboards' && (
+              <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                <TaskBoardsView
+                  initialBoardId={navigateToBoardId}
+                  onBoardViewed={() => setNavigateToBoardId(null)}
+                />
+              </main>
+            )}
+
+            {/* Jobs Module */}
+            {activeModule === 'jobs' && (
+              <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                <JobsView />
+              </main>
+            )}
+
+            {/* Templates Module */}
+            {activeModule === 'templates' && (
+              <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                <TemplatesView />
+              </main>
+            )}
+
+            {/* Skill Mastery Module */}
+            {activeModule === 'skillmastery' && (
+              <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                <SkillMasteryView />
+              </main>
+            )}
+
+            {/* Add/Edit Modal - Only for Calendar module quick add */}
+            {activeModule === 'schedule' && (
+              <AddContentModal
+                isOpen={state.showAddModal}
+                onClose={handleCloseModal}
+                onAdd={handleSaveContent}
+                initialDate={state.selectedDate}
+                editContent={state.editingContent}
+                onAddComment={addComment}
+                onDeleteComment={deleteComment}
+                topics={settings.topics}
+                videoVariants={settings.videoVariants}
+                lastUsedVariant={lastUsedVariant}
+              />
+            )}
+
+            {/* Content Detail Panel - Only for Calendar module */}
+            {activeModule === 'schedule' && (
+              <ContentDetailPanel
+                content={currentDetailContent}
+                isOpen={!!currentDetailContent}
+                onClose={handleCloseDetail}
+                onEdit={handleEditFromDetail}
+                onAddComment={addComment}
+                onDeleteComment={deleteComment}
+                onAddUrl={addUrl}
+                onRemoveUrl={removeUrl}
+                onUpdateContent={handleUpdateContentFromDetail}
+              />
+            )}
+
+            {/* Alert Dialog for confirmations */}
+            <AlertDialog
+              {...dialogState}
+              onClose={closeDialog}
+            />
+
+            {/* Toast notifications */}
+            <Toaster
+              position="bottom-right"
+              theme="dark"
+              richColors
+              closeButton
             />
           </div>
-        )}
-
-        {/* Main Content */}
-        <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-          {/* Schedule Module Views */}
-          {state.activeModule === 'schedule' && (
-            <>
-              {state.view === 'calendar' && (
-                <WeekView
-                  contents={filteredContents}
-                  onAddContent={handleAddContent}
-                  onEditContent={handleEditContent}
-                  onDeleteContent={handleDeleteContent}
-                  onDateChange={scheduleContent}
-                  onOpenDetail={handleOpenDetail}
-                />
-              )}
-              {state.view === 'pipeline' && (
-                <PipelineView
-                  contents={filteredContents}
-                  onEditContent={handleEditContent}
-                  onStatusChange={moveToStatus}
-                />
-              )}
-              {state.view === 'list' && (
-                <ListView
-                  contents={filteredContents}
-                  onEdit={handleEditContent}
-                  onDelete={handleDeleteContent}
-                  onOpenDetail={handleOpenDetail}
-                />
-              )}
-              {state.view === 'timeline' && (
-                <TimelineView
-                  contents={filteredContents}
-                  onEdit={handleEditContent}
-                  onSchedule={scheduleContent}
-                  onOpenDetail={handleOpenDetail}
-                />
-              )}
-              {state.view === 'table' && (
-                <TableView
-                  contents={filteredContents}
-                  onEdit={handleEditContent}
-                  onUpdateStatus={handleUpdateStatus}
-                  onOpenDetail={handleOpenDetail}
-                />
-              )}
-            </>
-          )}
-
-          {/* Leads Module */}
-          {state.activeModule === 'leads' && <LeadsView />}
-
-          {/* Task Boards Module */}
-          {state.activeModule === 'taskboards' && <TaskBoardsView />}
-
-          {/* Jobs Module */}
-          {state.activeModule === 'jobs' && <JobsView />}
-        </main>
-
-        {/* Add/Edit Modal */}
-        <AddContentModal
-          isOpen={state.showAddModal}
-          onClose={handleCloseModal}
-          onAdd={handleSaveContent}
-          initialDate={state.selectedDate}
-          editContent={state.editingContent}
-          onAddComment={addComment}
-          onDeleteComment={deleteComment}
-          topics={settings.topics}
-          videoVariants={settings.videoVariants}
-          lastUsedVariant={lastUsedVariant}
-        />
-
-        {/* Settings Modal */}
-        <SettingsModal
-          isOpen={state.showSettingsModal}
-          onClose={handleCloseSettings}
-          settings={settings}
-          onSave={handleSaveSettings}
-        />
-
-        {/* Variant Guide Modal */}
-        <VariantGuideModal
-          isOpen={state.showVariantGuide}
-          onClose={handleCloseVariantGuide}
-        />
-
-        {/* Content Detail Panel */}
-        <ContentDetailPanel
-          content={currentDetailContent}
-          isOpen={!!currentDetailContent}
-          onClose={handleCloseDetail}
-          onEdit={handleEditFromDetail}
-          onAddComment={addComment}
-          onDeleteComment={deleteComment}
-          onAddUrl={addUrl}
-          onRemoveUrl={removeUrl}
-          onUpdateContent={handleUpdateContentFromDetail}
-        />
-
-        {/* Alert Dialog for confirmations */}
-        <AlertDialog
-          {...dialogState}
-          onClose={closeDialog}
-        />
+        </div>
       </div>
     </div>
   )
 }
 
 // Memoized Header Component
-const Header = memo(function Header({ view, onViewChange, onAddContent, theme, onToggleTheme, onOpenVariantGuide, activeModule, onModuleChange }) {
-  const isScheduleModule = activeModule === 'schedule'
-
+const Header = memo(function Header({ theme, onToggleTheme, onToggleSidebar }) {
   return (
     <header className="flex items-center justify-between mb-6">
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-3">
+        {/* Sidebar Toggle Button */}
+        <SidebarToggleButton onClick={onToggleSidebar} />
+
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
             <Calendar size={20} className="text-white" />
@@ -350,16 +412,10 @@ const Header = memo(function Header({ view, onViewChange, onAddContent, theme, o
             <p className="text-sm text-text-muted">Productivity Platform</p>
           </div>
         </div>
-
-        {/* Module Switcher */}
-        <ModuleSwitcher
-          activeModule={activeModule}
-          onModuleChange={onModuleChange}
-        />
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Theme Toggle - always visible */}
+        {/* Theme Toggle */}
         <button
           onClick={onToggleTheme}
           className="p-2.5 rounded-xl bg-bg-secondary border border-border text-text-muted hover:text-text-primary hover:border-accent-primary transition-colors"
@@ -367,283 +423,8 @@ const Header = memo(function Header({ view, onViewChange, onAddContent, theme, o
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
-
-        {/* Schedule-specific controls */}
-        {isScheduleModule && (
-          <>
-            {/* Variants Guide */}
-            <button
-              onClick={onOpenVariantGuide}
-              className="p-2.5 rounded-xl bg-bg-secondary border border-border text-text-muted hover:text-accent-primary hover:border-accent-primary transition-colors flex items-center gap-2"
-              title="Video Variants Guide"
-            >
-              <BookOpen size={18} />
-              <span className="text-sm hidden sm:inline">Variants</span>
-            </button>
-
-            {/* Calendar Views */}
-            <div className="flex items-center bg-bg-secondary rounded-xl border border-border p-1">
-              <button
-                onClick={() => onViewChange('calendar')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  view === 'calendar'
-                    ? 'bg-accent-primary text-white'
-                    : 'text-text-muted hover:text-text-primary'
-                }`}
-              >
-                <Calendar size={16} className="inline mr-1.5" />
-                Calendar
-              </button>
-              <button
-                onClick={() => onViewChange('pipeline')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  view === 'pipeline'
-                    ? 'bg-accent-primary text-white'
-                    : 'text-text-muted hover:text-text-primary'
-                }`}
-              >
-                <LayoutGrid size={16} className="inline mr-1.5" />
-                Pipeline
-              </button>
-              <button
-                onClick={() => onViewChange('timeline')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  view === 'timeline'
-                    ? 'bg-accent-primary text-white'
-                    : 'text-text-muted hover:text-text-primary'
-                }`}
-              >
-                <Clock3 size={16} className="inline mr-1.5" />
-                Timeline
-              </button>
-            </div>
-
-            {/* Data Views */}
-            <div className="flex items-center bg-bg-secondary rounded-xl border border-border p-1">
-              <button
-                onClick={() => onViewChange('list')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  view === 'list'
-                    ? 'bg-accent-primary text-white'
-                    : 'text-text-muted hover:text-text-primary'
-                }`}
-              >
-                <List size={16} className="inline mr-1.5" />
-                List
-              </button>
-              <button
-                onClick={() => onViewChange('table')}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  view === 'table'
-                    ? 'bg-accent-primary text-white'
-                    : 'text-text-muted hover:text-text-primary'
-                }`}
-              >
-                <Table2 size={16} className="inline mr-1.5" />
-                Table
-              </button>
-            </div>
-
-            <Button onClick={onAddContent}>
-              <Plus size={18} />
-              Add Content
-            </Button>
-          </>
-        )}
       </div>
     </header>
-  )
-})
-
-// Pipeline Card Component with Late Indicator
-const PipelineCard = memo(function PipelineCard({
-  content,
-  isDragging,
-  onDragStart,
-  onDragEnd,
-  onClick
-}) {
-  const isLate = useMemo(() => {
-    if (!content.scheduledDate || content.status === 'published') return false
-    return isPast(parseISO(content.scheduledDate + 'T23:59:59'))
-  }, [content.scheduledDate, content.status])
-
-  const formattedDate = useMemo(() => {
-    if (!content.scheduledDate) return null
-    return format(parseISO(content.scheduledDate), 'MMM d')
-  }, [content.scheduledDate])
-
-  return (
-    <div
-      draggable
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-      onClick={onClick}
-      className={`
-        p-3 rounded-lg border cursor-grab active:cursor-grabbing transition-all
-        ${isDragging ? 'opacity-50 scale-95' : 'hover:scale-[1.02]'}
-        ${content.type === 'long'
-          ? 'bg-accent-secondary/10 border-accent-secondary/30'
-          : 'bg-accent-primary/10 border-accent-primary/30'
-        }
-        ${isLate ? 'ring-2 ring-accent-danger/50' : ''}
-      `}
-    >
-      <p className="text-sm font-medium text-text-primary truncate">
-        {content.title || 'Untitled'}
-      </p>
-
-      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-        <span className="text-xs text-text-muted">
-          {content.type === 'long' ? '🎬 Long' : '📱 Short'}
-        </span>
-
-        {formattedDate && (
-          <span className={`text-xs flex items-center gap-1 ${isLate ? 'text-accent-danger' : 'text-text-muted'}`}>
-            <Clock size={10} />
-            {formattedDate}
-          </span>
-        )}
-
-        {isLate && (
-          <span className="text-xs bg-accent-danger/20 text-accent-danger px-1.5 py-0.5 rounded flex items-center gap-1">
-            <AlertTriangle size={10} />
-            LATE
-          </span>
-        )}
-      </div>
-
-      {content.topic && (
-        <p className="text-xs text-text-muted/70 mt-1 truncate">{content.topic}</p>
-      )}
-    </div>
-  )
-})
-
-// Pipeline View with proper hooks
-const PipelineView = memo(function PipelineView({ contents, onEditContent, onStatusChange }) {
-  const [dragState, dispatch] = useReducer(
-    (state, action) => {
-      switch (action.type) {
-        case 'DRAG_START':
-          return { draggedItem: action.item, dragOverStage: null }
-        case 'DRAG_OVER':
-          return { ...state, dragOverStage: action.stageId }
-        case 'DRAG_END':
-          return { draggedItem: null, dragOverStage: null }
-        default:
-          return state
-      }
-    },
-    { draggedItem: null, dragOverStage: null }
-  )
-
-  const stages = useMemo(() => [
-    { id: 'idea', label: 'Ideas', color: 'text-text-muted', bg: 'bg-gray-500/20' },
-    { id: 'script', label: 'Script', color: 'text-accent-warning', bg: 'bg-accent-warning/20' },
-    { id: 'recording', label: 'Recording', color: 'text-accent-primary', bg: 'bg-accent-primary/20' },
-    { id: 'editing', label: 'Editing', color: 'text-accent-secondary', bg: 'bg-accent-secondary/20' },
-    { id: 'thumbnail', label: 'Thumbnail', color: 'text-orange-500', bg: 'bg-orange-500/20' },
-    { id: 'published', label: 'Published', color: 'text-accent-success', bg: 'bg-accent-success/20' }
-  ], [])
-
-  const contentsByStage = useMemo(() => {
-    const grouped = {}
-    stages.forEach(stage => {
-      grouped[stage.id] = contents.filter(c => c.status === stage.id)
-    })
-    return grouped
-  }, [contents, stages])
-
-  const handleDragStart = useCallback((content) => (e) => {
-    dispatch({ type: 'DRAG_START', item: content })
-    e.dataTransfer.effectAllowed = 'move'
-  }, [])
-
-  const handleDragOver = useCallback((stageId) => (e) => {
-    e.preventDefault()
-    e.dataTransfer.dropEffect = 'move'
-    dispatch({ type: 'DRAG_OVER', stageId })
-  }, [])
-
-  const handleDragLeave = useCallback(() => {
-    dispatch({ type: 'DRAG_OVER', stageId: null })
-  }, [])
-
-  const handleDrop = useCallback((stageId) => (e) => {
-    e.preventDefault()
-    if (dragState.draggedItem && dragState.draggedItem.status !== stageId) {
-      onStatusChange(dragState.draggedItem.id, stageId)
-    }
-    dispatch({ type: 'DRAG_END' })
-  }, [dragState.draggedItem, onStatusChange])
-
-  const handleDragEnd = useCallback(() => {
-    dispatch({ type: 'DRAG_END' })
-  }, [])
-
-  const handleCardClick = useCallback((content) => () => {
-    onEditContent(content)
-  }, [onEditContent])
-
-  return (
-    <div className="grid grid-cols-6 gap-4">
-      {stages.map(stage => {
-        const stageContents = contentsByStage[stage.id]
-        const isDragOver = dragState.dragOverStage === stage.id
-        const lateCount = stageContents.filter(c => {
-          if (!c.scheduledDate || c.status === 'published') return false
-          return isPast(parseISO(c.scheduledDate + 'T23:59:59'))
-        }).length
-
-        return (
-          <div
-            key={stage.id}
-            onDragOver={handleDragOver(stage.id)}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop(stage.id)}
-            className={`
-              rounded-xl p-3 min-h-[400px] transition-all duration-200
-              ${isDragOver
-                ? `${stage.bg} border-2 border-dashed border-current scale-[1.02]`
-                : 'bg-bg-tertiary/30 border-2 border-transparent'
-              }
-            `}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <h3 className={`font-semibold ${stage.color}`}>{stage.label}</h3>
-              <div className="flex items-center gap-1">
-                {lateCount > 0 && (
-                  <span className="text-xs bg-accent-danger/20 text-accent-danger px-1.5 py-0.5 rounded">
-                    {lateCount} late
-                  </span>
-                )}
-                <span className="text-xs text-text-muted bg-bg-tertiary px-2 py-0.5 rounded-full">
-                  {stageContents.length}
-                </span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              {stageContents.map(content => (
-                <PipelineCard
-                  key={content.id}
-                  content={content}
-                  isDragging={dragState.draggedItem?.id === content.id}
-                  onDragStart={handleDragStart(content)}
-                  onDragEnd={handleDragEnd}
-                  onClick={handleCardClick(content)}
-                />
-              ))}
-              {stageContents.length === 0 && (
-                <p className={`text-xs text-center py-8 ${isDragOver ? stage.color : 'text-text-muted'}`}>
-                  {isDragOver ? 'Drop here!' : 'No content'}
-                </p>
-              )}
-            </div>
-          </div>
-        )
-      })}
-    </div>
   )
 })
 

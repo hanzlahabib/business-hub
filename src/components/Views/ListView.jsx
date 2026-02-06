@@ -1,11 +1,20 @@
 import { useState, useMemo, useCallback, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown, ChevronUp, Filter, Video, Smartphone, Calendar, MessageSquare, Youtube, FileText, FileCode, Link2, ExternalLink, ArrowUpDown } from 'lucide-react'
+import { ChevronDown, ChevronUp, Filter, Video, Smartphone, Calendar, MessageSquare, Youtube, FileText, FileCode, Link2, ExternalLink, ArrowUpDown, CheckSquare, Briefcase, Users, Target } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 import { Badge } from '../UI'
 
 const STATUS_OPTIONS = ['all', 'idea', 'script', 'recording', 'editing', 'thumbnail', 'published']
 const TYPE_OPTIONS = ['all', 'long', 'short']
+
+// Item type configuration for calendar items
+const ITEM_TYPE_CONFIG = {
+  content: { icon: Video, label: 'Content', colorVar: '--color-calendar-content' },
+  task: { icon: CheckSquare, label: 'Task', colorVar: '--color-calendar-task' },
+  interview: { icon: Briefcase, label: 'Interview', colorVar: '--color-calendar-interview' },
+  lead: { icon: Users, label: 'Lead', colorVar: '--color-calendar-lead' },
+  milestone: { icon: Target, label: 'Milestone', colorVar: '--color-calendar-milestone' }
+}
 
 const STATUS_COLORS = {
   idea: 'bg-gray-500/20 text-gray-300',
@@ -23,11 +32,24 @@ const URL_ICONS = {
   other: { icon: Link2, color: 'text-gray-400' }
 }
 
-export const ListView = memo(function ListView({ contents, onEdit, onDelete, onOpenDetail }) {
+export const ListView = memo(function ListView({
+  contents,
+  items = [],
+  calendarFilters = { contents: true, tasks: false, jobs: false, leads: false, milestones: false },
+  onEdit,
+  onDelete,
+  onOpenDetail,
+  onItemClick
+}) {
   const [statusFilter, setStatusFilter] = useState('all')
   const [typeFilter, setTypeFilter] = useState('all')
   const [sortField, setSortField] = useState('scheduledDate')
   const [sortDirection, setSortDirection] = useState('asc')
+
+  // Check if any non-content filters are active
+  const hasActiveItemFilters = useMemo(() => {
+    return calendarFilters.tasks || calendarFilters.jobs || calendarFilters.leads || calendarFilters.milestones
+  }, [calendarFilters])
 
   const filteredAndSortedContents = useMemo(() => {
     let result = [...contents]
@@ -63,6 +85,21 @@ export const ListView = memo(function ListView({ contents, onEdit, onDelete, onO
 
     return result
   }, [contents, statusFilter, typeFilter, sortField, sortDirection])
+
+  // Filter and sort calendar items (tasks, jobs, leads, milestones)
+  const filteredAndSortedItems = useMemo(() => {
+    if (!hasActiveItemFilters) return []
+
+    let result = [...items].sort((a, b) => {
+      const aVal = a.date || ''
+      const bVal = b.date || ''
+      if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1
+      if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1
+      return 0
+    })
+
+    return result
+  }, [items, hasActiveItemFilters, sortDirection])
 
   const handleSort = useCallback((field) => {
     if (sortField === field) {
@@ -116,7 +153,7 @@ export const ListView = memo(function ListView({ contents, onEdit, onDelete, onO
         </select>
 
         <span className="text-sm text-text-muted ml-auto">
-          {filteredAndSortedContents.length} items
+          {filteredAndSortedContents.length + filteredAndSortedItems.length} items
         </span>
       </div>
 
@@ -152,6 +189,38 @@ export const ListView = memo(function ListView({ contents, onEdit, onDelete, onO
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Calendar Items Section (Tasks, Jobs, Leads, Milestones) */}
+      {hasActiveItemFilters && (
+        <div className="bg-bg-secondary border border-border rounded-xl overflow-hidden">
+          {/* Header */}
+          <div className="grid grid-cols-[1fr_120px_120px_80px] gap-4 px-4 py-3 bg-bg-tertiary/50 border-b border-border text-sm text-text-muted font-medium">
+            <span>Title</span>
+            <span>Type</span>
+            <span>Date</span>
+            <span>Module</span>
+          </div>
+
+          {/* Rows */}
+          <div className="divide-y divide-border/50">
+            <AnimatePresence>
+              {filteredAndSortedItems.length === 0 ? (
+                <div className="px-4 py-8 text-center text-text-muted">
+                  No scheduled items match the active filters
+                </div>
+              ) : (
+                filteredAndSortedItems.map(item => (
+                  <CalendarItemRow
+                    key={item.id}
+                    item={item}
+                    onClick={onItemClick}
+                  />
+                ))
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      )}
     </div>
   )
 })
@@ -236,6 +305,74 @@ const ListRow = memo(function ListRow({ content, onEdit, onOpenDetail }) {
             {content.comments.length}
           </span>
         )}
+      </div>
+    </motion.div>
+  )
+})
+
+// Calendar item row for tasks, jobs, leads, milestones
+const CalendarItemRow = memo(function CalendarItemRow({ item, onClick }) {
+  const config = ITEM_TYPE_CONFIG[item.type] || ITEM_TYPE_CONFIG.task
+  const Icon = config.icon
+
+  const formattedDate = item.date
+    ? format(parseISO(item.date), 'MMM d, yyyy')
+    : '-'
+
+  const moduleLabels = {
+    schedule: 'Schedule',
+    taskboards: 'Task Boards',
+    jobs: 'Jobs',
+    leads: 'Leads',
+    skillmastery: 'Skill Mastery'
+  }
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={() => onClick?.(item)}
+      className="grid grid-cols-[1fr_120px_120px_80px] gap-4 px-4 py-3 hover:bg-bg-tertiary/30 cursor-pointer transition-colors"
+    >
+      {/* Title */}
+      <div className="flex items-center gap-3 min-w-0">
+        <div
+          className="p-1.5 rounded-lg shrink-0"
+          style={{ backgroundColor: `color-mix(in srgb, var(${config.colorVar}) 20%, transparent)` }}
+        >
+          <Icon size={14} style={{ color: `var(${config.colorVar})` }} />
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-text-primary truncate">{item.title}</p>
+          {item.subtitle && (
+            <p className="text-xs text-text-muted truncate">{item.subtitle}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Type */}
+      <div className="flex items-center">
+        <span
+          className="px-2 py-0.5 rounded text-xs font-medium"
+          style={{
+            backgroundColor: `color-mix(in srgb, var(${config.colorVar}) 20%, transparent)`,
+            color: `var(${config.colorVar})`
+          }}
+        >
+          {config.label}
+        </span>
+      </div>
+
+      {/* Date */}
+      <div className="flex items-center text-sm text-text-muted">
+        {formattedDate}
+      </div>
+
+      {/* Module */}
+      <div className="flex items-center text-xs text-text-muted">
+        {moduleLabels[item.module] || item.module}
       </div>
     </motion.div>
   )

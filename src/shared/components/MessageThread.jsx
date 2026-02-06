@@ -80,10 +80,10 @@ export function MessageThread({ messages, loading, emptyMessage = 'No messages y
     return (
       <div className="space-y-3">
         {[1, 2, 3].map(i => (
-          <div key={i} className="animate-pulse border border-white/10 rounded-lg p-4">
-            <div className="h-4 bg-white/10 rounded w-1/4 mb-2" />
-            <div className="h-3 bg-white/10 rounded w-3/4 mb-1" />
-            <div className="h-3 bg-white/10 rounded w-1/2" />
+          <div key={i} className="animate-pulse border border-border rounded-lg p-4">
+            <div className="h-4 bg-bg-tertiary rounded w-1/4 mb-2" />
+            <div className="h-3 bg-bg-tertiary rounded w-3/4 mb-1" />
+            <div className="h-3 bg-bg-tertiary rounded w-1/2" />
           </div>
         ))}
       </div>
@@ -92,7 +92,7 @@ export function MessageThread({ messages, loading, emptyMessage = 'No messages y
 
   if (!messages || messages.length === 0) {
     return (
-      <div className="text-center py-8 text-white/40">
+      <div className="text-center py-8 text-text-muted">
         <Mail className="w-8 h-8 mx-auto mb-2 opacity-50" />
         <p>{emptyMessage}</p>
       </div>

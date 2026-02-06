@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import {
   LeadBoard,
   LeadDetailPanel,
@@ -10,12 +11,20 @@ import {
 } from '../../modules/leads'
 import { useTaskBoards } from '../../modules/taskboards'
 import { FileText } from 'lucide-react'
+import { toast } from 'sonner'
 
-export function LeadsView() {
+export function LeadsView({ onNavigateToBoard }) {
+  const { leadId } = useParams()
+  const navigate = useNavigate()
   const { leads, createLead, updateLead, deleteLead, changeStatus, importLeads } = useLeads()
-  const { createBoardFromLead } = useTaskBoards()
+  const { boards, createBoardFromLead, getBoardByLeadId } = useTaskBoards()
 
-  const [selectedLead, setSelectedLead] = useState(null)
+  // Get selected lead from URL params
+  const selectedLead = useMemo(() => {
+    if (!leadId) return null
+    return leads.find(l => l.id === leadId) || null
+  }, [leadId, leads])
+
   const [showAddModal, setShowAddModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
   const [showEmailComposer, setShowEmailComposer] = useState(false)
@@ -23,7 +32,7 @@ export function LeadsView() {
   const [editingLead, setEditingLead] = useState(null)
 
   const handleLeadClick = (lead) => {
-    setSelectedLead(lead)
+    navigate(`/leads/${lead.id}`)
   }
 
   const handleAddLead = () => {
@@ -34,7 +43,7 @@ export function LeadsView() {
   const handleEditLead = (lead) => {
     setEditingLead(lead)
     setShowAddModal(true)
-    setSelectedLead(null)
+    navigate('/leads')
   }
 
   const handleSaveLead = async (data) => {
@@ -48,28 +57,57 @@ export function LeadsView() {
   const handleDeleteLead = async (lead) => {
     if (confirm(`Delete ${lead.name}? This cannot be undone.`)) {
       await deleteLead(lead.id)
-      setSelectedLead(null)
+      navigate('/leads')
     }
   }
 
   const handleSendEmail = (lead) => {
-    setSelectedLead(null)
+    navigate('/leads')
     setShowEmailComposer(true)
     // Store the lead for email composer
     window.__emailComposerLead = lead
   }
 
   const handleCreateBoard = async (lead) => {
-    await createBoardFromLead(lead)
-    setSelectedLead(null)
+    // Check if board already exists
+    const existingBoard = getBoardByLeadId(lead.id)
+    if (existingBoard) {
+      toast.info('Board already exists for this lead')
+      handleViewBoard(existingBoard.id)
+      return
+    }
+
+    const board = await createBoardFromLead(lead)
+    if (board) {
+      toast.success('Board created successfully!')
+      // linkedBoardId will be updated in the leads state automatically
+    }
   }
+
+  const handleViewBoard = (boardIdOrBoard) => {
+    const boardId = typeof boardIdOrBoard === 'string' ? boardIdOrBoard : boardIdOrBoard?.id
+    if (boardId && onNavigateToBoard) {
+      navigate('/leads')
+      onNavigateToBoard(boardId)
+    } else {
+      toast.error('Could not find the board')
+    }
+  }
+
+  // Get linked board for selected lead
+  const linkedBoard = useMemo(() => {
+    if (!selectedLead) return null
+    // First check linkedBoardId on lead
+    if (selectedLead.linkedBoardId) {
+      return boards.find(b => b.id === selectedLead.linkedBoardId) || null
+    }
+    // Fallback: check if any board has this leadId
+    return getBoardByLeadId(selectedLead.id) || null
+  }, [selectedLead, boards, getBoardByLeadId])
 
   const handleStatusChange = async (leadId, newStatus) => {
     await changeStatus(leadId, newStatus)
-    // Update selected lead if it's the one being changed
-    if (selectedLead?.id === leadId) {
-      setSelectedLead(prev => ({ ...prev, status: newStatus }))
-    }
+    // selectedLead will be updated automatically via leads state
   }
 
   const handleImport = async (leadsData) => {
@@ -97,12 +135,14 @@ export function LeadsView() {
       <LeadDetailPanel
         lead={selectedLead}
         isOpen={!!selectedLead}
-        onClose={() => setSelectedLead(null)}
+        onClose={() => navigate('/leads')}
         onEdit={handleEditLead}
         onDelete={handleDeleteLead}
         onSendEmail={handleSendEmail}
         onCreateBoard={handleCreateBoard}
+        onViewBoard={handleViewBoard}
         onStatusChange={handleStatusChange}
+        linkedBoard={linkedBoard}
       />
 
       {/* Add/Edit Lead Modal */}

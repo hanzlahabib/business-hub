@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Mail, Server, Key, AlertCircle, CheckCircle, Loader2, TestTube } from 'lucide-react'
 
-const JSON_SERVER = 'http://localhost:3001'
+const JSON_SERVER = 'http://localhost:3005'
 const API_SERVER = 'http://localhost:3002'
 
 const providers = [

@@ -49,15 +49,15 @@ function JobCardComponent({ job, onClick }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       onClick={() => onClick(job)}
-      className="p-3 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 hover:border-white/20 cursor-pointer transition-all group"
+      className="p-3 bg-bg-secondary hover:bg-bg-tertiary rounded-lg border border-border hover:border-border-hover cursor-pointer transition-all group"
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-2">
         <div className="flex-1 min-w-0">
-          <h4 className="font-medium text-white truncate group-hover:text-blue-300 transition-colors">
+          <h4 className="font-medium text-text-primary truncate group-hover:text-blue-400 transition-colors">
             {job.role || 'Untitled Position'}
           </h4>
-          <div className="flex items-center gap-1.5 text-white/60 text-sm">
+          <div className="flex items-center gap-1.5 text-text-muted text-sm">
             <Building2 className="w-3 h-3 flex-shrink-0" />
             <span className="truncate">{job.company || 'Unknown Company'}</span>
           </div>
@@ -77,7 +77,7 @@ function JobCardComponent({ job, onClick }) {
       <div className="flex flex-wrap gap-2 text-xs">
         {/* Location */}
         {job.location && (
-          <span className="flex items-center gap-1 text-white/50">
+          <span className="flex items-center gap-1 text-text-muted">
             <MapPin className="w-3 h-3" />
             {job.locationType === 'remote' ? '🌍 Remote' : job.location}
           </span>
@@ -104,7 +104,7 @@ function JobCardComponent({ job, onClick }) {
             </span>
           ))}
           {job.skills.length > 4 && (
-            <span className="px-1.5 py-0.5 text-white/40 text-xs">
+            <span className="px-1.5 py-0.5 text-text-muted text-xs">
               +{job.skills.length - 4}
             </span>
           )}
@@ -112,7 +112,7 @@ function JobCardComponent({ job, onClick }) {
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5">
+      <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
         <div className="flex items-center gap-2">
           {/* Source */}
           <span className="text-xs" title={source?.name}>
@@ -121,14 +121,14 @@ function JobCardComponent({ job, onClick }) {
 
           {/* Experience level */}
           {job.experienceLevel && (
-            <span className="text-xs text-white/40 px-1.5 py-0.5 bg-white/5 rounded">
+            <span className="text-xs text-text-muted px-1.5 py-0.5 bg-bg-tertiary rounded">
               {job.experienceLevel}
             </span>
           )}
         </div>
 
         {/* Time indicator */}
-        <div className="flex items-center gap-1 text-white/40 text-xs">
+        <div className="flex items-center gap-1 text-text-muted text-xs">
           <Clock className="w-3 h-3" />
           {job.status === 'saved' && daysSinceCreated !== null && (
             <span>{daysSinceCreated}d saved</span>
@@ -149,7 +149,7 @@ function JobCardComponent({ job, onClick }) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-2 right-2 p-1 opacity-0 group-hover:opacity-100 text-white/40 hover:text-white transition-all"
+          className="absolute top-2 right-2 p-1 opacity-0 group-hover:opacity-100 text-text-muted hover:text-text-primary transition-all"
         >
           <ExternalLink className="w-3 h-3" />
         </a>

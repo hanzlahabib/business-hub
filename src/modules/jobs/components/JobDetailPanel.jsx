@@ -69,10 +69,10 @@ export function JobDetailPanel({
           exit={{ x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-lg h-full bg-zinc-900 border-l border-white/10 shadow-2xl overflow-hidden flex flex-col"
+          className="w-full max-w-lg h-full bg-bg-primary border-l border-border shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="p-6 border-b border-white/10">
+          <div className="p-6 border-b border-border">
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
@@ -92,16 +92,16 @@ export function JobDetailPanel({
                   )}
                 </div>
                 <h2 className="text-xl font-bold text-white">{job.role}</h2>
-                <div className="flex items-center gap-2 text-white/60 mt-1">
+                <div className="flex items-center gap-2 text-text-muted mt-1">
                   <Building2 className="w-4 h-4" />
                   <span>{job.company}</span>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-white/60" />
+                <X className="w-5 h-5 text-text-muted" />
               </button>
             </div>
 
@@ -109,7 +109,7 @@ export function JobDetailPanel({
             <div className="flex gap-2">
               <button
                 onClick={() => onEdit(job)}
-                className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white/70 hover:bg-white/10 transition-colors"
+                className="flex items-center gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg text-sm text-text-secondary hover:bg-bg-tertiary transition-colors"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
@@ -128,7 +128,7 @@ export function JobDetailPanel({
                   href={job.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white/70 hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg text-sm text-text-secondary hover:bg-bg-tertiary transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
                   View Job
@@ -147,7 +147,7 @@ export function JobDetailPanel({
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {/* Status Change */}
             <div>
-              <h3 className="text-sm font-medium text-white/60 mb-3">Move to Stage</h3>
+              <h3 className="text-sm font-medium text-text-muted mb-3">Move to Stage</h3>
               <div className="flex flex-wrap gap-2">
                 {Object.values(JOB_STATUS_MAP).map(s => (
                   <button
@@ -155,7 +155,7 @@ export function JobDetailPanel({
                     onClick={() => onStatusChange(job.id, s.id)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                       job.status === s.id
-                        ? 'ring-2 ring-offset-2 ring-offset-zinc-900'
+                        ? 'ring-2 ring-offset-2 ring-offset-bg-primary'
                         : 'hover:opacity-80'
                     }`}
                     style={{
@@ -172,12 +172,12 @@ export function JobDetailPanel({
 
             {/* Job Details */}
             <div className="space-y-4">
-              <h3 className="text-sm font-medium text-white/60">Details</h3>
+              <h3 className="text-sm font-medium text-text-muted">Details</h3>
 
               <div className="grid grid-cols-2 gap-4">
                 {/* Location */}
-                <div className="p-3 bg-white/5 rounded-lg">
-                  <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                <div className="p-3 bg-bg-secondary rounded-lg">
+                  <div className="flex items-center gap-2 text-text-muted text-xs mb-1">
                     <MapPin className="w-3 h-3" />
                     Location
                   </div>
@@ -187,8 +187,8 @@ export function JobDetailPanel({
                 </div>
 
                 {/* Salary */}
-                <div className="p-3 bg-white/5 rounded-lg">
-                  <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                <div className="p-3 bg-bg-secondary rounded-lg">
+                  <div className="flex items-center gap-2 text-text-muted text-xs mb-1">
                     <DollarSign className="w-3 h-3" />
                     Salary
                   </div>
@@ -198,8 +198,8 @@ export function JobDetailPanel({
                 </div>
 
                 {/* Source */}
-                <div className="p-3 bg-white/5 rounded-lg">
-                  <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                <div className="p-3 bg-bg-secondary rounded-lg">
+                  <div className="flex items-center gap-2 text-text-muted text-xs mb-1">
                     <Link2 className="w-3 h-3" />
                     Source
                   </div>
@@ -209,8 +209,8 @@ export function JobDetailPanel({
                 </div>
 
                 {/* Experience */}
-                <div className="p-3 bg-white/5 rounded-lg">
-                  <div className="flex items-center gap-2 text-white/40 text-xs mb-1">
+                <div className="p-3 bg-bg-secondary rounded-lg">
+                  <div className="flex items-center gap-2 text-text-muted text-xs mb-1">
                     <User className="w-3 h-3" />
                     Level
                   </div>
@@ -221,14 +221,14 @@ export function JobDetailPanel({
               </div>
 
               {/* Timeline */}
-              <div className="p-3 bg-white/5 rounded-lg space-y-2">
-                <div className="flex items-center gap-2 text-white/40 text-xs">
+              <div className="p-3 bg-bg-secondary rounded-lg space-y-2">
+                <div className="flex items-center gap-2 text-text-muted text-xs">
                   <Calendar className="w-3 h-3" />
                   Timeline
                 </div>
                 <div className="space-y-1 text-sm">
                   {job.createdAt && (
-                    <p className="text-white/60">
+                    <p className="text-text-muted">
                       Saved: {format(new Date(job.createdAt), 'MMM d, yyyy')}
                     </p>
                   )}
@@ -244,7 +244,7 @@ export function JobDetailPanel({
             {/* Skills */}
             {job.skills && job.skills.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium text-white/60 mb-3">Required Skills</h3>
+                <h3 className="text-sm font-medium text-text-muted mb-3">Required Skills</h3>
                 <div className="flex flex-wrap gap-2">
                   {job.skills.map(skill => (
                     <span
@@ -261,17 +261,17 @@ export function JobDetailPanel({
             {/* Contact Info */}
             {(job.contactPerson || job.contactEmail) && (
               <div>
-                <h3 className="text-sm font-medium text-white/60 mb-3">Contact</h3>
-                <div className="p-3 bg-white/5 rounded-lg space-y-2">
+                <h3 className="text-sm font-medium text-text-muted mb-3">Contact</h3>
+                <div className="p-3 bg-bg-secondary rounded-lg space-y-2">
                   {job.contactPerson && (
                     <div className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-white/40" />
+                      <User className="w-4 h-4 text-text-muted" />
                       <span className="text-white text-sm">{job.contactPerson}</span>
                     </div>
                   )}
                   {job.contactEmail && (
                     <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-white/40" />
+                      <Mail className="w-4 h-4 text-text-muted" />
                       <a
                         href={`mailto:${job.contactEmail}`}
                         className="text-blue-400 text-sm hover:underline"
@@ -286,7 +286,7 @@ export function JobDetailPanel({
 
             {/* Interview Dates */}
             <div>
-              <h3 className="text-sm font-medium text-white/60 mb-3">Interview Schedule</h3>
+              <h3 className="text-sm font-medium text-text-muted mb-3">Interview Schedule</h3>
               <div className="space-y-2">
                 {job.interviewDates && job.interviewDates.length > 0 ? (
                   job.interviewDates.map((date, idx) => (
@@ -306,7 +306,7 @@ export function JobDetailPanel({
                     </div>
                   ))
                 ) : (
-                  <p className="text-white/40 text-sm">No interviews scheduled</p>
+                  <p className="text-text-muted text-sm">No interviews scheduled</p>
                 )}
 
                 {/* Add Interview */}
@@ -315,7 +315,7 @@ export function JobDetailPanel({
                     type="datetime-local"
                     value={newInterviewDate}
                     onChange={(e) => setNewInterviewDate(e.target.value)}
-                    className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-amber-500"
+                    className="flex-1 px-3 py-2 bg-bg-secondary border border-border rounded-lg text-white text-sm focus:outline-none focus:border-amber-500"
                   />
                   <button
                     onClick={handleAddInterview}
@@ -331,9 +331,9 @@ export function JobDetailPanel({
             {/* Notes */}
             {job.notes && (
               <div>
-                <h3 className="text-sm font-medium text-white/60 mb-3">Notes</h3>
-                <div className="p-3 bg-white/5 rounded-lg">
-                  <p className="text-white/80 text-sm whitespace-pre-wrap">{job.notes}</p>
+                <h3 className="text-sm font-medium text-text-muted mb-3">Notes</h3>
+                <div className="p-3 bg-bg-secondary rounded-lg">
+                  <p className="text-text-secondary text-sm whitespace-pre-wrap">{job.notes}</p>
                 </div>
               </div>
             )}

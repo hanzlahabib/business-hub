@@ -78,21 +78,21 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-xl max-h-[85vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl"
+          className="w-full max-w-xl max-h-[85vh] overflow-y-auto bg-bg-primary border border-border rounded-2xl shadow-2xl"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/10">
+          <div className="flex items-center justify-between p-6 border-b border-border">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-500/20 rounded-lg">
                 <LayoutGrid className="w-5 h-5 text-blue-400" />
               </div>
-              <h2 className="text-xl font-bold text-white">Create Board</h2>
+              <h2 className="text-xl font-bold text-text-primary">Create Board</h2>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-white/60" />
+              <X className="w-5 h-5 text-text-secondary" />
             </button>
           </div>
 
@@ -100,13 +100,13 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             {/* Board Name */}
             <div>
-              <label className="text-sm text-white/60 mb-2 block">Board Name *</label>
+              <label className="text-sm text-text-muted mb-2 block">Board Name *</label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
+                className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-hover"
                 placeholder="e.g., Website Redesign Project"
               />
             </div>
@@ -114,7 +114,7 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
             {/* Link to Lead (optional) */}
             {leads.length > 0 && (
               <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                   <Users className="w-4 h-4" />
                   Link to Lead (optional)
                 </label>
@@ -127,7 +127,7 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
                       setName(`${lead.name} Project`)
                     }
                   }}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-white/30"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-border-hover"
                 >
                   <option value="">No lead (standalone board)</option>
                   {leads.filter(l => !l.linkedBoardId).map(lead => (
@@ -142,7 +142,7 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
             {/* Columns */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm text-white/60">Columns</label>
+                <label className="text-sm text-text-muted">Columns</label>
                 <button
                   type="button"
                   onClick={handleAddColumn}
@@ -157,7 +157,7 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
                 {columns.map((col, index) => (
                   <div
                     key={col.id}
-                    className="flex items-center gap-2 p-2 bg-white/5 rounded-lg"
+                    className="flex items-center gap-2 p-2 bg-bg-secondary rounded-lg"
                   >
                     {/* Color picker */}
                     <div className="relative">
@@ -174,7 +174,7 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
                       type="text"
                       value={col.name}
                       onChange={(e) => handleColumnChange(col.id, 'name', e.target.value)}
-                      className="flex-1 px-3 py-1.5 bg-white/5 border border-white/10 rounded text-white text-sm focus:outline-none focus:border-white/30"
+                      className="flex-1 px-3 py-1.5 bg-bg-tertiary border border-border rounded text-text-primary text-sm focus:outline-none focus:border-border-hover"
                     />
 
                     {/* Delete */}
@@ -193,7 +193,7 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
 
             {/* Quick presets */}
             <div>
-              <p className="text-xs text-white/40 mb-2">Quick Presets:</p>
+              <p className="text-xs text-text-muted mb-2">Quick Presets:</p>
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
@@ -202,7 +202,7 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
                     { id: 'inprogress', name: 'In Progress', color: '#3B82F6' },
                     { id: 'done', name: 'Done', color: '#10B981' }
                   ])}
-                  className="px-2 py-1 bg-white/5 text-white/50 rounded text-xs hover:bg-white/10"
+                  className="px-2 py-1 bg-bg-secondary text-text-muted rounded text-xs hover:bg-bg-tertiary"
                 >
                   Simple (3)
                 </button>
@@ -215,7 +215,7 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
                     { id: 'review', name: 'Review', color: '#F59E0B' },
                     { id: 'done', name: 'Done', color: '#10B981' }
                   ])}
-                  className="px-2 py-1 bg-white/5 text-white/50 rounded text-xs hover:bg-white/10"
+                  className="px-2 py-1 bg-bg-secondary text-text-muted rounded text-xs hover:bg-bg-tertiary"
                 >
                   Agile (5)
                 </button>
@@ -227,7 +227,7 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
                     { id: 'testing', name: 'Testing', color: '#F59E0B' },
                     { id: 'deployment', name: 'Deployment', color: '#10B981' }
                   ])}
-                  className="px-2 py-1 bg-white/5 text-white/50 rounded text-xs hover:bg-white/10"
+                  className="px-2 py-1 bg-bg-secondary text-text-muted rounded text-xs hover:bg-bg-tertiary"
                 >
                   Web Project (4)
                 </button>
@@ -235,11 +235,11 @@ export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
+            <div className="flex justify-end gap-3 pt-4 border-t border-border">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2.5 text-white/60 hover:text-white transition-colors"
+                className="px-6 py-2.5 text-text-secondary hover:text-text-primary transition-colors"
               >
                 Cancel
               </button>

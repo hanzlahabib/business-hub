@@ -1,0 +1,320 @@
+import { useState, useCallback, useMemo } from 'react'
+import { toast } from 'sonner'
+import { LayoutGrid, List, Plus, AlertCircle } from 'lucide-react'
+import { TemplateBoard } from '../../modules/templates/components/TemplateBoard'
+import { TemplateList } from '../../modules/templates/components/TemplateList'
+import { TemplateDetailPanel } from '../../modules/templates/components/TemplateDetailPanel'
+import { AddTemplateModal } from '../../modules/templates/components/AddTemplateModal'
+import { FolderTree } from '../../modules/templates/components/FolderTree'
+import { useTemplates } from '../../modules/templates/hooks/useTemplates'
+import { useTemplateFolders } from '../../modules/templates/hooks/useTemplateFolders'
+import { useConfirmDialog } from '../../hooks/useConfirmDialog'
+import { AlertDialog } from '../../components/UI'
+import { LoadingSkeleton } from '../../components/UI/LoadingSkeleton'
+import { LoadingSpinner } from '../../components/UI/LoadingSpinner'
+import { EmptyState } from '../../components/UI/EmptyState'
+
+export function TemplatesView() {
+  const {
+    templates,
+    loading,
+    error,
+    fetchTemplates,
+    createTemplate,
+    updateTemplate,
+    deleteTemplate,
+    toggleFavorite,
+    togglePinned,
+    incrementUsage
+  } = useTemplates()
+
+  const { folders, createFolder, updateFolder, deleteFolder } = useTemplateFolders()
+  const { dialogState, confirm, close: closeDialog } = useConfirmDialog()
+
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [editingTemplate, setEditingTemplate] = useState(null)
+  const [selectedTemplate, setSelectedTemplate] = useState(null)
+  const [defaultCategory, setDefaultCategory] = useState(null)
+  const [view, setView] = useState('board') // 'board' | 'list'
+  const [selectedFolderId, setSelectedFolderId] = useState(null)
+  const [activeFilter, setActiveFilter] = useState('all') // 'all' | 'favorites' | 'recent'
+
+  // Filter templates based on folder/filter selection
+  const filteredTemplates = useMemo(() => {
+    let result = templates
+
+    if (selectedFolderId) {
+      result = result.filter(t => t.folderId === selectedFolderId)
+    } else if (activeFilter === 'favorites') {
+      result = result.filter(t => t.isFavorite)
+    } else if (activeFilter === 'recent') {
+      result = result
+        .filter(t => t.lastUsedAt)
+        .sort((a, b) => new Date(b.lastUsedAt) - new Date(a.lastUsedAt))
+        .slice(0, 10)
+    }
+
+    return result
+  }, [templates, selectedFolderId, activeFilter])
+
+  const handleAddClick = useCallback((category = null) => {
+    setDefaultCategory(category)
+    setEditingTemplate(null)
+    setShowAddModal(true)
+  }, [])
+
+  const handleEditTemplate = useCallback((template) => {
+    setEditingTemplate(template)
+    setShowAddModal(true)
+    setSelectedTemplate(null)
+  }, [])
+
+  const handleSaveTemplate = useCallback(async (templateData) => {
+    if (editingTemplate) {
+      await updateTemplate(editingTemplate.id, templateData)
+      toast.success('Template updated')
+    } else {
+      const data = {
+        ...templateData,
+        ...(defaultCategory && { category: defaultCategory }),
+        ...(selectedFolderId && { folderId: selectedFolderId })
+      }
+      await createTemplate(data)
+      toast.success('Template created')
+    }
+    setShowAddModal(false)
+    setEditingTemplate(null)
+    setDefaultCategory(null)
+  }, [editingTemplate, defaultCategory, selectedFolderId, createTemplate, updateTemplate])
+
+  const handleDeleteTemplate = useCallback(async (id) => {
+    const confirmed = await confirm({
+      title: 'Delete Template',
+      message: 'Are you sure you want to delete this template? This action cannot be undone.',
+      variant: 'danger',
+      confirmText: 'Delete',
+      cancelText: 'Cancel'
+    })
+    if (confirmed) {
+      await deleteTemplate(id)
+      setSelectedTemplate(null)
+      toast.success('Template deleted')
+    }
+  }, [confirm, deleteTemplate])
+
+  const handleCopyTemplate = useCallback(async (template) => {
+    await navigator.clipboard.writeText(template.rawMarkdown || '')
+    await incrementUsage(template.id)
+    toast.success('Copied to clipboard')
+  }, [incrementUsage])
+
+  const handleTemplateClick = useCallback((template) => {
+    setSelectedTemplate(template)
+  }, [])
+
+  const handleToggleFavorite = useCallback(async (id) => {
+    await toggleFavorite(id)
+    if (selectedTemplate?.id === id) {
+      const updated = templates.find(t => t.id === id)
+      setSelectedTemplate(updated)
+    }
+  }, [toggleFavorite, selectedTemplate, templates])
+
+  const handleTogglePinned = useCallback(async (id) => {
+    await togglePinned(id)
+    if (selectedTemplate?.id === id) {
+      const updated = templates.find(t => t.id === id)
+      setSelectedTemplate(updated)
+    }
+  }, [togglePinned, selectedTemplate, templates])
+
+  const handleUpdateTemplate = useCallback(async (id, updates) => {
+    await updateTemplate(id, updates)
+    toast.success('Template saved')
+  }, [updateTemplate])
+
+  const handleDeleteFolder = useCallback(async (folderId) => {
+    const templatesInFolder = templates.filter(t => t.folderId === folderId)
+    const confirmed = await confirm({
+      title: 'Delete Folder',
+      message: templatesInFolder.length > 0
+        ? `This folder contains ${templatesInFolder.length} templates. They will be moved to "No folder". Continue?`
+        : 'Are you sure you want to delete this folder?',
+      variant: 'danger',
+      confirmText: 'Delete',
+      cancelText: 'Cancel'
+    })
+    if (confirmed) {
+      // Move templates to no folder
+      for (const t of templatesInFolder) {
+        await updateTemplate(t.id, { folderId: null })
+      }
+      await deleteFolder(folderId)
+      if (selectedFolderId === folderId) {
+        setSelectedFolderId(null)
+      }
+      toast.success('Folder deleted')
+    }
+  }, [confirm, templates, updateTemplate, deleteFolder, selectedFolderId])
+
+  // Keep selected template in sync
+  const currentSelectedTemplate = selectedTemplate
+    ? templates.find(t => t.id === selectedTemplate.id) || null
+    : null
+
+  // Get current view title
+  const viewTitle = useMemo(() => {
+    if (selectedFolderId) {
+      const folder = folders.find(f => f.id === selectedFolderId)
+      return folder?.name || 'Folder'
+    }
+    if (activeFilter === 'favorites') return 'Favorites'
+    if (activeFilter === 'recent') return 'Recently Used'
+    return 'All Templates'
+  }, [selectedFolderId, activeFilter, folders])
+
+  return (
+    <div className="h-full flex">
+      {/* Sidebar */}
+      <FolderTree
+        folders={folders}
+        templates={templates}
+        selectedFolderId={selectedFolderId}
+        activeFilter={activeFilter}
+        onFolderSelect={setSelectedFolderId}
+        onFilterSelect={setActiveFilter}
+        onCreateFolder={createFolder}
+        onEditFolder={updateFolder}
+        onDeleteFolder={handleDeleteFolder}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <div>
+            <h2 className="text-lg font-semibold text-text-primary">{viewTitle}</h2>
+            <p className="text-sm text-text-muted">{filteredTemplates.length} templates</p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* View Toggle */}
+            <div className="flex items-center bg-bg-tertiary rounded-lg p-1">
+              <button
+                onClick={() => setView('board')}
+                className={`p-2 rounded-lg transition-colors ${
+                  view === 'board'
+                    ? 'bg-accent-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
+                }`}
+                title="Board view"
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setView('list')}
+                className={`p-2 rounded-lg transition-colors ${
+                  view === 'list'
+                    ? 'bg-accent-primary text-white'
+                    : 'text-text-muted hover:text-text-primary'
+                }`}
+                title="List view"
+              >
+                <List className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Add Button */}
+            <button
+              onClick={() => handleAddClick()}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg text-sm font-medium text-white hover:opacity-90 transition-opacity"
+            >
+              <Plus className="w-4 h-4" />
+              New Template
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-hidden">
+          {loading && templates.length === 0 ? (
+            <div className="flex-1 p-4 overflow-x-auto">
+              <div className="flex gap-4 h-full">
+                {view === 'board' ? (
+                  [...Array(5)].map((_, i) => (
+                    <LoadingSkeleton key={i} variant="board" />
+                  ))
+                ) : (
+                  <div className="w-full space-y-2">
+                    {[...Array(5)].map((_, i) => (
+                      <LoadingSkeleton key={i} variant="list" />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : error ? (
+            <div className="h-full flex items-center justify-center">
+              <EmptyState
+                icon={AlertCircle}
+                title="Failed to Load Templates"
+                description={error}
+                action={{
+                  label: 'Try Again',
+                  onClick: fetchTemplates,
+                  variant: 'primary'
+                }}
+              />
+            </div>
+          ) : view === 'board' ? (
+            <TemplateBoard
+              templates={filteredTemplates}
+              onTemplateClick={handleTemplateClick}
+              onAddClick={handleAddClick}
+              onCopy={handleCopyTemplate}
+            />
+          ) : (
+            <TemplateList
+              templates={filteredTemplates}
+              onTemplateClick={handleTemplateClick}
+              onCopy={handleCopyTemplate}
+              onToggleFavorite={handleToggleFavorite}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Modals */}
+      <AddTemplateModal
+        isOpen={showAddModal}
+        onClose={() => {
+          setShowAddModal(false)
+          setEditingTemplate(null)
+          setDefaultCategory(null)
+        }}
+        onSave={handleSaveTemplate}
+        editTemplate={editingTemplate}
+        folders={folders}
+      />
+
+      <TemplateDetailPanel
+        template={currentSelectedTemplate}
+        isOpen={!!currentSelectedTemplate}
+        onClose={() => setSelectedTemplate(null)}
+        onEdit={handleEditTemplate}
+        onDelete={handleDeleteTemplate}
+        onCopy={handleCopyTemplate}
+        onToggleFavorite={handleToggleFavorite}
+        onTogglePinned={handleTogglePinned}
+        onUpdate={handleUpdateTemplate}
+      />
+
+      <AlertDialog
+        {...dialogState}
+        onClose={closeDialog}
+      />
+    </div>
+  )
+}
+
+export default TemplatesView

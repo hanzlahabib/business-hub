@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 
-const JSON_SERVER = 'http://localhost:3001'
+const JSON_SERVER = 'http://localhost:3005'
 const API_SERVER = 'http://localhost:3002'
 
 export function useMessages() {

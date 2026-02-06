@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { JOB_STATUSES } from '../constants/pipelineStages'
 
-const JSON_SERVER = 'http://localhost:3001'
+const JSON_SERVER = 'http://localhost:3005'
 
 export function useJobs() {
   const [jobs, setJobs] = useState([])

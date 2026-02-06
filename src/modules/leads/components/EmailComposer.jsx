@@ -69,21 +69,21 @@ export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl max-h-[90vh] overflow-hidden bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl flex flex-col"
+          className="w-full max-w-2xl max-h-[90vh] overflow-hidden bg-bg-primary border border-border rounded-2xl shadow-2xl flex flex-col"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/10">
+          <div className="flex items-center justify-between p-6 border-b border-border">
             <div>
-              <h2 className="text-xl font-bold text-white">Compose Email</h2>
-              <p className="text-sm text-white/50 mt-1">
+              <h2 className="text-xl font-bold text-text-primary">Compose Email</h2>
+              <p className="text-sm text-text-muted mt-1">
                 To: {lead.contactPerson || lead.name} &lt;{lead.email}&gt;
               </p>
             </div>
             <button
               onClick={handleClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-white/60" />
+              <X className="w-5 h-5 text-text-secondary" />
             </button>
           </div>
 
@@ -91,7 +91,7 @@ export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {/* Template Selection */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+              <label className="flex items-center gap-2 text-sm text-text-secondary mb-2">
                 <FileText className="w-4 h-4" />
                 Use Template
               </label>
@@ -101,7 +101,7 @@ export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
                   const template = templates.find(t => t.id === e.target.value)
                   setSelectedTemplate(template || null)
                 }}
-                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-white/30"
+                className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-border-hover"
               >
                 <option value="">No template (compose manually)</option>
                 {templates.map(t => (
@@ -114,12 +114,12 @@ export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
 
             {/* Subject */}
             <div>
-              <label className="text-sm text-white/60 mb-2 block">Subject *</label>
+              <label className="text-sm text-text-secondary mb-2 block">Subject *</label>
               <input
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
+                className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-hover"
                 placeholder="Email subject..."
               />
             </div>
@@ -127,7 +127,7 @@ export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
             {/* Body */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm text-white/60">Message *</label>
+                <label className="text-sm text-text-secondary">Message *</label>
                 <button
                   onClick={() => setShowPreview(!showPreview)}
                   className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300"
@@ -138,15 +138,15 @@ export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
               </div>
 
               {showPreview ? (
-                <div className="w-full min-h-[200px] px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white whitespace-pre-wrap">
-                  {body || <span className="text-white/30">No content</span>}
+                <div className="w-full min-h-[200px] px-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-primary whitespace-pre-wrap">
+                  {body || <span className="text-text-muted">No content</span>}
                 </div>
               ) : (
                 <textarea
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
                   rows={8}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 resize-none"
+                  className="w-full px-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-hover resize-none"
                   placeholder="Write your message..."
                 />
               )}
@@ -184,15 +184,15 @@ export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
           </div>
 
           {/* Footer */}
-          <div className="flex justify-between items-center p-6 border-t border-white/10">
-            <p className="text-xs text-white/40">
+          <div className="flex justify-between items-center p-6 border-t border-border">
+            <p className="text-xs text-text-muted">
               Email will be sent via configured SMTP provider
             </p>
 
             <div className="flex items-center gap-3">
               <button
                 onClick={handleClose}
-                className="px-6 py-2.5 text-white/60 hover:text-white transition-colors"
+                className="px-6 py-2.5 text-text-secondary hover:text-text-primary transition-colors"
               >
                 Cancel
               </button>

@@ -1,0 +1,525 @@
+{
+  "planId": "brain-mastery-2025",
+  "title": "Master Your Mind, Master Your Life - 90-Day Transformation",
+  "subtitle": "Neuroscience-Based Personal Mastery with Islamic Integration",
+  "author": "Based on Emily McDonald (The Brain) + Islamic Principles",
+  "description": "A complete roadmap to rewire your brain, manifest your dreams, and build an exceptional life while staying deeply connected to Allah. This plan integrates cutting-edge neuroscience with timeless spiritual wisdom.",
+  "duration": "90 days",
+  "startDate": null,
+  "currentDay": 0,
+  "progress": 0,
+  "status": "not-started",
+
+  "corePhilosophy": {
+    "mission": "To understand Allah's greatest gift (your brain) and use it to become the best version He created you to be",
+    "vision": "A life where you master your mind, manifest your purpose, and serve humanity while being in constant gratitude to Allah",
+    "values": [
+      "Faith (Tawakkul) - Trust Allah while taking action",
+      "Growth (Neuroplasticity) - Your brain can change at any age",
+      "Gratitude (Shukr) - Thank Allah for every blessing",
+      "Service (Khidmah) - Use your gifts to help others",
+      "Excellence (Ihsan) - Do everything with quality",
+      "Joy (Sa'adah) - Enjoy the journey Allah has given you"
+    ]
+  },
+
+  "keyPrinciples": {
+    "neuroscience": [
+      "Your brain creates your reality - rewire it to change your life",
+      "Identity shift BEFORE behavior change - become it, then do it",
+      "Neuroplasticity means you can change at any age",
+      "Default mode network controls your sense of self (reprogram it)",
+      "Dopamine drives behavior - use it strategically, not impulsively",
+      "Higher vagus nerve tone = better intuition + easier manifestation",
+      "Your brain only sees what it's wired to see (kitten experiment)",
+      "Repetition rewires neural pathways (habits become automatic)",
+      "Positive self-talk activates reward centers",
+      "Environment shapes brain - change environment, change yourself"
+    ],
+    "manifestation": [
+      "You don't want the thing, you want the FEELING it brings",
+      "Become a match to the feeling NOW, not later",
+      "Act as if you already have it (neuroscience-backed)",
+      "Visualize + Feel + Act = Manifestation formula",
+      "Detach from outcome while taking aligned action",
+      "'That's for me' - transform jealousy into inspiration",
+      "Divine timing is perfect - trust the process",
+      "You attract what your brain is WIRED for, not what you want"
+    ],
+    "islamic": [
+      "Thank Allah FIRST for the gift of neuroplasticity",
+      "Tawakkul (trust Allah) + Action = True success",
+      "Gratitude (shukr) magnetizes more blessings",
+      "Make dua with yaqeen (certainty) - believe it's answered",
+      "Give sadaqah to activate abundance mindset",
+      "Serve others = serve Allah (best form of worship)",
+      "Practice sabr (patience) through the transformation",
+      "Everything is a test and a lesson - embrace both",
+      "Success is in obeying Allah, outcomes belong to Him",
+      "Be grateful in all states (prosperity and difficulty)"
+    ],
+    "mindset": [
+      "Limiting beliefs are learned, not truth - you can unlearn them",
+      "Worthiness is a DECISION, not something you have to earn",
+      "Fear is just your brain trying to keep you safe - thank it, then move forward",
+      "Procrastination = identity mismatch, fear, or cheap dopamine",
+      "All growth happens outside your comfort zone",
+      "The messy middle is proof you're growing",
+      "Being misunderstood is the tax of being authentic",
+      "True confidence = knowing yourself deeply",
+      "Always give yourself grace - you're doing your best",
+      "Enjoy the journey, not just the destination (life is the journey)"
+    ]
+  },
+
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Foundation: Know Thyself",
+      "days": "1-30",
+      "focus": "Build the foundation by understanding your brain, identifying limiting beliefs, and establishing non-negotiable daily practices",
+      "completionCriteria": [
+        "Consistent with morning 3 M's routine for 21+ days",
+        "Identified and written down top 5 limiting beliefs",
+        "Can articulate future identity clearly in one paragraph",
+        "Reduced cheap dopamine by 70%+ (tracked)",
+        "Improved sleep quality (7-9 hours consistently)",
+        "Increased self-awareness of thought patterns",
+        "Established daily spiritual practice (Fajr + Quran)"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Manifestation: Become a Match",
+      "days": "31-60",
+      "focus": "Master neuroscience-based manifestation and start consciously creating your reality through aligned feelings and actions",
+      "completionCriteria": [
+        "Clear on top 3 feelings you want to manifest",
+        "Taking one aligned action daily toward main goal",
+        "Noticed at least 3 synchronicities or small manifestations",
+        "Self-worth score increased by 30%+",
+        "Expanded environment (new people, places, or experiences)",
+        "Detached from desperate energy (can feel the difference)",
+        "Celebrating wins weekly (documented in journal)"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Mastery: Embody & Scale",
+      "days": "61-90",
+      "focus": "Fully embody your new identity, optimize peak performance, and prepare to scale your impact on the world",
+      "completionCriteria": [
+        "Living 90%+ of time as future self",
+        "Major manifestation(s) occurred or in progress",
+        "Daily performance optimized (energy, focus, output)",
+        "Released 80%+ need for external validation",
+        "Joy and play integrated into weekly routine",
+        "Actively mentoring or helping at least one person",
+        "Deep, consistent gratitude practice",
+        "Clear 5-year vision written and visualized"
+      ]
+    }
+  ],
+
+  "dailyNonNegotiables": [
+    {
+      "id": "dn-1",
+      "practice": "Fajr Prayer + Quran Reflection",
+      "duration": "15-20 min",
+      "why": "Start day in connection with Allah, set spiritual foundation, activate gratitude",
+      "when": "Immediately after Fajr"
+    },
+    {
+      "id": "dn-2",
+      "practice": "3 M's Morning Routine",
+      "duration": "15-30 min",
+      "why": "Movement: activates lymphatic system, Mindset: sets intentions, Mindfulness: calms nervous system",
+      "when": "Within 1 hour of waking",
+      "components": [
+        "Movement: Exercise, yoga, or 3 sun salutations minimum",
+        "Mindset: Set intention, affirmation, or read future self journal",
+        "Mindfulness: Meditation, breathwork, or silent reflection"
+      ]
+    },
+    {
+      "id": "dn-3",
+      "practice": "Brain Dump Journaling",
+      "duration": "20-30 min",
+      "why": "Observe patterns, practice non-judgment, clear mental clutter, tap into creativity",
+      "when": "Morning (can be combined with 3 M's)"
+    },
+    {
+      "id": "dn-4",
+      "practice": "Gratitude to Allah",
+      "duration": "5-10 min",
+      "why": "Gratitude tones vagus nerve, shifts brain chemistry, magnetizes blessings",
+      "when": "Evening",
+      "format": "List 10 specific things to thank Allah for today"
+    },
+    {
+      "id": "dn-5",
+      "practice": "One High-Leverage Action",
+      "duration": "1-2 hours",
+      "why": "Move needle on main goal, build momentum, prove to yourself you're capable",
+      "when": "During peak energy hours (track your energy in Phase 1)"
+    },
+    {
+      "id": "dn-6",
+      "practice": "Evening Reflection",
+      "duration": "5-10 min",
+      "why": "Celebrate wins, learn from challenges, prepare for tomorrow",
+      "when": "Before bed",
+      "questions": [
+        "What went well today?",
+        "What did I learn?",
+        "How did I show up as my future self?",
+        "What am I grateful for?",
+        "What's my intention for tomorrow?"
+      ]
+    },
+    {
+      "id": "dn-7",
+      "practice": "No Cheap Dopamine After 8 PM",
+      "duration": "All evening",
+      "why": "Allow dopamine stores to replenish during sleep, wake up motivated",
+      "avoid": ["Social media scrolling", "Binge watching TV", "Late night snacking", "Shopping/browsing"]
+    },
+    {
+      "id": "dn-8",
+      "practice": "Quality Sleep",
+      "duration": "7-9 hours",
+      "why": "Brain consolidates memories, removes waste, restores dopamine during sleep",
+      "when": "10 PM - 6 AM ideal",
+      "tips": ["Dark room", "Cool temperature", "No screens 1 hour before", "Pray Isha", "Read Ayat al-Kursi"]
+    }
+  ],
+
+  "weeklyPractices": [
+    {
+      "id": "wp-1",
+      "practice": "Weekly Review & Planning",
+      "duration": "30-60 min",
+      "when": "Sunday or Friday",
+      "questions": [
+        "What worked well this week?",
+        "What didn't work? Why?",
+        "What manifestations/synchronicities occurred?",
+        "What limiting beliefs came up?",
+        "How can I improve next week?",
+        "Am I still aligned with my values?",
+        "Did I give myself enough grace?",
+        "What's my main focus for next week?"
+      ]
+    },
+    {
+      "id": "wp-2",
+      "practice": "Joy & Play Time",
+      "duration": "2-4 hours",
+      "why": "Play boosts creativity, immune system, longevity - it's medicine for the soul",
+      "examples": ["Sports", "Art", "Music", "Dancing", "Games", "Nature walks", "Hobbies"]
+    },
+    {
+      "id": "wp-3",
+      "practice": "Date Yourself",
+      "duration": "2-3 hours",
+      "why": "Practice self-love, give yourself the attention you want from others",
+      "examples": ["Nice restaurant alone", "Movie", "Spa day", "Shopping", "Museum", "Coffee shop with book"]
+    },
+    {
+      "id": "wp-4",
+      "practice": "Serve Others",
+      "duration": "Variable",
+      "why": "Service to others = service to Allah, activates abundance mindset",
+      "examples": ["Volunteer", "Mentor someone", "Help family", "Give sadaqah", "Teach a skill", "Make dua for others"]
+    }
+  ],
+
+  "monthlyPractices": [
+    {
+      "id": "mp-1",
+      "practice": "Deep Phase Review",
+      "duration": "2-3 hours",
+      "when": "End of each 30-day phase",
+      "process": [
+        "Read all journals from the phase",
+        "List all wins and manifestations",
+        "Note patterns and insights",
+        "Assess progress on completion criteria",
+        "Make sajdah shukr thanking Allah",
+        "Plan adjustments for next phase"
+      ]
+    },
+    {
+      "id": "mp-2",
+      "practice": "Expand Your Reality",
+      "duration": "Variable",
+      "examples": [
+        "Attend a conference or workshop",
+        "Connect with someone 10 steps ahead",
+        "Visit a new place (travel if possible)",
+        "Take a course in your field",
+        "Read 2-3 books from successful people",
+        "Join a mastermind or community"
+      ]
+    }
+  ],
+
+  "theThreeReasonsYouProcrastinate": {
+    "reason1": {
+      "name": "Identity Mismatch",
+      "description": "Your sense of self doesn't match the goal you're trying to achieve",
+      "example": "You want to be an author, but you still identify as 'someone who can't write'",
+      "solution": {
+        "step1": "Identify the gap between current identity and desired identity",
+        "step2": "CHOOSE to identify as your future self starting NOW",
+        "step3": "Act like that person every single day until it becomes automatic",
+        "step4": "Use labels consciously - 'I AM an author' (not 'I want to be')"
+      },
+      "neuroscience": "The default mode network regulates your sense of self. When you shift identity, it stops using your past to predict your future and starts using your NEW story."
+    },
+    "reason2": {
+      "name": "Subconscious Fear",
+      "description": "You're afraid of success, visibility, judgment, or change",
+      "example": "Fear of starting a podcast because more visibility = more criticism",
+      "solution": {
+        "step1": "Use 'Take It All The Way To The End' - visualize the worst case scenario",
+        "step2": "Label the specific fear (activates prefrontal cortex, calms amygdala)",
+        "step3": "Ask: 'What if the opposite is also true?' (More visibility could = more love/support)",
+        "step4": "Rewrite the fear into an empowering story",
+        "step5": "Take tiny action despite the fear (courage = action in face of fear)"
+      },
+      "neuroscience": "Prefrontal cortex and amygdala have seesaw relationship. When you label emotions, PFC activates and amygdala calms down. You take power back."
+    },
+    "reason3": {
+      "name": "Cheap Dopamine",
+      "description": "You're feeding your brain easy dopamine hits all day, so it has no motivation for hard tasks",
+      "example": "Scrolling social media, binge watching Netflix, constant snacking",
+      "solution": {
+        "step1": "Identify your cheap dopamine sources (social media, TV, sugar, etc.)",
+        "step2": "WITHHOLD rewards until AFTER you complete the hard task",
+        "step3": "Stop cheap dopamine after 8 PM (protect sleep dopamine restoration)",
+        "step4": "Give yourself verbal praise after completing tasks (healthy dopamine)",
+        "step5": "Create 'something to look forward to' for motivation"
+      },
+      "neuroscience": "Dopamine drives ALL behavior. If you're snacking all day, you're never hungry for the meal. Same with dopamine - stop the snacks, build hunger for the real reward."
+    }
+  },
+
+  "manifestationFormula": {
+    "overview": "Neuroscience-based manifestation in 3 steps",
+    "step1": {
+      "name": "Identify the Feelings",
+      "action": "Write down what you want, then ask 'What FEELING do I believe this will give me?'",
+      "examples": [
+        "Want: $1M in bank → Feeling: Freedom, security, peace",
+        "Want: Perfect relationship → Feeling: Loved, safe, supported, celebrated",
+        "Want: Dream job → Feeling: Fulfilled, valued, purposeful, excited"
+      ],
+      "why": "You don't want the thing. You want the feeling. Get clear on the feeling first."
+    },
+    "step2": {
+      "name": "List Reasons You Already Have to Feel That Way",
+      "action": "Brainstorm 10-20 reasons you can ALREADY feel that way in your current life",
+      "examples": [
+        "If you want to feel 'accomplished': List all your past accomplishments (even small ones)",
+        "If you want to feel 'free': List ways you already experience freedom",
+        "If you want to feel 'loved': List people who love you, ways you love yourself"
+      ],
+      "why": "Your brain isn't letting you see that you can ALREADY feel this way. This rewires that pattern."
+    },
+    "step3": {
+      "name": "List Activities That Give You That Feeling",
+      "action": "What can YOU do TODAY to make yourself feel that way? (Things in your control)",
+      "examples": [
+        "Want to feel accomplished? Complete a workout, finish a chapter, organize your room",
+        "Want to feel loved? Call a friend, practice self-care, read kind messages",
+        "Want to feel free? Take a day off, go for a drive, declutter your space"
+      ],
+      "why": "When you can create the feeling yourself, you're no longer desperate for the external thing. Desperation repels. Abundance attracts."
+    },
+    "result": "Now you HAVE the feeling you wanted. You're creating from abundance, not lack. You're a MATCH to what you want to manifest. Now take aligned action from this energy.",
+    "islamic_connection": "This is tawakkul in action: Do your part (feel the feelings, take the actions), then trust Allah with the outcomes and timing. Work from a place of gratitude, not desperation."
+  },
+
+  "tools": {
+    "takeItAllTheWayToTheEnd": {
+      "name": "Take It All The Way To The End",
+      "use": "Identify fears and limiting beliefs",
+      "how": [
+        "Think of a goal or decision you're stuck on",
+        "Visualize achieving it fully - go all the way to the END",
+        "Notice what fears come up along the way",
+        "Write them down specifically",
+        "Ask: 'What am I REALLY afraid of?'",
+        "Reframe: 'What if the opposite is equally possible?'"
+      ],
+      "example": "Goal: Start a podcast → Visualize: Top podcast → Fear emerges: 'More hate, more criticism' → Reframe: 'Could also equal more love, more support, more impact'"
+    },
+    "thatsForMe": {
+      "name": "That's For Me",
+      "use": "Transform jealousy into inspiration",
+      "how": [
+        "When you see someone with something you want, immediately say: 'That's for me'",
+        "Take a photo or mental snapshot",
+        "Feel grateful it exists (proof it's possible)",
+        "Ask: 'How can I create this for myself?'",
+        "Take one small action toward it"
+      ],
+      "why": "Jealousy teaches your brain 'That's NOT for me.' This rewires it to 'That's POSSIBLE for me.'"
+    },
+    "futureSelfjournaling": {
+      "name": "Future Self Journaling",
+      "use": "Embody your future identity",
+      "how": [
+        "Write as if you're ALREADY living your dream life",
+        "Use present tense: 'Today I woke up in...'",
+        "Include specific details: sights, sounds, feelings",
+        "Make it vivid and emotional",
+        "Read it daily or weekly"
+      ],
+      "example": "Today I woke up in my beautiful home, feeling grateful to Allah. I had coffee while planning my day of serving my community through my business. I feel so fulfilled and purposeful..."
+    },
+    "morningBrainDump": {
+      "name": "Morning Brain Dump",
+      "use": "Clear mental clutter, observe patterns, practice non-judgment",
+      "how": [
+        "Wake up, grab journal",
+        "Write for 20-30 minutes non-stop",
+        "Stream of consciousness - whatever comes to mind",
+        "Don't judge, don't edit, don't censor",
+        "Let it flow like a waterfall"
+      ],
+      "benefits": [
+        "Observe your thought patterns over time",
+        "Release mental clutter before the day starts",
+        "Practice non-judgment of yourself",
+        "Tap into creative solutions",
+        "Prime brain for flow state"
+      ]
+    },
+    "vagusNerveToning": {
+      "name": "Vagus Nerve Toning Practices",
+      "why": "Higher vagal tone = better intuition, calmer nervous system, easier manifestation",
+      "practices": [
+        {
+          "practice": "Humming/Chanting",
+          "how": "Hum for 5 minutes, try humming 'Alhamdulillah' or 'SubhanAllah'",
+          "when": "Anytime you feel anxious or need to calm down"
+        },
+        {
+          "practice": "Box Breathing",
+          "how": "Inhale 4 seconds, hold 4, exhale 4, hold 4. Repeat 10 rounds.",
+          "when": "Morning, before important tasks, when stressed"
+        },
+        {
+          "practice": "Cold Exposure",
+          "how": "End shower with 30-60 seconds cold water",
+          "when": "Morning shower"
+        },
+        {
+          "practice": "Gratitude Practice",
+          "how": "List 10 things to thank Allah for",
+          "when": "Evening or after Maghrib"
+        },
+        {
+          "practice": "Exercise/Movement",
+          "how": "Any form of physical activity",
+          "when": "Morning (part of 3 M's)"
+        },
+        {
+          "practice": "Grounding/Earthing",
+          "how": "Walk barefoot on grass/earth for 10 minutes",
+          "when": "Morning or evening"
+        }
+      ]
+    }
+  },
+
+  "commonChallenges": [
+    {
+      "challenge": "I don't know what I want",
+      "solution": "That's okay! Start with the FEELINGS you want. Freedom? Joy? Peace? Purpose? Start there. The specific goals will emerge as you work on feeling those feelings now."
+    },
+    {
+      "challenge": "I feel guilty wanting material things",
+      "solution": "Allah created abundance in nature. Trees bloom abundantly with fruit. You deserve abundance too. Wanting things is spiritual when you: 1) Recognize Allah as the source, 2) Use abundance to serve others, 3) Stay grateful. Release the shame."
+    },
+    {
+      "challenge": "I keep procrastinating even though I know these principles",
+      "solution": "Check the 3 reasons: 1) Identity mismatch? Choose new identity NOW. 2) Fear? Label it specifically. 3) Cheap dopamine? Withhold rewards until after the task. Pick one, solve it."
+    },
+    {
+      "challenge": "I'm not seeing results fast enough",
+      "solution": "Detach from timeline. Your job is aligned action + becoming a match. Allah's job is timing and delivery. Trust His timing is perfect. Keep showing up. Compound effect takes time."
+    },
+    {
+      "challenge": "I feel like I'm not good enough",
+      "solution": "Game analogy: You're good enough to be at this level (you passed the previous one). But you're not YET good enough to master this level. That's okay. The journey to THIS level will make you into the person who can win at this level. Give yourself grace."
+    },
+    {
+      "challenge": "I start strong but can't maintain consistency",
+      "solution": "1) Lower the bar (make it SO easy you can't fail), 2) Anchor to existing habits, 3) Track daily (use habit tracker), 4) Get accountability partner, 5) Remember your WHY daily"
+    },
+    {
+      "challenge": "People in my life don't support my growth",
+      "solution": "'Being misunderstood is the tax of being authentic.' Not everyone will get it. That's okay. Find YOUR people. Join communities aligned with growth. Family may not understand - love them, but don't let them stop you."
+    }
+  ],
+
+  "islamicIntegration": {
+    "prayerConnections": {
+      "fajr": "Set intentions for the day, make dua for guidance, thank Allah for waking you up",
+      "dhuhr": "Pause and reset, check alignment, gratitude for morning blessings",
+      "asr": "Energy boost, refocus on goals, prepare for productive evening",
+      "maghrib": "Transition to rest, reflect on day, gratitude practice time",
+      "isha": "Wind down, forgive yourself and others, prepare for quality sleep"
+    },
+    "duaTemplate": "Ya Allah, You created my brain with the ability to change and grow. Thank You for this gift of neuroplasticity. Guide me to use it in ways that please You. Help me become the person You created me to be. I trust Your timing. I trust Your plan. Grant me patience, wisdom, and unwavering faith. Everything I achieve is only by Your will. Ameen.",
+    "gratitudeConnection": "Every time you write '10 things I'm grateful for,' start with 'Alhamdulillah for...'. This activates both the neuroscience (vagus nerve toning) AND the spiritual (remembrance of Allah). Double power.",
+    "manifestationAndDua": "Manifestation isn't magic - it's understanding how Allah designed your brain. When you make dua with yaqeen (certainty) and take aligned action, you're working WITH the system Allah created. Trust the system. Trust the Creator.",
+    "serviceAsWorship": "The highest form of worship is serving Allah's creation. As you grow and master your mind, your PURPOSE is to serve others. This journey isn't just for you - it's so you can impact the world. That's the real manifestation."
+  },
+
+  "progressTracking": {
+    "daily": {
+      "format": "Checkboxes for each daily non-negotiable",
+      "score": "Give yourself a score 1-10 for the day",
+      "reflection": "One sentence on biggest win or lesson"
+    },
+    "weekly": {
+      "format": "Weekly review questions answered in journal",
+      "score": "Rate each area: Spirituality, Mindset, Actions, Health, Relationships (1-10)",
+      "celebration": "List 3 wins from the week"
+    },
+    "monthly": {
+      "format": "Deep phase review with completion criteria assessment",
+      "score": "Overall phase score 1-100",
+      "planning": "Adjustments and focus for next phase"
+    }
+  },
+
+  "resources": {
+    "recommendedReading": [
+      "Atomic Habits by James Clear (habit formation)",
+      "Breaking the Habit of Being Yourself by Dr. Joe Dispenza (neuroscience + manifestation)",
+      "The Power of Now by Eckhart Tolle (presence)",
+      "Don't Be Sad by Aaidh al-Qarni (Islamic perspective on hardship)",
+      "The 7 Habits of Highly Effective People by Stephen Covey (timeless principles)",
+      "Mindset by Carol Dweck (growth mindset)",
+      "The Brain That Changes Itself by Norman Doidge (neuroplasticity)"
+    ],
+    "podcasts": [
+      "On Purpose with Jay Shetty (this Emily McDonald episode!)",
+      "The Neuroscience Meets Social and Emotional Learning Podcast",
+      "Islamic spirituality podcasts (find ones that resonate)"
+    ],
+    "apps": [
+      "Habit tracker (Streaks, Habitica, or simple paper tracker)",
+      "Meditation app (Headspace, Calm, or YouTube guided meditations)",
+      "Journal app (Day One, Journey, or physical journal)",
+      "Muslim Pro (prayer times, Quran, duas)"
+    ]
+  },
+
+  "finalMessage": "This 90-day journey is your gift to yourself and to Allah. You're not just learning neuroscience - you're understanding how Allah designed you. You're not just manifesting - you're aligning with His plan for you. You're not just growing - you're becoming the person He created you to be. This is ibadah (worship) in its highest form. Trust the process. Trust yourself. Trust Allah. You've got this. Bismillah (In the name of Allah), begin."
+}

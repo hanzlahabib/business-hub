@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Building2, User, Mail, Phone, Globe, Tag, FileText, Briefcase, MapPin } from 'lucide-react'
+import { Select } from '../../../components/UI'
+import { LoadingSpinner } from '../../../components/UI/LoadingSpinner'
+import { toast } from 'sonner'
 
 const industries = [
   { value: 'restaurant', label: 'Restaurant', emoji: '🍽️' },
@@ -50,6 +53,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
   })
 
   const [tagInput, setTagInput] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -81,10 +85,18 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    onSave(formData)
-    onClose()
+    setIsSubmitting(true)
+    try {
+      await onSave(formData)
+      toast.success(editLead ? 'Lead updated successfully' : 'Lead created successfully')
+      onClose()
+    } catch (error) {
+      toast.error(`Failed to ${editLead ? 'update' : 'create'} lead: ${error.message}`)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (!isOpen) return null
@@ -103,18 +115,18 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl"
+          className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-bg-primary border border-border rounded-2xl shadow-2xl"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/10">
-            <h2 className="text-xl font-bold text-white">
+          <div className="flex items-center justify-between p-6 border-b border-border">
+            <h2 className="text-xl font-bold text-text-primary">
               {editLead ? 'Edit Lead' : 'Add New Lead'}
             </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-white/60" />
+              <X className="w-5 h-5 text-text-secondary" />
             </button>
           </div>
 
@@ -123,7 +135,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
             {/* Company Info */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                   <Building2 className="w-4 h-4" />
                   Company Name *
                 </label>
@@ -132,13 +144,13 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
                   required
                   value={formData.name}
                   onChange={(e) => handleChange('name', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-hover"
                   placeholder="Acme Corp"
                 />
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                   <User className="w-4 h-4" />
                   Contact Person
                 </label>
@@ -146,7 +158,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
                   type="text"
                   value={formData.contactPerson}
                   onChange={(e) => handleChange('contactPerson', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-hover"
                   placeholder="John Doe"
                 />
               </div>
@@ -155,7 +167,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
             {/* Contact Info */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                   <Mail className="w-4 h-4" />
                   Email *
                 </label>
@@ -164,13 +176,13 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
                   required
                   value={formData.email}
                   onChange={(e) => handleChange('email', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-hover"
                   placeholder="contact@company.com"
                 />
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                   <Phone className="w-4 h-4" />
                   Phone
                 </label>
@@ -178,7 +190,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => handleChange('phone', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-hover"
                   placeholder="+971 50 123 4567"
                 />
               </div>
@@ -186,7 +198,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
 
             {/* Website */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+              <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                 <Globe className="w-4 h-4" />
                 Website
               </label>
@@ -194,54 +206,34 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
                 type="url"
                 value={formData.website}
                 onChange={(e) => handleChange('website', e.target.value)}
-                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
+                className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-hover"
                 placeholder="https://company.com"
               />
             </div>
 
             {/* Industry & Source */}
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
-                  <Briefcase className="w-4 h-4" />
-                  Industry
-                </label>
-                <select
-                  value={formData.industry}
-                  onChange={(e) => handleChange('industry', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-white/30"
-                >
-                  <option value="">Select industry</option>
-                  {industries.map(ind => (
-                    <option key={ind.value} value={ind.value}>
-                      {ind.emoji} {ind.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Select
+                label="Industry"
+                icon={Briefcase}
+                value={formData.industry}
+                onChange={(val) => handleChange('industry', val)}
+                placeholder="Select industry"
+                options={industries}
+              />
 
-              <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
-                  <MapPin className="w-4 h-4" />
-                  Source
-                </label>
-                <select
-                  value={formData.source}
-                  onChange={(e) => handleChange('source', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-white/30"
-                >
-                  {sources.map(src => (
-                    <option key={src.value} value={src.value}>
-                      {src.emoji} {src.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Select
+                label="Source"
+                icon={MapPin}
+                value={formData.source}
+                onChange={(val) => handleChange('source', val)}
+                options={sources}
+              />
             </div>
 
             {/* Website Issues */}
             <div>
-              <label className="text-sm text-white/60 mb-2 block">Website Issues</label>
+              <label className="text-sm text-text-muted mb-2 block">Website Issues</label>
               <div className="flex flex-wrap gap-2">
                 {websiteIssues.map(issue => (
                   <button
@@ -251,7 +243,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
                     className={`px-3 py-1.5 rounded-lg text-xs transition-colors ${
                       formData.websiteIssues.includes(issue.value)
                         ? 'bg-red-500/20 text-red-300 border border-red-500/30'
-                        : 'bg-white/5 text-white/50 border border-white/10 hover:bg-white/10'
+                        : 'bg-bg-secondary text-text-muted border border-border hover:bg-bg-tertiary'
                     }`}
                   >
                     {issue.label}
@@ -262,7 +254,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
 
             {/* Tags */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+              <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                 <Tag className="w-4 h-4" />
                 Tags
               </label>
@@ -272,13 +264,13 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                  className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 text-sm"
+                  className="flex-1 px-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-hover text-sm"
                   placeholder="Add tag..."
                 />
                 <button
                   type="button"
                   onClick={addTag}
-                  className="px-4 py-2 bg-white/10 rounded-lg text-white/60 hover:bg-white/20 transition-colors text-sm"
+                  className="px-4 py-2 bg-bg-tertiary rounded-lg text-text-secondary hover:bg-bg-tertiary/80 transition-colors text-sm"
                 >
                   Add
                 </button>
@@ -306,7 +298,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
 
             {/* Notes */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+              <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                 <FileText className="w-4 h-4" />
                 Notes
               </label>
@@ -314,25 +306,34 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
                 value={formData.notes}
                 onChange={(e) => handleChange('notes', e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 resize-none"
+                className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-hover resize-none"
                 placeholder="Additional notes about this lead..."
               />
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
+            <div className="flex justify-end gap-3 pt-4 border-t border-border">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2.5 text-white/60 hover:text-white transition-colors"
+                disabled={isSubmitting}
+                className="px-6 py-2.5 text-text-secondary hover:text-text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg font-medium text-white hover:opacity-90 transition-opacity"
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {editLead ? 'Save Changes' : 'Add Lead'}
+                {isSubmitting ? (
+                  <>
+                    <LoadingSpinner size="sm" />
+                    {editLead ? 'Saving...' : 'Adding...'}
+                  </>
+                ) : (
+                  editLead ? 'Save Changes' : 'Add Lead'
+                )}
               </button>
             </div>
           </form>

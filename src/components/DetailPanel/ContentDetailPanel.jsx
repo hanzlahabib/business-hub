@@ -405,7 +405,7 @@ const UrlItem = memo(function UrlItem({ urlItem, onRemove }) {
           href={urlItem.url}
           target="_blank"
           rel="noopener noreferrer"
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium ${config.color} hover:bg-white/10 transition-colors`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium ${config.color} hover:bg-bg-tertiary transition-colors`}
         >
           <ExternalLink size={12} />
           {config.label}

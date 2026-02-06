@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { X, Send, FileText, User, Building2, Mail, ChevronDown, Check, Loader2, Eye, Paperclip, FileIcon } from 'lucide-react'
 import { JSON_SERVER, API_SERVER } from '../../../config/api'
 
@@ -199,19 +199,19 @@ export function OutreachComposer({ isOpen, onClose, job }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl max-h-[90vh] bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+          className="w-full max-w-2xl max-h-[90vh] bg-bg-primary rounded-2xl border border-border shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="p-6 border-b border-white/10">
+          <div className="p-6 border-b border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl">
                   <Send className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">Send Email</h2>
+                  <h2 className="text-xl font-bold text-text-primary">Send Email</h2>
                   {job && (
-                    <p className="text-sm text-white/50">
+                    <p className="text-sm text-text-muted">
                       {job.role} at {job.company}
                     </p>
                   )}
@@ -219,9 +219,9 @@ export function OutreachComposer({ isOpen, onClose, job }) {
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-white/60" />
+                <X className="w-5 h-5 text-text-secondary" />
               </button>
             </div>
           </div>
@@ -236,33 +236,33 @@ export function OutreachComposer({ isOpen, onClose, job }) {
               <>
                 {/* Template Selector */}
                 <div className="relative">
-                  <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                  <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                     <FileText className="w-4 h-4" />
                     Email Template
                   </label>
                   <button
                     type="button"
                     onClick={() => setShowTemplates(!showTemplates)}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-left flex items-center justify-between hover:bg-white/10 transition-colors"
+                    className="w-full px-4 py-3 bg-bg-secondary border border-border rounded-lg text-left flex items-center justify-between hover:bg-bg-tertiary transition-colors"
                   >
-                    <span className={selectedTemplate ? 'text-white' : 'text-white/40'}>
+                    <span className={selectedTemplate ? 'text-text-primary' : 'text-text-muted'}>
                       {selectedTemplate ? selectedTemplate.name : 'Select a template...'}
                     </span>
-                    <ChevronDown className={`w-4 h-4 text-white/40 transition-transform ${showTemplates ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${showTemplates ? 'rotate-180' : ''}`} />
                   </button>
 
                   {showTemplates && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-zinc-900 border border-white/10 rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-bg-primary border border-border rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
                       {templates.map(template => (
                         <button
                           key={template.id}
                           onClick={() => handleSelectTemplate(template)}
-                          className="w-full px-4 py-3 text-left hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0"
+                          className="w-full px-4 py-3 text-left hover:bg-bg-tertiary transition-colors border-b border-border last:border-b-0"
                         >
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-white font-medium">{template.name}</p>
-                              <p className="text-xs text-white/40 mt-0.5">{template.category}</p>
+                              <p className="text-text-primary font-medium">{template.name}</p>
+                              <p className="text-xs text-text-muted mt-0.5">{template.category}</p>
                             </div>
                             {selectedTemplate?.id === template.id && (
                               <Check className="w-4 h-4 text-blue-400" />
@@ -276,16 +276,16 @@ export function OutreachComposer({ isOpen, onClose, job }) {
 
                 {/* CV Attachment Selector */}
                 <div className="relative">
-                  <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                  <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                     <Paperclip className="w-4 h-4" />
                     Attach CV
                   </label>
                   <button
                     type="button"
                     onClick={() => setShowCvSelector(!showCvSelector)}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-left flex items-center justify-between hover:bg-white/10 transition-colors"
+                    className="w-full px-4 py-3 bg-bg-secondary border border-border rounded-lg text-left flex items-center justify-between hover:bg-bg-tertiary transition-colors"
                   >
-                    <span className={selectedCv ? 'text-white' : 'text-white/40'}>
+                    <span className={selectedCv ? 'text-text-primary' : 'text-text-muted'}>
                       {selectedCv ? (
                         <span className="flex items-center gap-2">
                           <FileIcon className="w-4 h-4 text-blue-400" />
@@ -295,25 +295,25 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                         'No CV attached'
                       )}
                     </span>
-                    <ChevronDown className={`w-4 h-4 text-white/40 transition-transform ${showCvSelector ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${showCvSelector ? 'rotate-180' : ''}`} />
                   </button>
 
                   {showCvSelector && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-zinc-900 border border-white/10 rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-bg-primary border border-border rounded-lg shadow-xl z-10 max-h-60 overflow-y-auto">
                       <button
                         onClick={() => {
                           setSelectedCvId(null)
                           setShowCvSelector(false)
                         }}
-                        className="w-full px-4 py-3 text-left hover:bg-white/10 transition-colors border-b border-white/5"
+                        className="w-full px-4 py-3 text-left hover:bg-bg-tertiary transition-colors border-b border-border"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-white/60">No attachment</span>
+                          <span className="text-text-secondary">No attachment</span>
                           {!selectedCvId && <Check className="w-4 h-4 text-blue-400" />}
                         </div>
                       </button>
                       {cvFiles.length === 0 ? (
-                        <div className="px-4 py-3 text-white/40 text-sm">
+                        <div className="px-4 py-3 text-text-muted text-sm">
                           No CVs uploaded. Use CV Manager to add CVs.
                         </div>
                       ) : (
@@ -324,14 +324,14 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                               setSelectedCvId(cv.id)
                               setShowCvSelector(false)
                             }}
-                            className="w-full px-4 py-3 text-left hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0"
+                            className="w-full px-4 py-3 text-left hover:bg-bg-tertiary transition-colors border-b border-border last:border-b-0"
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
                                 <FileIcon className="w-4 h-4 text-blue-400" />
                                 <div>
-                                  <p className="text-white font-medium">{cv.name}</p>
-                                  <p className="text-xs text-white/40 mt-0.5">
+                                  <p className="text-text-primary font-medium">{cv.name}</p>
+                                  <p className="text-xs text-text-muted mt-0.5">
                                     {cv.type === 'uploaded' ? 'Local file' : 'Cloud link'}
                                     {cv.isDefault && ' • Default'}
                                   </p>
@@ -350,7 +350,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
 
                 {/* To Field */}
                 <div>
-                  <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                  <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                     <Mail className="w-4 h-4" />
                     To
                   </label>
@@ -358,19 +358,19 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                     type="email"
                     value={formData.to}
                     onChange={(e) => setFormData(prev => ({ ...prev, to: e.target.value }))}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                     placeholder="recipient@company.com"
                   />
                 </div>
 
                 {/* Subject Field */}
                 <div>
-                  <label className="text-sm text-white/60 mb-2 block">Subject</label>
+                  <label className="text-sm text-text-muted mb-2 block">Subject</label>
                   <input
                     type="text"
                     value={formData.subject}
                     onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                     placeholder="Email subject..."
                   />
                 </div>
@@ -378,7 +378,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                 {/* Body Field */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm text-white/60">Message</label>
+                    <label className="text-sm text-text-muted">Message</label>
                     <button
                       type="button"
                       onClick={() => setShowPreview(!showPreview)}
@@ -390,15 +390,15 @@ export function OutreachComposer({ isOpen, onClose, job }) {
                   </div>
 
                   {showPreview ? (
-                    <div className="px-4 py-3 bg-white/5 border border-white/10 rounded-lg min-h-[200px]">
-                      <div className="text-white whitespace-pre-wrap">{formData.body}</div>
+                    <div className="px-4 py-3 bg-bg-secondary border border-border rounded-lg min-h-[200px]">
+                      <div className="text-text-primary whitespace-pre-wrap">{formData.body}</div>
                     </div>
                   ) : (
                     <textarea
                       value={formData.body}
                       onChange={(e) => setFormData(prev => ({ ...prev, body: e.target.value }))}
                       rows={10}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500 resize-none"
+                      className="w-full px-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500 resize-none"
                       placeholder="Write your message..."
                     />
                   )}
@@ -429,11 +429,11 @@ export function OutreachComposer({ isOpen, onClose, job }) {
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-white/10 flex gap-3">
+          <div className="p-6 border-t border-border flex gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white/70 hover:bg-white/10 transition-colors"
+              className="flex-1 px-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-secondary hover:bg-bg-tertiary transition-colors"
             >
               Cancel
             </button>

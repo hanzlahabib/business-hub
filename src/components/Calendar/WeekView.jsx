@@ -9,7 +9,18 @@ const VIEW_MODES = {
   detailed: { icon: LayoutList, label: 'Detailed' }
 }
 
-export const WeekView = memo(function WeekView({ contents, onAddContent, onEditContent, onDeleteContent, onDateChange, onOpenDetail }) {
+export const WeekView = memo(function WeekView({
+  contents,
+  items = [],
+  calendarFilters = { contents: true, tasks: false, jobs: false, leads: false, milestones: false },
+  onAddContent,
+  onEditContent,
+  onDeleteContent,
+  onDateChange,
+  onItemDateChange,
+  onOpenDetail,
+  onItemClick
+}) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [viewMode, setViewMode] = useState('default')
 
@@ -28,6 +39,11 @@ export const WeekView = memo(function WeekView({ contents, onAddContent, onEditC
     return contents.filter(c => c.scheduledDate === dateStr)
   }, [contents])
 
+  const getItemsForDate = useCallback((date) => {
+    const dateStr = format(date, 'yyyy-MM-dd')
+    return items.filter(item => item.date === dateStr)
+  }, [items])
+
   const goToPrevWeek = useCallback(() => {
     setCurrentDate(prev => addDays(prev, -7))
   }, [])
@@ -44,9 +60,15 @@ export const WeekView = memo(function WeekView({ contents, onAddContent, onEditC
     setViewMode(mode)
   }, [])
 
+  // Check if any non-content filters are active
+  const hasActiveFilters = useMemo(() => {
+    return calendarFilters.tasks || calendarFilters.jobs || calendarFilters.leads || calendarFilters.milestones
+  }, [calendarFilters])
+
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+        {/* Navigation controls */}
         <div className="flex items-center gap-2">
           <button
             onClick={goToPrevWeek}
@@ -68,25 +90,29 @@ export const WeekView = memo(function WeekView({ contents, onAddContent, onEditC
           </button>
         </div>
 
+        {/* Date range title */}
         <h2 className="text-lg font-semibold text-text-primary">
           {format(weekStart, 'MMM d')} - {format(addDays(weekStart, 6), 'MMM d, yyyy')}
         </h2>
 
-        <div className="flex items-center gap-1 bg-bg-secondary rounded-lg border border-border p-1">
-          {Object.entries(VIEW_MODES).map(([mode, { icon: Icon, label }]) => (
-            <button
-              key={mode}
-              onClick={() => handleViewModeChange(mode)}
-              title={label}
-              className={`p-2 rounded-md transition-colors ${
-                viewMode === mode
-                  ? 'bg-accent-primary text-white'
-                  : 'text-text-muted hover:text-text-primary hover:bg-bg-tertiary'
-              }`}
-            >
-              <Icon size={16} />
-            </button>
-          ))}
+        {/* View mode toggle */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 bg-bg-secondary rounded-lg border border-border p-1">
+            {Object.entries(VIEW_MODES).map(([mode, { icon: Icon, label }]) => (
+              <button
+                key={mode}
+                onClick={() => handleViewModeChange(mode)}
+                title={label}
+                className={`p-2 rounded-md transition-colors ${
+                  viewMode === mode
+                    ? 'bg-accent-primary text-white'
+                    : 'text-text-muted hover:text-text-primary hover:bg-bg-tertiary'
+                }`}
+              >
+                <Icon size={16} />
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -96,13 +122,16 @@ export const WeekView = memo(function WeekView({ contents, onAddContent, onEditC
             key={day.toISOString()}
             date={format(day, 'yyyy-MM-dd')}
             contents={getContentsForDate(day)}
+            items={hasActiveFilters ? getItemsForDate(day) : []}
             isToday={isSameDay(day, today)}
             viewMode={viewMode}
             onAddContent={onAddContent}
             onEditContent={onEditContent}
             onDeleteContent={onDeleteContent}
             onDateChange={onDateChange}
+            onItemDateChange={onItemDateChange}
             onOpenDetail={onOpenDetail}
+            onItemClick={onItemClick}
           />
         ))}
       </div>

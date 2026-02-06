@@ -2,19 +2,23 @@ import { useState, useMemo, useCallback, memo } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Video, Smartphone } from 'lucide-react'
 import { ContentCard } from './ContentCard'
+import { CalendarItemCard } from './CalendarItemCard'
 
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 export const DayColumn = memo(function DayColumn({
   date,
   contents,
+  items = [],
   isToday,
   viewMode = 'default',
   onAddContent,
   onEditContent,
   onDeleteContent,
   onDateChange,
-  onOpenDetail
+  onItemDateChange,
+  onOpenDetail,
+  onItemClick
 }) {
   const [isDragOver, setIsDragOver] = useState(false)
 
@@ -28,6 +32,27 @@ export const DayColumn = memo(function DayColumn({
     shortContent: contents.filter(c => c.type === 'short')
   }), [contents])
 
+  // Group items by type (excluding content since that's handled separately)
+  const groupedItems = useMemo(() => {
+    const groups = {
+      task: [],
+      interview: [],
+      lead: [],
+      milestone: []
+    }
+    items.forEach(item => {
+      if (item.type !== 'content' && groups[item.type]) {
+        groups[item.type].push(item)
+      }
+    })
+    return groups
+  }, [items])
+
+  // Check if we have any non-content items
+  const hasOtherItems = useMemo(() => {
+    return Object.values(groupedItems).some(arr => arr.length > 0)
+  }, [groupedItems])
+
   const handleDragOver = useCallback((e) => {
     e.preventDefault()
     e.dataTransfer.dropEffect = 'move'
@@ -40,18 +65,35 @@ export const DayColumn = memo(function DayColumn({
 
   const handleDrop = useCallback((e) => {
     e.preventDefault()
+
+    // Check if it's a content item (legacy)
     const contentId = e.dataTransfer.getData('contentId')
     if (contentId && onDateChange) {
       onDateChange(contentId, date)
+      setIsDragOver(false)
+      return
     }
+
+    // Check if it's a calendar item
+    const calendarItemId = e.dataTransfer.getData('calendarItemId')
+    const calendarItemType = e.dataTransfer.getData('calendarItemType')
+    if (calendarItemId && onItemDateChange) {
+      const item = items.find(i => i.id === calendarItemId)
+      if (item && item.draggable) {
+        onItemDateChange(item, date)
+      }
+    }
+
     setIsDragOver(false)
-  }, [date, onDateChange])
+  }, [date, onDateChange, onItemDateChange, items])
 
   const handleAddClick = useCallback(() => {
     onAddContent(date)
   }, [date, onAddContent])
 
-  const minHeight = viewMode === 'compact' ? 'min-h-[200px]' : viewMode === 'detailed' ? 'min-h-[500px]' : 'min-h-[400px]'
+  const minHeight = viewMode === 'compact' ? 'min-h-[180px]' : viewMode === 'detailed' ? 'min-h-[600px]' : 'min-h-[450px]'
+
+  const totalItemsCount = contents.length + items.filter(i => i.type !== 'content').length
 
   return (
     <motion.div
@@ -80,7 +122,7 @@ export const DayColumn = memo(function DayColumn({
           </p>
         </div>
         <div className="flex items-center gap-1">
-          {viewMode === 'compact' && contents.length > 0 && (
+          {viewMode === 'compact' && totalItemsCount > 0 && (
             <div className="flex items-center gap-1 mr-1">
               {longContent.length > 0 && (
                 <span className="flex items-center gap-0.5 text-xs text-accent-secondary">
@@ -90,6 +132,11 @@ export const DayColumn = memo(function DayColumn({
               {shortContent.length > 0 && (
                 <span className="flex items-center gap-0.5 text-xs text-accent-primary">
                   <Smartphone size={10} /> {shortContent.length}
+                </span>
+              )}
+              {hasOtherItems && (
+                <span className="text-xs text-text-muted ml-1">
+                  +{items.filter(i => i.type !== 'content').length}
                 </span>
               )}
             </div>
@@ -104,6 +151,7 @@ export const DayColumn = memo(function DayColumn({
       </div>
 
       <div className="flex-1 space-y-2 overflow-y-auto">
+        {/* Content items (videos) */}
         {longContent.map(content => (
           <ContentCard
             key={content.id}
@@ -130,7 +178,53 @@ export const DayColumn = memo(function DayColumn({
           />
         ))}
 
-        {contents.length === 0 && (
+        {/* Divider between content and other items */}
+        {contents.length > 0 && hasOtherItems && viewMode !== 'compact' && (
+          <div className="border-t border-border/50 my-2" />
+        )}
+
+        {/* Task items */}
+        {groupedItems.task.map(item => (
+          <CalendarItemCard
+            key={item.id}
+            item={item}
+            viewMode={viewMode}
+            onClick={onItemClick}
+          />
+        ))}
+
+        {/* Interview items */}
+        {groupedItems.interview.map(item => (
+          <CalendarItemCard
+            key={item.id}
+            item={item}
+            viewMode={viewMode}
+            onClick={onItemClick}
+          />
+        ))}
+
+        {/* Lead items */}
+        {groupedItems.lead.map(item => (
+          <CalendarItemCard
+            key={item.id}
+            item={item}
+            viewMode={viewMode}
+            onClick={onItemClick}
+          />
+        ))}
+
+        {/* Milestone items */}
+        {groupedItems.milestone.map(item => (
+          <CalendarItemCard
+            key={item.id}
+            item={item}
+            viewMode={viewMode}
+            onClick={onItemClick}
+          />
+        ))}
+
+        {/* Empty state */}
+        {totalItemsCount === 0 && (
           <div className={`flex flex-col items-center justify-center h-full py-8 ${isDragOver ? 'text-accent-primary' : 'text-text-muted'}`}>
             <p className="text-sm">{isDragOver ? 'Drop here!' : 'No content'}</p>
             {!isDragOver && (

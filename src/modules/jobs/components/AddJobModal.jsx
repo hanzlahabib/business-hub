@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Building2, Briefcase, MapPin, DollarSign, Link2, Plus, Tag } from 'lucide-react'
 import { JOB_SOURCES, EXPERIENCE_LEVELS, PRIORITY_LEVELS } from '../constants/pipelineStages'
+import { LoadingSpinner } from '../../../components/UI/LoadingSpinner'
+import { toast } from 'sonner'
 
 const COMMON_SKILLS = [
   'React', 'Next.js', 'TypeScript', 'JavaScript', 'Node.js',
@@ -33,6 +35,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
 
   const [newSkill, setNewSkill] = useState('')
   const [newRequirement, setNewRequirement] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     if (editJob) {
@@ -108,14 +111,22 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
     setFormData(prev => ({ ...prev, requirements: prev.requirements.filter(r => r !== req) }))
   }, [])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    onSave({
-      ...formData,
-      salaryMin: formData.salaryMin ? parseInt(formData.salaryMin) : null,
-      salaryMax: formData.salaryMax ? parseInt(formData.salaryMax) : null
-    })
-    onClose()
+    setIsSubmitting(true)
+    try {
+      await onSave({
+        ...formData,
+        salaryMin: formData.salaryMin ? parseInt(formData.salaryMin) : null,
+        salaryMax: formData.salaryMax ? parseInt(formData.salaryMax) : null
+      })
+      toast.success(editJob ? 'Job updated successfully' : 'Job created successfully')
+      onClose()
+    } catch (error) {
+      toast.error(`Failed to ${editJob ? 'update' : 'create'} job: ${error.message}`)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (!isOpen) return null
@@ -134,18 +145,18 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-2xl max-h-[90vh] bg-zinc-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
+          className="w-full max-w-2xl max-h-[90vh] bg-bg-primary rounded-2xl border border-border shadow-2xl overflow-hidden"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/10">
+          <div className="flex items-center justify-between p-6 border-b border-border">
             <h2 className="text-xl font-bold text-white">
               {editJob ? 'Edit Job' : 'Add New Job'}
             </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-white/60" />
+              <X className="w-5 h-5 text-text-secondary" />
             </button>
           </div>
 
@@ -154,7 +165,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
             {/* Company & Role */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                   <Building2 className="w-4 h-4" />
                   Company *
                 </label>
@@ -163,12 +174,12 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                   value={formData.company}
                   onChange={(e) => handleChange('company', e.target.value)}
                   required
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                   placeholder="e.g., Vercel"
                 />
               </div>
               <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                   <Briefcase className="w-4 h-4" />
                   Role *
                 </label>
@@ -177,7 +188,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                   value={formData.role}
                   onChange={(e) => handleChange('role', e.target.value)}
                   required
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                   placeholder="e.g., Senior Frontend Engineer"
                 />
               </div>
@@ -186,14 +197,14 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
             {/* Location */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                   <MapPin className="w-4 h-4" />
                   Location Type
                 </label>
                 <select
                   value={formData.locationType}
                   onChange={(e) => handleChange('locationType', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-blue-500"
                 >
                   <option value="remote">Remote</option>
                   <option value="hybrid">Hybrid</option>
@@ -201,12 +212,12 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                 </select>
               </div>
               <div>
-                <label className="text-sm text-white/60 mb-2 block">Location</label>
+                <label className="text-sm text-text-muted mb-2 block">Location</label>
                 <input
                   type="text"
                   value={formData.location}
                   onChange={(e) => handleChange('location', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                   placeholder="e.g., Worldwide, US, Europe"
                 />
               </div>
@@ -214,7 +225,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
 
             {/* Salary */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+              <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                 <DollarSign className="w-4 h-4" />
                 Salary Range (Annual)
               </label>
@@ -222,7 +233,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                 <select
                   value={formData.salaryCurrency}
                   onChange={(e) => handleChange('salaryCurrency', e.target.value)}
-                  className="px-3 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="px-3 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-blue-500"
                 >
                   <option value="$">$ USD</option>
                   <option value="€">€ EUR</option>
@@ -232,15 +243,15 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                   type="number"
                   value={formData.salaryMin}
                   onChange={(e) => handleChange('salaryMin', e.target.value)}
-                  className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                  className="flex-1 px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                   placeholder="Min (e.g., 120000)"
                 />
-                <span className="text-white/40">-</span>
+                <span className="text-text-muted">-</span>
                 <input
                   type="number"
                   value={formData.salaryMax}
                   onChange={(e) => handleChange('salaryMax', e.target.value)}
-                  className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                  className="flex-1 px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                   placeholder="Max (e.g., 180000)"
                 />
               </div>
@@ -249,11 +260,11 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
             {/* Source & URL */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm text-white/60 mb-2 block">Source</label>
+                <label className="text-sm text-text-muted mb-2 block">Source</label>
                 <select
                   value={formData.source}
                   onChange={(e) => handleChange('source', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-blue-500"
                 >
                   {JOB_SOURCES.map(source => (
                     <option key={source.id} value={source.id}>
@@ -263,7 +274,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                 </select>
               </div>
               <div>
-                <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                   <Link2 className="w-4 h-4" />
                   Job URL
                 </label>
@@ -271,7 +282,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                   type="url"
                   value={formData.sourceUrl}
                   onChange={(e) => handleChange('sourceUrl', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                   placeholder="https://..."
                 />
               </div>
@@ -280,11 +291,11 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
             {/* Experience & Priority */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm text-white/60 mb-2 block">Experience Level</label>
+                <label className="text-sm text-text-muted mb-2 block">Experience Level</label>
                 <select
                   value={formData.experienceLevel}
                   onChange={(e) => handleChange('experienceLevel', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-blue-500"
                 >
                   {EXPERIENCE_LEVELS.map(level => (
                     <option key={level.id} value={level.id}>
@@ -294,7 +305,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                 </select>
               </div>
               <div>
-                <label className="text-sm text-white/60 mb-2 block">Priority</label>
+                <label className="text-sm text-text-muted mb-2 block">Priority</label>
                 <div className="flex gap-2">
                   {PRIORITY_LEVELS.map(p => (
                     <button
@@ -304,7 +315,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                       className={`flex-1 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                         formData.priority === p.id
                           ? 'text-white'
-                          : 'text-white/50 hover:text-white/70'
+                          : 'text-text-muted hover:text-text-secondary'
                       }`}
                       style={{
                         backgroundColor: formData.priority === p.id ? p.color + '40' : 'rgba(255,255,255,0.05)',
@@ -322,7 +333,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
 
             {/* Skills */}
             <div>
-              <label className="flex items-center gap-2 text-sm text-white/60 mb-2">
+              <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
                 <Tag className="w-4 h-4" />
                 Required Skills
               </label>
@@ -349,7 +360,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
-                  className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500 text-sm"
+                  className="flex-1 px-4 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500 text-sm"
                   placeholder="Add skill..."
                 />
                 <button
@@ -367,7 +378,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
                     key={skill}
                     type="button"
                     onClick={() => setFormData(prev => ({ ...prev, skills: [...prev.skills, skill] }))}
-                    className="px-2 py-0.5 text-xs text-white/40 hover:text-white/70 hover:bg-white/5 rounded transition-colors"
+                    className="px-2 py-0.5 text-xs text-text-muted hover:text-text-secondary hover:bg-bg-secondary rounded transition-colors"
                   >
                     + {skill}
                   </button>
@@ -378,22 +389,22 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
             {/* Contact Info */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm text-white/60 mb-2 block">Contact Person</label>
+                <label className="text-sm text-text-muted mb-2 block">Contact Person</label>
                 <input
                   type="text"
                   value={formData.contactPerson}
                   onChange={(e) => handleChange('contactPerson', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                   placeholder="Recruiter name"
                 />
               </div>
               <div>
-                <label className="text-sm text-white/60 mb-2 block">Contact Email</label>
+                <label className="text-sm text-text-muted mb-2 block">Contact Email</label>
                 <input
                   type="email"
                   value={formData.contactEmail}
                   onChange={(e) => handleChange('contactEmail', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500"
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500"
                   placeholder="recruiter@company.com"
                 />
               </div>
@@ -401,30 +412,39 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
 
             {/* Notes */}
             <div>
-              <label className="text-sm text-white/60 mb-2 block">Notes</label>
+              <label className="text-sm text-text-muted mb-2 block">Notes</label>
               <textarea
                 value={formData.notes}
                 onChange={(e) => handleChange('notes', e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-blue-500 resize-none"
+                className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:border-blue-500 resize-none"
                 placeholder="Any additional notes about this job..."
               />
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 pt-4 border-t border-white/10">
+            <div className="flex gap-3 pt-4 border-t border-border">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white/70 hover:bg-white/10 transition-colors"
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-secondary hover:bg-bg-tertiary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg text-white font-medium hover:opacity-90 transition-opacity"
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {editJob ? 'Save Changes' : 'Add Job'}
+                {isSubmitting ? (
+                  <>
+                    <LoadingSpinner size="sm" />
+                    {editJob ? 'Saving...' : 'Adding...'}
+                  </>
+                ) : (
+                  editJob ? 'Save Changes' : 'Add Job'
+                )}
               </button>
             </div>
           </form>

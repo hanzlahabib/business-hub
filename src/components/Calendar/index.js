@@ -1,3 +1,5 @@
 export { WeekView } from './WeekView'
 export { DayColumn } from './DayColumn'
 export { ContentCard } from './ContentCard'
+export { CalendarItemCard } from './CalendarItemCard'
+export { CalendarFilters } from './CalendarFilters'

@@ -41,7 +41,7 @@ function ActivityItem({ activity, isLast }) {
           <Icon className="w-4 h-4" />
         </div>
         {!isLast && (
-          <div className="w-px h-full bg-white/10 my-1" />
+          <div className="w-px h-full bg-border my-1" />
         )}
       </div>
 
@@ -51,11 +51,11 @@ function ActivityItem({ activity, isLast }) {
           {activity.description}
         </p>
         {activity.details && (
-          <p className="text-xs text-white/50 mt-1">
+          <p className="text-xs text-text-muted mt-1">
             {activity.details}
           </p>
         )}
-        <span className="text-xs text-white/30 mt-1 block">
+        <span className="text-xs text-text-muted mt-1 block">
           {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}
         </span>
       </div>
@@ -69,10 +69,10 @@ export function ActivityTimeline({ activities, loading, maxItems = 10 }) {
       <div className="space-y-4">
         {[1, 2, 3].map(i => (
           <div key={i} className="flex gap-3 animate-pulse">
-            <div className="w-8 h-8 bg-white/10 rounded-full" />
+            <div className="w-8 h-8 bg-bg-tertiary rounded-full" />
             <div className="flex-1">
-              <div className="h-4 bg-white/10 rounded w-3/4 mb-1" />
-              <div className="h-3 bg-white/10 rounded w-1/4" />
+              <div className="h-4 bg-bg-tertiary rounded w-3/4 mb-1" />
+              <div className="h-3 bg-bg-tertiary rounded w-1/4" />
             </div>
           </div>
         ))}
@@ -82,7 +82,7 @@ export function ActivityTimeline({ activities, loading, maxItems = 10 }) {
 
   if (!activities || activities.length === 0) {
     return (
-      <div className="text-center py-6 text-white/40">
+      <div className="text-center py-6 text-text-muted">
         <Calendar className="w-6 h-6 mx-auto mb-2 opacity-50" />
         <p className="text-sm">No activity yet</p>
       </div>
@@ -102,7 +102,7 @@ export function ActivityTimeline({ activities, loading, maxItems = 10 }) {
       ))}
 
       {activities.length > maxItems && (
-        <p className="text-xs text-white/40 text-center mt-2">
+        <p className="text-xs text-text-muted text-center mt-2">
           +{activities.length - maxItems} more activities
         </p>
       )}

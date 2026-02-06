@@ -48,21 +48,21 @@ export function LeadCard({ lead, onClick, onMenuClick, isDragging }) {
           e.stopPropagation()
           onMenuClick?.(lead, e)
         }}
-        className="absolute top-2 right-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-white/10 transition-all"
+        className="absolute top-2 right-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-bg-tertiary transition-all"
       >
-        <MoreHorizontal className="w-4 h-4 text-white/60" />
+        <MoreHorizontal className="w-4 h-4 text-text-muted" />
       </button>
 
       {/* Header */}
       <div className="mb-3">
         <div className="flex items-start gap-2">
-          <Building2 className="w-4 h-4 text-white/40 mt-0.5 shrink-0" />
-          <h3 className="font-semibold text-white text-sm leading-tight line-clamp-2">
+          <Building2 className="w-4 h-4 text-text-muted mt-0.5 shrink-0" />
+          <h3 className="font-semibold text-text-primary text-sm leading-tight line-clamp-2">
             {lead.name}
           </h3>
         </div>
         {lead.contactPerson && (
-          <p className="text-xs text-white/50 mt-1 ml-6">
+          <p className="text-xs text-text-muted mt-1 ml-6">
             {lead.contactPerson}
           </p>
         )}
@@ -71,26 +71,26 @@ export function LeadCard({ lead, onClick, onMenuClick, isDragging }) {
       {/* Info */}
       <div className="space-y-1.5 text-xs">
         {lead.email && (
-          <div className="flex items-center gap-2 text-white/60">
+          <div className="flex items-center gap-2 text-text-muted">
             <Mail className="w-3 h-3" />
             <span className="truncate">{lead.email}</span>
           </div>
         )}
         {lead.phone && (
-          <div className="flex items-center gap-2 text-white/60">
+          <div className="flex items-center gap-2 text-text-muted">
             <Phone className="w-3 h-3" />
             <span>{lead.phone}</span>
           </div>
         )}
         {lead.website && (
-          <div className="flex items-center gap-2 text-white/60">
+          <div className="flex items-center gap-2 text-text-muted">
             <Globe className="w-3 h-3" />
             <a
               href={lead.website}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="truncate hover:text-white/80 flex items-center gap-1"
+              className="truncate hover:text-text-secondary flex items-center gap-1"
             >
               {lead.website.replace(/^https?:\/\//, '')}
               <ExternalLink className="w-2.5 h-2.5" />
@@ -100,7 +100,7 @@ export function LeadCard({ lead, onClick, onMenuClick, isDragging }) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
         <div className="flex items-center gap-2">
           {lead.source && (
             <span className="text-xs" title={`Source: ${lead.source}`}>
@@ -108,19 +108,19 @@ export function LeadCard({ lead, onClick, onMenuClick, isDragging }) {
             </span>
           )}
           {lead.industry && (
-            <span className="text-xs px-2 py-0.5 bg-white/10 rounded-full text-white/60 capitalize">
+            <span className="text-xs px-2 py-0.5 bg-bg-tertiary rounded-full text-text-muted capitalize">
               {lead.industry}
             </span>
           )}
         </div>
 
         {lead.lastContactedAt ? (
-          <div className="flex items-center gap-1 text-xs text-white/40">
+          <div className="flex items-center gap-1 text-xs text-text-muted">
             <Calendar className="w-3 h-3" />
             <span>{formatDistanceToNow(new Date(lead.lastContactedAt), { addSuffix: true })}</span>
           </div>
         ) : (
-          <span className="text-xs text-white/30">Not contacted</span>
+          <span className="text-xs text-text-muted">Not contacted</span>
         )}
       </div>
 
@@ -130,13 +130,13 @@ export function LeadCard({ lead, onClick, onMenuClick, isDragging }) {
           {lead.tags.slice(0, 3).map(tag => (
             <span
               key={tag}
-              className="text-[10px] px-1.5 py-0.5 bg-white/10 rounded text-white/50"
+              className="text-[10px] px-1.5 py-0.5 bg-bg-tertiary rounded text-text-muted"
             >
               {tag}
             </span>
           ))}
           {lead.tags.length > 3 && (
-            <span className="text-[10px] text-white/30">+{lead.tags.length - 3}</span>
+            <span className="text-[10px] text-text-muted">+{lead.tags.length - 3}</span>
           )}
         </div>
       )}

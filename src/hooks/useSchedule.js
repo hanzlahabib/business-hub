@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-const API_URL = 'http://localhost:3001'
+const API_URL = 'http://localhost:3005'
 
 export function useSchedule() {
   const [contents, setContents] = useState([])
