@@ -1,16 +1,93 @@
-# React + Vite
+# Business Hub — Schedule Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive content management and scheduling platform built with React, TypeScript, and Vite. Manage videos, templates, jobs, leads, skill mastery, and more from a single dashboard.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Content Scheduling** — Calendar & list views with drag-and-drop
+- **Template System** — Block-based editor with versioning, comments, and folders
+- **Skill Mastery** — Gamified learning paths with lessons, practice, and quizzes
+- **Job Tracker** — Track applications with pipeline stages
+- **Lead Management** — Kanban board for business leads
+- **Content Studio** — Video planning and script management
+- **Task Boards** — Flexible task management boards
+- **Authentication** — Login/register with route protection
 
-## React Compiler
+## Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+# Install dependencies
+pnpm install
 
-## Expanding the ESLint configuration
+# Start JSON Server (data backend on port 3005)
+pnpm run db
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Start API server (port 3002)
+node server/index.js
+
+# Start dev server (port 5175)
+pnpm run dev
+```
+
+Open [http://localhost:5175](http://localhost:5175) in your browser.
+
+**Default login:** `admin@example.com` / `admin123`
+
+## Tech Stack
+
+| Layer       | Technology                          |
+|-------------|-------------------------------------|
+| Framework   | React 18 + TypeScript               |
+| Build       | Vite 7                              |
+| Routing     | React Router v7                     |
+| Styling     | CSS custom properties (dark/light)  |
+| Animations  | Framer Motion                       |
+| Data        | JSON Server (REST API)              |
+| Charts      | Recharts                            |
+| Icons       | Lucide React                        |
+
+## Project Structure
+
+```
+src/
+├── components/       # Shared UI components
+│   ├── Auth/         # Login, Register, ProtectedRoute
+│   ├── Calendar/     # Week view, filters
+│   ├── ErrorBoundary/# Error handling components
+│   ├── Forms/        # Add/edit content modals
+│   └── ui/           # Button, Dialog, etc.
+├── config/           # API urls, constants
+├── contexts/         # AuthContext
+├── hooks/            # Global hooks (useSchedule, useAuth, etc.)
+├── modules/          # Feature modules
+│   ├── contentStudio/
+│   ├── jobs/
+│   ├── leads/
+│   ├── pipeline/
+│   ├── skillMastery/
+│   ├── taskboards/
+│   └── templates/
+├── shared/           # Shared components & hooks
+├── utils/            # apiClient, errorHandler
+├── routes.tsx        # Route definitions
+└── main.tsx          # Entry point
+server/
+├── index.js          # Express API server
+└── routes/           # API route handlers
+```
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture, [docs/API.md](docs/API.md) for API reference, and [docs/SETUP.md](docs/SETUP.md) for development setup.
+
+## Scripts
+
+| Command          | Description                    |
+|------------------|--------------------------------|
+| `pnpm dev`       | Start Vite dev server          |
+| `pnpm build`     | Production build               |
+| `pnpm preview`   | Preview production build       |
+| `pnpm lint`      | Run ESLint                     |
+| `pnpm run db`    | Start JSON Server on port 3005 |
+
+## License
+
+Private project — all rights reserved.

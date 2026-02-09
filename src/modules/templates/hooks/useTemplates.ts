@@ -1,10 +1,12 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { templateApi } from '../services/templateApi'
+import { useAuth } from '../../../hooks/useAuth'
 
 const TEMPLATE_CATEGORIES = ['linkedin', 'email', 'proposal', 'document', 'custom']
 const TEMPLATE_STATUSES = ['draft', 'published', 'archived']
 
 export function useTemplates() {
+  const { user } = useAuth()
   const [templates, setTemplates] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -43,8 +45,8 @@ export function useTemplates() {
         isPinned: false,
         usageCount: 0,
         lastUsedAt: null,
-        createdBy: 'user-1', // TODO: Replace with actual user ID from auth context
-        updatedBy: 'user-1',
+        createdBy: user?.id || 'anonymous',
+        updatedBy: user?.id || 'anonymous',
         permissions: {
           visibility: 'private',
           canEdit: [],
@@ -72,7 +74,7 @@ export function useTemplates() {
     try {
       const data = await templateApi.update(id, {
         ...updates,
-        updatedBy: 'user-1' // TODO: Replace with actual user ID
+        updatedBy: user?.id || 'anonymous'
       })
       setTemplates(prev => prev.map(t => t.id === id ? data : t))
       return data

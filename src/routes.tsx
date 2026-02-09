@@ -1,5 +1,9 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 import App from './App'
+import { LoginForm } from './components/Auth/LoginForm'
+import { RegisterForm } from './components/Auth/RegisterForm'
+import { ProtectedRoute } from './components/Auth/ProtectedRoute'
+import { NotFoundPage } from './components/NotFoundPage'
 
 // Module route configuration
 // This maps URL paths to activeModule values used internally
@@ -83,81 +87,93 @@ export function getViewRoute(view: string): string {
     return `/${view}`
 }
 
+const ProtectedApp = <ProtectedRoute><App /></ProtectedRoute>
+
 export const router = createBrowserRouter([
+    // Auth routes (public)
+    {
+        path: '/login',
+        element: <LoginForm />
+    },
+    {
+        path: '/register',
+        element: <RegisterForm />
+    },
     // Calendar Module (clean, unified scheduling)
     {
         path: '/',
-        element: <App />
+        element: ProtectedApp
     },
     {
         path: '/calendar',
-        element: <App />
+        element: ProtectedApp
     },
     {
         path: '/list',
-        element: <App />
+        element: ProtectedApp
     },
     // Content Studio Module (video production)
     {
         path: '/content',
-        element: <App />
+        element: ProtectedApp
     },
     {
         path: '/content/pipeline',
-        element: <App />
+        element: ProtectedApp
     },
     {
         path: '/content/list',
-        element: <App />
+        element: ProtectedApp
     },
     {
         path: '/content/table',
-        element: <App />
+        element: ProtectedApp
     },
     // Leads Module
     {
         path: '/leads',
-        element: <App />
+        element: ProtectedApp
     },
     {
         path: '/leads/:leadId',
-        element: <App />
+        element: ProtectedApp
     },
     // Task Boards Module
     {
         path: '/taskboards',
-        element: <App />
+        element: ProtectedApp
     },
     {
         path: '/taskboards/:boardId',
-        element: <App />
+        element: ProtectedApp
     },
     {
         path: '/taskboards/:boardId/task/:taskId',
-        element: <App />
+        element: ProtectedApp
     },
     // Jobs Module
     {
         path: '/jobs',
-        element: <App />
+        element: ProtectedApp
     },
     // Templates Module
     {
         path: '/templates',
-        element: <App />
+        element: ProtectedApp
     },
     // Skill Mastery Module
     {
         path: '/skills',
-        element: <App />
+        element: ProtectedApp
     },
     {
         path: '/skills/:pathId',
-        element: <App />
+        element: ProtectedApp
     },
-    // Catch-all for 404 - redirect to home
+    // Catch-all 404
     {
         path: '*',
-        element: <Navigate to="/" replace />
+        element: <NotFoundPage />
     }
 ])
+

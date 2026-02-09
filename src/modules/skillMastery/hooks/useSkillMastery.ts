@@ -398,7 +398,6 @@ export function useSkillMastery() {
     addMilestone,
     toggleMilestone,
     removeMilestone,
-    removeMilestone,
     logDailyActivity,
     getLevelInfo
   }

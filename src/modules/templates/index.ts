@@ -8,7 +8,7 @@ export { useTemplateFolders } from './hooks/useTemplateFolders'
 export { useTemplateEditor } from './hooks/useTemplateEditor'
 export { useTemplateHistory } from './hooks/useTemplateHistory'
 export { useTemplateComments } from './hooks/useTemplateComments'
-export { useCurrentUser, CurrentUserProvider, useUserContext } from './hooks/useCurrentUser'
+export { useCurrentUser } from './hooks/useCurrentUser'
 
 // Components
 export { TemplateCard } from './components/TemplateCard'

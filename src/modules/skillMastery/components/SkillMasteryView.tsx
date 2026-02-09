@@ -423,8 +423,7 @@ function GardenTreeView({ plants, onSelect, onToggleMilestone, onToggleVocabular
           isExpanded: isPlantExpanded,
           onToggleExpand: () => togglePlant(plant.id),
           description: plant.description || `A growing skill in the ${stage.name} stage.`,
-          plantId: plant.id,
-          progress
+          plantId: plant.id
         }
       })
 

@@ -30093,5 +30093,34 @@
         ]
       }
     ]
-  }
+  },
+  "users": [
+    {
+      "id": "user-1",
+      "name": "Hanzla",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "avatar": "https://ui-avatars.com/api/?name=Hanzla&background=10b981&color=fff",
+      "role": "owner",
+      "createdAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "60b2",
+      "name": "Hanzla habib",
+      "email": "hanzla.dev@gmail.com",
+      "password": "Abbubaba@786",
+      "avatar": "https://ui-avatars.com/api/?name=Hanzla%20habib&background=10b981&color=fff",
+      "role": "user",
+      "createdAt": "2026-02-09T14:23:53.039Z"
+    },
+    {
+      "id": "f27f",
+      "name": "test",
+      "email": "test@gmail.com",
+      "password": "1234567",
+      "avatar": "https://ui-avatars.com/api/?name=test&background=10b981&color=fff",
+      "role": "user",
+      "createdAt": "2026-02-09T14:31:55.130Z"
+    }
+  ]
 }

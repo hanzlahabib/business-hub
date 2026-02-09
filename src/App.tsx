@@ -1,7 +1,7 @@
-import { useReducer, useCallback, useMemo, memo, useState } from 'react'
+import { useReducer, useCallback, useMemo, useState, lazy, Suspense } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Toaster, toast } from 'sonner'
-import { Plus, Calendar, List, Sun, Moon, Settings } from 'lucide-react'
+import { Plus, Calendar, List } from 'lucide-react'
 import { useSchedule, type Content } from './hooks/useSchedule'
 import { useCalendarItems, type CalendarFilters as CalendarFiltersType, type CalendarItem } from './hooks/useCalendarItems'
 import { useTheme } from './hooks/useTheme'
@@ -10,13 +10,32 @@ import { WeekView, CalendarFilters } from './components/Calendar'
 import { AddContentModal } from './components/Forms'
 import { Button } from './components/ui/button'
 import { AlertDialog } from './components/ui/alert-dialog'
-import { ListView, LeadsView, TaskBoardsView, JobsView, TemplatesView } from './components/Views'
 import { ContentDetailPanel } from './components/DetailPanel'
-import { Sidebar, SidebarToggleButton } from './shared/components/Sidebar'
-import { SkillMasteryView } from './modules/skillMastery'
-import { ContentStudioView } from './modules/contentStudio'
+import { Sidebar } from './shared/components/Sidebar'
 import { SettingsModal } from './components/Forms/SettingsModal'
+import { AppHeader } from './components/AppHeader'
 import { getModuleFromPath, getViewFromPath, getViewRoute } from './routes'
+
+// Lazy-loaded module views (code splitting)
+const SkillMasteryView = lazy(() => import('./modules/skillMastery').then(m => ({ default: m.SkillMasteryView })))
+const ContentStudioView = lazy(() => import('./modules/contentStudio').then(m => ({ default: m.ContentStudioView })))
+const ListView = lazy(() => import('./components/Views').then(m => ({ default: m.ListView })))
+const LeadsView = lazy(() => import('./components/Views').then(m => ({ default: m.LeadsView })))
+const TaskBoardsView = lazy(() => import('./components/Views').then(m => ({ default: m.TaskBoardsView })))
+const JobsView = lazy(() => import('./components/Views').then(m => ({ default: m.JobsView })))
+const TemplatesView = lazy(() => import('./components/Views').then(m => ({ default: m.TemplatesView })))
+
+// Loading fallback for lazy-loaded modules
+function ModuleLoader() {
+    return (
+        <div className="flex items-center justify-center p-12">
+            <div className="flex flex-col items-center gap-3">
+                <div className="w-8 h-8 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                <p className="text-text-muted text-xs font-medium">Loading module...</p>
+            </div>
+        </div>
+    )
+}
 
 
 
@@ -247,123 +266,125 @@ function App() {
                 <div className="p-6">
                     <div className="max-w-[1600px] mx-auto">
                         {/* Header */}
-                        <Header
+                        <AppHeader
                             theme={theme}
                             onToggleTheme={toggleTheme}
                             onToggleSidebar={toggleSidebar}
                             onOpenSettings={toggleSettings}
                         />
 
-                        {/* Content Studio Module - Self-contained with its own UI */}
-                        {activeModule === 'contentstudio' && <ContentStudioView />}
+                        <Suspense fallback={<ModuleLoader />}>
+                            {/* Content Studio Module - Self-contained with its own UI */}
+                            {activeModule === 'contentstudio' && <ContentStudioView />}
 
-                        {/* Calendar Module - Clean unified scheduling */}
-                        {activeModule === 'schedule' && (
-                            <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                {/* Calendar Module Toolbar */}
-                                <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
-                                    {/* View Switcher - Calendar and List only */}
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => handleViewChange('calendar')}
-                                            className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${view === 'calendar'
-                                                ? 'bg-accent-primary text-white'
-                                                : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
-                                                }`}
-                                        >
-                                            <Calendar size={14} />
-                                            <span>Calendar</span>
-                                        </button>
-                                        <button
-                                            onClick={() => handleViewChange('list')}
-                                            className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${view === 'list'
-                                                ? 'bg-accent-primary text-white'
-                                                : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
-                                                }`}
-                                        >
-                                            <List size={14} />
-                                            <span>List</span>
-                                        </button>
+                            {/* Calendar Module - Clean unified scheduling */}
+                            {activeModule === 'schedule' && (
+                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                                    {/* Calendar Module Toolbar */}
+                                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
+                                        {/* View Switcher - Calendar and List only */}
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => handleViewChange('calendar')}
+                                                className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${view === 'calendar'
+                                                    ? 'bg-accent-primary text-white'
+                                                    : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
+                                                    }`}
+                                            >
+                                                <Calendar size={14} />
+                                                <span>Calendar</span>
+                                            </button>
+                                            <button
+                                                onClick={() => handleViewChange('list')}
+                                                className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${view === 'list'
+                                                    ? 'bg-accent-primary text-white'
+                                                    : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
+                                                    }`}
+                                            >
+                                                <List size={14} />
+                                                <span>List</span>
+                                            </button>
+                                        </div>
+
+                                        {/* Calendar/List Item Filters */}
+                                        <CalendarFilters
+                                            filters={calendarFilters}
+                                            onChange={handleCalendarFilterChange}
+                                        />
+
+                                        {/* Add Item Button */}
+                                        <Button onClick={() => handleAddContent(todayDate)}>
+                                            <Plus size={16} />
+                                            <span className="text-xs">Add Item</span>
+                                        </Button>
                                     </div>
 
-                                    {/* Calendar/List Item Filters */}
-                                    <CalendarFilters
-                                        filters={calendarFilters}
-                                        onChange={handleCalendarFilterChange}
+                                    {view === 'calendar' && (
+                                        <WeekView
+                                            contents={contents}
+                                            items={calendarItems}
+                                            calendarFilters={calendarFilters}
+                                            onAddContent={handleAddContent}
+                                            onEditContent={handleEditContent}
+                                            onDeleteContent={handleDeleteContent}
+                                            onDateChange={scheduleContent}
+                                            onItemDateChange={handleItemDateChange}
+                                            onOpenDetail={handleOpenDetail}
+                                            onItemClick={handleCalendarItemClick}
+                                        />
+                                    )}
+                                    {view === 'list' && (
+                                        <ListView
+                                            contents={contents}
+                                            items={calendarItems}
+                                            calendarFilters={calendarFilters}
+                                            onEdit={handleEditContent}
+                                            onDelete={handleDeleteContent}
+                                            onOpenDetail={handleOpenDetail}
+                                            onItemClick={handleCalendarItemClick}
+                                        />
+                                    )}
+                                </main>
+                            )}
+
+                            {/* Leads Module */}
+                            {activeModule === 'leads' && (
+                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                                    <LeadsView onNavigateToBoard={handleNavigateToBoard} />
+                                </main>
+                            )}
+
+                            {/* Task Boards Module */}
+                            {activeModule === 'taskboards' && (
+                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                                    <TaskBoardsView
+                                        initialBoardId={navigateToBoardId || undefined}
+                                        onBoardViewed={() => setNavigateToBoardId(null)}
                                     />
+                                </main>
+                            )}
 
-                                    {/* Add Item Button */}
-                                    <Button onClick={() => handleAddContent(todayDate)}>
-                                        <Plus size={16} />
-                                        <span className="text-xs">Add Item</span>
-                                    </Button>
-                                </div>
+                            {/* Jobs Module */}
+                            {activeModule === 'jobs' && (
+                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                                    <JobsView />
+                                </main>
+                            )}
 
-                                {view === 'calendar' && (
-                                    <WeekView
-                                        contents={contents}
-                                        items={calendarItems}
-                                        calendarFilters={calendarFilters}
-                                        onAddContent={handleAddContent}
-                                        onEditContent={handleEditContent}
-                                        onDeleteContent={handleDeleteContent}
-                                        onDateChange={scheduleContent}
-                                        onItemDateChange={handleItemDateChange}
-                                        onOpenDetail={handleOpenDetail}
-                                        onItemClick={handleCalendarItemClick}
-                                    />
-                                )}
-                                {view === 'list' && (
-                                    <ListView
-                                        contents={contents}
-                                        items={calendarItems}
-                                        calendarFilters={calendarFilters}
-                                        onEdit={handleEditContent}
-                                        onDelete={handleDeleteContent}
-                                        onOpenDetail={handleOpenDetail}
-                                        onItemClick={handleCalendarItemClick}
-                                    />
-                                )}
-                            </main>
-                        )}
+                            {/* Templates Module */}
+                            {activeModule === 'templates' && (
+                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                                    <TemplatesView />
+                                </main>
+                            )}
 
-                        {/* Leads Module */}
-                        {activeModule === 'leads' && (
-                            <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                <LeadsView onNavigateToBoard={handleNavigateToBoard} />
-                            </main>
-                        )}
-
-                        {/* Task Boards Module */}
-                        {activeModule === 'taskboards' && (
-                            <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                <TaskBoardsView
-                                    initialBoardId={navigateToBoardId || undefined}
-                                    onBoardViewed={() => setNavigateToBoardId(null)}
-                                />
-                            </main>
-                        )}
-
-                        {/* Jobs Module */}
-                        {activeModule === 'jobs' && (
-                            <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                <JobsView />
-                            </main>
-                        )}
-
-                        {/* Templates Module */}
-                        {activeModule === 'templates' && (
-                            <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                <TemplatesView />
-                            </main>
-                        )}
-
-                        {/* Skill Mastery Module */}
-                        {activeModule === 'skillmastery' && (
-                            <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                <SkillMasteryView />
-                            </main>
-                        )}
+                            {/* Skill Mastery Module */}
+                            {activeModule === 'skillmastery' && (
+                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                                    <SkillMasteryView />
+                                </main>
+                            )}
+                        </Suspense>
 
                         {/* Add/Edit Modal - Only for Calendar module quick add */}
                         {activeModule === 'schedule' && (
@@ -426,57 +447,5 @@ function App() {
         </div>
     )
 }
-
-// Memoized Header Component
-const Header = memo(function Header({
-    theme,
-    onToggleTheme,
-    onToggleSidebar,
-    onOpenSettings
-}: {
-    theme: 'light' | 'dark',
-    onToggleTheme: () => void,
-    onToggleSidebar: () => void,
-    onOpenSettings: () => void
-}) {
-    return (
-        <header className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-                {/* Sidebar Toggle Button */}
-                <SidebarToggleButton onClick={onToggleSidebar} />
-
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
-                        <Calendar size={20} className="text-white" />
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-bold text-text-primary">Business Hub</h1>
-                        <p className="text-sm text-text-muted">Productivity Platform</p>
-                    </div>
-                </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-                {/* Settings Toggle */}
-                <button
-                    onClick={onOpenSettings}
-                    className="p-2.5 rounded-xl bg-bg-secondary border border-border text-text-muted hover:text-text-primary hover:border-accent-primary transition-colors"
-                    title="Settings"
-                >
-                    <Settings size={18} />
-                </button>
-
-                {/* Theme Toggle */}
-                <button
-                    onClick={onToggleTheme}
-                    className="p-2.5 rounded-xl bg-bg-secondary border border-border text-text-muted hover:text-text-primary hover:border-accent-primary transition-colors"
-                    title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-                >
-                    {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-                </button>
-            </div>
-        </header>
-    )
-})
 
 export default App

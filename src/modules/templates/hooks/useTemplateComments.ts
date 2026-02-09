@@ -7,8 +7,10 @@
 
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { commentApi } from '../services/templateApi'
+import { useAuth } from '../../../hooks/useAuth'
 
 export function useTemplateComments(templateId = null) {
+  const { user } = useAuth()
   const [comments, setComments] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -37,7 +39,7 @@ export function useTemplateComments(templateId = null) {
     text,
     blockId = null,
     parentId = null,
-    userId = 'user-1'
+    userId = user?.id || 'anonymous'
   }) => {
     if (!templateId || !text?.trim()) return null
 
@@ -113,13 +115,13 @@ export function useTemplateComments(templateId = null) {
   }, [comments, updateComment])
 
   // Add reaction to comment
-  const addReaction = useCallback(async (commentId, emoji, userId = 'user-1') => {
+  const addReaction = useCallback(async (commentId, emoji, reactionUserId = user?.id || 'anonymous') => {
     const comment = comments.find(c => c.id === commentId)
     if (!comment) return null
 
     const reactions = comment.reactions || []
     const existingIndex = reactions.findIndex(
-      r => r.emoji === emoji && r.userId === userId
+      r => r.emoji === emoji && r.userId === reactionUserId
     )
 
     let newReactions
@@ -128,11 +130,11 @@ export function useTemplateComments(templateId = null) {
       newReactions = reactions.filter((_, i) => i !== existingIndex)
     } else {
       // Add new reaction
-      newReactions = [...reactions, { emoji, userId, createdAt: new Date().toISOString() }]
+      newReactions = [...reactions, { emoji, userId: reactionUserId, createdAt: new Date().toISOString() }]
     }
 
     return updateComment(commentId, { reactions: newReactions })
-  }, [comments, updateComment])
+  }, [comments, updateComment, user])
 
   // Get comments for a specific block
   const getBlockComments = useCallback((blockId) => {

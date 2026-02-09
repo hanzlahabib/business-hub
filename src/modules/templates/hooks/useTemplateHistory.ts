@@ -50,7 +50,7 @@ export function useTemplateHistory(templateId = null) {
         description: template.description,
         category: template.category,
         tags: template.tags || [],
-        changedBy: template.updatedBy || 'user-1', // TODO: Replace with actual user ID
+        changedBy: template.updatedBy || 'anonymous',
         changeType,
         changeSummary: changeSummary || getAutoSummary(changeType)
       }

@@ -1,115 +1,117 @@
-import { motion } from 'framer-motion'
+/**
+ * Reusable loading skeleton components.
+ * Use these as placeholders while data is being fetched.
+ */
 
-const shimmer = {
-    animate: {
-        backgroundPosition: ['200% 0', '-200% 0']
-    },
-    transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: 'linear'
-    }
-}
-
-interface SkeletonBaseProps {
+interface SkeletonProps {
     className?: string
 }
 
-function SkeletonBase({ className = '' }: SkeletonBaseProps) {
+/** Basic rectangular skeleton */
+export function Skeleton({ className = '' }: SkeletonProps) {
     return (
-        <motion.div
-            // @ts-ignore
-            animate={shimmer.animate}
-            transition={shimmer.transition}
-            className={`bg-gradient-to-r from-bg-tertiary via-bg-secondary to-bg-tertiary bg-[length:200%_100%] rounded ${className}`}
-            style={{ backgroundSize: '200% 100%' }}
+        <div
+            className={`animate-pulse bg-bg-secondary rounded-lg ${className}`}
+            role="status"
+            aria-label="Loading"
         />
     )
 }
 
-function CardSkeleton() {
+/** Skeleton for a card-like element */
+export function CardSkeleton() {
     return (
-        <div className="bg-bg-secondary rounded-lg border border-border p-4 space-y-3">
-            <SkeletonBase className="h-5 w-3/4" />
-            <SkeletonBase className="h-4 w-full" />
-            <SkeletonBase className="h-4 w-5/6" />
+        <div className="p-4 rounded-xl border border-border bg-bg-secondary/50 space-y-3" role="status" aria-label="Loading card">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
             <div className="flex gap-2 pt-2">
-                <SkeletonBase className="h-6 w-16" />
-                <SkeletonBase className="h-6 w-20" />
+                <Skeleton className="h-6 w-16 rounded-full" />
+                <Skeleton className="h-6 w-20 rounded-full" />
             </div>
         </div>
     )
 }
 
-function ListSkeleton() {
+/** Skeleton for a table row */
+export function TableRowSkeleton({ columns = 4 }: { columns?: number }) {
     return (
-        <div className="bg-bg-secondary rounded-lg border border-border p-3 space-y-2">
-            <div className="flex items-center gap-3">
-                <SkeletonBase className="h-10 w-10 rounded-full" />
-                <div className="flex-1 space-y-2">
-                    <SkeletonBase className="h-4 w-1/3" />
-                    <SkeletonBase className="h-3 w-1/2" />
+        <div className="flex items-center gap-4 p-3 border-b border-border" role="status" aria-label="Loading row">
+            {Array.from({ length: columns }).map((_, i) => (
+                <Skeleton key={i} className={`h-4 ${i === 0 ? 'w-1/3' : 'flex-1'}`} />
+            ))}
+        </div>
+    )
+}
+
+/** Skeleton for a list of items */
+export function ListSkeleton({ count = 5 }: { count?: number }) {
+    return (
+        <div className="space-y-3" role="status" aria-label="Loading list">
+            {Array.from({ length: count }).map((_, i) => (
+                <CardSkeleton key={i} />
+            ))}
+        </div>
+    )
+}
+
+/** Full page loading skeleton */
+export function PageSkeleton() {
+    return (
+        <div className="space-y-6 p-6" role="status" aria-label="Loading page">
+            {/* Header skeleton */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <Skeleton className="w-10 h-10 rounded-xl" />
+                    <div className="space-y-2">
+                        <Skeleton className="h-5 w-40" />
+                        <Skeleton className="h-3 w-24" />
+                    </div>
+                </div>
+                <div className="flex gap-2">
+                    <Skeleton className="w-10 h-10 rounded-xl" />
+                    <Skeleton className="w-10 h-10 rounded-xl" />
                 </div>
             </div>
-        </div>
-    )
-}
 
-function BoardSkeleton() {
-    return (
-        <div className="bg-bg-secondary rounded-lg border border-border p-4 min-h-[400px]">
-            <SkeletonBase className="h-6 w-32 mb-4" />
-            <div className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                    <div key={i} className="bg-bg-tertiary rounded p-3 space-y-2">
-                        <SkeletonBase className="h-4 w-full" />
-                        <SkeletonBase className="h-3 w-3/4" />
-                    </div>
+            {/* Content skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                    <CardSkeleton key={i} />
                 ))}
             </div>
         </div>
     )
 }
 
-function TableSkeleton() {
-    return (
-        <div className="space-y-2">
-            {[...Array(5)].map((_, i) => (
-                <div key={i} className="flex gap-4 p-3 bg-bg-secondary rounded border border-border">
-                    <SkeletonBase className="h-4 w-1/4" />
-                    <SkeletonBase className="h-4 w-1/3" />
-                    <SkeletonBase className="h-4 w-1/5" />
-                    <SkeletonBase className="h-4 w-1/6" />
+/** Loading skeleton with variant support (board/list) — used by module views */
+export function LoadingSkeleton({ variant = 'board' }: { variant?: 'board' | 'list' }) {
+    if (variant === 'list') {
+        return (
+            <div className="flex items-center gap-4 p-4 rounded-xl border border-border bg-bg-secondary/30 animate-pulse" role="status" aria-label="Loading">
+                <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+                <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
                 </div>
-            ))}
+                <Skeleton className="h-6 w-16 rounded-full shrink-0" />
+            </div>
+        )
+    }
+
+    // Board variant
+    return (
+        <div className="p-4 rounded-xl border border-border bg-bg-secondary/30 space-y-3 animate-pulse" role="status" aria-label="Loading">
+            <div className="flex items-center justify-between">
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-4 w-4 rounded-full" />
+            </div>
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-1/2" />
+            <div className="flex gap-2 pt-1">
+                <Skeleton className="h-5 w-14 rounded-full" />
+                <Skeleton className="h-5 w-18 rounded-full" />
+            </div>
         </div>
     )
 }
 
-interface LoadingSkeletonProps {
-    variant?: 'card' | 'list' | 'board' | 'table'
-    count?: number
-}
-
-export function LoadingSkeleton({ variant = 'card', count = 1 }: LoadingSkeletonProps) {
-    const variants = {
-        card: CardSkeleton,
-        list: ListSkeleton,
-        board: BoardSkeleton,
-        table: TableSkeleton
-    }
-
-    const SkeletonComponent = variants[variant] || variants.card
-
-    if (count === 1) {
-        return <SkeletonComponent />
-    }
-
-    return (
-        <>
-            {[...Array(count)].map((_, i) => (
-                <SkeletonComponent key={i} />
-            ))}
-        </>
-    )
-}

@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect } from 'react'
 import { folderApi } from '../services/templateApi'
+import { useAuth } from '../../../hooks/useAuth'
 
 export function useTemplateFolders() {
+  const { user } = useAuth()
   const [folders, setFolders] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -32,7 +34,7 @@ export function useTemplateFolders() {
         id: `folder-${crypto.randomUUID()}`,
         parentId: folderData.parentId || null,
         order: folderData.order ?? maxOrder + 1,
-        createdBy: 'user-1' // TODO: Replace with actual user ID from auth context
+        createdBy: user?.id || 'anonymous'
       }
 
       const data = await folderApi.create(newFolder)
