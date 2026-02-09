@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Building2, User, Mail, Phone, Globe, Tag, FileText, Briefcase, MapPin } from 'lucide-react'
-import { Select } from '../../../components/UI'
-import { LoadingSpinner } from '../../../components/UI/LoadingSpinner'
+import { Select } from '../../../components/ui/select'
+import { LoadingSpinner } from '../../../components/ui/loading-spinner'
 import { toast } from 'sonner'
 
 const industries = [
@@ -135,7 +135,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
             {/* Company Info */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-secondary mb-2">
                   <Building2 className="w-4 h-4" />
                   Company Name *
                 </label>
@@ -150,7 +150,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-secondary mb-2">
                   <User className="w-4 h-4" />
                   Contact Person
                 </label>
@@ -167,7 +167,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
             {/* Contact Info */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-secondary mb-2">
                   <Mail className="w-4 h-4" />
                   Email *
                 </label>
@@ -182,7 +182,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-sm text-text-muted mb-2">
+                <label className="flex items-center gap-2 text-sm text-text-secondary mb-2">
                   <Phone className="w-4 h-4" />
                   Phone
                 </label>
@@ -240,11 +240,10 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
                     key={issue.value}
                     type="button"
                     onClick={() => toggleWebsiteIssue(issue.value)}
-                    className={`px-3 py-1.5 rounded-lg text-xs transition-colors ${
-                      formData.websiteIssues.includes(issue.value)
-                        ? 'bg-red-500/20 text-red-300 border border-red-500/30'
-                        : 'bg-bg-secondary text-text-muted border border-border hover:bg-bg-tertiary'
-                    }`}
+                    className={`px-3 py-1.5 rounded-lg text-xs transition-colors ${formData.websiteIssues.includes(issue.value)
+                      ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                      : 'bg-bg-secondary text-text-muted border border-border hover:bg-bg-tertiary'
+                      }`}
                   >
                     {issue.label}
                   </button>
@@ -286,7 +285,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
                       <button
                         type="button"
                         onClick={() => removeTag(tag)}
-                        className="hover:text-white"
+                        className="hover:text-text-primary"
                       >
                         ×
                       </button>

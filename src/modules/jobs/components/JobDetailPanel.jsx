@@ -91,7 +91,7 @@ export function JobDetailPanel({
                     </span>
                   )}
                 </div>
-                <h2 className="text-xl font-bold text-white">{job.role}</h2>
+                <h2 className="text-xl font-bold text-text-primary">{job.role}</h2>
                 <div className="flex items-center gap-2 text-text-muted mt-1">
                   <Building2 className="w-4 h-4" />
                   <span>{job.company}</span>
@@ -153,11 +153,10 @@ export function JobDetailPanel({
                   <button
                     key={s.id}
                     onClick={() => onStatusChange(job.id, s.id)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                      job.status === s.id
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${job.status === s.id
                         ? 'ring-2 ring-offset-2 ring-offset-bg-primary'
                         : 'hover:opacity-80'
-                    }`}
+                      }`}
                     style={{
                       backgroundColor: s.color + '30',
                       color: s.color,
@@ -181,7 +180,7 @@ export function JobDetailPanel({
                     <MapPin className="w-3 h-3" />
                     Location
                   </div>
-                  <p className="text-white text-sm">
+                  <p className="text-text-primary text-sm">
                     {job.locationType === 'remote' ? '🌍 Remote' : job.location || 'Not specified'}
                   </p>
                 </div>
@@ -203,7 +202,7 @@ export function JobDetailPanel({
                     <Link2 className="w-3 h-3" />
                     Source
                   </div>
-                  <p className="text-white text-sm">
+                  <p className="text-text-primary text-sm">
                     {source?.icon} {source?.name}
                   </p>
                 </div>
@@ -214,7 +213,7 @@ export function JobDetailPanel({
                     <User className="w-3 h-3" />
                     Level
                   </div>
-                  <p className="text-white text-sm capitalize">
+                  <p className="text-text-primary text-sm capitalize">
                     {job.experienceLevel || 'Not specified'}
                   </p>
                 </div>
@@ -249,7 +248,7 @@ export function JobDetailPanel({
                   {job.skills.map(skill => (
                     <span
                       key={skill}
-                      className="px-2.5 py-1 bg-blue-500/20 text-blue-300 text-sm rounded-lg"
+                      className="px-2.5 py-1 bg-blue-500/10 text-blue-500 text-sm rounded-lg border border-blue-500/20"
                     >
                       {skill}
                     </span>
@@ -266,7 +265,7 @@ export function JobDetailPanel({
                   {job.contactPerson && (
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4 text-text-muted" />
-                      <span className="text-white text-sm">{job.contactPerson}</span>
+                      <span className="text-text-primary text-sm">{job.contactPerson}</span>
                     </div>
                   )}
                   {job.contactEmail && (
@@ -315,7 +314,7 @@ export function JobDetailPanel({
                     type="datetime-local"
                     value={newInterviewDate}
                     onChange={(e) => setNewInterviewDate(e.target.value)}
-                    className="flex-1 px-3 py-2 bg-bg-secondary border border-border rounded-lg text-white text-sm focus:outline-none focus:border-amber-500"
+                    className="flex-1 px-3 py-2 bg-bg-secondary border border-border rounded-lg text-text-primary text-sm focus:outline-none focus:border-amber-500"
                   />
                   <button
                     onClick={handleAddInterview}

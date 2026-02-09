@@ -45,7 +45,7 @@ function SearchResultItem({ job, query, onSelect }) {
         <div className="flex-1 min-w-0">
           {/* Role and company */}
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="text-sm font-medium text-white truncate">
+            <h4 className="text-sm font-medium text-text-primary truncate">
               <HighlightText text={job.role} query={query} />
             </h4>
             <span className={`px-1.5 py-0.5 rounded text-xs ${statusConfig.color || 'bg-gray-500/20 text-gray-400'}`}>

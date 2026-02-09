@@ -22,7 +22,7 @@ const sourceIcons = {
   'md-import': '📝'
 }
 
-export function LeadCard({ lead, onClick, onMenuClick, isDragging }) {
+export function LeadCard({ lead, onClick, onMenuClick, isDragging, selected, onSelect }) {
   const colorClass = industryColors[lead.industry] || industryColors.default
 
   return (
@@ -42,6 +42,19 @@ export function LeadCard({ lead, onClick, onMenuClick, isDragging }) {
         ${isDragging ? 'shadow-xl ring-2 ring-white/20' : 'hover:shadow-lg'}
       `}
     >
+      {/* Selection Checkbox */}
+      <div
+        className={`absolute top-2 left-2 z-10 ${!selected ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'} transition-opacity`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <input
+          type="checkbox"
+          checked={selected || false}
+          onChange={(e) => onSelect?.(lead, e.target.checked)}
+          className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+        />
+      </div>
+
       {/* Menu button */}
       <button
         onClick={(e) => {
@@ -130,7 +143,7 @@ export function LeadCard({ lead, onClick, onMenuClick, isDragging }) {
           {lead.tags.slice(0, 3).map(tag => (
             <span
               key={tag}
-              className="text-[10px] px-1.5 py-0.5 bg-bg-tertiary rounded text-text-muted"
+              className="text-[10px] px-1.5 py-0.5 bg-bg-tertiary rounded text-text-secondary border border-border/50"
             >
               {tag}
             </span>

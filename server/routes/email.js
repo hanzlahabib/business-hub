@@ -22,7 +22,7 @@ router.post('/send', async (req, res) => {
 
   try {
     // Get email settings from JSON Server
-    const settingsRes = await fetch('http://localhost:3001/emailSettings')
+    const settingsRes = await fetch('http://localhost:3005/emailSettings')
     const settings = await settingsRes.json()
 
     if (!settings.provider) {
@@ -38,7 +38,7 @@ router.post('/send', async (req, res) => {
     // If cvId is provided, attach the CV
     if (cvId) {
       try {
-        const cvRes = await fetch(`http://localhost:3001/cvFiles/${cvId}`)
+        const cvRes = await fetch(`http://localhost:3005/cvFiles/${cvId}`)
         const cv = await cvRes.json()
 
         if (cv.type === 'uploaded' && cv.filename) {
@@ -72,14 +72,14 @@ router.post('/send', async (req, res) => {
         createdAt: new Date().toISOString()
       }
 
-      await fetch('http://localhost:3001/messages', {
+      await fetch('http://localhost:3005/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(message)
       })
 
       // Update lead's lastContactedAt
-      await fetch(`http://localhost:3001/leads/${leadId}`, {
+      await fetch(`http://localhost:3005/leads/${leadId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -91,6 +91,9 @@ router.post('/send', async (req, res) => {
 
     res.json(result)
   } catch (error) {
+    // Debug logging
+    const fs = await import('fs');
+    fs.appendFileSync('server_error.log', `${new Date().toISOString()} - ${error.message}\n${error.stack}\n\n`);
     res.status(500).json({ success: false, error: error.message })
   }
 })
@@ -98,7 +101,7 @@ router.post('/send', async (req, res) => {
 // Test email connection
 router.post('/test', async (req, res) => {
   try {
-    const settingsRes = await fetch('http://localhost:3001/emailSettings')
+    const settingsRes = await fetch('http://localhost:3005/emailSettings')
     const settings = await settingsRes.json()
 
     const result = await testConnection(settings)
@@ -121,11 +124,11 @@ router.post('/send-template', async (req, res) => {
 
   try {
     // Get lead data
-    const leadRes = await fetch(`http://localhost:3001/leads/${leadId}`)
+    const leadRes = await fetch(`http://localhost:3005/leads/${leadId}`)
     const lead = await leadRes.json()
 
     // Get template
-    const templateRes = await fetch(`http://localhost:3001/emailTemplates/${templateId}`)
+    const templateRes = await fetch(`http://localhost:3005/emailTemplates/${templateId}`)
     const template = await templateRes.json()
 
     // Replace variables in template

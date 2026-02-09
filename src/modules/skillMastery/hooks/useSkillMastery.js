@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { JSON_SERVER } from '../../../config/api'
+import { SKILL_TEMPLATES } from '../data/templates'
 
 export function useSkillMastery() {
   const [data, setData] = useState(null)
@@ -38,18 +39,23 @@ export function useSkillMastery() {
   const createPath = useCallback(async (pathData) => {
     if (!data) return
 
+    const template = SKILL_TEMPLATES.find(t => t.id === pathData.templateId) || SKILL_TEMPLATES[0]
+
     const newPath = {
       id: `path-${Date.now()}`,
       name: pathData.name,
       description: pathData.description || '',
-      icon: pathData.icon || '🌱',
+      icon: pathData.icon || template.icon || '🌱',
+      templateId: template.id,
       totalXP: 0,
       level: 1,
       levelThresholds: [0, 100, 300, 600, 1000, 1500, 2200, 3000, 4000, 5500],
       streak: { current: 0, best: 0, lastPracticeDate: null },
       vocabulary: [],
       resources: [],
-      milestones: [],
+      milestones: template.milestones ? [...template.milestones] : [],
+      habits: template.habits ? [...template.habits] : [],
+      logs: {}, // Dates as keys: "2023-01-01": { habits: [], journal: {}, mood: 5 }
       createdAt: new Date().toISOString()
     }
 
@@ -317,6 +323,40 @@ export function useSkillMastery() {
     await saveData(newData)
   }, [data, saveData])
 
+  // Log daily activity (habits, journal, mood)
+  const logDailyActivity = useCallback(async (pathId, date, activity) => {
+    if (!data) return
+
+    const newData = {
+      ...data,
+      paths: data.paths.map(p => {
+        if (p.id !== pathId) return p
+
+        const existingLog = p.logs?.[date] || {}
+        const newLog = { ...existingLog, ...activity }
+
+        // Calculate XP gain (simplistic for now)
+        let xpGain = 0
+        if (activity.habitsCompleted && activity.habitsCompleted.length > (existingLog.habitsCompleted?.length || 0)) {
+          xpGain += 10 // 10 XP per new habit
+        }
+        if (activity.journal && !existingLog.journal) {
+          xpGain += 20 // 20 XP for journaling
+        }
+
+        return {
+          ...p,
+          totalXP: p.totalXP + xpGain,
+          logs: {
+            ...(p.logs || {}),
+            [date]: newLog
+          }
+        }
+      })
+    }
+    await saveData(newData)
+  }, [data, saveData])
+
   // Get level info
   const getLevelInfo = useCallback((level) => {
     const levels = [
@@ -358,6 +398,8 @@ export function useSkillMastery() {
     addMilestone,
     toggleMilestone,
     removeMilestone,
+    removeMilestone,
+    logDailyActivity,
     getLevelInfo
   }
 }

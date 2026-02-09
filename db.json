@@ -15981,7 +15981,7 @@
         "name": "English & Communication Mastery",
         "description": "Master professional English communication - from workplace conversations to public speaking. Build vocabulary, learn patterns, and become a confident speaker.",
         "icon": "🌱",
-        "totalXP": 25,
+        "totalXP": 75,
         "level": 1,
         "levelThresholds": [
           0,
@@ -17725,7 +17725,7 @@
               "Use the structure in your next meeting",
               "Practice until spontaneous speaking feels natural"
             ],
-            "completed": false,
+            "completed": true,
             "createdAt": "2026-02-03T00:00:00Z"
           },
           {
@@ -27448,12 +27448,12 @@
         "name": "🤲 Islamic Manifestation: BIA Framework",
         "description": "Master the art of dua and manifestation through the BIA Framework (Belief, Intention, Action). Understand how to converse with Allah, cultivate certainty (yaqeen), and align your thoughts, intentions, and actions for guaranteed success in dunya and akhirah.",
         "icon": "🤲",
-        "totalXP": 10,
+        "totalXP": 20,
         "level": 1,
         "streak": {
           "current": 1,
           "best": 1,
-          "lastPracticeDate": "2026-02-03T22:17:24.034Z"
+          "lastPracticeDate": "2026-02-08T06:30:14.722Z"
         },
         "vocabulary": [
           {
@@ -27821,7 +27821,18 @@
         "icon": "🧘",
         "totalXP": 0,
         "level": 1,
-        "levelThresholds": [0, 100, 300, 600, 1000, 1500, 2200, 3000, 4000, 5500],
+        "levelThresholds": [
+          0,
+          100,
+          300,
+          600,
+          1000,
+          1500,
+          2200,
+          3000,
+          4000,
+          5500
+        ],
         "streak": {
           "current": 0,
           "best": 0,
@@ -28015,6 +28026,2071 @@
           }
         ],
         "createdAt": "2026-02-04T00:00:00Z"
+      },
+      {
+        "id": "path-habit-architecture",
+        "name": "Mindful Mastery & Habit Architecture",
+        "description": "Dismantle old stories, manage dopamine, and reclaim attention using neuroscience based on the Huberman discussion.",
+        "icon": "🧠",
+        "totalXP": 20,
+        "level": 1,
+        "levelThresholds": [
+          0,
+          100,
+          300,
+          600,
+          1000,
+          1500,
+          2200,
+          3000,
+          4000,
+          5500
+        ],
+        "streak": {
+          "current": 0,
+          "best": 0,
+          "lastPracticeDate": null
+        },
+        "vocabulary": [
+          {
+            "id": "v-hm-1",
+            "word": "Neuroplasticity",
+            "meaning": "The brain's ability to reorganize itself by forming new neural connections.",
+            "example": "Neuroplasticity involves taking an existing story and dismantling some component of it.",
+            "learned": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "v-hm-2",
+            "word": "Dopamine Trough",
+            "meaning": "The state of depletion below baseline after a massive dopamine surge.",
+            "example": "If you push things to the max, you're going to feel depleted in a dopamine trough afterwards.",
+            "learned": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "v-hm-3",
+            "word": "Salience",
+            "meaning": "The quality of being particularly noticeable or important.",
+            "example": "Reminders on the mirror don't work because they don't have enough salience.",
+            "learned": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "v-hm-4",
+            "word": "Habit Fluency",
+            "meaning": "The ease and automaticity with which a habitual behavior is performed.",
+            "example": "Writing it out interrupts the fluency of your typical behavior.",
+            "learned": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "v-hm-5",
+            "word": "Limbic Friction",
+            "meaning": "The physiological resistance or 'activation energy' required to start an effortful task.",
+            "example": "Limbic friction is high when you're tired or doing something you dislike.",
+            "learned": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "v-hm-6",
+            "word": "Task Initiation",
+            "meaning": "The ability to begin a task without undue procrastination.",
+            "example": "Consistent task initiation strengthens the prefrontal cortex.",
+            "learned": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "v-hm-7",
+            "word": "Identity-Based Habits",
+            "meaning": "Habits that focus on who you wish to become rather than what you want to achieve.",
+            "example": "Identity-based habits shift the focus from outcomes to identity.",
+            "learned": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "v-hm-8",
+            "word": "Pain-Pleasure Balance",
+            "meaning": "The neurobiological mechanism where pain and pleasure are co-located in the brain.",
+            "example": "Overindulging in pleasure tips the balance toward pain-seeking as a compensatory mechanism.",
+            "learned": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "v-hm-9",
+            "word": "Anhedonia",
+            "meaning": "The inability to feel pleasure from normally enjoyable activities.",
+            "example": "Anhedonia is a common symptom of a long-term dopamine trough.",
+            "learned": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "v-hm-10",
+            "word": "Anterior Mid-Cingulate Cortex",
+            "meaning": "The brain region that grows when you do things you find difficult or undesirable.",
+            "example": "The aMCC is the seat of 'willpower' and it actually increases in size when challenged.",
+            "learned": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          }
+        ],
+        "resources": [
+          {
+            "id": "r-hm-1",
+            "title": "Dopamine Nation",
+            "type": "book",
+            "url": "https://www.annalembke.com/dopamine-nation",
+            "notes": "Discusses the pain-pleasure balance and how to exit dopamine loops.",
+            "completed": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "r-hm-2",
+            "title": "Yoga Nidra / NSDR Guide",
+            "type": "video",
+            "url": "https://www.youtube.com/watch?v=AKGrmY8OSHM",
+            "notes": "Non-Sleep Deep Rest for replenishing dopamine reservoirs.",
+            "completed": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          },
+          {
+            "id": "r-hm-3",
+            "title": "Atomic Habits by James Clear",
+            "type": "book",
+            "url": "https://jamesclear.com/atomic-habits",
+            "notes": "The definitive guide to habit architecture and identity-based change.",
+            "completed": false,
+            "createdAt": "2026-02-08T00:00:00Z"
+          }
+        ],
+        "milestones": [
+          {
+            "id": "m-hm-1",
+            "title": "Dismantle the 'Messy Identity' Narrative",
+            "completed": false,
+            "createdAt": "2026-02-08T00:00:00Z",
+            "lesson": "# Dismantling the 'Messy Identity' Narrative\n\n### The Problem\nGrowing up in a disorganized home often leads to a 'hardwired' belief that being messy is just who you are. \n\n### The Science\nNeuroscience suggests that stories are the primary way humans organize knowledge. When you tell yourself 'I am a messy person,' you are running a default neural script. \n\n### The Solution\nWrite down the opposite story—'I am a tidy person'—even if it feels like a lie. The practice of writing it out interrupts the 'fluency' of the old habit.",
+            "estimatedTime": "15 min"
+          },
+          {
+            "id": "m-hm-2",
+            "title": "Manage the Dopamine Wave pool",
+            "completed": false,
+            "createdAt": "2026-02-08T00:00:00Z",
+            "lesson": "# The Dopamine Wave Pool\n\n### Motivation Cocktail\nYour motivation depends on dopamine, epinephrine, and norepinephrine. \n\n### Avoid the Trough\nIf you generate too many 'big waves' (huge surges from stimulants or extreme stress), you crash below baseline into a 'dopamine trough.'\n\n### Practice NSDR\nNon-Sleep Deep Rest can increase baseline dopamine by up to 60%. Reset your reservoir daily.",
+            "estimatedTime": "20 min"
+          },
+          {
+            "id": "m-hm-3",
+            "title": "Morning Routine: Creator vs Consumer",
+            "completed": false,
+            "createdAt": "2026-02-08T00:00:00Z",
+            "lesson": "# Creator vs Consumer Mornings\n\n### The Battle for Attention\nEvery app on your phone is an attention-extraction machine. Checking them first thing puts you in 'reactive' mode.\n\n### The 1-Hour Rule\nSpend the first 60 minutes of your day as a **creator**. Journal, plan, read, or work on a project. Protect this window from 'shallow' dopamine hits.",
+            "estimatedTime": "1 hour"
+          },
+          {
+            "id": "m-hm-4",
+            "title": "Attack Limbic Friction",
+            "completed": false,
+            "createdAt": "2026-02-08T00:00:00Z",
+            "lesson": "# Overcoming Limbic Friction\n\n### What is it?\nLimbic friction is that 'ugh, I don't want to' feeling. It's the activation energy needed to overcome your brain's default toward safety and ease.\n\n### The Protocol\n1. **Identify the friction**: Label it. 'I am experiencing limbic friction right now.'\n2. **The 5-Minute Rule**: Commit to only 5 minutes. The brain is less intimidated by small chunks.\n3. **Grow the aMCC**: Realize that every time you act *against* your resistance, you are physically growing your Anterior Mid-Cingulate Cortex—the seat of human willpower.",
+            "estimatedTime": "10 min"
+          },
+          {
+            "id": "m-hm-5",
+            "title": "Environment Architecture for Salience",
+            "completed": false,
+            "createdAt": "2026-02-08T00:00:00Z",
+            "lesson": "# Architecture for Salience\n\n### Visibility is Control\nIf you want to form a habit, make the cues highly **salient** (unignorable). \n\n### Tactical Setup\n1. **Visual Cues**: Put your workout gear on your keyboard. \n2. **Digital Barriers**: Move social apps off your home screen.\n3. **The Mirror Method**: Huberman notes that mirror reminders often fail because the brain filters them out. Use high-contrast, unusual placements to maintain salience.",
+            "estimatedTime": "30 min"
+          },
+          {
+            "id": "m-hm-6",
+            "title": "Master the 21-Day Cycle",
+            "completed": false,
+            "createdAt": "2026-02-08T00:00:00Z",
+            "lesson": "# The 21-Day Habit Cycle\n\n### Phase 1: High Resistance (Days 1-21)\nExpect constant limbic friction. You are hacking through a jungle of old neural wiring.\n\n### Phase 2: Automaticity (Days 22+)\nThe behavior starts to become 'fluent.' You don't decide to do it; you just do it.\n\n### The Golden Rule\nNever miss twice. Missing once is an accident. Missing twice is the start of a new habit.",
+            "estimatedTime": "15 min"
+          },
+          {
+            "id": "m-hm-7",
+            "title": "Reset Your Dopamine Baseline",
+            "completed": false,
+            "createdAt": "2026-02-08T00:00:00Z",
+            "lesson": "# Resetting Your Baseline\n\n### Why You Burn Out\nBurnout isn't just 'working too hard.' It's often a chronic dopaminergic depletion where nothing feels rewarding.\n\n### The Protocol\n1. **NSDR/Yoga Nidra**: Use it when you're overwhelmed. It reloads your dopamine reservoirs.\n2. **Dopamine Fasting**: 24 hours of no external stimulants. No tech, no caffeine, no music. Just walk, think, and exist. \n3. **Sleep**: The ultimate neuroplasticity hack. Information is learned while awake, but *hardwired* during REM sleep.",
+            "estimatedTime": "24 hours"
+          }
+        ],
+        "createdAt": "2026-03-01T00:00:00Z",
+        "logs": {
+          "2026-02-08": {
+            "journal": "sfwerqwer\n"
+          }
+        }
+      },
+      {
+        "id": "path-backend-development",
+        "name": "Backend Development Mastery",
+        "icon": "🐍",
+        "description": "Master backend development with the Siraaj stack — Python, FastAPI, SQLAlchemy, Alembic & PostgreSQL. Go from zero to building production APIs.",
+        "totalXP": 0,
+        "level": 1,
+        "levelThresholds": [
+          0,
+          100,
+          300,
+          600,
+          1000,
+          1500,
+          2200,
+          3000,
+          4000,
+          5500
+        ],
+        "streak": {
+          "current": 0,
+          "best": 0,
+          "lastPracticeDate": null
+        },
+        "createdAt": "2026-02-09T00:00:00Z",
+        "vocabulary": [
+          {
+            "id": "be-v-1",
+            "word": "API Endpoint",
+            "meaning": "A specific URL path that accepts requests and returns responses",
+            "example": "GET /api/users returns a list of users",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-2",
+            "word": "ORM",
+            "meaning": "Object-Relational Mapping — maps Python classes to database tables",
+            "example": "SQLAlchemy lets you query users with session.query(User) instead of raw SQL",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-3",
+            "word": "Migration",
+            "meaning": "A version-controlled change to the database schema",
+            "example": "Adding a phone column to the users table via Alembic",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-4",
+            "word": "ASGI",
+            "meaning": "Async Server Gateway Interface — the protocol FastAPI uses to handle requests",
+            "example": "Uvicorn is an ASGI server that runs FastAPI apps",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-5",
+            "word": "Dependency Injection",
+            "meaning": "A pattern where functions receive their dependencies as parameters",
+            "example": "FastAPI's Depends() injects a database session into route handlers",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-6",
+            "word": "Pydantic Model",
+            "meaning": "A Python class that validates and serializes data using type hints",
+            "example": "class UserCreate(BaseModel): name: str; email: EmailStr",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-7",
+            "word": "Schema",
+            "meaning": "The structure/blueprint of your database tables and their relationships",
+            "example": "The users table has columns: id, name, email, created_at",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-8",
+            "word": "CRUD",
+            "meaning": "Create, Read, Update, Delete — the four basic database operations",
+            "example": "A REST API typically maps CRUD to POST, GET, PUT, DELETE",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-9",
+            "word": "Middleware",
+            "meaning": "Code that runs before/after every request in the application",
+            "example": "Logging middleware records how long each API request takes",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-10",
+            "word": "Router",
+            "meaning": "A FastAPI component that groups related endpoints together",
+            "example": "router = APIRouter(prefix=\"/users\") groups all user endpoints",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-11",
+            "word": "Session",
+            "meaning": "A database connection context that tracks changes before committing",
+            "example": "with Session(engine) as session: opens a transaction",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-12",
+            "word": "Query",
+            "meaning": "A request to retrieve or manipulate data in the database",
+            "example": "session.exec(select(User).where(User.active == True))",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-13",
+            "word": "Foreign Key",
+            "meaning": "A column that references the primary key of another table",
+            "example": "user_id = Column(Integer, ForeignKey(\"users.id\")) links a post to its author",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-14",
+            "word": "Async/Await",
+            "meaning": "Python syntax for non-blocking I/O operations",
+            "example": "async def get_user(): lets the server handle other requests while waiting for DB",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-v-15",
+            "word": "Serialization",
+            "meaning": "Converting Python objects to JSON (or other formats) for API responses",
+            "example": "Pydantic automatically serializes a User model to JSON",
+            "learned": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          }
+        ],
+        "resources": [
+          {
+            "id": "be-r-1",
+            "title": "Python Official Tutorial",
+            "type": "docs",
+            "url": "https://docs.python.org/3/tutorial/",
+            "notes": "Start here for Python fundamentals",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-r-2",
+            "title": "FastAPI Official Documentation",
+            "type": "docs",
+            "url": "https://fastapi.tiangolo.com/tutorial/",
+            "notes": "The best FastAPI resource, interactive examples",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-r-3",
+            "title": "SQLAlchemy 2.0 Tutorial",
+            "type": "docs",
+            "url": "https://docs.sqlalchemy.org/en/20/tutorial/",
+            "notes": "Unified tutorial for Core + ORM",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-r-4",
+            "title": "Alembic Tutorial",
+            "type": "docs",
+            "url": "https://alembic.sqlalchemy.org/en/latest/tutorial.html",
+            "notes": "Official migration guide",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-r-5",
+            "title": "PostgreSQL Tutorial",
+            "type": "docs",
+            "url": "https://www.postgresqltutorial.com/",
+            "notes": "Beginner-friendly SQL with PostgreSQL",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-r-6",
+            "title": "FastAPI Full Course - freeCodeCamp",
+            "type": "video",
+            "url": "https://www.youtube.com/watch?v=0sOvCWFmrtA",
+            "notes": "19hr comprehensive course",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-r-7",
+            "title": "Arjan Codes - FastAPI Beyond CRUD",
+            "type": "video",
+            "url": "https://www.youtube.com/watch?v=TO4aQ3ghFOc",
+            "notes": "Production patterns and best practices",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          },
+          {
+            "id": "be-r-8",
+            "title": "SQLAlchemy ORM Quick Start",
+            "type": "docs",
+            "url": "https://docs.sqlalchemy.org/en/20/orm/quickstart.html",
+            "notes": "Fastest path to working with models",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z"
+          }
+        ],
+        "milestones": [
+          {
+            "id": "be-m-1",
+            "title": "Python Basics — Variables, Data Types & Control Flow",
+            "description": "Learn Python fundamentals: variables, data types, control flow, and list comprehensions.",
+            "link": null,
+            "estimatedTime": "4 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Python Basics — Variables, Data Types & Control Flow\n\n## Why Start Here?\nEvery backend system is written in a programming language. Python is the language behind FastAPI and the entire Siraaj backend. Before you can build APIs, you need to think in Python.\n\n## Variables — No Declaration Needed\nPython is dynamically typed. You don't write `let`, `const`, or `var`:\n\n```python\nname = \"Hanzla\"        # str\nage = 25               # int\nheight = 5.11          # float\nis_active = True       # bool\n```\n\n## Core Data Types\n\n### Strings (str)\n```python\ngreeting = \"Hello\"\nname = 'Hanzla'\nfull = f\"{greeting}, {name}!\"  # f-string interpolation\n```\n\n### Lists (ordered, mutable)\n```python\nfruits = [\"apple\", \"banana\", \"mango\"]\nfruits.append(\"grape\")\nfirst = fruits[0]       # \"apple\"\nlast = fruits[-1]       # \"grape\"\nsliced = fruits[1:3]    # [\"banana\", \"mango\"]\n```\n\n### Dictionaries (key-value pairs)\n```python\nuser = {\"name\": \"Hanzla\", \"age\": 25, \"role\": \"developer\"}\nuser[\"email\"] = \"hanzla@example.com\"  # add key\nname = user.get(\"name\")               # safe access\n```\n\n### Tuples (ordered, immutable) & Sets (unique values)\n```python\npoint = (10, 20)         # tuple — can't change after creation\ntags = {\"python\", \"api\"} # set — no duplicates\n```\n\n## Control Flow\n```python\n# if/elif/else\nif age >= 18:\n    print(\"Adult\")\nelif age >= 13:\n    print(\"Teen\")\nelse:\n    print(\"Child\")\n\n# for loop\nfor fruit in fruits:\n    print(fruit)\n\n# while loop\ncount = 0\nwhile count < 5:\n    count += 1\n\n# range\nfor i in range(10):  # 0 to 9\n    print(i)\n```\n\n## List Comprehensions — Python's Superpower\n```python\n# Traditional\nsquares = []\nfor x in range(10):\n    squares.append(x ** 2)\n\n# List comprehension (same result, one line)\nsquares = [x ** 2 for x in range(10)]\n\n# With condition\nevens = [x for x in range(20) if x % 2 == 0]\n\n# Dict comprehension\nword_lengths = {w: len(w) for w in [\"hello\", \"world\", \"python\"]}\n```\n\n## Key Takeaway\nPython reads like English. No semicolons, no curly braces for blocks — just indentation. Master these basics and everything else builds on top.",
+            "steps": [
+              "Install Python 3.11+ and verify with `python3 --version`",
+              "Create a file `basics.py` and practice each data type (str, int, float, bool, list, dict, tuple, set)",
+              "Write f-strings that combine variables into sentences",
+              "Practice if/elif/else with at least 3 different conditions",
+              "Write 5 different list comprehensions (filter, transform, nested)",
+              "Build a simple calculator that takes two numbers and an operator"
+            ],
+            "exercises": [
+              {
+                "icon": "🎮",
+                "title": "Number Guessing Game",
+                "instruction": "Build a game where the computer picks a random number 1-100 and the user guesses. Give 'higher/lower' hints. Track number of attempts.",
+                "example": "import random\ntarget = random.randint(1, 100)\n# Use while loop + input() + if/elif/else"
+              },
+              {
+                "icon": "🔍",
+                "title": "Filter a List of Dicts",
+                "instruction": "Write a function `filter_by_key(items, key, value)` that returns only dicts where dict[key] == value. Use list comprehension.",
+                "example": "users = [{'name': 'A', 'role': 'admin'}, {'name': 'B', 'role': 'user'}]\nfilter_by_key(users, 'role', 'admin')  # [{'name': 'A', 'role': 'admin'}]"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "Which of the following is NOT a valid Python data type?",
+                "options": [
+                  "list",
+                  "dict",
+                  "array",
+                  "tuple"
+                ],
+                "correct": 2
+              },
+              {
+                "question": "What does `f\"Hello, {name}!\"` demonstrate?",
+                "options": [
+                  "String concatenation",
+                  "f-string interpolation",
+                  "Template literal",
+                  "String formatting with %"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is the output of `[x**2 for x in range(4)]`?",
+                "options": [
+                  "[1, 4, 9, 16]",
+                  "[0, 1, 4, 9]",
+                  "[0, 2, 4, 6]",
+                  "[1, 2, 3, 4]"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "How do you access the last element of a list in Python?",
+                "options": [
+                  "list[last]",
+                  "list[-1]",
+                  "list[len(list)]",
+                  "list.last()"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-2",
+            "title": "Python Functions & Error Handling",
+            "description": "Master functions, arguments, error handling, and context managers.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Python Functions & Error Handling\n\n## Functions — The Building Blocks\nEvery endpoint handler in FastAPI is a function. Every database query is wrapped in a function. Functions are everywhere.\n\n```python\ndef greet(name: str) -> str:\n    return f\"Hello, {name}!\"\n\n# Default parameters\ndef create_user(name, role=\"user\"):\n    return {\"name\": name, \"role\": role}\n\n# *args and **kwargs\ndef log(*args, **kwargs):\n    print(\"Args:\", args)\n    print(\"Kwargs:\", kwargs)\n\nlog(\"hello\", \"world\", level=\"info\", source=\"api\")\n# Args: ('hello', 'world')\n# Kwargs: {'level': 'info', 'source': 'api'}\n```\n\n## Lambda Functions\n```python\n# Short anonymous functions\ndouble = lambda x: x * 2\nusers.sort(key=lambda u: u[\"name\"])\n```\n\n## Error Handling — try/except/finally\n```python\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError as e:\n    print(f\"Error: {e}\")\nexcept Exception as e:\n    print(f\"Unexpected: {e}\")\nfinally:\n    print(\"This always runs\")\n```\n\n## Custom Exceptions\n```python\nclass ValidationError(Exception):\n    def __init__(self, field, message):\n        self.field = field\n        self.message = message\n        super().__init__(f\"{field}: {message}\")\n\n# Usage\ndef validate_email(email):\n    if \"@\" not in email:\n        raise ValidationError(\"email\", \"Must contain @\")\n```\n\n## Context Managers (with statement)\n```python\n# File handling — automatically closes file\nwith open(\"data.txt\", \"r\") as f:\n    content = f.read()\n\n# This pattern is used EVERYWHERE in backends:\n# - Database sessions\n# - File uploads\n# - HTTP connections\n```\n\n## Key Takeaway\nFunctions + error handling = robust code. In FastAPI, every route is a function, and proper error handling is what separates a toy API from a production one.",
+            "steps": [
+              "Write functions with positional args, keyword args, defaults, *args, **kwargs",
+              "Create a function that reads a file and handles FileNotFoundError gracefully",
+              "Build a custom exception class with error codes",
+              "Practice the `with` statement for file operations",
+              "Write a function that validates user input and raises custom exceptions"
+            ],
+            "exercises": [
+              {
+                "icon": "🛡️",
+                "title": "Safe Division Function",
+                "instruction": "Write `safe_divide(a, b)` that handles ZeroDivisionError and TypeError. Return a tuple of (result, error_message).",
+                "example": "safe_divide(10, 2)   # (5.0, None)\nsafe_divide(10, 0)   # (None, 'Cannot divide by zero')\nsafe_divide(10, 'a') # (None, 'Invalid types')"
+              },
+              {
+                "icon": "⚠️",
+                "title": "Custom ValidationError",
+                "instruction": "Create a ValidationError class with `field`, `code`, and `message` attributes. Write a `validate_user(data)` function that validates name (min 2 chars), email (contains @), and age (18-120).",
+                "example": "validate_user({'name': 'A', 'email': 'bad', 'age': 10})\n# Raises: ValidationError(field='name', code='MIN_LENGTH', message='...')"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What does `**kwargs` capture in a function?",
+                "options": [
+                  "Positional arguments as a tuple",
+                  "Keyword arguments as a dictionary",
+                  "All arguments as a list",
+                  "Default parameter values"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Which block always executes, even if an exception occurs?",
+                "options": [
+                  "try",
+                  "except",
+                  "else",
+                  "finally"
+                ],
+                "correct": 3
+              },
+              {
+                "question": "What does the `with` statement ensure?",
+                "options": [
+                  "Faster execution",
+                  "Proper resource cleanup",
+                  "Thread safety",
+                  "Type checking"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "How do you create a custom exception in Python?",
+                "options": [
+                  "def MyError():",
+                  "class MyError(Exception):",
+                  "raise class MyError:",
+                  "exception MyError:"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-3",
+            "title": "Python Classes & OOP",
+            "description": "Learn classes, inheritance, and object-oriented patterns used in SQLAlchemy models.",
+            "link": null,
+            "estimatedTime": "4 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Python Classes & OOP\n\n## Why OOP Matters for Backend\nEvery SQLAlchemy model is a class. Every Pydantic schema is a class. You'll define `class User`, `class Post`, `class Organization` — all inheriting from base classes.\n\n## Basic Class\n```python\nclass User:\n    def __init__(self, name, email):\n        self.name = name\n        self.email = email\n\n    def __str__(self):\n        return f\"User({self.name})\"\n\n    def __repr__(self):\n        return f\"User(name='{self.name}', email='{self.email}')\"\n\nuser = User(\"Hanzla\", \"h@example.com\")\nprint(user)  # User(Hanzla)\n```\n\n## Properties — Computed Attributes\n```python\nclass Rectangle:\n    def __init__(self, width, height):\n        self._width = width\n        self._height = height\n\n    @property\n    def area(self):\n        return self._width * self._height\n\n    @property\n    def width(self):\n        return self._width\n\n    @width.setter\n    def width(self, value):\n        if value <= 0:\n            raise ValueError(\"Width must be positive\")\n        self._width = value\n```\n\n## Inheritance\n```python\nclass BaseModel:\n    def __init__(self, id, created_at=None):\n        self.id = id\n        self.created_at = created_at or datetime.now()\n\nclass User(BaseModel):\n    def __init__(self, id, name, email, **kwargs):\n        super().__init__(id, **kwargs)\n        self.name = name\n        self.email = email\n\nclass AdminUser(User):\n    def __init__(self, id, name, email, permissions=None, **kwargs):\n        super().__init__(id, name, email, **kwargs)\n        self.permissions = permissions or [\"read\", \"write\", \"delete\"]\n```\n\n## Class Methods & Static Methods\n```python\nclass User:\n    _count = 0\n\n    def __init__(self, name):\n        self.name = name\n        User._count += 1\n\n    @classmethod\n    def get_count(cls):\n        return cls._count\n\n    @staticmethod\n    def validate_email(email):\n        return \"@\" in email\n```\n\n## Key Takeaway\nOOP in Python is straightforward. When you see `class User(Base):` in SQLAlchemy or `class UserCreate(BaseModel):` in Pydantic, you'll know exactly what's happening — it's just inheritance.",
+            "steps": [
+              "Create a User class with __init__, __str__, and __repr__",
+              "Add @property for computed fields (e.g., full_name from first + last)",
+              "Build an inheritance chain: BaseModel -> User -> AdminUser",
+              "Override methods in child classes using super()",
+              "Practice @classmethod and @staticmethod"
+            ],
+            "exercises": [
+              {
+                "icon": "🏦",
+                "title": "BankAccount Class",
+                "instruction": "Build a BankAccount class with deposit(), withdraw(), and balance property. Withdraw should raise InsufficientFundsError if balance too low. Add transaction history.",
+                "example": "acc = BankAccount('Hanzla', initial=1000)\nacc.deposit(500)\nacc.withdraw(200)\nprint(acc.balance)      # 1300\nprint(acc.history)      # ['+500', '-200']"
+              },
+              {
+                "icon": "🐾",
+                "title": "Animal Class Hierarchy",
+                "instruction": "Create Animal (base) with name and speak(). Create Dog and Cat that override speak(). Add a Shelter class that holds animals and can list them all, calling speak() polymorphically.",
+                "example": "shelter = Shelter()\nshelter.add(Dog('Rex'))\nshelter.add(Cat('Whiskers'))\nshelter.roll_call()\n# Rex says: Woof!\n# Whiskers says: Meow!"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What is the purpose of `__init__` in a Python class?",
+                "options": [
+                  "To destroy the object",
+                  "To initialize the object's attributes",
+                  "To make the class static",
+                  "To import dependencies"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `super().__init__()` do?",
+                "options": [
+                  "Creates a new parent class",
+                  "Calls the parent class constructor",
+                  "Overrides the parent method",
+                  "Deletes the parent class"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is the difference between `@staticmethod` and `@classmethod`?",
+                "options": [
+                  "No difference",
+                  "staticmethod has no access to class, classmethod receives cls",
+                  "staticmethod is faster",
+                  "classmethod cannot be inherited"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `@property` allow you to do?",
+                "options": [
+                  "Make a method act like an attribute",
+                  "Make a variable private",
+                  "Prevent inheritance",
+                  "Add type checking"
+                ],
+                "correct": 0
+              }
+            ]
+          },
+          {
+            "id": "be-m-4",
+            "title": "Python Decorators & Type Hints",
+            "description": "Master decorators and type hints — essential patterns used everywhere in FastAPI.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Python Decorators & Type Hints\n\n## Why This Matters\nFastAPI is BUILT on decorators and type hints:\n```python\n@app.get(\"/users/{user_id}\")          # decorator\nasync def get_user(user_id: int):     # type hint\n    ...\n```\n\n## First-Class Functions\n```python\ndef shout(text):\n    return text.upper()\n\ndef whisper(text):\n    return text.lower()\n\ndef greet(func):\n    return func(\"Hello World\")\n\ngreet(shout)    # \"HELLO WORLD\"\ngreet(whisper)  # \"hello world\"\n```\n\n## Building a Decorator\n```python\nimport functools\nimport time\n\ndef timer(func):\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        start = time.time()\n        result = func(*args, **kwargs)\n        elapsed = time.time() - start\n        print(f\"{func.__name__} took {elapsed:.4f}s\")\n        return result\n    return wrapper\n\n@timer\ndef slow_function():\n    time.sleep(1)\n    return \"done\"\n```\n\n## Decorator with Arguments\n```python\ndef retry(max_attempts=3):\n    def decorator(func):\n        @functools.wraps(func)\n        def wrapper(*args, **kwargs):\n            for attempt in range(max_attempts):\n                try:\n                    return func(*args, **kwargs)\n                except Exception as e:\n                    if attempt == max_attempts - 1:\n                        raise\n                    print(f\"Attempt {attempt+1} failed: {e}\")\n        return wrapper\n    return decorator\n\n@retry(max_attempts=5)\ndef flaky_api_call():\n    ...\n```\n\n## Type Hints\n```python\nfrom typing import Optional, Union\n\ndef get_user(user_id: int) -> dict:\n    ...\n\ndef search(query: str, limit: int = 10) -> list[dict]:\n    ...\n\ndef find_user(email: Optional[str] = None) -> Union[dict, None]:\n    ...\n```\n\n## Key Takeaway\nDecorators = wrapping functions with extra behavior. Type hints = documenting what goes in and comes out. FastAPI uses both to auto-generate docs, validate inputs, and serialize responses.",
+            "steps": [
+              "Understand first-class functions by passing functions as arguments",
+              "Write a basic decorator that logs function calls",
+              "Add functools.wraps to preserve function metadata",
+              "Write a decorator that accepts arguments (like @retry(max_attempts=3))",
+              "Add type hints to all your previous exercises and run mypy to check"
+            ],
+            "exercises": [
+              {
+                "icon": "📝",
+                "title": "@log_calls Decorator",
+                "instruction": "Write a decorator that prints the function name, arguments, and return value every time the function is called. Use functools.wraps.",
+                "example": "@log_calls\ndef add(a, b):\n    return a + b\nadd(2, 3)\n# LOG: add(2, 3) -> 5"
+              },
+              {
+                "icon": "🔒",
+                "title": "@validate_types Decorator",
+                "instruction": "Write a decorator that checks argument types at runtime using type hints. Raise TypeError if wrong types passed.",
+                "example": "@validate_types\ndef greet(name: str, times: int):\n    ...\ngreet('hi', 3)   # works\ngreet('hi', '3') # TypeError!"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What is a decorator in Python?",
+                "options": [
+                  "A class that decorates UI",
+                  "A function that wraps another function to extend its behavior",
+                  "A type hint annotation",
+                  "A way to define constants"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Why should you use `@functools.wraps(func)` in a decorator?",
+                "options": [
+                  "To make it faster",
+                  "To preserve the original function's name and docstring",
+                  "To enable async support",
+                  "To add type checking"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `Optional[str]` mean in type hints?",
+                "options": [
+                  "The string is encrypted",
+                  "The value can be str or None",
+                  "The string is optional to type",
+                  "The parameter has a default value"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "In FastAPI, `@app.get(\"/users\")` is an example of:",
+                "options": [
+                  "A class method",
+                  "A decorator",
+                  "A generator",
+                  "A context manager"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-5",
+            "title": "Python Async/Await & Generators",
+            "description": "Learn asynchronous programming — the foundation of FastAPI's performance.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Python Async/Await & Generators\n\n## Why Async Matters\nA sync web server handles one request at a time. While waiting for a database query (50ms), it's doing NOTHING. An async server handles OTHER requests during that wait. FastAPI is async-first — this is why it's fast.\n\n## Sync vs Async\n```python\n# SYNC — blocks while waiting\nimport time\n\ndef fetch_user():\n    time.sleep(1)  # simulates DB query\n    return {\"name\": \"Hanzla\"}\n\ndef fetch_posts():\n    time.sleep(1)  # simulates DB query\n    return [{\"title\": \"Hello\"}]\n\n# Total: 2 seconds (sequential)\nuser = fetch_user()\nposts = fetch_posts()\n\n# ASYNC — runs concurrently\nimport asyncio\n\nasync def fetch_user():\n    await asyncio.sleep(1)\n    return {\"name\": \"Hanzla\"}\n\nasync def fetch_posts():\n    await asyncio.sleep(1)\n    return [{\"title\": \"Hello\"}]\n\n# Total: 1 second (concurrent!)\nasync def main():\n    user, posts = await asyncio.gather(\n        fetch_user(),\n        fetch_posts()\n    )\n\nasyncio.run(main())\n```\n\n## Generators — Lazy Sequences\n```python\n# Regular function returns all at once\ndef get_squares(n):\n    return [x**2 for x in range(n)]  # stores ALL in memory\n\n# Generator yields one at a time\ndef gen_squares(n):\n    for x in range(n):\n        yield x**2  # produces on demand\n\n# Memory efficient for large datasets\nfor sq in gen_squares(1_000_000):\n    if sq > 100:\n        break\n```\n\n## Async Generators\n```python\nasync def fetch_pages(url, total_pages):\n    for page in range(1, total_pages + 1):\n        data = await fetch(f\"{url}?page={page}\")\n        yield data\n\nasync for page_data in fetch_pages(\"/api/users\", 10):\n    process(page_data)\n```\n\n## Key Takeaway\n`async/await` = concurrency without threads. Generators = lazy evaluation. Both are used heavily in production backends — async for I/O operations, generators for streaming large datasets.",
+            "steps": [
+              "Write a sync function that sleeps, then convert it to async",
+              "Use asyncio.gather to run 3+ async functions concurrently",
+              "Compare timing: sync sequential vs async concurrent",
+              "Write a generator that yields Fibonacci numbers",
+              "Create an async generator that simulates paginated API fetching"
+            ],
+            "exercises": [
+              {
+                "icon": "🌐",
+                "title": "Concurrent URL Fetcher",
+                "instruction": "Write an async function that takes a list of 5 URLs and fetches them all concurrently using asyncio.gather. Use aiohttp or simulate with asyncio.sleep. Print total time.",
+                "example": "urls = ['url1', 'url2', 'url3', 'url4', 'url5']\nawait fetch_all(urls)\n# Fetched 5 URLs in 1.02s (not 5s!)"
+              },
+              {
+                "icon": "🔢",
+                "title": "Lazy Fibonacci Generator",
+                "instruction": "Write a generator function that yields Fibonacci numbers infinitely. Then write code that gets the first Fibonacci number greater than 1 million.",
+                "example": "for fib in fibonacci():\n    if fib > 1_000_000:\n        print(fib)  # 1346269\n        break"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "Why is async important for web servers?",
+                "options": [
+                  "It makes code shorter",
+                  "It allows handling other requests while waiting for I/O",
+                  "It uses less memory",
+                  "It makes code run on multiple CPUs"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `asyncio.gather()` do?",
+                "options": [
+                  "Collects garbage",
+                  "Runs multiple async functions concurrently",
+                  "Gathers function arguments",
+                  "Groups sync functions together"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is the key difference between a generator and a regular function?",
+                "options": [
+                  "Generators are faster",
+                  "Generators use yield and produce values lazily",
+                  "Generators cannot take arguments",
+                  "Generators run asynchronously"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What happens if you use `time.sleep(5)` in an async endpoint?",
+                "options": [
+                  "Nothing special",
+                  "It blocks the entire event loop for 5 seconds",
+                  "It automatically becomes async",
+                  "It raises an error"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-6",
+            "title": "SQL Basics — Tables, INSERT, SELECT, UPDATE, DELETE",
+            "description": "Learn the fundamentals of SQL — the language your backend uses to talk to PostgreSQL.",
+            "link": null,
+            "estimatedTime": "4 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# SQL Basics — Tables, INSERT, SELECT, UPDATE, DELETE\n\n## Why SQL?\nEvery backend stores data in a database. PostgreSQL is the database behind Siraaj. Even though SQLAlchemy writes SQL for you, understanding raw SQL makes you 10x more effective at debugging and optimizing.\n\n## Creating a Table\n```sql\nCREATE TABLE users (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(100) NOT NULL,\n    email VARCHAR(255) UNIQUE NOT NULL,\n    is_active BOOLEAN DEFAULT true,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n```\n\n**Key Data Types:**\n- `SERIAL` — auto-incrementing integer (for IDs)\n- `VARCHAR(n)` — variable-length string up to n chars\n- `TEXT` — unlimited length string\n- `INTEGER`, `BIGINT` — whole numbers\n- `BOOLEAN` — true/false\n- `TIMESTAMP` — date + time\n- `UUID` — universally unique identifier\n\n## INSERT — Adding Data\n```sql\nINSERT INTO users (name, email) VALUES ('Hanzla', 'h@example.com');\nINSERT INTO users (name, email) VALUES ('Ali', 'ali@example.com');\n\n-- Insert multiple rows\nINSERT INTO users (name, email) VALUES\n    ('Sara', 'sara@example.com'),\n    ('Omar', 'omar@example.com');\n```\n\n## SELECT — Reading Data\n```sql\n-- All columns\nSELECT * FROM users;\n\n-- Specific columns\nSELECT name, email FROM users;\n\n-- With conditions\nSELECT * FROM users WHERE is_active = true;\nSELECT * FROM users WHERE name LIKE 'H%';\nSELECT * FROM users WHERE created_at > '2026-01-01';\n\n-- Ordering and limiting\nSELECT * FROM users ORDER BY created_at DESC LIMIT 10;\n```\n\n## UPDATE — Modifying Data\n```sql\nUPDATE users SET is_active = false WHERE id = 3;\nUPDATE users SET name = 'Hanzla A.' WHERE email = 'h@example.com';\n```\n\n## DELETE — Removing Data\n```sql\nDELETE FROM users WHERE id = 3;\n-- CAREFUL: Without WHERE, deletes ALL rows!\n-- DELETE FROM users;  -- DON'T DO THIS\n```\n\n## NULL Handling\n```sql\nSELECT * FROM users WHERE email IS NULL;\nSELECT * FROM users WHERE email IS NOT NULL;\nSELECT COALESCE(phone, 'No phone') FROM users;  -- default value\n```\n\n## Key Takeaway\nSQL is a declarative language — you describe WHAT you want, not HOW to get it. These 4 operations (INSERT, SELECT, UPDATE, DELETE) map directly to API endpoints (POST, GET, PUT, DELETE).",
+            "steps": [
+              "Install PostgreSQL locally or use Docker: `docker run --name pg -e POSTGRES_PASSWORD=pass -p 5432:5432 -d postgres:16`",
+              "Connect with psql: `psql -h localhost -U postgres`",
+              "Create a `learning` database and a `users` table",
+              "Insert 10 rows with varied data",
+              "Practice SELECT with WHERE, LIKE, ORDER BY, and LIMIT",
+              "Practice UPDATE and DELETE (with WHERE!)"
+            ],
+            "exercises": [
+              {
+                "icon": "🛒",
+                "title": "Products Table CRUD",
+                "instruction": "Create a `products` table (id, name, price, category, in_stock). Insert 15 products. Write queries for: all products under $50, products by category, update a price, soft-delete by setting in_stock=false.",
+                "example": "SELECT * FROM products WHERE price < 50 AND in_stock = true ORDER BY price;"
+              },
+              {
+                "icon": "📅",
+                "title": "Date-Based Queries",
+                "instruction": "Add 20 users with varied created_at dates. Write queries to find: users created today, in the last 7 days, in January 2026, and count users per month.",
+                "example": "SELECT * FROM users WHERE created_at >= CURRENT_DATE - INTERVAL '7 days';"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What does `SERIAL PRIMARY KEY` do in PostgreSQL?",
+                "options": [
+                  "Creates a text field",
+                  "Creates an auto-incrementing integer ID",
+                  "Creates a serial port connection",
+                  "Creates a unique string"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Which SQL command adds new rows to a table?",
+                "options": [
+                  "SELECT",
+                  "UPDATE",
+                  "INSERT INTO",
+                  "CREATE"
+                ],
+                "correct": 2
+              },
+              {
+                "question": "What does `SELECT * FROM users WHERE name LIKE 'H%'` return?",
+                "options": [
+                  "Users named exactly H",
+                  "Users whose name starts with H",
+                  "Users whose name contains H",
+                  "Users whose name ends with H"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What happens if you run `DELETE FROM users` without a WHERE clause?",
+                "options": [
+                  "Nothing, it's an error",
+                  "Deletes the first row only",
+                  "Deletes ALL rows in the table",
+                  "Deletes the table itself"
+                ],
+                "correct": 2
+              }
+            ]
+          },
+          {
+            "id": "be-m-7",
+            "title": "Relationships & JOINs",
+            "description": "Understand how tables relate to each other and how to query across them.",
+            "link": null,
+            "estimatedTime": "4 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Relationships & JOINs\n\n## Why Relationships?\nReal data is connected. A user HAS many posts. A post BELONGS to a user. A user HAS many roles. Understanding relationships is how you model real-world data.\n\n## One-to-Many (Most Common)\nA user can have many posts, but each post belongs to one user:\n```sql\nCREATE TABLE posts (\n    id SERIAL PRIMARY KEY,\n    title VARCHAR(255) NOT NULL,\n    body TEXT,\n    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n```\n\n## Many-to-Many\nA user can have many roles, a role can belong to many users:\n```sql\nCREATE TABLE roles (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(50) UNIQUE NOT NULL\n);\n\n-- Junction table\nCREATE TABLE user_roles (\n    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,\n    role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,\n    PRIMARY KEY (user_id, role_id)\n);\n```\n\n## JOINs — Querying Related Data\n\n### INNER JOIN (only matching rows)\n```sql\nSELECT users.name, posts.title\nFROM users\nINNER JOIN posts ON users.id = posts.user_id;\n```\n\n### LEFT JOIN (all from left, matching from right)\n```sql\n-- All users, even those with no posts\nSELECT users.name, COUNT(posts.id) as post_count\nFROM users\nLEFT JOIN posts ON users.id = posts.user_id\nGROUP BY users.name;\n```\n\n## Aggregation — GROUP BY\n```sql\nSELECT user_id, COUNT(*) as total_posts\nFROM posts\nGROUP BY user_id\nHAVING COUNT(*) > 3\nORDER BY total_posts DESC;\n```\n\n## Subqueries\n```sql\n-- Users who have posted\nSELECT * FROM users\nWHERE id IN (SELECT DISTINCT user_id FROM posts);\n```\n\n## Key Takeaway\nJOINs connect related tables. LEFT JOIN when you want all rows from one side. INNER JOIN when you only want matches. GROUP BY for aggregations. This is the foundation of every complex query in Siraaj.",
+            "steps": [
+              "Create users + posts tables with a foreign key relationship",
+              "Create a many-to-many relationship (users + roles with junction table)",
+              "Insert sample data in all tables",
+              "Write INNER JOIN, LEFT JOIN queries",
+              "Practice GROUP BY with COUNT, SUM, AVG",
+              "Write subqueries for complex filtering"
+            ],
+            "exercises": [
+              {
+                "icon": "📊",
+                "title": "Users With Post Count",
+                "instruction": "Find all users who have more than 3 posts. Return their name, email, and post count, ordered by post count descending.",
+                "example": "SELECT u.name, u.email, COUNT(p.id) as posts\nFROM users u\nLEFT JOIN posts p ON u.id = p.user_id\nGROUP BY u.id\nHAVING COUNT(p.id) > 3\nORDER BY posts DESC;"
+              },
+              {
+                "icon": "👥",
+                "title": "Role-Based User Query",
+                "instruction": "Using the many-to-many setup, write a query that returns all users with the 'admin' role, and another that returns users with their role names as a comma-separated list.",
+                "example": "SELECT u.name, STRING_AGG(r.name, ', ') as roles\nFROM users u\nJOIN user_roles ur ON u.id = ur.user_id\nJOIN roles r ON ur.role_id = r.id\nGROUP BY u.id;"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What is a foreign key?",
+                "options": [
+                  "A key from another country",
+                  "A column that references the primary key of another table",
+                  "An encrypted key",
+                  "A secondary index"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does a LEFT JOIN return?",
+                "options": [
+                  "Only matching rows from both tables",
+                  "All rows from the left table, matching rows from right",
+                  "All rows from the right table",
+                  "A random selection of rows"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is a junction table used for?",
+                "options": [
+                  "Joining two databases",
+                  "Implementing many-to-many relationships",
+                  "Speeding up queries",
+                  "Backing up data"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `HAVING COUNT(*) > 3` do?",
+                "options": [
+                  "Filters rows before grouping",
+                  "Filters groups after GROUP BY",
+                  "Counts rows in the table",
+                  "Creates 3 groups"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-8",
+            "title": "Indexes, Transactions & Performance",
+            "description": "Learn how to make queries fast and data operations safe.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Indexes, Transactions & Performance\n\n## Indexes — Making Queries Fast\nWithout an index, PostgreSQL scans EVERY row (sequential scan). With an index, it jumps directly to matching rows (index scan).\n\n```sql\n-- Create an index on a frequently queried column\nCREATE INDEX idx_users_email ON users(email);\nCREATE INDEX idx_posts_user_id ON posts(user_id);\n\n-- Unique index (also enforces uniqueness)\nCREATE UNIQUE INDEX idx_users_email_unique ON users(email);\n\n-- Composite index (for queries that filter on multiple columns)\nCREATE INDEX idx_posts_user_date ON posts(user_id, created_at);\n```\n\n## EXPLAIN ANALYZE — See Query Performance\n```sql\nEXPLAIN ANALYZE SELECT * FROM users WHERE email = 'h@example.com';\n\n-- Without index: Seq Scan, cost: ~500ms on 100k rows\n-- With index:    Index Scan, cost: ~0.5ms on 100k rows\n```\n\n## Transactions — All or Nothing\n```sql\nBEGIN;\n    UPDATE accounts SET balance = balance - 100 WHERE id = 1;\n    UPDATE accounts SET balance = balance + 100 WHERE id = 2;\nCOMMIT;\n-- If anything fails between BEGIN and COMMIT, ROLLBACK undoes everything\n\n-- Explicit rollback\nBEGIN;\n    DELETE FROM users WHERE id = 5;\nROLLBACK;  -- undo! User 5 is safe\n```\n\n## ACID Properties\n- **Atomicity**: All operations succeed or all fail\n- **Consistency**: Data always moves from one valid state to another\n- **Isolation**: Concurrent transactions don't interfere\n- **Durability**: Committed data survives crashes\n\n## Connection Pooling\nIn production, creating a new DB connection per request is expensive (~50ms). Connection pooling reuses connections:\n```\nApp → Pool (20 connections) → PostgreSQL\n```\nSQLAlchemy handles this automatically with `pool_size` and `max_overflow`.\n\n## Key Takeaway\nIndexes = fast reads (but slightly slower writes). Transactions = safe multi-step operations. Always EXPLAIN your slow queries and add indexes on columns you filter/join on.",
+            "steps": [
+              "Create a table with 100k+ rows using generate_series",
+              "Run EXPLAIN ANALYZE on a query without an index",
+              "Add an index and run EXPLAIN ANALYZE again — compare the difference",
+              "Write a transaction that transfers money between accounts",
+              "Practice ROLLBACK to undo a dangerous DELETE"
+            ],
+            "exercises": [
+              {
+                "icon": "⚡",
+                "title": "Index Performance Test",
+                "instruction": "Create a table with 100k rows. Query by a non-indexed column, note the time. Add an index, query again. Report the speedup factor.",
+                "example": "INSERT INTO test_data SELECT generate_series(1,100000), md5(random()::text);\nEXPLAIN ANALYZE SELECT * FROM test_data WHERE value = 'target';"
+              },
+              {
+                "icon": "💰",
+                "title": "Safe Money Transfer",
+                "instruction": "Create an `accounts` table. Write a transaction that transfers $500 from account A to B. Include a check that A has sufficient balance — ROLLBACK if not.",
+                "example": "BEGIN;\n-- Check balance, UPDATE both accounts\n-- COMMIT if ok, ROLLBACK if insufficient"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What does a database index do?",
+                "options": [
+                  "Encrypts data",
+                  "Speeds up queries by creating a lookup structure",
+                  "Compresses the table",
+                  "Backs up the data"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does EXPLAIN ANALYZE show?",
+                "options": [
+                  "The table schema",
+                  "The actual execution plan and timing of a query",
+                  "Database errors",
+                  "User permissions"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does ACID stand for?",
+                "options": [
+                  "Advanced Computed Index Data",
+                  "Atomicity, Consistency, Isolation, Durability",
+                  "Asynchronous Connection Interface Design",
+                  "Automated Concurrent Insert/Delete"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What happens if an error occurs between BEGIN and COMMIT?",
+                "options": [
+                  "Data is partially saved",
+                  "All changes are rolled back",
+                  "The database crashes",
+                  "Only the last change is saved"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-9",
+            "title": "psql CLI & Database Administration",
+            "description": "Master the PostgreSQL command line and essential admin tasks.",
+            "link": null,
+            "estimatedTime": "2 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# psql CLI & Database Administration\n\n## Essential psql Commands\n```bash\n# Connect to PostgreSQL\npsql -h localhost -U postgres -d mydb\n\n# Or via Docker (the Siraaj way)\ndocker exec -it siraaj-postgres psql -U postgres -d siraaj\n```\n\n### Navigation Commands (inside psql)\n```\n\\l           -- list all databases\n\\c dbname    -- connect to a database\n\\dt          -- list tables in current database\n\\d tablename -- describe table structure (columns, types, constraints)\n\\di          -- list indexes\n\\du          -- list users/roles\n\\q           -- quit\n```\n\n## Database & User Management\n```sql\n-- Create a database\nCREATE DATABASE myapp;\n\n-- Create a user with password\nCREATE USER myapp_user WITH PASSWORD 'secret';\n\n-- Grant access\nGRANT ALL PRIVILEGES ON DATABASE myapp TO myapp_user;\nGRANT ALL ON ALL TABLES IN SCHEMA public TO myapp_user;\n```\n\n## Backup & Restore\n```bash\n# Backup\npg_dump -h localhost -U postgres mydb > backup.sql\npg_dump -h localhost -U postgres -Fc mydb > backup.dump  # compressed\n\n# Restore\npsql -h localhost -U postgres mydb < backup.sql\npg_restore -h localhost -U postgres -d mydb backup.dump\n```\n\n## Docker PostgreSQL (Siraaj Way)\n```bash\n# The Siraaj docker-compose runs PostgreSQL\n# Connect to it:\ndocker exec -it siraaj-postgres psql -U postgres -d siraaj\n\n# View running queries\nSELECT pid, now() - pg_stat_activity.query_start AS duration,\n       query, state\nFROM pg_stat_activity\nWHERE state != 'idle'\nORDER BY duration DESC;\n\n# Kill a long-running query\nSELECT pg_cancel_backend(pid);  -- graceful\nSELECT pg_terminate_backend(pid);  -- force\n```\n\n## Key Takeaway\npsql is your direct line to the database. Learn the backslash commands (\\dt, \\d, \\l) and you'll debug database issues 10x faster than through any GUI.",
+            "steps": [
+              "Connect to the Siraaj PostgreSQL container via psql",
+              "Use \\l, \\dt, \\d to explore the database structure",
+              "Create a test database and a user with limited permissions",
+              "Back up a database with pg_dump and restore it",
+              "View active queries and practice killing a long-running one"
+            ],
+            "exercises": [
+              {
+                "icon": "💾",
+                "title": "Backup & Restore",
+                "instruction": "Create a test database with sample data. Back it up using pg_dump. Drop the database. Restore from backup. Verify all data is intact.",
+                "example": "pg_dump -U postgres testdb > /tmp/testdb.sql\npsql -U postgres -c 'DROP DATABASE testdb'\npsql -U postgres -c 'CREATE DATABASE testdb'\npsql -U postgres testdb < /tmp/testdb.sql"
+              },
+              {
+                "icon": "🔍",
+                "title": "Query Inspector",
+                "instruction": "Write a query that shows all active (non-idle) database connections with their duration, query text, and state. Then write a function-like query to kill any query running longer than 5 minutes.",
+                "example": "SELECT pid, duration, query FROM pg_stat_activity WHERE state = 'active';"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What does the psql command `\\dt` do?",
+                "options": [
+                  "Delete a table",
+                  "List all tables in the current database",
+                  "Describe a table",
+                  "Drop the database"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Which command backs up a PostgreSQL database?",
+                "options": [
+                  "pg_backup",
+                  "pg_dump",
+                  "pg_save",
+                  "pg_export"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "How do you connect to a specific database in psql?",
+                "options": [
+                  "\\use dbname",
+                  "\\c dbname",
+                  "\\connect dbname",
+                  "\\open dbname"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `pg_terminate_backend(pid)` do?",
+                "options": [
+                  "Shuts down PostgreSQL",
+                  "Kills a specific running query/connection",
+                  "Terminates the psql client",
+                  "Removes a database"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-10",
+            "title": "SQLAlchemy Setup — Engine, Session, DeclarativeBase",
+            "description": "Set up SQLAlchemy to connect Python to PostgreSQL.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# SQLAlchemy Setup — Engine, Session, DeclarativeBase\n\n## What SQLAlchemy Does\nSQLAlchemy is the bridge between Python and PostgreSQL. Instead of writing raw SQL strings, you write Python code that SQLAlchemy translates to SQL.\n\nTwo layers:\n- **Core**: Low-level SQL expression language\n- **ORM**: High-level, maps Python classes to tables (this is what Siraaj uses)\n\n## Step 1: Create an Engine\nThe engine manages the connection to your database:\n```python\nfrom sqlalchemy import create_engine\n\n# Connection string format: dialect+driver://user:pass@host:port/dbname\nDATABASE_URL = \"postgresql+psycopg2://postgres:password@localhost:5432/myapp\"\n\nengine = create_engine(\n    DATABASE_URL,\n    echo=True,       # print SQL statements (for learning)\n    pool_size=5,     # connection pool\n    max_overflow=10,\n)\n```\n\n## Step 2: Define the Base Class\nAll your models inherit from this:\n```python\nfrom sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped\nfrom datetime import datetime\n\nclass Base(DeclarativeBase):\n    pass\n```\n\n## Step 3: Create a Session Factory\nSessions are how you interact with the database:\n```python\nfrom sqlalchemy.orm import sessionmaker\n\nSessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)\n\n# Usage pattern\ndef get_db():\n    db = SessionLocal()\n    try:\n        yield db\n    finally:\n        db.close()\n```\n\n## Step 4: Define a Model\n```python\nclass User(Base):\n    __tablename__ = \"users\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    name: Mapped[str] = mapped_column(String(100))\n    email: Mapped[str] = mapped_column(String(255), unique=True)\n    is_active: Mapped[bool] = mapped_column(default=True)\n    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)\n```\n\n## Step 5: Create Tables\n```python\n# Creates all tables defined by Base subclasses\nBase.metadata.create_all(bind=engine)\n```\n\n## Key Takeaway\nEngine = connection manager. Session = conversation with DB. Base = parent of all models. This setup is nearly identical to how Siraaj configures its database layer.",
+            "steps": [
+              "Create a new Python project and install sqlalchemy and psycopg2-binary",
+              "Create an engine connecting to your PostgreSQL Docker container",
+              "Define a Base class using DeclarativeBase",
+              "Create a sessionmaker bound to the engine",
+              "Define a simple User model and run Base.metadata.create_all()",
+              "Verify the table was created using psql"
+            ],
+            "exercises": [
+              {
+                "icon": "🔌",
+                "title": "Engine & Connection Test",
+                "instruction": "Create an engine that connects to PostgreSQL. Verify the connection by running `engine.connect()` and executing a simple `SELECT 1`. Print 'Connected!' on success.",
+                "example": "from sqlalchemy import create_engine, text\nengine = create_engine(DB_URL)\nwith engine.connect() as conn:\n    result = conn.execute(text('SELECT 1'))\n    print('Connected!')"
+              },
+              {
+                "icon": "📋",
+                "title": "Define Base + First Model",
+                "instruction": "Define a DeclarativeBase, then create a Product model with: id, name, price (Float), category (String), in_stock (Boolean). Create the table and verify with psql.",
+                "example": "class Product(Base):\n    __tablename__ = 'products'\n    id: Mapped[int] = mapped_column(primary_key=True)\n    ..."
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What is the SQLAlchemy engine responsible for?",
+                "options": [
+                  "Rendering HTML",
+                  "Managing the connection to the database",
+                  "Validating user input",
+                  "Routing HTTP requests"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is the correct PostgreSQL connection string format?",
+                "options": [
+                  "postgres://host/db",
+                  "postgresql+psycopg2://user:pass@host:port/db",
+                  "sql://user@host/db",
+                  "db+postgresql://host:port"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `Base.metadata.create_all(bind=engine)` do?",
+                "options": [
+                  "Deletes all tables",
+                  "Creates database tables from model definitions",
+                  "Backs up the database",
+                  "Runs all migrations"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Why do we use `yield` in the `get_db` dependency?",
+                "options": [
+                  "To make it async",
+                  "To ensure the session is closed after the request",
+                  "To speed up queries",
+                  "To enable transactions"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-11",
+            "title": "Defining Models & Relationships",
+            "description": "Model real-world data with SQLAlchemy relationships — one-to-many and many-to-many.",
+            "link": null,
+            "estimatedTime": "4 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Defining Models & Relationships\n\n## Column Types Mapping\n| Python Type | SQLAlchemy | PostgreSQL |\n|------------|------------|------------|\n| `int` | `Integer` | `INTEGER` |\n| `str` | `String(n)` | `VARCHAR(n)` |\n| `str` | `Text` | `TEXT` |\n| `bool` | `Boolean` | `BOOLEAN` |\n| `float` | `Float` | `FLOAT` |\n| `datetime` | `DateTime` | `TIMESTAMP` |\n| `uuid.UUID` | `UUID` | `UUID` |\n\n## One-to-Many Relationship\n```python\nfrom sqlalchemy import ForeignKey\nfrom sqlalchemy.orm import relationship\n\nclass User(Base):\n    __tablename__ = \"users\"\n    id: Mapped[int] = mapped_column(primary_key=True)\n    name: Mapped[str] = mapped_column(String(100))\n\n    # Relationship — one user has many posts\n    posts: Mapped[list[\"Post\"]] = relationship(back_populates=\"author\")\n\nclass Post(Base):\n    __tablename__ = \"posts\"\n    id: Mapped[int] = mapped_column(primary_key=True)\n    title: Mapped[str] = mapped_column(String(255))\n    user_id: Mapped[int] = mapped_column(ForeignKey(\"users.id\"))\n\n    # Back reference\n    author: Mapped[\"User\"] = relationship(back_populates=\"posts\")\n\n# Usage\nuser = User(name=\"Hanzla\")\npost = Post(title=\"Hello World\", author=user)\nsession.add(user)\nsession.commit()\nprint(user.posts)  # [Post(title='Hello World')]\n```\n\n## Many-to-Many Relationship\n```python\nfrom sqlalchemy import Table, Column\n\n# Association table\nuser_roles = Table(\n    \"user_roles\", Base.metadata,\n    Column(\"user_id\", ForeignKey(\"users.id\"), primary_key=True),\n    Column(\"role_id\", ForeignKey(\"roles.id\"), primary_key=True),\n)\n\nclass Role(Base):\n    __tablename__ = \"roles\"\n    id: Mapped[int] = mapped_column(primary_key=True)\n    name: Mapped[str] = mapped_column(String(50), unique=True)\n    users: Mapped[list[\"User\"]] = relationship(\n        secondary=user_roles, back_populates=\"roles\"\n    )\n\n# Add to User class:\n# roles: Mapped[list[\"Role\"]] = relationship(secondary=user_roles, back_populates=\"users\")\n```\n\n## Cascade Options\n```python\nposts: Mapped[list[\"Post\"]] = relationship(\n    back_populates=\"author\",\n    cascade=\"all, delete-orphan\"  # Delete posts when user is deleted\n)\n```\n\n## Key Takeaway\n`relationship()` + `ForeignKey()` = the ORM magic. `back_populates` keeps both sides in sync. This is exactly how Siraaj models are structured — User has Organizations, Organizations have Members, etc.",
+            "steps": [
+              "Define User and Post models with a one-to-many relationship",
+              "Test creating a user with posts through the relationship",
+              "Define a many-to-many (User-Role) with a junction table",
+              "Test cascade delete — deleting a user should delete their posts",
+              "Practice accessing relationships: user.posts, post.author"
+            ],
+            "exercises": [
+              {
+                "icon": "📝",
+                "title": "Blog Models",
+                "instruction": "Model a blog system: User -> Post -> Comment. Each with proper relationships and back_populates. Include cascade delete from User to Post to Comment.",
+                "example": "user.posts[0].comments  # Access comments through relationships"
+              },
+              {
+                "icon": "🏷️",
+                "title": "Tags System (Many-to-Many)",
+                "instruction": "Add a Tag model and a many-to-many relationship with Post. A post can have many tags, a tag can belong to many posts. Create the junction table.",
+                "example": "post.tags  # [Tag(name='python'), Tag(name='tutorial')]\ntag.posts  # [Post(title='...'), Post(title='...')]"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What does `back_populates` do in a relationship?",
+                "options": [
+                  "Populates default values",
+                  "Keeps both sides of a relationship in sync",
+                  "Creates a backup of the data",
+                  "Populates the table with seed data"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "How do you define a one-to-many relationship?",
+                "options": [
+                  "ForeignKey on the 'one' side",
+                  "ForeignKey on the 'many' side + relationship() on both",
+                  "A junction table",
+                  "Using INNER JOIN"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `cascade='all, delete-orphan'` do?",
+                "options": [
+                  "Cascades CSS styles",
+                  "Deletes child records when parent is deleted",
+                  "Creates backup copies",
+                  "Prevents deletion of any records"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is a junction (association) table used for in SQLAlchemy?",
+                "options": [
+                  "Temporary storage",
+                  "Implementing many-to-many relationships",
+                  "Caching queries",
+                  "Logging changes"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-12",
+            "title": "Querying — Select, Filter, Join, Aggregate",
+            "description": "Master SQLAlchemy's query API — from simple selects to complex joins.",
+            "link": null,
+            "estimatedTime": "4 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Querying — Select, Filter, Join, Aggregate\n\n## The Modern Way: select()\n```python\nfrom sqlalchemy import select, func\n\n# Basic select\nstmt = select(User)\nusers = session.execute(stmt).scalars().all()\n\n# Filter (WHERE)\nstmt = select(User).where(User.is_active == True)\nstmt = select(User).where(User.name.like(\"%hanzla%\"))\nstmt = select(User).where(User.id.in_([1, 2, 3]))\n\n# Multiple conditions\nstmt = select(User).where(\n    User.is_active == True,\n    User.created_at > some_date\n)\n\n# OR conditions\nfrom sqlalchemy import or_\nstmt = select(User).where(or_(User.name == \"A\", User.name == \"B\"))\n```\n\n## Ordering, Limiting, Offsetting\n```python\nstmt = (\n    select(User)\n    .order_by(User.created_at.desc())\n    .limit(10)\n    .offset(20)  # pagination: page 3, 10 per page\n)\n```\n\n## Joins\n```python\n# Explicit join\nstmt = (\n    select(User, Post)\n    .join(Post, User.id == Post.user_id)\n)\n\n# Using relationship\nstmt = select(User).join(User.posts)\n```\n\n## Aggregation\n```python\nfrom sqlalchemy import func\n\n# Count\nstmt = select(func.count(User.id))\ncount = session.execute(stmt).scalar()\n\n# Group by with count\nstmt = (\n    select(User.id, User.name, func.count(Post.id).label(\"post_count\"))\n    .join(Post, User.id == Post.user_id)\n    .group_by(User.id)\n    .having(func.count(Post.id) > 3)\n)\n```\n\n## Eager Loading — Avoid N+1 Problem\n```python\nfrom sqlalchemy.orm import joinedload, selectinload\n\n# BAD: N+1 — 1 query for users + N queries for posts\nusers = session.execute(select(User)).scalars().all()\nfor u in users:\n    print(u.posts)  # Each access = new query!\n\n# GOOD: Eager load — 1 or 2 queries total\nstmt = select(User).options(joinedload(User.posts))  # JOIN\nstmt = select(User).options(selectinload(User.posts)) # SELECT IN\n```\n\n## Key Takeaway\n`select()` + `where()` + `join()` is how you read data through SQLAlchemy. Always use eager loading (`joinedload`/`selectinload`) when you know you'll access relationships — this prevents the N+1 query problem that kills performance.",
+            "steps": [
+              "Write basic select, where, order_by, limit queries",
+              "Practice filter with LIKE, IN, comparison operators",
+              "Write JOIN queries between User and Post",
+              "Use func.count, func.sum with group_by",
+              "Compare lazy vs eager loading with echo=True to see the SQL"
+            ],
+            "exercises": [
+              {
+                "icon": "📊",
+                "title": "User Post Counts",
+                "instruction": "Write a query that returns users with their post count using group_by. Filter to users with more than 2 posts. Order by count descending.",
+                "example": "stmt = select(User.name, func.count(Post.id))\n    .join(Post).group_by(User.id)\n    .having(func.count(Post.id) > 2)"
+              },
+              {
+                "icon": "🚀",
+                "title": "Eager Loading Demo",
+                "instruction": "Fetch all users with their posts in a single query using joinedload. Print the SQL generated (echo=True). Then do the same without eager loading and count the queries.",
+                "example": "stmt = select(User).options(joinedload(User.posts))\nusers = session.execute(stmt).unique().scalars().all()"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What is the N+1 query problem?",
+                "options": [
+                  "Running N+1 migrations",
+                  "Loading 1 parent query + N child queries when accessing relationships",
+                  "Having N+1 database tables",
+                  "Making N+1 API requests"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `joinedload(User.posts)` do?",
+                "options": [
+                  "Creates a new join table",
+                  "Eagerly loads posts in the same query using a JOIN",
+                  "Joins two separate databases",
+                  "Loads posts lazily on access"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `.scalars().all()` return?",
+                "options": [
+                  "Raw SQL strings",
+                  "A list of model objects (not Row tuples)",
+                  "Database statistics",
+                  "Column definitions"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "How do you apply a HAVING clause in SQLAlchemy?",
+                "options": [
+                  ".where()",
+                  ".having(func.count() > N)",
+                  ".filter_by()",
+                  ".limit()"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-13",
+            "title": "CRUD Operations & Session Management",
+            "description": "Build complete Create/Read/Update/Delete operations with proper session handling.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# CRUD Operations & Session Management\n\n## Create\n```python\ndef create_user(session, name: str, email: str) -> User:\n    user = User(name=name, email=email)\n    session.add(user)\n    session.commit()\n    session.refresh(user)  # reload with DB-generated values (id, created_at)\n    return user\n\n# Bulk create\ndef create_users(session, users_data: list[dict]) -> list[User]:\n    users = [User(**data) for data in users_data]\n    session.add_all(users)\n    session.commit()\n    return users\n```\n\n## Read\n```python\ndef get_user(session, user_id: int) -> User | None:\n    return session.get(User, user_id)\n\ndef get_users(session, skip: int = 0, limit: int = 100) -> list[User]:\n    stmt = select(User).offset(skip).limit(limit)\n    return session.execute(stmt).scalars().all()\n\ndef get_user_by_email(session, email: str) -> User | None:\n    stmt = select(User).where(User.email == email)\n    return session.execute(stmt).scalar_one_or_none()\n```\n\n## Update\n```python\ndef update_user(session, user_id: int, **kwargs) -> User | None:\n    user = session.get(User, user_id)\n    if not user:\n        return None\n    for key, value in kwargs.items():\n        setattr(user, key, value)\n    session.commit()\n    session.refresh(user)\n    return user\n```\n\n## Delete\n```python\ndef delete_user(session, user_id: int) -> bool:\n    user = session.get(User, user_id)\n    if not user:\n        return False\n    session.delete(user)\n    session.commit()\n    return True\n```\n\n## Error Handling\n```python\nfrom sqlalchemy.exc import IntegrityError\n\ndef create_user_safe(session, name: str, email: str):\n    try:\n        user = User(name=name, email=email)\n        session.add(user)\n        session.commit()\n        return user\n    except IntegrityError:\n        session.rollback()\n        raise ValueError(f\"User with email {email} already exists\")\n```\n\n## Async Session\n```python\nfrom sqlalchemy.ext.asyncio import create_async_engine, AsyncSession\n\nasync_engine = create_async_engine(\n    \"postgresql+asyncpg://postgres:pass@localhost/myapp\"\n)\n\nasync def get_user_async(session: AsyncSession, user_id: int):\n    result = await session.get(User, user_id)\n    return result\n```\n\n## Key Takeaway\nThe pattern is always: get session -> do work -> commit -> refresh. Always handle IntegrityError for unique constraints. Always rollback on error. This is the exact CRUD pattern used throughout Siraaj.",
+            "steps": [
+              "Write a complete CRUD module with create, read, update, delete functions",
+              "Handle IntegrityError for duplicate emails",
+              "Implement soft delete (set is_active=False instead of deleting)",
+              "Convert sync CRUD to async using AsyncSession",
+              "Test all operations and verify with psql"
+            ],
+            "exercises": [
+              {
+                "icon": "🏗️",
+                "title": "Repository Pattern",
+                "instruction": "Build a UserRepository class with create(), get_by_id(), get_by_email(), update(), delete(), and list() methods. Handle errors properly with rollback.",
+                "example": "repo = UserRepository(session)\nuser = repo.create(name='Hanzla', email='h@test.com')\nrepo.update(user.id, name='Hanzla A.')\nrepo.delete(user.id)"
+              },
+              {
+                "icon": "⚡",
+                "title": "Async CRUD Service",
+                "instruction": "Convert your UserRepository to use AsyncSession. All methods should be async def with await. Test by running with asyncio.run().",
+                "example": "repo = AsyncUserRepository(async_session)\nuser = await repo.create(name='Test', email='test@test.com')"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What does `session.refresh(user)` do after a commit?",
+                "options": [
+                  "Deletes the user",
+                  "Reloads the object with DB-generated values (id, timestamps)",
+                  "Refreshes the page",
+                  "Clears the session cache"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "When should you call `session.rollback()`?",
+                "options": [
+                  "After every successful commit",
+                  "When an error occurs during a transaction",
+                  "Before every query",
+                  "To speed up queries"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What exception does SQLAlchemy raise for duplicate unique keys?",
+                "options": [
+                  "DuplicateKeyError",
+                  "IntegrityError",
+                  "UniqueViolation",
+                  "ConstraintError"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is the advantage of AsyncSession over regular Session?",
+                "options": [
+                  "It is always faster",
+                  "It allows non-blocking database operations",
+                  "It uses less memory",
+                  "It doesn't require a connection string"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-14",
+            "title": "Alembic Init & First Migration",
+            "description": "Set up Alembic for version-controlled database schema changes.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Alembic Init & First Migration\n\n## What Alembic Does\nThink of Alembic as Git for your database schema. Just like Git tracks code changes, Alembic tracks database changes (add column, create table, modify type).\n\nWithout Alembic: \"Hey, I added a `phone` column. Can everyone run this SQL manually?\"\nWith Alembic: `alembic upgrade head` — done, everyone's in sync.\n\n## Initialize Alembic\n```bash\npip install alembic\nalembic init alembic\n```\n\nThis creates:\n```\nalembic/\n├── env.py           # Configuration — connects to your DB\n├── script.py.mako   # Template for migration files\n└── versions/        # Your migration files live here\nalembic.ini          # Database URL and settings\n```\n\n## Configure Database URL\nIn `alembic.ini`:\n```ini\nsqlalchemy.url = postgresql://postgres:password@localhost:5432/myapp\n```\n\nOr better, in `env.py` (for environment variables):\n```python\nfrom myapp.database import Base, DATABASE_URL\n\nconfig.set_main_option(\"sqlalchemy.url\", DATABASE_URL)\ntarget_metadata = Base.metadata  # Tell Alembic about your models\n```\n\n## Generate Your First Migration\n```bash\n# Auto-generate from model changes\nalembic revision --autogenerate -m \"create users table\"\n```\n\nThis creates a file like `versions/abc123_create_users_table.py`:\n```python\nrevision = 'abc123'\ndown_revision = None  # First migration, no parent\n\ndef upgrade():\n    op.create_table('users',\n        sa.Column('id', sa.Integer(), primary_key=True),\n        sa.Column('name', sa.String(100), nullable=False),\n        sa.Column('email', sa.String(255), unique=True),\n    )\n\ndef downgrade():\n    op.drop_table('users')\n```\n\n## Understanding the Migration File\n- `revision`: Unique ID for this migration\n- `down_revision`: The parent migration (forms a chain)\n- `upgrade()`: What to do when moving forward\n- `downgrade()`: What to do when rolling back (inverse of upgrade)\n\n## Key Takeaway\nAlembic = database version control. `--autogenerate` reads your models and figures out what changed. Every migration has an upgrade AND a downgrade. This is exactly how Siraaj manages its 50+ database tables.",
+            "steps": [
+              "Install Alembic and run `alembic init alembic`",
+              "Configure the database URL in alembic.ini or env.py",
+              "Set target_metadata = Base.metadata in env.py",
+              "Generate first migration with --autogenerate",
+              "Read the generated file — understand revision, down_revision, upgrade, downgrade"
+            ],
+            "exercises": [
+              {
+                "icon": "🚀",
+                "title": "First Auto Migration",
+                "instruction": "Set up Alembic for a project with User and Post models. Generate the initial migration with --autogenerate. Read the generated file and verify it matches your models.",
+                "example": "alembic revision --autogenerate -m 'initial tables'\n# Check alembic/versions/ for the new file"
+              },
+              {
+                "icon": "✍️",
+                "title": "Manual Migration",
+                "instruction": "Write a migration manually (not autogenerate) that adds a `phone` column to users with a default value of empty string. Include both upgrade and downgrade.",
+                "example": "alembic revision -m 'add phone to users'\n# Then edit: op.add_column('users', sa.Column('phone', sa.String(20), server_default=''))"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What is Alembic's primary purpose?",
+                "options": [
+                  "Running Python scripts",
+                  "Version control for database schema changes",
+                  "Deploying FastAPI apps",
+                  "Managing Python packages"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `alembic revision --autogenerate` do?",
+                "options": [
+                  "Automatically fixes bugs",
+                  "Generates a migration by comparing models to the current DB",
+                  "Creates a new database",
+                  "Reverts all changes"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is `down_revision` in a migration file?",
+                "options": [
+                  "The direction to migrate",
+                  "The ID of the parent/previous migration",
+                  "A downgrade command",
+                  "The database version"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Why does every migration have both `upgrade()` and `downgrade()`?",
+                "options": [
+                  "For testing",
+                  "So you can move forward AND roll back schema changes",
+                  "One is for development, one for production",
+                  "Alembic requires both but only uses upgrade"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-15",
+            "title": "Upgrade, Downgrade & History",
+            "description": "Learn to move your database forward and backward through migration versions.",
+            "link": null,
+            "estimatedTime": "2 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Upgrade, Downgrade & History\n\n## Running Migrations\n\n### Upgrade\n```bash\n# Apply ALL pending migrations\nalembic upgrade head\n\n# Apply next migration only\nalembic upgrade +1\n\n# Upgrade to specific revision\nalembic upgrade abc123\n```\n\n### Downgrade\n```bash\n# Rollback last migration\nalembic downgrade -1\n\n# Rollback to specific revision\nalembic downgrade abc123\n\n# Rollback everything (dangerous!)\nalembic downgrade base\n```\n\n## Checking Status\n```bash\n# Where are we now?\nalembic current\n# abc123 (head)\n\n# Full migration history\nalembic history\n# abc123 -> def456 (head), create posts table\n# None -> abc123, create users table\n\n# Show all heads\nalembic heads\n```\n\n## The alembic_version Table\nAlembic tracks the current version in your database:\n```sql\nSELECT * FROM alembic_version;\n-- version_num: 'def456'\n```\n\nThis single row tells Alembic which migration was last applied.\n\n## Running Migrations in Docker (Siraaj Way)\n```bash\n# The Siraaj Makefile has commands:\nmake db-migration-current   # alembic current\nmake db-migration-head       # alembic upgrade head\nmake db-migration-history    # alembic history\n\n# Or run inside Docker:\ndocker exec -it siraaj-backend alembic upgrade head\n```\n\n## Common Workflow\n```\n1. Change a model (add column, new table)\n2. alembic revision --autogenerate -m \"description\"\n3. Review the generated migration file\n4. alembic upgrade head\n5. Verify with psql\n```\n\n## Key Takeaway\n`upgrade head` = apply all pending changes. `downgrade -1` = undo the last change. Always review auto-generated migrations before running them — Alembic isn't perfect and sometimes misses things or generates unnecessary operations.",
+            "steps": [
+              "Run `alembic upgrade head` to apply your first migration",
+              "Check `alembic current` to verify the version",
+              "Add a new column to a model, generate a new migration",
+              "Upgrade, then downgrade -1 and verify the column is gone",
+              "Re-upgrade and check `alembic history`",
+              "Inspect the alembic_version table directly in psql"
+            ],
+            "exercises": [
+              {
+                "icon": "🔄",
+                "title": "Migration Lifecycle",
+                "instruction": "Create 3 sequential migrations: (1) users table, (2) add bio column, (3) add posts table. Practice upgrading to each step and downgrading back. Verify the DB state at each step with psql.",
+                "example": "alembic upgrade +1  # users table created\nalembic upgrade +1  # bio column added\nalembic downgrade -1  # bio column removed\nalembic upgrade head  # both applied"
+              },
+              {
+                "icon": "🔍",
+                "title": "Inspect alembic_version",
+                "instruction": "After each upgrade/downgrade, check the alembic_version table in psql. Document what version_num value appears at each step.",
+                "example": "psql -c 'SELECT * FROM alembic_version;'\n-- After upgrade head: version_num = 'latest_revision_id'"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What does `alembic upgrade head` do?",
+                "options": [
+                  "Upgrades Alembic itself",
+                  "Applies ALL pending migrations to the database",
+                  "Creates a new migration",
+                  "Shows migration history"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `alembic downgrade -1` do?",
+                "options": [
+                  "Downgrades the Python version",
+                  "Rolls back the last applied migration",
+                  "Deletes the database",
+                  "Removes Alembic configuration"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Where does Alembic store the current migration version?",
+                "options": [
+                  "In alembic.ini",
+                  "In the alembic_version table in the database",
+                  "In a local file",
+                  "In environment variables"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `alembic current` show?",
+                "options": [
+                  "The current date",
+                  "The currently applied migration revision",
+                  "All available migrations",
+                  "The database size"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-16",
+            "title": "Merge Heads & Conflict Resolution",
+            "description": "Handle migration conflicts that happen when multiple developers work simultaneously.",
+            "link": null,
+            "estimatedTime": "2 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Merge Heads & Conflict Resolution\n\n## Why Multiple Heads Happen\nImagine two developers both create a migration from the same parent:\n```\n    abc123 (initial)\n    /        \\\ndev1_456    dev2_789\n```\n\nBoth have `down_revision = 'abc123'`. Alembic now has TWO heads and doesn't know which comes first.\n\n## Detecting Multiple Heads\n```bash\nalembic heads\n# dev1_456 (head)\n# dev2_789 (head)\n# ERROR: Multiple heads detected!\n\nalembic upgrade head\n# ERROR: Multiple head revisions...\n```\n\n## Fixing: Create a Merge Migration\n```bash\nalembic merge heads -m \"merge dev1 and dev2 migrations\"\n```\n\nThis creates:\n```python\nrevision = 'merge_abc'\ndown_revision = ('dev1_456', 'dev2_789')  # TWO parents!\n\ndef upgrade():\n    pass  # Usually empty — just merges the chain\n\ndef downgrade():\n    pass\n```\n\nNow the chain is:\n```\n    abc123\n    /        \\\ndev1_456    dev2_789\n    \\        /\n    merge_abc (single head)\n```\n\n## Siraaj Makefile Commands\n```makefile\n# Check current migration state\nmake db-migration-current\n\n# Apply all pending migrations\nmake db-migration-head\n\n# View full migration history\nmake db-migration-history\n\n# Fix migration conflicts (creates merge)\nmake db-fix-migration\n```\n\n## Warning: Stamping\n```bash\n# alembic stamp head  -- DANGEROUS!\n# This tells Alembic \"pretend we're at head\" WITHOUT running migrations\n# Only use when you know the DB is already at the right state\n# In Siraaj, this is used carefully during Docker deployments\n```\n\n## Prevention Tips\n1. Always pull latest before creating a migration\n2. Communicate with your team about schema changes\n3. Run `alembic heads` before generating new migrations\n4. If you see multiple heads, merge before adding more\n\n## Key Takeaway\nMultiple heads = parallel branches in your migration chain. `alembic merge heads` = merging those branches. This happens regularly in team projects like Siraaj — it's normal and easy to fix.",
+            "steps": [
+              "Create a migration from the current head",
+              "Simulate a conflict: create two migrations from the same parent (rename the second's down_revision)",
+              "Run `alembic heads` to detect multiple heads",
+              "Run `alembic merge heads -m 'merge'` to create a merge migration",
+              "Verify single head with `alembic heads`",
+              "Explore the Siraaj Makefile migration commands"
+            ],
+            "exercises": [
+              {
+                "icon": "🔀",
+                "title": "Simulate & Merge",
+                "instruction": "Create two branch migrations from the same parent. Detect the multiple heads. Create a merge migration. Upgrade to head successfully.",
+                "example": "alembic heads  # two heads\nalembic merge heads -m 'merge branches'\nalembic heads  # one head\nalembic upgrade head  # success!"
+              },
+              {
+                "icon": "🛠️",
+                "title": "Siraaj Migration Diagnosis",
+                "instruction": "Use the Siraaj make commands (db-migration-current, db-migration-history, db-migration-head) to diagnose the current migration state of the Siraaj database. Document what you find.",
+                "example": "make db-migration-current\nmake db-migration-history | head -20"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "Why do multiple migration heads occur?",
+                "options": [
+                  "Database corruption",
+                  "Two migrations were created from the same parent revision",
+                  "Alembic has a bug",
+                  "The database is too large"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "How do you fix multiple heads in Alembic?",
+                "options": [
+                  "Delete one migration",
+                  "Run `alembic merge heads`",
+                  "Restart the database",
+                  "Run `alembic stamp head`"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Why is `alembic stamp head` dangerous?",
+                "options": [
+                  "It deletes data",
+                  "It marks the DB as up-to-date WITHOUT running migrations",
+                  "It corrupts the schema",
+                  "It requires sudo"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does a merge migration's `down_revision` look like?",
+                "options": [
+                  "None",
+                  "A single revision ID",
+                  "A tuple of two revision IDs",
+                  "The string 'merge'"
+                ],
+                "correct": 2
+              }
+            ]
+          },
+          {
+            "id": "be-m-17",
+            "title": "FastAPI Basics — Routes & Request Handling",
+            "description": "Build your first API with FastAPI — routes, parameters, and auto-docs.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# FastAPI Basics — Routes & Request Handling\n\n## Your First API\n```bash\npip install fastapi uvicorn\n```\n\n```python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/\")\ndef root():\n    return {\"message\": \"Hello World\"}\n\n@app.get(\"/health\")\ndef health():\n    return {\"status\": \"ok\"}\n```\n\nRun it:\n```bash\nuvicorn main:app --reload --port 8000\n```\n\n## Path Parameters\n```python\n@app.get(\"/users/{user_id}\")\ndef get_user(user_id: int):  # auto-validates as integer!\n    return {\"user_id\": user_id}\n\n# /users/123 -> {\"user_id\": 123}\n# /users/abc -> 422 Validation Error (not an int)\n```\n\n## Query Parameters\n```python\n@app.get(\"/users\")\ndef list_users(skip: int = 0, limit: int = 10, active: bool = True):\n    return {\"skip\": skip, \"limit\": limit, \"active\": active}\n\n# /users?skip=20&limit=5&active=false\n```\n\n## Request Body (POST)\n```python\nfrom pydantic import BaseModel\n\nclass UserCreate(BaseModel):\n    name: str\n    email: str\n\n@app.post(\"/users\", status_code=201)\ndef create_user(user: UserCreate):\n    return {\"id\": 1, **user.model_dump()}\n```\n\n## Response Status Codes\n```python\nfrom fastapi import status\n\n@app.post(\"/users\", status_code=status.HTTP_201_CREATED)\n@app.delete(\"/users/{id}\", status_code=status.HTTP_204_NO_CONTENT)\n```\n\n## Auto-Generated Docs\nFastAPI automatically creates interactive API docs:\n- **Swagger UI**: `http://localhost:8000/docs`\n- **ReDoc**: `http://localhost:8000/redoc`\n\nThese docs let you test every endpoint directly in the browser!\n\n## Key Takeaway\nFastAPI gives you: type-validated parameters, auto-generated docs, async support, and great error messages — all from type hints. This is why Siraaj chose it over Flask or Django.",
+            "steps": [
+              "Install FastAPI + Uvicorn",
+              "Create a basic app with a root endpoint",
+              "Add GET endpoints with path parameters and query parameters",
+              "Add a POST endpoint with a request body",
+              "Test everything through /docs (Swagger UI)",
+              "Try sending invalid data and see the validation errors"
+            ],
+            "exercises": [
+              {
+                "icon": "👋",
+                "title": "Hello API",
+                "instruction": "Build an API with GET /hello/{name} that returns a greeting. Add optional query params for language (default 'en') and shout (default false). If shout=true, uppercase the response.",
+                "example": "GET /hello/Hanzla?shout=true\n-> {\"message\": \"HELLO, HANZLA!\"}"
+              },
+              {
+                "icon": "📬",
+                "title": "Echo POST Endpoint",
+                "instruction": "Create POST /echo that accepts any JSON body (use a Pydantic model with at least 3 fields). Return the body with an added 'received_at' timestamp.",
+                "example": "POST /echo {\"name\": \"test\", \"value\": 42}\n-> {\"name\": \"test\", \"value\": 42, \"received_at\": \"2026-02-09T...\"}"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What happens when you visit `/docs` on a FastAPI app?",
+                "options": [
+                  "You see the source code",
+                  "You get auto-generated interactive Swagger UI docs",
+                  "You see a 404 error",
+                  "You see the README"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does FastAPI do when you type-hint a path parameter as `int`?",
+                "options": [
+                  "Nothing special",
+                  "Automatically validates and converts the parameter to int",
+                  "Raises a warning",
+                  "Ignores the type hint"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "How do you set a custom HTTP status code for a route?",
+                "options": [
+                  "return 201",
+                  "@app.post('/x', status_code=201)",
+                  "response.status = 201",
+                  "HTTPStatus(201)"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What command starts a FastAPI app with auto-reload?",
+                "options": [
+                  "python main.py",
+                  "fastapi run",
+                  "uvicorn main:app --reload",
+                  "flask run --reload"
+                ],
+                "correct": 2
+              }
+            ]
+          },
+          {
+            "id": "be-m-18",
+            "title": "Pydantic Models & Validation",
+            "description": "Master Pydantic — FastAPI's data validation engine.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Pydantic Models & Validation\n\n## Why Pydantic?\nPydantic validates data automatically. Send bad JSON to your API? Pydantic catches it before your code runs and returns a clear error message.\n\n## Basic Model\n```python\nfrom pydantic import BaseModel, Field, EmailStr\n\nclass UserCreate(BaseModel):\n    name: str = Field(min_length=2, max_length=100)\n    email: EmailStr\n    age: int = Field(ge=18, le=120)\n    bio: str | None = None  # optional\n```\n\n## Field Validation\n```python\nclass Product(BaseModel):\n    name: str = Field(min_length=3, description=\"Product name\")\n    price: float = Field(gt=0, description=\"Must be positive\")\n    quantity: int = Field(ge=0, default=0)\n    tags: list[str] = Field(default_factory=list, max_length=10)\n```\n\n## Nested Models\n```python\nclass Address(BaseModel):\n    street: str\n    city: str\n    country: str = \"Oman\"\n\nclass UserCreate(BaseModel):\n    name: str\n    email: EmailStr\n    address: Address  # nested!\n\n# JSON input:\n# {\"name\": \"Hanzla\", \"email\": \"h@ex.com\", \"address\": {\"street\": \"...\", \"city\": \"Muscat\"}}\n```\n\n## Custom Validators\n```python\nfrom pydantic import field_validator, model_validator\n\nclass UserCreate(BaseModel):\n    name: str\n    password: str\n    confirm_password: str\n\n    @field_validator(\"name\")\n    @classmethod\n    def name_must_not_be_empty(cls, v):\n        if not v.strip():\n            raise ValueError(\"Name cannot be blank\")\n        return v.strip()\n\n    @model_validator(mode=\"after\")\n    def passwords_match(self):\n        if self.password != self.confirm_password:\n            raise ValueError(\"Passwords do not match\")\n        return self\n```\n\n## Separate Request vs Response Schemas\n```python\n# What the client SENDS (includes password)\nclass UserCreate(BaseModel):\n    name: str\n    email: EmailStr\n    password: str\n\n# What the API RETURNS (no password!)\nclass UserResponse(BaseModel):\n    id: int\n    name: str\n    email: str\n    created_at: datetime\n\n    model_config = ConfigDict(from_attributes=True)\n\n@app.post(\"/users\", response_model=UserResponse)\ndef create_user(user: UserCreate):\n    ...  # password is stripped from response automatically\n```\n\n## Key Takeaway\nPydantic = automatic validation + serialization. Separate your Create/Update/Response schemas. `response_model` in FastAPI ensures you never accidentally leak sensitive fields like passwords.",
+            "steps": [
+              "Create a UserCreate model with Field validation (min_length, ge, etc.)",
+              "Add EmailStr validation (install pydantic[email])",
+              "Build a nested model (User with Address)",
+              "Write custom field_validator and model_validator",
+              "Create separate UserCreate (with password) and UserResponse (without) schemas",
+              "Use response_model in a FastAPI endpoint"
+            ],
+            "exercises": [
+              {
+                "icon": "🛒",
+                "title": "Validated Product Model",
+                "instruction": "Create a ProductCreate model: name (min 3 chars), price (> 0), category (enum: electronics/clothing/food), discount (0-100, optional). Add a validator that warns if discount > 50.",
+                "example": "ProductCreate(name='ab', price=-1, category='invalid')\n# -> ValidationError with all field errors"
+              },
+              {
+                "icon": "🔐",
+                "title": "Request/Response Separation",
+                "instruction": "Build UserCreate (name, email, password, confirm_password) and UserResponse (id, name, email, created_at). Add a model_validator that checks passwords match. Use response_model in the endpoint.",
+                "example": "# POST /users with password -> returns UserResponse WITHOUT password"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What does Pydantic's `Field(gt=0)` validate?",
+                "options": [
+                  "String length > 0",
+                  "Value must be greater than 0",
+                  "Field is required",
+                  "Field is a GT type"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Why should you separate UserCreate and UserResponse schemas?",
+                "options": [
+                  "For performance",
+                  "To avoid exposing sensitive fields like password in responses",
+                  "Pydantic requires it",
+                  "FastAPI can't use one model for both"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `model_config = ConfigDict(from_attributes=True)` enable?",
+                "options": [
+                  "Faster validation",
+                  "Reading data from SQLAlchemy model attributes",
+                  "Adding extra fields",
+                  "Disabling validation"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is a `model_validator` used for?",
+                "options": [
+                  "Validating database models",
+                  "Validating relationships between multiple fields",
+                  "Validating API routes",
+                  "Validating JSON syntax"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-19",
+            "title": "Dependency Injection",
+            "description": "Learn FastAPI's Depends() pattern — the backbone of clean API architecture.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Dependency Injection\n\n## What Problem Does It Solve?\nEvery endpoint needs a database session. Every protected endpoint needs to verify the user. Without DI, you'd repeat this code in every endpoint. With DI, you write it once.\n\n## Basic Dependency: Database Session\n```python\nfrom fastapi import Depends\nfrom sqlalchemy.orm import Session\n\ndef get_db():\n    db = SessionLocal()\n    try:\n        yield db  # yield = the endpoint gets the session\n    finally:\n        db.close()  # cleanup after the endpoint finishes\n\n@app.get(\"/users\")\ndef list_users(db: Session = Depends(get_db)):\n    return db.query(User).all()\n\n@app.post(\"/users\")\ndef create_user(user: UserCreate, db: Session = Depends(get_db)):\n    ...  # db session is injected automatically\n```\n\n## Auth Dependency\n```python\nfrom fastapi import HTTPException, Header\n\ndef get_current_user(authorization: str = Header(...)):\n    token = authorization.replace(\"Bearer \", \"\")\n    user = verify_token(token)\n    if not user:\n        raise HTTPException(status_code=401, detail=\"Invalid token\")\n    return user\n\n@app.get(\"/me\")\ndef get_me(current_user: User = Depends(get_current_user)):\n    return current_user\n```\n\n## Nested Dependencies\n```python\ndef get_current_active_user(\n    current_user: User = Depends(get_current_user)\n):\n    if not current_user.is_active:\n        raise HTTPException(status_code=403, detail=\"Inactive user\")\n    return current_user\n\n@app.get(\"/admin\")\ndef admin_only(user: User = Depends(get_current_active_user)):\n    ...\n```\n\n## Dependency Overrides (for Testing)\n```python\n# In tests:\ndef get_test_db():\n    db = TestSession()\n    try:\n        yield db\n    finally:\n        db.close()\n\napp.dependency_overrides[get_db] = get_test_db\n```\n\n## Key Takeaway\n`Depends()` = FastAPI's way of sharing logic across endpoints. Database sessions, auth checks, pagination params — anything shared goes into a dependency. This is the pattern Siraaj uses for every endpoint.",
+            "steps": [
+              "Write a get_db dependency using yield and test it in a route",
+              "Create a get_current_user dependency that reads an auth header",
+              "Nest dependencies: get_current_user -> get_current_active_user -> get_admin_user",
+              "Override a dependency in tests",
+              "Create a reusable pagination dependency (skip, limit params)"
+            ],
+            "exercises": [
+              {
+                "icon": "🗄️",
+                "title": "Database Session Dependency",
+                "instruction": "Write a `get_db` dependency using yield. Create two endpoints that both use it. Verify the session is properly closed after each request (add a print in finally).",
+                "example": "def get_db():\n    db = SessionLocal()\n    try:\n        yield db\n    finally:\n        db.close()\n        print('Session closed')"
+              },
+              {
+                "icon": "🔑",
+                "title": "Auth Dependency Chain",
+                "instruction": "Build a dependency chain: get_token (extracts from header) -> get_current_user (validates token) -> require_admin (checks role). Apply to a protected endpoint.",
+                "example": "@app.get('/admin/users')\ndef admin_users(user = Depends(require_admin), db = Depends(get_db)):\n    ..."
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What does `Depends(get_db)` do in a FastAPI endpoint?",
+                "options": [
+                  "Downloads a database",
+                  "Injects a database session as a parameter",
+                  "Creates a new database",
+                  "Depends on the DB being online"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Why use `yield` instead of `return` in a dependency?",
+                "options": [
+                  "It's faster",
+                  "It allows cleanup code to run after the endpoint finishes",
+                  "Yield is required by FastAPI",
+                  "Return doesn't work in dependencies"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is dependency override useful for?",
+                "options": [
+                  "Making dependencies optional",
+                  "Replacing real dependencies with test doubles in tests",
+                  "Overriding Python imports",
+                  "Skipping authentication"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What are nested dependencies?",
+                "options": [
+                  "Dependencies inside loops",
+                  "Dependencies that depend on other dependencies",
+                  "Multiple databases",
+                  "Dependencies in subfolders"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-20",
+            "title": "Async Endpoints & Database Integration",
+            "description": "Connect FastAPI to PostgreSQL with async for maximum performance.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Async Endpoints & Database Integration\n\n## async def vs def in FastAPI\n```python\n# SYNC — runs in a thread pool (fine for CPU-bound work)\n@app.get(\"/sync\")\ndef sync_endpoint():\n    return {\"mode\": \"sync\"}\n\n# ASYNC — runs on the event loop (best for I/O: DB, HTTP, files)\n@app.get(\"/async\")\nasync def async_endpoint():\n    return {\"mode\": \"async\"}\n```\n\n**Rule of thumb:**\n- Use `async def` when calling async libraries (asyncpg, aiohttp, aiofiles)\n- Use `def` when calling sync libraries (psycopg2, requests)\n- NEVER use `time.sleep()` in async endpoints — use `await asyncio.sleep()`\n\n## Async SQLAlchemy Setup\n```python\nfrom sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession\n\n# Note: asyncpg driver (not psycopg2)\nDATABASE_URL = \"postgresql+asyncpg://postgres:pass@localhost:5432/myapp\"\n\nasync_engine = create_async_engine(DATABASE_URL)\nAsyncSessionLocal = async_sessionmaker(async_engine, class_=AsyncSession)\n\nasync def get_async_db():\n    async with AsyncSessionLocal() as session:\n        yield session\n```\n\n## Async CRUD\n```python\nfrom sqlalchemy import select\n\n@app.get(\"/users\")\nasync def list_users(db: AsyncSession = Depends(get_async_db)):\n    result = await db.execute(select(User))\n    users = result.scalars().all()\n    return users\n\n@app.post(\"/users\")\nasync def create_user(data: UserCreate, db: AsyncSession = Depends(get_async_db)):\n    user = User(**data.model_dump())\n    db.add(user)\n    await db.commit()\n    await db.refresh(user)\n    return user\n```\n\n## Concurrent Queries\n```python\nimport asyncio\n\n@app.get(\"/dashboard\")\nasync def dashboard(db: AsyncSession = Depends(get_async_db)):\n    # Run 3 queries concurrently — faster than sequential!\n    users_q = db.execute(select(func.count(User.id)))\n    posts_q = db.execute(select(func.count(Post.id)))\n    recent_q = db.execute(select(Post).order_by(Post.created_at.desc()).limit(5))\n\n    user_count, post_count, recent = await asyncio.gather(\n        users_q, posts_q, recent_q\n    )\n\n    return {\n        \"users\": user_count.scalar(),\n        \"posts\": post_count.scalar(),\n        \"recent\": recent.scalars().all(),\n    }\n```\n\n## Key Takeaway\nAsync endpoints + async SQLAlchemy = FastAPI at full speed. Use `asyncpg` as your driver, `AsyncSession` for database access, and `asyncio.gather` when you have independent queries. This is the Siraaj production setup.",
+            "steps": [
+              "Convert a sync FastAPI app to use async endpoints",
+              "Set up async_engine with asyncpg driver",
+              "Create an async get_db dependency using AsyncSession",
+              "Write async CRUD endpoints",
+              "Use asyncio.gather to run concurrent database queries",
+              "Compare response times between sync and async"
+            ],
+            "exercises": [
+              {
+                "icon": "⚡",
+                "title": "Async CRUD Endpoint",
+                "instruction": "Create an async GET /users endpoint that queries the database using AsyncSession. Include pagination (skip/limit). Verify it works with /docs.",
+                "example": "@app.get('/users')\nasync def list_users(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_async_db)):\n    result = await db.execute(select(User).offset(skip).limit(limit))"
+              },
+              {
+                "icon": "🏎️",
+                "title": "Concurrent Dashboard",
+                "instruction": "Build GET /dashboard that runs 3 independent queries concurrently: total users, total posts, and latest 5 posts. Use asyncio.gather. Compare timing with sequential version.",
+                "example": "users, posts, recent = await asyncio.gather(count_users(db), count_posts(db), get_recent(db))"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "When should you use `async def` vs `def` in FastAPI?",
+                "options": [
+                  "Always use async def",
+                  "async def for I/O operations, def for CPU-bound work",
+                  "Always use def",
+                  "It doesn't matter"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What driver does async SQLAlchemy use for PostgreSQL?",
+                "options": [
+                  "psycopg2",
+                  "asyncpg",
+                  "pg8000",
+                  "aiopg"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does `asyncio.gather()` enable for database queries?",
+                "options": [
+                  "Combining results",
+                  "Running independent queries concurrently",
+                  "Batching inserts",
+                  "Distributed transactions"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is `create_async_engine` used for?",
+                "options": [
+                  "Creating async Python code",
+                  "Creating an async database connection engine",
+                  "Generating async tests",
+                  "Creating Docker containers"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-21",
+            "title": "Middleware, Error Handling & CORS",
+            "description": "Add cross-cutting concerns: logging, error handling, and CORS for frontend integration.",
+            "link": null,
+            "estimatedTime": "3 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Middleware, Error Handling & CORS\n\n## Middleware — Code That Runs on Every Request\n```python\nimport time\nfrom fastapi import Request\n\n@app.middleware(\"http\")\nasync def add_timing(request: Request, call_next):\n    start = time.time()\n    response = await call_next(request)\n    duration = time.time() - start\n    response.headers[\"X-Response-Time\"] = f\"{duration:.4f}s\"\n    print(f\"{request.method} {request.url.path} - {duration:.4f}s\")\n    return response\n```\n\n## Exception Handlers\n```python\nfrom fastapi import HTTPException\nfrom fastapi.responses import JSONResponse\n\n# Built-in HTTPException\n@app.get(\"/users/{user_id}\")\nasync def get_user(user_id: int):\n    user = await find_user(user_id)\n    if not user:\n        raise HTTPException(status_code=404, detail=\"User not found\")\n    return user\n\n# Custom Exception Class\nclass AppException(Exception):\n    def __init__(self, code: str, message: str, status_code: int = 400):\n        self.code = code\n        self.message = message\n        self.status_code = status_code\n\n@app.exception_handler(AppException)\nasync def app_exception_handler(request: Request, exc: AppException):\n    return JSONResponse(\n        status_code=exc.status_code,\n        content={\n            \"error\": {\n                \"code\": exc.code,\n                \"message\": exc.message,\n            }\n        },\n    )\n\n# Usage in endpoints:\nraise AppException(code=\"USER_NOT_FOUND\", message=\"No user with that ID\", status_code=404)\n```\n\n## CORS — Allow Frontend to Call Your API\n```python\nfrom fastapi.middleware.cors import CORSMiddleware\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"http://localhost:3000\", \"https://app.siraaj.ai\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n```\n\nWithout CORS middleware, your browser will BLOCK requests from your React frontend to your FastAPI backend (different ports = different origins).\n\n## Request Lifecycle\n```\nClient Request\n  → CORS Middleware (check origin)\n  → Custom Middleware (timing, logging)\n  → Route Handler (your endpoint)\n  → Exception Handler (if error)\n  → Response back to client\n```\n\n## Key Takeaway\nMiddleware = reusable logic for every request. Exception handlers = consistent error responses. CORS = allow your frontend to talk to your backend. All three are configured in every Siraaj API.",
+            "steps": [
+              "Add a request timing middleware that logs method + path + duration",
+              "Create a custom AppException class with code, message, status_code",
+              "Register the exception handler with @app.exception_handler",
+              "Configure CORSMiddleware for your frontend origin",
+              "Test error responses with /docs and verify JSON format"
+            ],
+            "exercises": [
+              {
+                "icon": "⏱️",
+                "title": "Logging Middleware",
+                "instruction": "Write a middleware that logs: request method, path, status code, and response time. Format: `POST /users 201 0.0234s`. Test with multiple endpoints.",
+                "example": "@app.middleware('http')\nasync def log_requests(request, call_next):\n    ...\n# Output: GET /users 200 0.0012s"
+              },
+              {
+                "icon": "🚨",
+                "title": "Custom Exception System",
+                "instruction": "Create AppException with error codes (USER_NOT_FOUND, VALIDATION_ERROR, FORBIDDEN). Create a matching exception handler. Use it in 3 different endpoints.",
+                "example": "raise AppException(code='FORBIDDEN', message='Admin only', status_code=403)\n# -> {\"error\": {\"code\": \"FORBIDDEN\", \"message\": \"Admin only\"}}"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "When does FastAPI middleware execute?",
+                "options": [
+                  "Only on errors",
+                  "Before and after every request",
+                  "Only on POST requests",
+                  "When manually triggered"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does CORSMiddleware solve?",
+                "options": [
+                  "Database connections",
+                  "Allowing frontend on a different origin to call the API",
+                  "Encrypting responses",
+                  "Compressing data"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What is `@app.exception_handler(MyException)` used for?",
+                "options": [
+                  "Logging exceptions",
+                  "Defining a custom response format for a specific exception type",
+                  "Preventing all exceptions",
+                  "Sending error emails"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What happens without CORS middleware when a React app calls your API?",
+                "options": [
+                  "It works fine",
+                  "The browser blocks the request",
+                  "The server crashes",
+                  "The response is encrypted"
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          {
+            "id": "be-m-22",
+            "title": "Building a Complete CRUD API (Capstone)",
+            "description": "Put everything together — build a production-structured API from scratch.",
+            "link": null,
+            "estimatedTime": "6 hours",
+            "completed": false,
+            "createdAt": "2026-02-09T00:00:00Z",
+            "lesson": "# Building a Complete CRUD API (Capstone)\n\n## Project Structure\n```\ntask_api/\n├── main.py              # FastAPI app, middleware, startup\n├── config.py            # Settings via Pydantic\n├── database.py          # Engine, session, Base\n├── models/\n│   ├── user.py          # User SQLAlchemy model\n│   └── task.py          # Task SQLAlchemy model\n├── schemas/\n│   ├── user.py          # UserCreate, UserResponse\n│   └── task.py          # TaskCreate, TaskUpdate, TaskResponse\n├── crud/\n│   ├── user.py          # User CRUD operations\n│   └── task.py          # Task CRUD operations\n├── routers/\n│   ├── users.py         # User endpoints\n│   └── tasks.py         # Task endpoints\n├── dependencies.py      # get_db, get_current_user\n└── exceptions.py        # Custom exceptions + handlers\n```\n\n## Configuration with Pydantic Settings\n```python\n# config.py\nfrom pydantic_settings import BaseSettings\n\nclass Settings(BaseSettings):\n    database_url: str = \"postgresql+asyncpg://postgres:pass@localhost/taskapi\"\n    secret_key: str = \"dev-secret\"\n    debug: bool = True\n\n    model_config = ConfigDict(env_file=\".env\")\n\nsettings = Settings()\n```\n\n## APIRouter — Grouping Endpoints\n```python\n# routers/users.py\nfrom fastapi import APIRouter, Depends\n\nrouter = APIRouter(prefix=\"/users\", tags=[\"Users\"])\n\n@router.get(\"/\")\nasync def list_users(db = Depends(get_db)):\n    ...\n\n@router.post(\"/\", status_code=201)\nasync def create_user(data: UserCreate, db = Depends(get_db)):\n    ...\n\n# main.py\nfrom routers import users, tasks\n\napp.include_router(users.router, prefix=\"/api\")\napp.include_router(tasks.router, prefix=\"/api\")\n# Endpoints: /api/users, /api/tasks\n```\n\n## The Full Flow: Request to Response\n```\n1. Client sends POST /api/tasks {\"title\": \"Learn FastAPI\"}\n2. CORSMiddleware checks origin -> OK\n3. Logging middleware starts timer\n4. FastAPI matches route -> routers/tasks.py create_task()\n5. Depends(get_db) yields database session\n6. Depends(get_current_user) validates auth token\n7. Pydantic validates TaskCreate schema\n8. crud/task.py creates the task in DB\n9. Response serialized through TaskResponse schema\n10. Logging middleware logs: POST /api/tasks 201 0.045s\n```\n\n## Tracing a Siraaj Endpoint\nTo understand a real production codebase, trace one endpoint:\n```\n1. Find the route in routers/ (e.g., routers/feedback.py)\n2. See what dependencies it uses (get_db, get_current_user)\n3. Follow to the CRUD function (crud/feedback.py)\n4. See the SQLAlchemy model (models/feedback.py)\n5. Check the Pydantic schemas (schemas/feedback.py)\n```\n\n## Key Takeaway\nA production API is just these pieces organized well: routers (endpoints) -> schemas (validation) -> crud (DB operations) -> models (table definitions). Every Siraaj endpoint follows this exact pattern. Build one yourself and you can read any endpoint in the codebase.",
+            "steps": [
+              "Create the project structure with folders for models, schemas, crud, routers",
+              "Set up database.py with async engine and session",
+              "Define User and Task models with a relationship",
+              "Create Pydantic schemas: TaskCreate, TaskUpdate, TaskResponse",
+              "Build CRUD functions for tasks",
+              "Create router with full CRUD endpoints (GET list, GET by id, POST, PUT, DELETE)",
+              "Add pagination, filtering by status, and ordering",
+              "Wire everything in main.py with middleware and CORS",
+              "Test the complete API through /docs"
+            ],
+            "exercises": [
+              {
+                "icon": "🏗️",
+                "title": "Task Management API",
+                "instruction": "Build a complete Task Management API: Users (register, login) + Tasks (CRUD with status: todo/in_progress/done). Include: relationships (user has many tasks), pagination, filtering by status, proper error handling, and auth.",
+                "example": "POST /api/users -> register\nPOST /api/auth/login -> get token\nGET /api/tasks?status=todo&page=1 -> filtered list\nPOST /api/tasks -> create (requires auth)"
+              },
+              {
+                "icon": "🔍",
+                "title": "Trace a Siraaj Endpoint",
+                "instruction": "Pick any Siraaj endpoint (e.g., feedback or chat). Trace the full flow: router -> dependency -> CRUD -> model -> schema. Document each file and what it does. Draw the data flow.",
+                "example": "routers/feedback.py (endpoint)\n-> dependencies/auth.py (get_current_user)\n-> crud/feedback.py (create_feedback)\n-> models/feedback.py (Feedback table)\n-> schemas/feedback.py (FeedbackCreate/Response)"
+              }
+            ],
+            "scripts": [],
+            "quiz": [
+              {
+                "question": "What is the purpose of APIRouter in FastAPI?",
+                "options": [
+                  "Routing network traffic",
+                  "Grouping related endpoints with a common prefix and tags",
+                  "Managing database routes",
+                  "Creating URL shorteners"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "In a production API, what is the typical flow of a request?",
+                "options": [
+                  "Model -> Router -> Schema",
+                  "Router -> Schema validation -> CRUD -> Model -> Response",
+                  "Database -> API -> Frontend",
+                  "Frontend -> Backend -> Cloud"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "Why separate code into routers/, models/, schemas/, crud/ folders?",
+                "options": [
+                  "FastAPI requires it",
+                  "Separation of concerns — each layer has a single responsibility",
+                  "It makes the app faster",
+                  "For security reasons"
+                ],
+                "correct": 1
+              },
+              {
+                "question": "What does Pydantic Settings with `env_file='.env'` enable?",
+                "options": [
+                  "Loading environment variables for configuration",
+                  "Encrypting settings",
+                  "Creating .env files automatically",
+                  "Setting up Docker"
+                ],
+                "correct": 0
+              }
+            ]
+          }
+        ]
       }
     ]
   }

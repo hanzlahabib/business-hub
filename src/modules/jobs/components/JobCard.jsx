@@ -98,7 +98,7 @@ function JobCardComponent({ job, onClick }) {
           {job.skills.slice(0, 4).map(skill => (
             <span
               key={skill}
-              className="px-1.5 py-0.5 bg-blue-500/20 text-blue-300 text-xs rounded"
+              className="px-1.5 py-0.5 bg-blue-500/10 text-blue-500 text-xs rounded border border-blue-500/20"
             >
               {skill}
             </span>

@@ -1,12 +1,13 @@
 import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, Filter, Upload, X, Building2, MapPin, Globe, Tag, AlertCircle, RefreshCw } from 'lucide-react'
+import { Plus, Search, Filter, Upload, X, Building2, MapPin, Globe, Tag, AlertCircle, RefreshCw, Mail, CheckSquare, Square } from 'lucide-react'
 import LeadCard from './LeadCard'
 import { useLeads } from '../hooks/useLeads'
 import { SearchableSelect } from '../../../components/ui/searchable-select'
 import { LeadGlobalSearch } from './LeadGlobalSearch'
-import { LoadingSkeleton } from '../../../components/UI/LoadingSkeleton'
-import { EmptyState } from '../../../components/UI/EmptyState'
+import { LoadingSkeleton } from '../../../components/ui/loading-skeleton'
+import { EmptyState } from '../../../components/ui/empty-state'
+import BulkEmailComposer from './BulkEmailComposer'
 
 const statusConfig = {
   new: { label: 'New', color: 'from-gray-500 to-slate-600', emoji: '🆕' },
@@ -67,7 +68,7 @@ function extractCity(lead) {
   return 'Unknown'
 }
 
-function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop }) {
+function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop, selectedLeads, onSelectLead }) {
   const config = statusConfig[status]
   const [isDragOver, setIsDragOver] = useState(false)
 
@@ -91,9 +92,8 @@ function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop }) {
 
   return (
     <div
-      className={`flex-1 min-w-[280px] max-w-[350px] flex flex-col bg-bg-secondary rounded-xl border transition-colors ${
-        isDragOver ? 'border-accent-primary bg-bg-tertiary' : 'border-border'
-      }`}
+      className={`flex-1 min-w-[280px] max-w-[350px] flex flex-col bg-bg-secondary rounded-xl border transition-colors ${isDragOver ? 'border-accent-primary bg-bg-tertiary' : 'border-border'
+        }`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -103,8 +103,8 @@ function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-lg">{config.emoji}</span>
-            <h3 className="font-semibold text-white">{config.label}</h3>
-            <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs text-white">
+            <h3 className="font-semibold text-text-primary">{config.label}</h3>
+            <span className="px-2 py-0.5 bg-bg-tertiary/50 rounded-full text-xs text-text-secondary min-w-[20px] text-center">
               {leads.length}
             </span>
           </div>
@@ -133,6 +133,8 @@ function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop }) {
               <LeadCard
                 lead={lead}
                 onClick={onLeadClick}
+                selected={selectedLeads.includes(lead.id)}
+                onSelect={(l, checked) => onSelectLead(l.id, checked)}
               />
             </div>
           ))}
@@ -172,9 +174,18 @@ export function LeadBoard({
     city: ''
   })
 
+  // Selection State
+  const [selectedLeads, setSelectedLeads] = useState([])
+  const [showBulkComposer, setShowBulkComposer] = useState(false)
+
   // Keyboard shortcut: Ctrl+K to open search
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // Esc to clear selection
+      if (e.key === 'Escape' && selectedLeads.length > 0) {
+        setSelectedLeads([])
+      }
+
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault()
         setIsSearchOpen(true)
@@ -183,7 +194,7 @@ export function LeadBoard({
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
+  }, [selectedLeads])
 
   // Enrich leads with country/city
   const enrichedLeads = useMemo(() => {
@@ -303,6 +314,28 @@ export function LeadBoard({
     await changeStatus(leadId, newStatus)
   }
 
+  // Selection Logic
+  const handleSelectLead = (leadId, checked) => {
+    if (checked) {
+      setSelectedLeads(prev => [...prev, leadId])
+    } else {
+      setSelectedLeads(prev => prev.filter(id => id !== leadId))
+    }
+  }
+
+  const handleSelectAllFiltered = () => {
+    if (selectedLeads.length === filteredLeads.length) {
+      setSelectedLeads([])
+    } else {
+      setSelectedLeads(filteredLeads.map(l => l.id))
+    }
+  }
+
+  const selectedLeadsObjects = useMemo(() => {
+    return leads.filter(l => selectedLeads.includes(l.id))
+  }, [leads, selectedLeads])
+
+
   const stats = getStats()
 
   // Show loading state
@@ -342,7 +375,7 @@ export function LeadBoard({
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col relative">
       {/* Header */}
       <div className="flex flex-col gap-3 p-4 border-b border-border">
         <div className="flex items-center justify-between">
@@ -358,6 +391,17 @@ export function LeadBoard({
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Select All (Visible if filters active or select mode) */}
+            {(showFilters || selectedLeads.length > 0) && (
+              <button
+                onClick={handleSelectAllFiltered}
+                className="flex items-center gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg text-sm text-text-secondary hover:text-text-primary transition-colors"
+              >
+                {selectedLeads.length === filteredLeads.length ? <CheckSquare className="w-4 h-4 text-blue-500" /> : <Square className="w-4 h-4" />}
+                Select All ({filteredLeads.length})
+              </button>
+            )}
+
             {/* Search Button (Ctrl+K) */}
             <button
               onClick={() => setIsSearchOpen(true)}
@@ -371,11 +415,10 @@ export function LeadBoard({
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm transition-colors ${
-                showFilters || activeFilterCount > 0
-                  ? 'bg-blue-500/20 border-blue-500/50 text-blue-400'
-                  : 'bg-bg-secondary border-border text-text-secondary hover:bg-bg-tertiary hover:text-text-primary'
-              }`}
+              className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm transition-colors ${showFilters || activeFilterCount > 0
+                ? 'bg-blue-500/20 border-blue-500/50 text-blue-400'
+                : 'bg-bg-secondary border-border text-text-secondary hover:bg-bg-tertiary hover:text-text-primary'
+                }`}
             >
               <Filter className="w-4 h-4" />
               Filters
@@ -551,10 +594,48 @@ export function LeadBoard({
               onLeadClick={onLeadClick}
               onAddClick={onAddClick}
               onDrop={handleDrop}
+              selectedLeads={selectedLeads}
+              onSelectLead={handleSelectLead}
             />
           ))}
         </div>
       </div>
+
+      {/* Floating Bulk Action Bar */}
+      <AnimatePresence>
+        {selectedLeads.length > 0 && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 px-6 py-3 bg-bg-primary border border-border shadow-2xl rounded-2xl"
+          >
+            <div className="flex items-center gap-2 text-text-primary font-medium">
+              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs text-white">
+                {selectedLeads.length}
+              </div>
+              Selected
+            </div>
+
+            <div className="w-px h-6 bg-border mx-2" />
+
+            <button
+              onClick={() => setShowBulkComposer(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:opacity-90 transition-opacity"
+            >
+              <Mail className="w-4 h-4" />
+              Send Email
+            </button>
+
+            <button
+              onClick={() => setSelectedLeads([])}
+              className="p-2 hover:bg-bg-tertiary rounded-lg text-text-secondary transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Global Search Modal */}
       <AnimatePresence>
@@ -567,6 +648,19 @@ export function LeadBoard({
           />
         )}
       </AnimatePresence>
+
+      {/* Bulk Email Composer */}
+      {showBulkComposer && (
+        <BulkEmailComposer
+          isOpen={showBulkComposer}
+          onClose={() => setShowBulkComposer(false)}
+          leads={selectedLeadsObjects}
+          onSuccess={() => {
+            // Optional: refresh leads or clear selection
+            setSelectedLeads([])
+          }}
+        />
+      )}
     </div>
   )
 }

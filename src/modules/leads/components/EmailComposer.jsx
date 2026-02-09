@@ -1,18 +1,31 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Send, FileText, Eye, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
+import { X, Send, FileText, Eye, AlertCircle, CheckCircle, Loader2, Paperclip } from 'lucide-react'
 import { useEmailService } from '../../../shared/hooks/useEmailService'
 import { useEmailTemplates } from '../../../shared/hooks/useEmailTemplates'
+import { useCV } from '../../../shared/hooks/useCV'
 
 export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
   const { templates, processTemplate } = useEmailTemplates()
   const { sendEmail, sending, error: sendError } = useEmailService()
+  const { cvFiles, fetchCvFiles, getDefaultCv } = useCV()
 
   const [selectedTemplate, setSelectedTemplate] = useState(null)
+  const [selectedCvId, setSelectedCvId] = useState('')
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState('')
   const [showPreview, setShowPreview] = useState(false)
   const [sendResult, setSendResult] = useState(null)
+
+  // Load CVs when open
+  useEffect(() => {
+    if (isOpen) {
+      fetchCvFiles().then(files => {
+        const def = files.find(f => f.isDefault)
+        if (def) setSelectedCvId(def.id)
+      })
+    }
+  }, [isOpen, fetchCvFiles])
 
   // Apply template when selected
   useEffect(() => {
@@ -31,7 +44,8 @@ export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
       subject,
       body,
       leadId: lead.id,
-      templateId: selectedTemplate?.id
+      templateId: selectedTemplate?.id,
+      cvId: selectedCvId || undefined
     })
 
     setSendResult(result)
@@ -90,26 +104,48 @@ export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
           {/* Content */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {/* Template Selection */}
-            <div>
-              <label className="flex items-center gap-2 text-sm text-text-secondary mb-2">
-                <FileText className="w-4 h-4" />
-                Use Template
-              </label>
-              <select
-                value={selectedTemplate?.id || ''}
-                onChange={(e) => {
-                  const template = templates.find(t => t.id === e.target.value)
-                  setSelectedTemplate(template || null)
-                }}
-                className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-border-hover"
-              >
-                <option value="">No template (compose manually)</option>
-                {templates.map(t => (
-                  <option key={t.id} value={t.id}>
-                    {t.name} ({t.category})
-                  </option>
-                ))}
-              </select>
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="flex items-center gap-2 text-sm text-text-secondary mb-2">
+                  <FileText className="w-4 h-4" />
+                  Use Template
+                </label>
+                <select
+                  value={selectedTemplate?.id || ''}
+                  onChange={(e) => {
+                    const template = templates.find(t => t.id === e.target.value)
+                    setSelectedTemplate(template || null)
+                  }}
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-border-hover"
+                >
+                  <option value="">No template (compose manually)</option>
+                  {templates.map(t => (
+                    <option key={t.id} value={t.id}>
+                      {t.name} ({t.category})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* CV Attachment */}
+              <div className="flex-1">
+                <label className="flex items-center gap-2 text-sm text-text-secondary mb-2">
+                  <Paperclip className="w-4 h-4" />
+                  Attach CV / Document
+                </label>
+                <select
+                  value={selectedCvId}
+                  onChange={(e) => setSelectedCvId(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:border-border-hover"
+                >
+                  <option value="">No attachment</option>
+                  {Array.isArray(cvFiles) && cvFiles.map(cv => (
+                    <option key={cv.id} value={cv.id}>
+                      {cv.name} {cv.isDefault ? '(Default)' : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* Subject */}

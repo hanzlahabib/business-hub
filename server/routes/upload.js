@@ -50,7 +50,7 @@ const upload = multer({
 // Replace JSON Server calls with your DB of choice
 // ============================================
 
-const JSON_SERVER = 'http://localhost:3001'
+const JSON_SERVER = 'http://localhost:3005'
 
 async function getAllCvFiles() {
   const res = await fetch(`${JSON_SERVER}/cvFiles`)

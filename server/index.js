@@ -145,14 +145,14 @@ app.post('/api/agent/execute', async (req, res) => {
         break
 
       case 'get_leads':
-        const leadsRes = await fetch('http://localhost:3001/leads')
+        const leadsRes = await fetch('http://localhost:3005/leads')
         const leads = await leadsRes.json()
         res.json({ success: true, action, result: leads })
         break
 
       case 'update_lead_status':
         const { leadId, status } = params
-        const updateRes = await fetch(`http://localhost:3001/leads/${leadId}`, {
+        const updateRes = await fetch(`http://localhost:3005/leads/${leadId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status, lastContactedAt: new Date().toISOString() })
@@ -162,7 +162,7 @@ app.post('/api/agent/execute', async (req, res) => {
         break
 
       case 'get_leads_by_status':
-        const allLeads = await fetch('http://localhost:3001/leads').then(r => r.json())
+        const allLeads = await fetch('http://localhost:3005/leads').then(r => r.json())
         const filtered = allLeads.filter(l => l.status === params.status)
         res.json({ success: true, action, result: filtered })
         break

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 
-const JSON_SERVER = 'http://localhost:3005'
+import { JSON_SERVER } from '../../config/api'
 
 export function useEmailTemplates() {
   const [templates, setTemplates] = useState([])

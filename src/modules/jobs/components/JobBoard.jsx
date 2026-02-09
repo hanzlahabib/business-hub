@@ -5,8 +5,8 @@ import { JobCard } from './JobCard'
 import { useJobs } from '../hooks/useJobs'
 import { JOB_STATUS_MAP } from '../constants/pipelineStages'
 import { JobGlobalSearch } from './JobGlobalSearch'
-import { LoadingSkeleton } from '../../../components/UI/LoadingSkeleton'
-import { EmptyState } from '../../../components/UI/EmptyState'
+import { LoadingSkeleton } from '../../../components/ui/loading-skeleton'
+import { EmptyState } from '../../../components/ui/empty-state'
 
 function StatusColumn({ status, jobs, onJobClick, onAddClick, onDrop }) {
   const config = JOB_STATUS_MAP[status]
@@ -32,9 +32,8 @@ function StatusColumn({ status, jobs, onJobClick, onAddClick, onDrop }) {
 
   return (
     <div
-      className={`flex-1 min-w-[280px] max-w-[320px] flex flex-col bg-bg-secondary rounded-xl border transition-colors ${
-        isDragOver ? 'border-accent-primary bg-bg-tertiary' : 'border-border'
-      }`}
+      className={`flex-1 min-w-[280px] max-w-[320px] flex flex-col bg-bg-secondary rounded-xl border transition-colors ${isDragOver ? 'border-accent-primary bg-bg-tertiary' : 'border-border'
+        }`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -44,8 +43,8 @@ function StatusColumn({ status, jobs, onJobClick, onAddClick, onDrop }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-lg">{config.emoji}</span>
-            <h3 className="font-semibold text-white">{config.label}</h3>
-            <span className="px-2 py-0.5 bg-white/20 rounded-full text-xs text-white">
+            <h3 className="font-semibold text-text-primary">{config.label}</h3>
+            <span className="px-2 py-0.5 bg-bg-tertiary/50 rounded-full text-xs text-text-secondary min-w-[20px] text-center">
               {jobs.length}
             </span>
           </div>

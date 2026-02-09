@@ -42,15 +42,14 @@ function SearchResultItem({ lead, query, matchField, onSelect }) {
         <div className="flex-1 min-w-0">
           {/* Lead name */}
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="text-sm font-medium text-white truncate">
+            <h4 className="text-sm font-medium text-text-primary truncate">
               <HighlightText text={lead.name} query={query} />
             </h4>
             {lead.priority && (
-              <span className={`px-1.5 py-0.5 rounded text-xs ${
-                lead.priority === 'urgent' ? 'bg-red-500/20 text-red-400' :
-                lead.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
-                'bg-blue-500/20 text-blue-400'
-              }`}>
+              <span className={`px-1.5 py-0.5 rounded text-xs ${lead.priority === 'urgent' ? 'bg-red-500/20 text-red-400' :
+                  lead.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                    'bg-blue-500/20 text-blue-400'
+                }`}>
                 {lead.priority}
               </span>
             )}

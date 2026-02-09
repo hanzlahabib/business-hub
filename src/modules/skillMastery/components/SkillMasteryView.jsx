@@ -1,13 +1,20 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Plus, ArrowLeft, Settings, Droplets, Sun, Leaf, BookOpen,
   Sparkles, Trophy, X, Check, RotateCcw, Trash2, ChevronRight,
-  ChevronDown, ExternalLink, ListChecks, Clock, Target, Eye
+  ChevronDown, ExternalLink, ListChecks, Clock, Target, Search, Eye
 } from 'lucide-react'
 import { useSkillMastery } from '../hooks/useSkillMastery'
 import { MarkdownViewer } from '../../../shared/components/MarkdownViewer'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import { ReactFlow, Background, Controls, MiniMap, Handle, Position, useNodesState, useEdgesState, addEdge } from '@xyflow/react'
+import '@xyflow/react/dist/style.css'
+import { PlantNewModal } from './PlantNewModal'
+import { RoutineSection } from './RoutineSection'
+import { JournalSection } from './JournalSection'
 
 // Growth stages with visual properties
 const GROWTH_STAGES = [
@@ -39,7 +46,8 @@ export function SkillMasteryView() {
     toggleMilestone,
     removeMilestone,
     waterPlant,
-    resetProgress
+    resetProgress,
+    logDailyActivity
   } = useSkillMastery()
 
   // Get selected plant from URL params
@@ -50,6 +58,11 @@ export function SkillMasteryView() {
 
   const [showPlantModal, setShowPlantModal] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
+  const [viewMode, setViewMode] = useState(() => localStorage.getItem('skillGardenView') || 'grid') // 'grid', 'compact', or 'tree'
+
+  useEffect(() => {
+    localStorage.setItem('skillGardenView', viewMode)
+  }, [viewMode])
 
   if (loading) {
     return (
@@ -84,6 +97,7 @@ export function SkillMasteryView() {
             onAddMilestone={addMilestone}
             onToggleMilestone={toggleMilestone}
             onRemoveMilestone={removeMilestone}
+            onLog={logDailyActivity}
           />
         ) : (
           <GardenView
@@ -91,6 +105,11 @@ export function SkillMasteryView() {
             plants={paths}
             onSelectPlant={(plant) => navigate(`/skills/${plant.id}`)}
             onPlantNew={() => setShowPlantModal(true)}
+            viewMode={viewMode}
+            onToggleView={setViewMode}
+            onToggleMilestone={toggleMilestone}
+            onToggleVocabulary={toggleVocabularyLearned}
+            onToggleResource={toggleResourceCompleted}
           />
         )}
       </AnimatePresence>
@@ -126,7 +145,7 @@ export function SkillMasteryView() {
 }
 
 // ============ GARDEN VIEW ============
-function GardenView({ plants, onSelectPlant, onPlantNew }) {
+function GardenView({ plants, onSelectPlant, onPlantNew, viewMode, onToggleView, onToggleMilestone, onToggleVocabulary, onToggleResource }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -134,13 +153,40 @@ function GardenView({ plants, onSelectPlant, onPlantNew }) {
       exit={{ opacity: 0 }}
     >
       {/* Garden Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-text-primary mb-2">
-          🌿 Your Skill Garden 🌿
-        </h1>
-        <p className="text-text-muted">
-          Plant skills, nurture them daily, watch them grow into mastery
-        </p>
+      <div className="relative mb-12 p-8 py-10 bg-bg-secondary rounded-[2rem] border border-border overflow-hidden">
+        {/* Abstract Background Shapes */}
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
+
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+          <div>
+            <h1 className="text-4xl font-black text-text-primary tracking-tight mb-2 uppercase">
+              Skill Garden
+            </h1>
+            <p className="text-text-secondary max-w-lg font-medium">
+              Architecture for evolving potential. Nurture your skills into high-performance mastery.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 p-1.5 bg-bg-tertiary rounded-2xl border border-border shadow-inner">
+            {[
+              { id: 'grid', label: 'GRID' },
+              { id: 'compact', label: 'COMPACT' },
+              { id: 'tree', label: 'TREE' }
+            ].map(mode => (
+              <button
+                key={mode.id}
+                onClick={() => onToggleView(mode.id)}
+                className={`px-4 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${viewMode === mode.id
+                  ? 'bg-bg-primary text-text-primary shadow-sm border border-border'
+                  : 'text-text-secondary hover:text-text-primary'
+                  }`}
+              >
+                {mode.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Garden Stats */}
@@ -148,53 +194,445 @@ function GardenView({ plants, onSelectPlant, onPlantNew }) {
         <div className="flex justify-center gap-6 mb-8">
           <div className="text-center">
             <p className="text-2xl font-bold text-emerald-500">{plants.length}</p>
-            <p className="text-xs text-text-muted">Plants Growing</p>
+            <p className="text-xs text-text-secondary">Plants Growing</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-blue-500">
               {plants.reduce((acc, p) => acc + (p.streak?.current || 0), 0)}
             </p>
-            <p className="text-xs text-text-muted">Total Streak Days</p>
+            <p className="text-xs text-text-secondary">Total Streak Days</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-amber-500">
               {plants.reduce((acc, p) => acc + (p.vocabulary?.filter(v => v.learned).length || 0), 0)}
             </p>
-            <p className="text-xs text-text-muted">Leaves Grown</p>
+            <p className="text-xs text-text-secondary">Leaves Grown</p>
           </div>
         </div>
       )}
 
-      {/* Garden Grid */}
+      {/* Garden Content Area */}
       {plants.length === 0 ? (
         <EmptyGarden onPlantNew={onPlantNew} />
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {plants.map((plant, index) => (
-            <PlantCard
-              key={plant.id}
-              plant={plant}
-              index={index}
-              onClick={() => onSelectPlant(plant)}
-            />
-          ))}
+        <AnimatePresence mode="wait">
+          {viewMode === 'grid' && (
+            <motion.div
+              key="grid"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            >
+              {plants.map((plant, index) => (
+                <PlantCard
+                  key={plant.id}
+                  plant={plant}
+                  index={index}
+                  onClick={() => onSelectPlant(plant)}
+                />
+              ))}
 
-          {/* Add New Plant Card */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onPlantNew}
-            className="h-64 rounded-2xl border-2 border-dashed border-border hover:border-emerald-500/50 flex flex-col items-center justify-center gap-3 transition-colors group"
-          >
-            <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
-              <Plus size={24} className="text-emerald-500" />
-            </div>
-            <span className="text-text-muted group-hover:text-emerald-500 transition-colors">
-              Plant New Skill
-            </span>
-          </motion.button>
-        </div>
+              {/* Add New Plant Card */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={onPlantNew}
+                className="h-72 rounded-2xl border-2 border-dashed border-border hover:border-emerald-500/50 flex flex-col items-center justify-center gap-4 transition-all group hover:bg-emerald-500/5"
+              >
+                <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Plus size={32} className="text-emerald-500" />
+                </div>
+                <div className="text-center">
+                  <p className="font-black text-text-primary text-xs tracking-widest uppercase">Plant New</p>
+                  <p className="text-[10px] text-text-secondary uppercase">Expand your garden</p>
+                </div>
+              </motion.button>
+            </motion.div>
+          )}
+
+          {viewMode === 'compact' && (
+            <CompactView key="compact" plants={plants} onSelect={onSelectPlant} onPlantNew={onPlantNew} />
+          )}
+
+          {viewMode === 'tree' && (
+            <GardenTreeView
+              key="tree"
+              plants={plants}
+              onSelect={onSelectPlant}
+              onToggleMilestone={onToggleMilestone}
+              onToggleVocabulary={onToggleVocabulary}
+              onToggleResource={onToggleResource}
+            />
+          )}
+        </AnimatePresence>
       )}
+    </motion.div>
+  )
+}
+
+// ============ COMPACT CLUSTER VIEW ============
+function CompactView({ plants, onSelect, onPlantNew }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="p-12 bg-bg-secondary rounded-[2.5rem] border border-border min-h-[500px] relative overflow-hidden"
+    >
+      <div className="flex flex-wrap justify-center gap-8 relative z-10">
+        {plants.map((plant, i) => {
+          const progress = calculateProgress(plant)
+          const stage = getGrowthStage(progress)
+
+          return (
+            <motion.button
+              key={plant.id}
+              whileHover={{ scale: 1.1, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onSelect(plant)}
+              className="flex flex-col items-center group"
+            >
+              <div
+                className="w-24 h-24 rounded-[2rem] bg-bg-primary border-4 border-bg-tertiary flex items-center justify-center text-4xl shadow-xl transition-all group-hover:border-emerald-500 relative"
+                style={{ boxShadow: `0 10px 30px -10px ${stage.color}20` }}
+              >
+                {plant.icon || stage.icon}
+
+                {/* Micro Progress Ring */}
+                <div className="absolute inset-0 rounded-[2rem] border-2 border-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity scale-110" />
+              </div>
+              <div className="mt-4 text-center">
+                <p className="text-[10px] font-black text-text-primary uppercase tracking-widest truncate max-w-[120px]">
+                  {plant.name}
+                </p>
+                <div className="flex items-center justify-center gap-1 mt-1">
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stage.color }} />
+                  <p className="text-[8px] font-bold text-text-secondary uppercase">{progress}%</p>
+                </div>
+              </div>
+            </motion.button>
+          )
+        })}
+
+        <motion.button
+          onClick={onPlantNew}
+          whileHover={{ scale: 1.1 }}
+          className="w-24 h-24 rounded-[2rem] border-2 border-dashed border-border flex items-center justify-center text-text-secondary hover:text-emerald-500 hover:border-emerald-500/50 transition-all"
+        >
+          <Plus size={32} />
+        </motion.button>
+      </div>
+
+      <div className="absolute top-6 left-6 flex items-center gap-2">
+        <Leaf size={16} className="text-emerald-500" />
+        <span className="text-[10px] font-black tracking-widest text-text-secondary uppercase">Cluster Visualization</span>
+      </div>
+    </motion.div>
+  )
+}
+
+// ============ NODE CONTEXT MENU ============
+function NodeContextMenu({ id, top, left, right, bottom, onNavigate, onClose }) {
+  return (
+    <div
+      style={{ top, left, right, bottom }}
+      className="absolute z-50 bg-bg-primary border border-border rounded-xl shadow-xl overflow-hidden min-w-[160px] py-1 flex flex-col"
+    >
+      <button
+        onClick={() => { onNavigate(); onClose() }}
+        className="text-left px-4 py-2.5 text-sm hover:bg-bg-secondary flex items-center gap-2 text-text-primary transition-colors"
+      >
+        <ExternalLink size={14} className="text-emerald-500" />
+        Open Project
+      </button>
+    </div>
+  )
+}
+
+
+// ============ GARDEN TREE VIEW (REACT FLOW) ============
+function GardenTreeView({ plants, onSelect, onToggleMilestone, onToggleVocabulary, onToggleResource }) {
+  // Track expanded state: { [plantId]: { isExpanded: boolean, categories: { [catId]: boolean } } }
+  const [expandedState, setExpandedState] = useState({})
+  const [menu, setMenu] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const ref = useRef(null)
+
+  const togglePlant = (plantId) => {
+    setExpandedState(prev => ({
+      ...prev,
+      [plantId]: {
+        ...prev[plantId],
+        isExpanded: !prev[plantId]?.isExpanded
+      }
+    }))
+  }
+
+  const toggleCategory = (plantId, catId) => {
+    setExpandedState(prev => ({
+      ...prev,
+      [plantId]: {
+        ...prev[plantId],
+        categories: {
+          ...prev[plantId]?.categories,
+          [catId]: !prev[plantId]?.categories?.[catId]
+        }
+      }
+    }))
+  }
+
+  const { nodes: initialNodes, edges: initialEdges } = useMemo(() => {
+    const nodes = [
+      {
+        id: 'garden-root',
+        type: 'skill',
+        position: { x: 0, y: 300 },
+        data: { label: 'SKILL GARDEN', icon: '🌿', isRoot: true, description: 'The central hub of all your growing skills.' }
+      }
+    ]
+
+    const edges = []
+
+    const filteredPlants = plants.filter(p =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
+    filteredPlants.forEach((plant, plantIdx) => {
+      const progress = calculateProgress(plant)
+      const stage = getGrowthStage(progress)
+      const plantNodeId = `garden-${plant.id}`
+
+      const plantState = expandedState[plant.id] || {}
+      const isPlantExpanded = plantState.isExpanded
+
+      // Position plants vertically spread out
+      // Dynamic spacing based on expansion could be complex, for now strict vertical layout
+      const yPos = (plantIdx - (plants.length - 1) / 2) * (isPlantExpanded ? 800 : 150)
+
+      nodes.push({
+        id: plantNodeId,
+        type: 'skill',
+        position: { x: 400, y: yPos },
+        data: {
+          label: plant.name.toUpperCase(),
+          icon: plant.icon || stage.icon,
+          progress,
+          isCategory: true, // Reuse category styling for expand toggle
+          isExpanded: isPlantExpanded,
+          onToggleExpand: () => togglePlant(plant.id),
+          description: plant.description || `A growing skill in the ${stage.name} stage.`,
+          plantId: plant.id,
+          progress
+        }
+      })
+
+      edges.push({
+        id: `ge-${plantNodeId}`,
+        source: 'garden-root',
+        target: plantNodeId,
+        animated: true,
+        style: { stroke: '#10b981', strokeWidth: 2, opacity: isPlantExpanded ? 1 : 0.5 }
+      })
+
+      // If Plant is Expanded, show Categories
+      if (isPlantExpanded) {
+        const categories = [
+          { id: 'milestones', label: 'Milestones', icon: '🎯', data: plant.milestones || [], color: stage.color, type: 'milestone' },
+          { id: 'vocab', label: 'Knowledge', icon: '📚', data: plant.vocabulary || [], color: '#3b82f6', type: 'vocab' },
+          { id: 'resources', label: 'Resources', icon: '🔗', data: plant.resources || [], color: '#f59e0b', type: 'resource' }
+        ]
+
+        categories.forEach((cat, catIdx) => {
+          const catNodeId = `${plantNodeId}-cat-${cat.id}`
+          const isCatExpanded = plantState.categories?.[cat.id]
+          const catYPos = yPos + (catIdx - 1) * 200
+
+          nodes.push({
+            id: catNodeId,
+            type: 'skill',
+            position: { x: 800, y: catYPos },
+            data: {
+              label: cat.label,
+              icon: cat.icon,
+              isCategory: true,
+              isExpanded: isCatExpanded,
+              onToggleExpand: () => toggleCategory(plant.id, cat.id),
+              description: `Collection of ${cat.label} for ${plant.name}.`
+            }
+          })
+
+          edges.push({
+            id: `e-${plantNodeId}-${catNodeId}`,
+            source: plantNodeId,
+            target: catNodeId,
+            animated: true,
+            style: { stroke: stage.color, strokeWidth: 1.5 }
+          })
+
+          // If Category is Expanded, show Items
+          if (isCatExpanded) {
+            cat.data.forEach((item, itemIdx) => {
+              const itemId = `${catNodeId}-item-${itemIdx}`
+              const isDone = item.completed || item.learned
+              // Use item.word for Vocab, item.title for others
+              const label = item.title || item.term || item.word || 'Unknown'
+
+              nodes.push({
+                id: itemId,
+                type: 'leaf',
+                position: { x: 1200, y: catYPos + (itemIdx - (cat.data.length / 2)) * 80 },
+                data: {
+                  label: label,
+                  icon: isDone ? '✅' : (item.icon || '○'),
+                  color: cat.color,
+                  isDone,
+                  onToggle: () => {
+                    if (cat.type === 'milestone') onToggleMilestone(plant.id, item.id)
+                    if (cat.type === 'vocab') onToggleVocabulary(plant.id, item.id)
+                    if (cat.type === 'resource') onToggleResource(plant.id, item.id)
+                  }
+                }
+              })
+
+              edges.push({
+                id: `e-${catNodeId}-${itemId}`,
+                source: catNodeId,
+                target: itemId,
+                style: { stroke: cat.color, strokeWidth: 1, opacity: 0.5 }
+              })
+            })
+          }
+        })
+      }
+    })
+    return { nodes, edges }
+  }, [plants, expandedState, searchQuery, onToggleMilestone, onToggleVocabulary, onToggleResource])
+
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+
+  // Layout synchronization
+  useEffect(() => {
+    setNodes(initialNodes)
+    setEdges(initialEdges)
+  }, [initialNodes, initialEdges, setNodes, setEdges])
+
+  const onNodeClick = (event, node) => {
+    if (node.id === 'garden-root') return
+
+    // If leaf node (Milestone/Vocab/Resource), navigate to project
+    // Also if Category node, maybe navigate? User said "last node click"
+    if (node.type === 'leaf' || node.id.includes('-cat-')) {
+      const match = node.id.match(/^garden-([^-]+)/)
+      if (match) {
+        onSelect({ id: match[1] })
+      }
+    }
+  }
+
+  // Handle Context Menu
+  const onNodeContextMenu = useCallback(
+    (event, node) => {
+      event.preventDefault()
+      // Use client coordinates relative to pane if possible, or just client for fixed
+      // The menu is absolute positioned in the container.
+      // We need offset relative to the container.
+      const pane = ref.current.getBoundingClientRect()
+
+      setMenu({
+        id: node.id,
+        top: event.clientY - pane.top,
+        left: event.clientX - pane.left,
+        data: node.data
+      })
+    },
+    []
+  )
+
+  const onPaneClick = useCallback(() => setMenu(null), [])
+
+  const handleNavigate = () => {
+    if (menu?.data?.plantId) {
+      onSelect({ id: menu.data.plantId })
+    } else if (menu?.id.startsWith('garden-') && !menu.id.includes('-cat-')) {
+      const plantId = menu.id.replace('garden-', '')
+      onSelect({ id: plantId })
+    }
+    setMenu(null)
+  }
+
+
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      className="h-[85vh] w-full bg-bg-tertiary/20 rounded-[2.5rem] border border-border overflow-hidden relative"
+    >
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        nodeTypes={nodeTypes}
+        onNodeClick={onNodeClick}
+        onNodeContextMenu={onNodeContextMenu}
+        onPaneClick={onPaneClick}
+        fitView
+        minZoom={0.05}
+        maxZoom={10}
+        className="bg-bg-tertiary/10"
+        snapToGrid={true}
+        snapGrid={[20, 20]}
+      >
+        <Background gap={20} size={1} color="currentColor" className="opacity-[0.03] dark:opacity-[0.07]" />
+        <Controls className="!bg-bg-primary !border-border !shadow-2xl !text-text-primary dark:!text-white border-2" />
+
+        {menu && (
+          <NodeContextMenu
+            onClick={onPaneClick}
+            {...menu}
+            onNavigate={handleNavigate}
+            onClose={() => setMenu(null)}
+          />
+        )}
+      </ReactFlow>
+
+      <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none group/controls">
+        <div className="flex items-center gap-4 bg-bg-primary/40 backdrop-blur-md border border-border p-2 px-4 rounded-2xl pointer-events-auto shadow-sm">
+          <Search size={14} className="text-text-muted" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search architecture..."
+            className="bg-transparent border-none outline-none text-[10px] font-black tracking-widest text-text-primary placeholder:text-text-muted w-32 focus:w-48 transition-all uppercase"
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery('')} className="p-1 hover:bg-bg-tertiary rounded">
+              <X size={12} className="text-text-muted" />
+            </button>
+          )}
+        </div>
+
+        <div className="p-3 px-5 rounded-2xl bg-bg-primary/40 backdrop-blur-md border border-border shadow-sm flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-[10px] font-black text-text-primary uppercase tracking-[0.2em]">Project Mapping Active</span>
+        </div>
+      </div>
+
+      <div className="absolute bottom-6 left-6 p-4 rounded-2xl bg-bg-primary/80 backdrop-blur-md border border-border shadow-xl pointer-events-none">
+        <div className="flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <span className="text-[10px] font-bold text-text-primary uppercase tracking-widest">Mastery Network</span>
+        </div>
+        <p className="text-[10px] text-text-muted mt-1 uppercase tracking-tighter">Right-click nodes for options</p>
+      </div>
+
     </motion.div>
   )
 }
@@ -212,7 +650,7 @@ function EmptyGarden({ onPlantNew }) {
       <h2 className="text-xl font-semibold text-text-primary mb-2">
         Your garden is empty
       </h2>
-      <p className="text-text-muted mb-6 text-center max-w-md">
+      <p className="text-text-secondary mb-6 text-center max-w-md">
         Plant your first skill seed and watch it grow as you learn.
         Add vocabulary, resources, and complete milestones to help it flourish.
       </p>
@@ -241,39 +679,52 @@ function PlantCard({ plant, index, onClick }) {
       transition={{ delay: index * 0.1 }}
       whileHover={{ y: -4 }}
       onClick={onClick}
-      className="relative h-64 rounded-2xl bg-gradient-to-b from-sky-100/10 to-emerald-100/10 dark:from-sky-900/20 dark:to-emerald-900/20 border border-border overflow-hidden group"
+      className="relative h-72 rounded-2xl bg-bg-secondary border border-border hover:border-accent-primary transition-all overflow-hidden group shadow-sm hover:shadow-md"
     >
-      {/* Sky/Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-sky-200/20 via-transparent to-amber-900/20" />
+      {/* Stage Color Accent Top */}
+      <div
+        className="absolute top-0 left-0 right-0 h-1.5"
+        style={{ backgroundColor: stage.color }}
+      />
 
-      {/* Ground */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-amber-800/30 to-transparent" />
-
-      {/* Needs Water Indicator */}
-      {needsWater && (
-        <motion.div
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 1, repeat: Infinity }}
-          className="absolute top-3 right-3 text-blue-400"
-        >
-          <Droplets size={20} />
-        </motion.div>
-      )}
-
-      {/* Plant Visualization */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
+      {/* Main Content Area */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center pb-16">
         <PlantVisualization stage={stage} progress={progress} />
       </div>
 
-      {/* Plant Info */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/40 to-transparent">
-        <h3 className="font-semibold text-white text-sm truncate">{plant.name}</h3>
-        <div className="flex items-center justify-between mt-1">
-          <span className="text-xs text-text-secondary">{stage.name}</span>
-          <span className="text-xs text-text-secondary">{progress}%</span>
+      {/* Floating Indicators */}
+      <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
+        {plant.streak?.current > 0 ? (
+          <div className="flex items-center gap-1 px-2 py-0.5 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-full text-[10px] font-bold border border-orange-500/20">
+            <span>🔥</span> {plant.streak.current}
+          </div>
+        ) : <div />}
+
+        {needsWater && (
+          <div className="text-blue-500 animate-bounce">
+            <Droplets size={18} />
+          </div>
+        )}
+      </div>
+
+      {/* Info Panel */}
+      <div className="absolute bottom-0 left-0 right-0 p-4 bg-bg-tertiary/50 backdrop-blur-sm border-t border-border">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xl">{plant.icon || '🌱'}</span>
+          <h3 className="font-bold text-text-primary text-sm truncate uppercase tracking-tight">
+            {plant.name}
+          </h3>
         </div>
-        {/* Mini Progress Bar */}
-        <div className="h-1 bg-bg-tertiary rounded-full mt-2 overflow-hidden">
+
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest px-1.5 py-0.5 bg-bg-secondary rounded">
+            {stage.name}
+          </span>
+          <span className="text-xs font-black text-text-primary">{progress}%</span>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="h-2 bg-border/50 rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
@@ -282,14 +733,6 @@ function PlantCard({ plant, index, onClick }) {
           />
         </div>
       </div>
-
-      {/* Streak Badge */}
-      {plant.streak?.current > 0 && (
-        <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 bg-orange-500/90 rounded-full">
-          <span className="text-xs">🔥</span>
-          <span className="text-xs text-white font-medium">{plant.streak.current}</span>
-        </div>
-      )}
     </motion.button>
   )
 }
@@ -307,11 +750,16 @@ function PlantVisualization({ stage, progress }) {
       {/* Plant Icon based on stage */}
       <motion.span
         animate={{
-          y: [0, -3, 0],
-          rotate: stageIndex > 3 ? [0, 2, -2, 0] : 0
+          y: [0, -4, 0],
+          rotate: stageIndex > 3 ? [0, 1, -1, 0] : 0,
+          scale: [1, 1.02, 1]
         }}
-        transition={{ duration: 3, repeat: Infinity }}
-        className="text-6xl block"
+        transition={{
+          y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+          rotate: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+        }}
+        className="text-7xl block drop-shadow-2xl filter brightness-110"
       >
         {stage.icon}
       </motion.span>
@@ -344,9 +792,12 @@ function PlantDetailView({
   onToggleResource,
   onAddMilestone,
   onToggleMilestone,
-  onRemoveMilestone
+  onRemoveMilestone,
+  onLog
 }) {
   const [activeSection, setActiveSection] = useState('growth')
+  const [showTreeView, setShowTreeView] = useState(false)
+
   const progress = calculateProgress(plant)
   const stage = getGrowthStage(progress)
   const needsWater = checkNeedsWater(plant)
@@ -371,169 +822,433 @@ function PlantDetailView({
           <ArrowLeft size={20} />
           <span>Back to Garden</span>
         </button>
-        <button
-          onClick={onSettings}
-          className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
-        >
-          <Settings size={20} className="text-text-muted" />
-        </button>
-      </div>
-
-      {/* Plant Hero Section */}
-      <div className="relative bg-gradient-to-br from-emerald-500/10 via-sky-500/10 to-amber-500/10 rounded-2xl p-8 overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-4 right-4 text-4xl opacity-20">☀️</div>
-        <div className="absolute bottom-4 left-4 text-2xl opacity-20">🌿</div>
-
-        <div className="flex items-center gap-8">
-          {/* Plant Display */}
-          <div className="relative">
-            <motion.div
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 3, repeat: Infinity }}
-              className="text-8xl"
-            >
-              {stage.icon}
-            </motion.div>
-            {needsWater && (
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-                className="absolute -top-2 -right-2 text-2xl"
-              >
-                💧
-              </motion.div>
-            )}
-          </div>
-
-          {/* Plant Info */}
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-text-primary mb-1">{plant.name}</h1>
-            <p className="text-text-muted mb-4">{plant.description || 'A growing skill...'}</p>
-
-            <div className="flex items-center gap-4 mb-4">
-              <div className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-sm font-medium">
-                {stage.name}
-              </div>
-              <span className="text-text-muted text-sm">{stage.description}</span>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="mb-4">
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-text-muted">Growth Progress</span>
-                <span className="font-medium" style={{ color: stage.color }}>{progress}%</span>
-              </div>
-              <div className="h-3 bg-bg-tertiary rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 1 }}
-                  className="h-full rounded-full"
-                  style={{ background: `linear-gradient(90deg, ${GROWTH_STAGES[0].color}, ${stage.color})` }}
-                />
-              </div>
-            </div>
-
-            {/* Stats Row */}
-            <div className="flex gap-6">
-              <div className="text-center">
-                <p className="text-xl font-bold text-orange-500">{plant.streak?.current || 0}</p>
-                <p className="text-xs text-text-muted">Day Streak</p>
-              </div>
-              <div className="text-center">
-                <p className="text-xl font-bold text-emerald-500">
-                  {plant.vocabulary?.filter(v => v.learned).length || 0}
-                </p>
-                <p className="text-xs text-text-muted">Leaves Grown</p>
-              </div>
-              <div className="text-center">
-                <p className="text-xl font-bold text-blue-500">
-                  {plant.resources?.filter(r => r.completed).length || 0}
-                </p>
-                <p className="text-xs text-text-muted">Nutrients</p>
-              </div>
-              <div className="text-center">
-                <p className="text-xl font-bold text-purple-500">
-                  {plant.milestones?.filter(m => m.completed).length || 0}
-                </p>
-                <p className="text-xs text-text-muted">Stages Complete</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Water Button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleWater}
-            disabled={!needsWater}
-            className={`flex flex-col items-center gap-2 px-6 py-4 rounded-xl transition-all ${
-              needsWater
-                ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                : 'bg-bg-tertiary text-text-muted'
-            }`}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowTreeView(!showTreeView)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${showTreeView
+              ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+              : 'bg-bg-tertiary text-text-secondary hover:text-text-primary border border-border'
+              }`}
           >
-            <Droplets size={24} />
-            <span className="text-sm font-medium">
-              {needsWater ? 'Water Me!' : 'Watered ✓'}
-            </span>
-          </motion.button>
+            <Eye size={14} />
+            {showTreeView ? 'HIDE TREE' : 'VIEW TREE'}
+          </button>
+          <button
+            onClick={onSettings}
+            className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
+          >
+            <Settings size={20} className="text-text-muted" />
+          </button>
         </div>
       </div>
 
-      {/* Section Tabs */}
-      <div className="flex gap-2">
-        {[
-          { id: 'growth', label: 'Growth Stages', icon: '🌱' },
-          { id: 'leaves', label: 'Leaves (Vocabulary)', icon: '🍃' },
-          { id: 'nutrients', label: 'Nutrients (Resources)', icon: '💧' }
-        ].map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveSection(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
-              activeSection === tab.id
-                ? 'bg-accent-primary text-white'
-                : 'bg-bg-secondary text-text-muted hover:bg-bg-tertiary'
-            }`}
-          >
-            <span>{tab.icon}</span>
-            <span className="text-sm font-medium">{tab.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Section Content */}
       <AnimatePresence mode="wait">
-        {activeSection === 'growth' && (
-          <GrowthSection
-            key="growth"
+        {showTreeView ? (
+          <PathTreeView
+            key="tree"
             plant={plant}
-            onAddMilestone={onAddMilestone}
             onToggleMilestone={onToggleMilestone}
-            onRemoveMilestone={onRemoveMilestone}
+            onToggleVocabulary={onToggleVocabulary}
+            onToggleResource={onToggleResource}
           />
-        )}
-        {activeSection === 'leaves' && (
-          <LeavesSection
-            key="leaves"
-            plant={plant}
-            onAdd={onAddVocabulary}
-            onRemove={onRemoveVocabulary}
-            onToggle={onToggleVocabulary}
-          />
-        )}
-        {activeSection === 'nutrients' && (
-          <NutrientsSection
-            key="nutrients"
-            plant={plant}
-            onAdd={onAddResource}
-            onRemove={onRemoveResource}
-            onToggle={onToggleResource}
-          />
+        ) : (
+          <motion.div
+            key="content"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="space-y-6"
+          >
+            {/* Plant Hero Section */}
+            <div className="relative bg-gradient-to-br from-emerald-500/10 via-sky-500/10 to-amber-500/10 rounded-2xl p-8 overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute top-4 right-4 text-4xl opacity-20">☀️</div>
+              <div className="absolute bottom-4 left-4 text-2xl opacity-20">🌿</div>
+
+              <div className="flex items-center gap-8">
+                {/* Plant Display */}
+                <div className="relative">
+                  <motion.div
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                    className="text-8xl"
+                  >
+                    {stage.icon}
+                  </motion.div>
+                  {needsWater && (
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                      className="absolute -top-2 -right-2 text-2xl"
+                    >
+                      💧
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Plant Info */}
+                <div className="flex-1">
+                  <h1 className="text-2xl font-bold text-text-primary mb-1">{plant.name}</h1>
+                  <p className="text-text-muted mb-4">{plant.description || 'A growing skill...'}</p>
+
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-sm font-medium">
+                      {stage.name}
+                    </div>
+                    <span className="text-text-muted text-sm">{stage.description}</span>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="mb-4">
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-text-muted">Growth Progress</span>
+                      <span className="font-medium" style={{ color: stage.color }}>{progress}%</span>
+                    </div>
+                    <div className="h-3 bg-bg-tertiary rounded-full overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progress}%` }}
+                        transition={{ duration: 1 }}
+                        className="h-full rounded-full"
+                        style={{ background: `linear-gradient(90deg, ${GROWTH_STAGES[0].color}, ${stage.color})` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Stats Row */}
+                  <div className="flex gap-6">
+                    <div className="text-center">
+                      <p className="text-xl font-bold text-orange-500">{plant.streak?.current || 0}</p>
+                      <p className="text-xs text-text-muted">Day Streak</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xl font-bold text-emerald-500">
+                        {plant.vocabulary?.filter(v => v.learned).length || 0}
+                      </p>
+                      <p className="text-xs text-text-muted">Leaves Grown</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xl font-bold text-blue-500">
+                        {plant.resources?.filter(r => r.completed).length || 0}
+                      </p>
+                      <p className="text-xs text-text-muted">Nutrients</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xl font-bold text-purple-500">
+                        {plant.milestones?.filter(m => m.completed).length || 0}
+                      </p>
+                      <p className="text-xs text-text-muted">Stages Complete</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Water Button */}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleWater}
+                  disabled={!needsWater}
+                  className={`flex flex-col items-center gap-2 px-6 py-4 rounded-xl transition-all ${needsWater
+                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                    : 'bg-bg-tertiary text-text-secondary'
+                    }`}
+                >
+                  <Droplets size={24} />
+                  <span className="text-sm font-medium">
+                    {needsWater ? 'Water Me!' : 'Watered ✓'}
+                  </span>
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Section Tabs */}
+            <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
+              {[
+                { id: 'growth', label: 'Growth Stages', icon: '🌱' },
+                { id: 'routine', label: 'Daily Routine', icon: '📅' },
+                { id: 'journal', label: 'Journal', icon: '📓' },
+                { id: 'leaves', label: 'Leaves (Vocabulary)', icon: '🍃' },
+                { id: 'nutrients', label: 'Nutrients (Resources)', icon: '💧' }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveSection(tab.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${activeSection === tab.id
+                    ? 'bg-accent-primary text-white'
+                    : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary'
+                    }`}
+                >
+                  <span>{tab.icon}</span>
+                  <span className="text-sm font-medium">{tab.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Section Content */}
+            <AnimatePresence mode="wait">
+              {activeSection === 'growth' && (
+                <GrowthSection
+                  key="growth"
+                  plant={plant}
+                  onAddMilestone={onAddMilestone}
+                  onToggleMilestone={onToggleMilestone}
+                  onRemoveMilestone={onRemoveMilestone}
+                />
+              )}
+              {activeSection === 'routine' && (
+                <RoutineSection
+                  key="routine"
+                  plant={plant}
+                  onLog={(date, activity) => onLog(plant.id, date, activity)}
+                />
+              )}
+              {activeSection === 'journal' && (
+                <JournalSection
+                  key="journal"
+                  plant={plant}
+                  onLog={(date, activity) => onLog(plant.id, date, activity)}
+                />
+              )}
+              {activeSection === 'leaves' && (
+                <LeavesSection
+                  key="leaves"
+                  plant={plant}
+                  onAdd={onAddVocabulary}
+                  onRemove={onRemoveVocabulary}
+                  onToggle={onToggleVocabulary}
+                />
+              )}
+              {activeSection === 'nutrients' && (
+                <NutrientsSection
+                  key="nutrients"
+                  plant={plant}
+                  onAdd={onAddResource}
+                  onRemove={onRemoveResource}
+                  onToggle={onToggleResource}
+                />
+              )}
+            </AnimatePresence>
+          </motion.div>
         )}
       </AnimatePresence>
+    </motion.div>
+  )
+}
+
+// ============ CUSTOM NODES FOR REACT FLOW ============
+const SkillNode = ({ data }) => (
+  <div
+    className={`p-4 rounded-2xl border-2 bg-bg-primary shadow-xl min-w-[200px] transition-all ${data.isRoot ? 'border-emerald-500 shadow-emerald-500/10' : 'border-border'
+      } ${data.isCategory ? 'cursor-pointer hover:border-emerald-500/50' : ''}`}
+    onClick={data.isCategory ? data.onToggleExpand : undefined}
+  >
+    <Handle type="target" position={Position.Left} className="w-3 h-3 bg-emerald-500" />
+    <div className="flex items-center gap-3">
+      <div className="text-3xl">{data.icon}</div>
+      <div className="flex-1">
+        <div className="text-[10px] font-black tracking-tighter text-text-primary uppercase break-words">{data.label}</div>
+        {data.progress !== undefined && (
+          <div className="text-[8px] font-bold text-emerald-500">{data.progress}% Growth</div>
+        )}
+        {data.isCategory && (
+          <div className="text-[8px] text-text-secondary mt-1 font-bold uppercase tracking-widest flex items-center gap-1">
+            {data.isExpanded ? '▼ COLLAPSE' : '▶ EXPAND'}
+          </div>
+        )}
+      </div>
+    </div>
+    <Handle type="source" position={Position.Right} className="w-3 h-3 bg-emerald-500" />
+  </div>
+)
+
+const LeafNode = ({ data }) => (
+  <div
+    className={`p-3 rounded-xl border bg-bg-secondary shadow-lg min-w-[160px] border-l-4 transition-all hover:scale-105`}
+    style={{ borderLeftColor: data.color }}
+  >
+    <Handle type="target" position={Position.Left} className="w-2 h-2 opacity-50" />
+    <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2 min-w-0">
+        <div className="text-sm shrink-0">{data.icon}</div>
+        <div className="text-[9px] font-bold text-text-primary uppercase tracking-tight truncate">
+          {data.label}
+        </div>
+      </div>
+      {data.onToggle && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            data.onToggle()
+          }}
+          className={`p-1 rounded-md transition-colors ${data.isDone ? 'bg-emerald-500/20 text-emerald-500' : 'bg-bg-tertiary text-text-muted hover:text-text-primary'
+            }`}
+        >
+          <Check size={10} />
+        </button>
+      )}
+    </div>
+  </div>
+)
+
+const nodeTypes = {
+  skill: SkillNode,
+  leaf: LeafNode
+}
+
+// ============ PATH TREE VIEW (DETAIL LEVEL - REACT FLOW) ============
+// ============ PATH TREE VIEW (DETAIL LEVEL - REACT FLOW) ============
+function PathTreeView({ plant, onToggleMilestone, onToggleVocabulary, onToggleResource }) {
+  const [expandedCategories, setExpandedCategories] = useState({
+    milestones: true,
+    vocab: true,
+    resources: true
+  })
+
+  // Use a ref to track the current plant ID to detect project switches
+  const lastPlantId = useRef(plant.id)
+
+  const initialData = useMemo(() => {
+    const progress = calculateProgress(plant)
+    const stage = getGrowthStage(progress)
+
+    const nodes = [
+      {
+        id: 'root',
+        type: 'skill',
+        position: { x: 0, y: 300 },
+        data: { label: plant.name, icon: plant.icon || stage.icon, progress, isRoot: true }
+      }
+    ]
+
+    const edges = []
+
+    const categories = [
+      { id: 'milestones', label: 'Milestones', icon: '🎯', data: plant.milestones || [], color: stage.color, type: 'milestone' },
+      { id: 'vocab', label: 'Knowledge', icon: '📚', data: plant.vocabulary || [], color: '#3b82f6', type: 'vocab' },
+      { id: 'resources', label: 'Resources', icon: '🔗', data: plant.resources || [], color: '#f59e0b', type: 'resource' }
+    ]
+
+    categories.forEach((cat, idx) => {
+      const catId = `cat-${cat.id}`
+      const isExpanded = expandedCategories[cat.id]
+      const yPos = idx * 600 // High spacing to prevent category overlap
+
+      nodes.push({
+        id: catId,
+        type: 'skill',
+        position: { x: 400, y: yPos },
+        data: {
+          label: cat.label,
+          icon: cat.icon,
+          isCategory: true,
+          isExpanded,
+          onToggleExpand: () => setExpandedCategories(prev => ({ ...prev, [cat.id]: !prev[cat.id] }))
+        }
+      })
+
+      edges.push({
+        id: `e-root-${catId}`,
+        source: 'root',
+        target: catId,
+        animated: true,
+        style: { stroke: '#10b981', strokeWidth: 2, opacity: isExpanded ? 1 : 0.2 }
+      })
+
+      if (isExpanded) {
+        cat.data.slice(0, 15).forEach((item, itemIdx) => {
+          const itemId = `${catId}-item-${itemIdx}`
+          const isDone = item.completed || item.learned
+
+          nodes.push({
+            id: itemId,
+            type: 'leaf',
+            position: { x: 800, y: yPos + (itemIdx - 4.5) * 100 }, // Absolute position, high vertical gap
+            data: {
+              label: item.title || item.term || item.word,
+              icon: isDone ? '✅' : (item.icon || '⏳'),
+              color: cat.color,
+              isDone,
+              onToggle: () => {
+                if (cat.type === 'milestone') onToggleMilestone(plant.id, item.id)
+                if (cat.type === 'vocab') onToggleVocabulary(plant.id, item.id)
+                if (cat.type === 'resource') onToggleResource(plant.id, item.id)
+              }
+            }
+          })
+
+          edges.push({
+            id: `e-${catId}-${itemId}`,
+            source: catId,
+            target: itemId,
+            style: { stroke: cat.color, strokeWidth: 1, opacity: 0.4 }
+          })
+        })
+      }
+    })
+
+    return { nodes, edges }
+  }, [plant, expandedCategories, onToggleMilestone, onToggleVocabulary, onToggleResource])
+
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+
+  useEffect(() => {
+    if (lastPlantId.current !== plant.id) {
+      // Full switch: reset everything to initial calculated positions
+      setNodes(initialData.nodes)
+      setEdges(initialData.edges)
+      lastPlantId.current = plant.id
+    } else {
+      // Internal update (toggle/expand): SYNC data/metadata, but KEEP current positions
+      setNodes(nds => {
+        // 1. Identify what should exist now based on initialData (considering expand/collapse)
+        return initialData.nodes.map(newNode => {
+          const existingNode = nds.find(n => n.id === newNode.id)
+          if (existingNode) {
+            // Persist the user-dragged position
+            return {
+              ...newNode,
+              position: existingNode.position,
+              data: { ...newNode.data }
+            }
+          }
+          return newNode // New node (e.g. from expanding)
+        })
+      })
+      setEdges(initialData.edges)
+    }
+  }, [initialData, plant.id, setNodes, setEdges])
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="h-[600px] w-full bg-bg-secondary rounded-[2.5rem] border border-border overflow-hidden relative"
+    >
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        nodeTypes={nodeTypes}
+        fitView
+        minZoom={0.05}
+        maxZoom={10}
+        className="bg-bg-tertiary/20"
+        snapToGrid={true}
+        snapGrid={[20, 20]}
+      >
+        <Background gap={20} size={1} color="currentColor" className="opacity-[0.03] dark:opacity-[0.07]" />
+        <Controls className="!bg-bg-primary !border-border !shadow-2xl !text-text-primary dark:!text-white border-2" />
+      </ReactFlow>
+
+      <div className="absolute top-8 left-8 pointer-events-none">
+        <div className="flex items-center gap-2 mb-1">
+          <Sparkles size={16} className="text-emerald-500" />
+          <p className="text-xl font-black text-text-primary uppercase tracking-tighter">Neural Path Architecture</p>
+        </div>
+        <p className="text-[10px] text-text-secondary uppercase tracking-widest font-bold">Reactive Map of Potential</p>
+      </div>
     </motion.div>
   )
 }
@@ -547,7 +1262,7 @@ function GrowthSection({ plant, onAddMilestone, onToggleMilestone, onRemoveMiles
 
   const filtered = filter === 'all' ? milestones
     : filter === 'pending' ? milestones.filter(m => !m.completed)
-    : milestones.filter(m => m.completed)
+      : milestones.filter(m => m.completed)
 
   const handleAdd = () => {
     if (newMilestone.trim()) {
@@ -587,7 +1302,7 @@ function GrowthSection({ plant, onAddMilestone, onToggleMilestone, onRemoveMiles
                 >
                   {stg.icon}
                 </motion.div>
-                <span className={`text-xs mt-1 ${isCurrent ? 'text-emerald-500 font-medium' : 'text-text-muted'}`}>
+                <span className={`text-xs mt-1 ${isCurrent ? 'text-emerald-500 font-medium' : 'text-text-secondary'}`}>
                   {stg.minProgress}%
                 </span>
               </div>
@@ -611,9 +1326,8 @@ function GrowthSection({ plant, onAddMilestone, onToggleMilestone, onRemoveMiles
               <button
                 key={f.id}
                 onClick={() => setFilter(f.id)}
-                className={`px-2 py-1 rounded text-xs transition-colors ${
-                  filter === f.id ? 'bg-emerald-500 text-white' : 'text-text-muted hover:bg-bg-tertiary'
-                }`}
+                className={`px-2 py-1 rounded text-xs transition-colors ${filter === f.id ? 'bg-emerald-500 text-white' : 'text-text-secondary hover:bg-bg-tertiary'
+                  }`}
               >
                 {f.label}
               </button>
@@ -642,7 +1356,7 @@ function GrowthSection({ plant, onAddMilestone, onToggleMilestone, onRemoveMiles
 
         {/* Milestone List */}
         {filtered.length === 0 ? (
-          <p className="text-center text-text-muted py-8">
+          <p className="text-center text-text-secondary py-8">
             {filter === 'all' ? 'Add milestones to track your growth stages' : `No ${filter} milestones`}
           </p>
         ) : (
@@ -678,19 +1392,17 @@ function MilestoneRow({ milestone, onOpenLesson, onToggleComplete, onRemove }) {
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
-        milestone.completed
-          ? 'bg-emerald-500/10 border-emerald-500/30'
-          : 'bg-bg-tertiary border-border hover:border-purple-500/50'
-      }`}
+      className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${milestone.completed
+        ? 'bg-emerald-500/10 border-emerald-500/30'
+        : 'bg-bg-tertiary border-border hover:border-purple-500/50'
+        }`}
     >
       <button
         onClick={onToggleComplete}
-        className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
-          milestone.completed
-            ? 'bg-emerald-500 border-emerald-500 text-white'
-            : 'border-text-muted hover:border-emerald-500'
-        }`}
+        className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${milestone.completed
+          ? 'bg-emerald-500 border-emerald-500 text-white'
+          : 'border-text-muted hover:border-emerald-500'
+          }`}
       >
         {milestone.completed && <Check size={14} />}
       </button>
@@ -747,13 +1459,11 @@ function MilestoneRow({ milestone, onOpenLesson, onToggleComplete, onRemove }) {
   )
 }
 
-// ============ LESSON SIDE PANEL (70% width) ============
+// ============ LESSON SIDE PANEL ============
 function LessonPanel({ lesson, onClose }) {
   const [activeTab, setActiveTab] = useState('lesson')
 
   if (!lesson) return null
-
-  const hasLesson = lesson.lesson || lesson.exercises || lesson.scripts || lesson.quiz
 
   return (
     <>
@@ -763,7 +1473,7 @@ function LessonPanel({ lesson, onClose }) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-black/60 z-50"
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 px-4"
       />
 
       {/* Panel */}
@@ -772,237 +1482,203 @@ function LessonPanel({ lesson, onClose }) {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="fixed top-0 right-0 bottom-0 w-[70%] bg-bg-primary border-l border-border z-50 overflow-hidden flex flex-col"
+        className="fixed top-0 right-0 bottom-0 w-full md:w-[70%] bg-bg-primary z-50 flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.5)] border-l border-border/50"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-to-r from-purple-500/10 to-blue-500/10">
+        {/* Header - High End */}
+        <div className="flex items-center justify-between p-8 border-b border-border/50">
           <div className="flex-1">
-            <h2 className="text-lg font-bold text-text-primary mb-1">{lesson.title}</h2>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-500/20 uppercase tracking-widest">
+                Milestone Lesson
+              </span>
               {lesson.estimatedTime && (
-                <div className="flex items-center gap-1.5 text-xs text-text-muted">
-                  <Clock size={12} />
+                <div className="flex items-center gap-1.5 text-[11px] text-text-secondary font-medium">
+                  <Clock size={12} className="text-emerald-500" />
                   <span>{lesson.estimatedTime}</span>
                 </div>
               )}
-              {lesson.link && (
-                <a
-                  href={lesson.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs text-blue-500 hover:underline"
-                >
-                  <ExternalLink size={12} />
-                  <span>Open Resource</span>
-                </a>
-              )}
             </div>
+            <h2 className="text-3xl font-black text-text-primary tracking-tight leading-tight">{lesson.title}</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-bg-tertiary rounded-lg transition-colors"
+            className="w-12 h-12 flex items-center justify-center hover:bg-bg-secondary rounded-full transition-all group"
           >
-            <X size={20} className="text-text-muted" />
+            <X size={24} className="text-text-secondary group-hover:text-text-primary transition-colors" />
           </button>
         </div>
 
-        {/* Tabs */}
-        {hasLesson && (
-          <div className="flex gap-1 p-3 border-b border-border bg-bg-secondary overflow-x-auto">
+        {/* Tab Navigation */}
+        <div className="px-8 bg-bg-secondary/30 backdrop-blur-md border-b border-border/50">
+          <div className="flex gap-10">
             {[
-              { id: 'lesson', label: '📖 Lesson', show: lesson.lesson },
-              { id: 'steps', label: '✅ Steps', show: lesson.steps?.length > 0 },
-              { id: 'exercises', label: '🎯 Practice', show: lesson.exercises?.length > 0 },
-              { id: 'scripts', label: '🎤 Scripts', show: lesson.scripts?.length > 0 },
-              { id: 'quiz', label: '❓ Quiz', show: lesson.quiz?.length > 0 }
-            ].filter(t => t.show).map(tab => (
+              { id: 'lesson', label: 'THE LESSON', icon: '📖' },
+              { id: 'practice', label: 'PRACTICE', icon: '🎯' },
+              { id: 'quiz', label: 'KNOWLEDGE CHECK', icon: '❓' }
+            ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-purple-500 text-white'
-                    : 'bg-bg-tertiary text-text-muted hover:bg-bg-primary'
-                }`}
+                className={`flex items-center gap-2 py-5 text-xs font-black tracking-[0.2em] transition-all relative ${activeTab === tab.id
+                  ? 'text-emerald-500'
+                  : 'text-text-secondary hover:text-text-primary'
+                  }`}
               >
+                <span>{tab.icon}</span>
                 {tab.label}
+                {activeTab === tab.id && (
+                  <motion.div
+                    layoutId="lessonActiveBar"
+                    className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-500 rounded-t-full shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                  />
+                )}
               </button>
             ))}
           </div>
-        )}
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <AnimatePresence mode="wait">
-            {activeTab === 'lesson' && (
-              <motion.div
-                key="lesson"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="space-y-4"
-              >
-                {lesson.description && (
-                  <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
-                    <p className="text-sm text-text-primary leading-relaxed">
-                      {lesson.description}
-                    </p>
-                  </div>
-                )}
-                {lesson.lesson && (
-                  <div className="prose prose-sm prose-invert max-w-none">
-                    {lesson.lesson.split('\n\n').map((paragraph, i) => (
-                      <div key={i} className="mb-4">
-                        {paragraph.startsWith('##') ? (
-                          <h3 className="text-lg font-semibold text-text-primary mt-6 mb-3 flex items-center gap-2">
-                            <span className="text-purple-500">▸</span>
-                            {paragraph.replace('## ', '')}
-                          </h3>
-                        ) : paragraph.startsWith('**') ? (
-                          <p className="text-base font-medium text-text-primary">
-                            {paragraph.replace(/\*\*/g, '')}
-                          </p>
-                        ) : paragraph.startsWith('- ') ? (
-                          <ul className="list-none space-y-2 ml-4">
-                            {paragraph.split('\n').map((item, j) => (
-                              <li key={j} className="flex items-start gap-2 text-sm text-text-muted">
-                                <span className="text-emerald-500 mt-0.5">•</span>
-                                <span>{item.replace('- ', '')}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : paragraph.startsWith('>') ? (
-                          <blockquote className="border-l-4 border-purple-500 pl-4 py-2 my-4 bg-purple-500/5 rounded-r-lg">
-                            <p className="text-sm italic text-text-muted">
-                              {paragraph.replace('> ', '')}
-                            </p>
-                          </blockquote>
-                        ) : (
-                          <p className="text-sm text-text-muted leading-relaxed">
-                            {paragraph}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {!lesson.lesson && !lesson.description && (
-                  <p className="text-text-muted text-center py-8">No lesson content yet</p>
-                )}
-              </motion.div>
-            )}
-
-            {activeTab === 'steps' && (
-              <motion.div
-                key="steps"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="space-y-3"
-              >
-                <h3 className="text-sm font-medium text-text-muted mb-4">Follow these steps to complete this milestone:</h3>
-                {lesson.steps?.map((step, i) => (
-                  <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-bg-secondary border border-border">
-                    <span className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
-                      {i + 1}
-                    </span>
-                    <span className="text-sm text-text-primary pt-1">{step}</span>
-                  </div>
-                ))}
-              </motion.div>
-            )}
-
-            {activeTab === 'exercises' && (
-              <motion.div
-                key="exercises"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="space-y-4"
-              >
-                <h3 className="text-sm font-medium text-text-muted mb-4">Practice these exercises to build your skills:</h3>
-                {lesson.exercises?.map((exercise, i) => (
-                  <div key={i} className="p-4 rounded-xl bg-bg-secondary border border-border">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl">{exercise.icon || '🎯'}</span>
-                      <h4 className="text-base font-medium text-text-primary">{exercise.title}</h4>
-                    </div>
-                    <p className="text-sm text-text-muted mb-4">{exercise.instruction}</p>
-                    {exercise.example && (
-                      <div className="p-4 rounded-lg bg-gradient-to-r from-emerald-500/10 to-green-500/10 border border-emerald-500/20">
-                        <p className="text-xs text-emerald-400 mb-2 font-medium">EXAMPLE:</p>
-                        <p className="text-sm text-emerald-300 font-mono">{exercise.example}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </motion.div>
-            )}
-
-            {activeTab === 'scripts' && (
-              <motion.div
-                key="scripts"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="space-y-4"
-              >
-                <h3 className="text-sm font-medium text-text-muted mb-4">Practice saying these scripts out loud:</h3>
-                {lesson.scripts?.map((script, i) => (
-                  <div key={i} className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-2xl">🎤</span>
-                      <h4 className="text-base font-medium text-text-primary">{script.situation}</h4>
-                    </div>
-                    <div className="p-4 rounded-lg bg-bg-tertiary border border-border">
-                      <p className="text-base text-purple-300 font-medium leading-relaxed">
-                        "{script.text}"
-                      </p>
-                    </div>
-                    {script.tip && (
-                      <p className="text-sm text-text-muted mt-3 flex items-start gap-2">
-                        <span className="text-amber-500">💡</span>
-                        <span><strong>Tip:</strong> {script.tip}</span>
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </motion.div>
-            )}
-
-            {activeTab === 'quiz' && (
-              <motion.div
-                key="quiz"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-              >
-                <h3 className="text-sm font-medium text-text-muted mb-4">Test your understanding:</h3>
-                <QuizSection questions={lesson.quiz || []} />
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-border bg-bg-secondary flex items-center justify-between">
-          {lesson.link && (
-            <a
-              href={lesson.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
-            >
-              <Target size={16} />
-              Start This Task
-              <ExternalLink size={14} />
-            </a>
-          )}
+        {/* Content Area - Immersive Focus Mode */}
+        <div className="flex-1 overflow-y-auto bg-gradient-to-b from-bg-primary via-bg-secondary/10 to-bg-primary">
+          <div className="max-w-3xl mx-auto px-8 py-12">
+            <AnimatePresence mode="wait">
+              {activeTab === 'lesson' && (
+                <motion.div
+                  key="lesson"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="prose prose-emerald dark:prose-invert max-w-none prose-headings:font-black prose-p:text-text-secondary prose-p:leading-relaxed prose-strong:text-text-primary"
+                >
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {lesson.lesson || lesson.description || 'No lesson content available.'}
+                  </ReactMarkdown>
+                </motion.div>
+              )}
+
+              {activeTab === 'practice' && (
+                <motion.div
+                  key="practice"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="space-y-8"
+                >
+                  {/* Steps */}
+                  {lesson.steps && lesson.steps.length > 0 && (
+                    <div className="p-8 rounded-3xl bg-emerald-500/5 border border-emerald-500/10">
+                      <h3 className="text-xl font-black text-emerald-600 dark:text-emerald-400 mb-6 flex items-center gap-3">
+                        <ListChecks size={24} /> Steps to Complete
+                      </h3>
+                      <div className="space-y-3">
+                        {lesson.steps.map((step, i) => (
+                          <div key={i} className="flex items-start gap-4 p-3 rounded-xl bg-bg-primary/50">
+                            <span className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-xs font-black shrink-0 mt-0.5">{i + 1}</span>
+                            <p className="text-text-secondary leading-relaxed text-sm">{step}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Exercises */}
+                  {lesson.exercises && lesson.exercises.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-black text-text-primary mb-6 flex items-center gap-3">
+                        <Sparkles size={24} className="text-amber-500" /> Practice Exercises
+                      </h3>
+                      <div className="space-y-4">
+                        {lesson.exercises.map((exercise, i) => (
+                          <div key={i} className="p-6 rounded-2xl bg-bg-secondary border border-border hover:border-amber-500/30 transition-all">
+                            <div className="flex items-center gap-3 mb-3">
+                              <span className="text-2xl">{exercise.icon}</span>
+                              <h4 className="font-bold text-text-primary">{exercise.title}</h4>
+                            </div>
+                            <p className="text-text-secondary text-sm leading-relaxed mb-3">{exercise.instruction}</p>
+                            {exercise.example && (
+                              <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/10">
+                                <p className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-1">Example</p>
+                                <pre className="text-text-secondary text-sm font-mono whitespace-pre-wrap">{exercise.example}</pre>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Scripts */}
+                  {lesson.scripts && lesson.scripts.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-black text-text-primary mb-6 flex items-center gap-3">
+                        <BookOpen size={24} className="text-blue-500" /> Practice Scripts
+                      </h3>
+                      <div className="space-y-4">
+                        {lesson.scripts.map((script, i) => (
+                          <div key={i} className="p-6 rounded-2xl bg-bg-secondary border border-border hover:border-blue-500/30 transition-all">
+                            <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2">{script.situation}</p>
+                            <p className="text-text-primary leading-relaxed mb-3 italic border-l-2 border-blue-500/30 pl-4">"{script.text}"</p>
+                            {script.tip && (
+                              <div className="flex items-start gap-2 p-3 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                                <span className="text-blue-500 text-xs font-bold uppercase mt-0.5">💡 Tip:</span>
+                                <p className="text-text-secondary text-sm">{script.tip}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Empty state - only when no content exists */}
+                  {(!lesson.steps || lesson.steps.length === 0) &&
+                    (!lesson.exercises || lesson.exercises.length === 0) &&
+                    (!lesson.scripts || lesson.scripts.length === 0) && (
+                      <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                        <Target size={48} className="text-border" />
+                        <p className="text-text-secondary">No practice content available for this milestone yet.</p>
+                      </div>
+                    )}
+                </motion.div>
+              )}
+
+              {activeTab === 'quiz' && (
+                <motion.div
+                  key="quiz"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                >
+                  <QuizSection questions={lesson.quiz || []} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Action Footer */}
+        <div className="p-8 border-t border-border/50 bg-bg-primary flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {lesson.link && (
+              <a
+                href={lesson.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-sm font-bold shadow-lg shadow-blue-500/20 transition-all"
+              >
+                <ExternalLink size={18} />
+                Expand Knowledge
+              </a>
+            )}
+            <button className="flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-sm font-bold shadow-lg shadow-emerald-500/20 transition-all">
+              <Check size={18} />
+              Complete Milestone
+            </button>
+          </div>
           <button
             onClick={onClose}
-            className="px-4 py-2 text-text-muted hover:bg-bg-tertiary rounded-lg transition-colors"
+            className="px-6 py-3 text-sm font-bold text-text-secondary hover:text-text-primary transition-colors"
           >
-            Close
+            Close Study
           </button>
         </div>
       </motion.div>
@@ -1035,17 +1711,16 @@ function QuizSection({ questions }) {
               <button
                 key={j}
                 onClick={() => !showResults && handleAnswer(i, j)}
-                className={`w-full text-left p-2 rounded-lg text-sm transition-colors ${
-                  showResults
-                    ? j === q.correct
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
-                      : answers[i] === j
-                        ? 'bg-red-500/20 text-red-400 border border-red-500/50'
-                        : 'bg-bg-tertiary text-text-muted'
+                className={`w-full text-left p-2 rounded-lg text-sm transition-colors ${showResults
+                  ? j === q.correct
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
                     : answers[i] === j
-                      ? 'bg-purple-500/20 text-purple-400 border border-purple-500/50'
-                      : 'bg-bg-tertiary text-text-muted hover:bg-bg-primary'
-                }`}
+                      ? 'bg-red-500/20 text-red-400 border border-red-500/50'
+                      : 'bg-bg-tertiary text-text-muted'
+                  : answers[i] === j
+                    ? 'bg-purple-500/20 text-purple-400 border border-purple-500/50'
+                    : 'bg-bg-tertiary text-text-muted hover:bg-bg-primary'
+                  }`}
               >
                 {String.fromCharCode(65 + j)}. {option}
               </button>
@@ -1081,7 +1756,7 @@ function LeavesSection({ plant, onAdd, onRemove, onToggle }) {
   const vocabulary = plant.vocabulary || []
   const filtered = filter === 'all' ? vocabulary
     : filter === 'grown' ? vocabulary.filter(v => v.learned)
-    : vocabulary.filter(v => !v.learned)
+      : vocabulary.filter(v => !v.learned)
 
   const handleAdd = () => {
     if (newWord.word.trim() && newWord.meaning.trim()) {
@@ -1109,11 +1784,10 @@ function LeavesSection({ plant, onAdd, onRemove, onToggle }) {
             <button
               key={f.id}
               onClick={() => setFilter(f.id)}
-              className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                filter === f.id
-                  ? 'bg-emerald-500 text-white'
-                  : 'text-text-muted hover:bg-bg-tertiary'
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${filter === f.id
+                ? 'bg-emerald-500 text-white'
+                : 'text-text-muted hover:bg-bg-tertiary'
+                }`}
             >
               {f.label}
             </button>
@@ -1176,11 +1850,10 @@ function LeavesSection({ plant, onAdd, onRemove, onToggle }) {
             <motion.div
               key={word.id}
               layout
-              className={`p-4 rounded-xl border transition-all ${
-                word.learned
-                  ? 'bg-gradient-to-br from-emerald-500/10 to-green-500/10 border-emerald-500/30'
-                  : 'bg-bg-secondary border-border'
-              }`}
+              className={`p-4 rounded-xl border transition-all ${word.learned
+                ? 'bg-gradient-to-br from-emerald-500/10 to-green-500/10 border-emerald-500/30'
+                : 'bg-bg-secondary border-border'
+                }`}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
@@ -1192,9 +1865,8 @@ function LeavesSection({ plant, onAdd, onRemove, onToggle }) {
                 <div className="flex gap-1">
                   <button
                     onClick={() => onToggle(plant.id, word.id)}
-                    className={`p-1 rounded transition-colors ${
-                      word.learned ? 'text-emerald-500' : 'text-text-muted hover:text-emerald-500'
-                    }`}
+                    className={`p-1 rounded transition-colors ${word.learned ? 'text-emerald-500' : 'text-text-muted hover:text-emerald-500'
+                      }`}
                     title={word.learned ? 'Mark as growing' : 'Mark as grown'}
                   >
                     {word.learned ? <Check size={16} /> : <RotateCcw size={14} />}
@@ -1310,19 +1982,17 @@ function NutrientsSection({ plant, onAdd, onRemove, onToggle }) {
           {resources.map(resource => (
             <div
               key={resource.id}
-              className={`flex items-center gap-3 p-4 rounded-xl border transition-colors ${
-                resource.completed
-                  ? 'bg-blue-500/10 border-blue-500/30'
-                  : 'bg-bg-secondary border-border'
-              }`}
+              className={`flex items-center gap-3 p-4 rounded-xl border transition-colors ${resource.completed
+                ? 'bg-blue-500/10 border-blue-500/30'
+                : 'bg-bg-secondary border-border'
+                }`}
             >
               <button
                 onClick={() => onToggle(plant.id, resource.id)}
-                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                  resource.completed
-                    ? 'bg-blue-500 border-blue-500 text-white'
-                    : 'border-text-muted hover:border-blue-500'
-                }`}
+                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${resource.completed
+                  ? 'bg-blue-500 border-blue-500 text-white'
+                  : 'border-text-muted hover:border-blue-500'
+                  }`}
               >
                 {resource.completed && <Check size={14} />}
               </button>
@@ -1376,84 +2046,7 @@ function NutrientsSection({ plant, onAdd, onRemove, onToggle }) {
   )
 }
 
-// ============ MODALS ============
-function PlantNewModal({ isOpen, onClose, onCreate }) {
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-
-  const handleCreate = () => {
-    if (name.trim()) {
-      onCreate({ name: name.trim(), description: description.trim() })
-      setName('')
-      setDescription('')
-      onClose()
-    }
-  }
-
-  if (!isOpen) return null
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-bg-primary rounded-2xl border border-border p-6 w-full max-w-md"
-      >
-        <div className="text-center mb-6">
-          <motion.span
-            animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="text-5xl block mb-2"
-          >
-            🌱
-          </motion.span>
-          <h2 className="text-xl font-bold text-text-primary">Plant a New Skill</h2>
-          <p className="text-text-muted text-sm">Start your learning journey</p>
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm text-text-muted mb-2">Skill Name *</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g., Spanish, Python, Guitar"
-              className="w-full px-4 py-3 bg-bg-tertiary border border-border rounded-xl text-text-primary placeholder:text-text-muted focus:outline-none focus:border-emerald-500"
-              autoFocus
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-text-muted mb-2">Goal (optional)</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="What do you want to achieve?"
-              rows={2}
-              className="w-full px-4 py-3 bg-bg-tertiary border border-border rounded-xl text-text-primary placeholder:text-text-muted focus:outline-none focus:border-emerald-500 resize-none"
-            />
-          </div>
-        </div>
-
-        <div className="flex gap-3 mt-6">
-          <button
-            onClick={onClose}
-            className="flex-1 px-4 py-3 text-text-muted hover:bg-bg-tertiary rounded-xl transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleCreate}
-            disabled={!name.trim()}
-            className="flex-1 px-4 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl font-medium disabled:opacity-50"
-          >
-            🌱 Plant Seed
-          </button>
-        </div>
-      </motion.div>
-    </div>
-  )
-}
+// Internal Update Modal (kept here for now or extract later)
 
 function PlantSettingsModal({ isOpen, onClose, plant, onUpdate, onDelete, onReset }) {
   const [name, setName] = useState(plant?.name || '')

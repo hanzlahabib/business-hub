@@ -129,11 +129,10 @@ export function LeadDetailPanel({
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-                  activeTab === tab
+                className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${activeTab === tab
                     ? 'text-text-primary border-b-2 border-blue-500'
                     : 'text-text-muted hover:text-text-secondary'
-                }`}
+                  }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 {tab === 'messages' && stats?.total > 0 && (
@@ -196,11 +195,10 @@ export function LeadDetailPanel({
                       <button
                         key={status}
                         onClick={() => onStatusChange?.(lead.id, status)}
-                        className={`px-3 py-1.5 rounded-lg text-sm capitalize transition-colors ${
-                          lead.status === status
+                        className={`px-3 py-1.5 rounded-lg text-sm capitalize transition-colors ${lead.status === status
                             ? `${statusColors[status]} text-white`
                             : 'bg-bg-secondary text-text-muted hover:bg-bg-tertiary'
-                        }`}
+                          }`}
                       >
                         {status}
                       </button>
@@ -287,7 +285,7 @@ export function LeadDetailPanel({
                       {lead.tags.map(tag => (
                         <span
                           key={tag}
-                          className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs"
+                          className="px-2 py-1 bg-blue-500/10 text-blue-500 rounded text-xs border border-blue-500/20"
                         >
                           {tag}
                         </span>

@@ -43,11 +43,10 @@ function SearchResultItem({ result, query, onSelect }) {
     >
       <div className="flex items-start gap-3">
         {/* Match type indicator */}
-        <div className={`p-1.5 rounded-lg shrink-0 ${
-          matchType === 'file' ? 'bg-purple-500/20' :
-          matchType === 'title' ? 'bg-blue-500/20' :
-          'bg-green-500/20'
-        }`}>
+        <div className={`p-1.5 rounded-lg shrink-0 ${matchType === 'file' ? 'bg-purple-500/20' :
+            matchType === 'title' ? 'bg-blue-500/20' :
+              'bg-green-500/20'
+          }`}>
           {matchType === 'file' ? (
             <FileText className="w-4 h-4 text-purple-400" />
           ) : matchType === 'title' ? (
@@ -60,15 +59,14 @@ function SearchResultItem({ result, query, onSelect }) {
         <div className="flex-1 min-w-0">
           {/* Task title */}
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="text-sm font-medium text-white truncate">
+            <h4 className="text-sm font-medium text-text-primary truncate">
               <HighlightText text={task.title} query={query} />
             </h4>
-            <span className={`px-1.5 py-0.5 rounded text-xs ${
-              task.priority === 'urgent' ? 'bg-red-500/20 text-red-400' :
-              task.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
-              task.priority === 'medium' ? 'bg-blue-500/20 text-blue-400' :
-              'bg-gray-500/20 text-gray-400'
-            }`}>
+            <span className={`px-1.5 py-0.5 rounded text-xs ${task.priority === 'urgent' ? 'bg-red-500/20 text-red-400' :
+                task.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                  task.priority === 'medium' ? 'bg-blue-500/20 text-blue-400' :
+                    'bg-gray-500/20 text-gray-400'
+              }`}>
               {task.priority}
             </span>
           </div>
@@ -337,11 +335,10 @@ export function GlobalSearch({
           <div className="relative">
             <button
               onClick={() => setShowColumnFilter(!showColumnFilter)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                selectedColumn !== 'all'
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${selectedColumn !== 'all'
                   ? 'bg-blue-500/20 text-blue-400'
                   : 'bg-bg-secondary text-text-muted hover:bg-bg-tertiary'
-              }`}
+                }`}
             >
               <Filter className="w-4 h-4" />
               {selectedColumn === 'all' ? 'All Columns' : columns.find(c => c.id === selectedColumn)?.name}
@@ -361,9 +358,8 @@ export function GlobalSearch({
                       setSelectedColumn('all')
                       setShowColumnFilter(false)
                     }}
-                    className={`w-full px-3 py-2 text-left text-sm hover:bg-bg-tertiary transition-colors ${
-                      selectedColumn === 'all' ? 'text-blue-400 bg-blue-500/10' : 'text-text-secondary'
-                    }`}
+                    className={`w-full px-3 py-2 text-left text-sm hover:bg-bg-tertiary transition-colors ${selectedColumn === 'all' ? 'text-blue-400 bg-blue-500/10' : 'text-text-secondary'
+                      }`}
                   >
                     All Columns
                   </button>
@@ -374,9 +370,8 @@ export function GlobalSearch({
                         setSelectedColumn(col.id)
                         setShowColumnFilter(false)
                       }}
-                      className={`w-full px-3 py-2 text-left text-sm hover:bg-bg-tertiary transition-colors flex items-center gap-2 ${
-                        selectedColumn === col.id ? 'text-blue-400 bg-blue-500/10' : 'text-text-secondary'
-                      }`}
+                      className={`w-full px-3 py-2 text-left text-sm hover:bg-bg-tertiary transition-colors flex items-center gap-2 ${selectedColumn === col.id ? 'text-blue-400 bg-blue-500/10' : 'text-text-secondary'
+                        }`}
                     >
                       <div
                         className="w-2 h-2 rounded-full"

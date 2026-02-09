@@ -2,7 +2,7 @@ import express from 'express'
 
 const router = express.Router()
 
-const JSON_SERVER = 'http://localhost:3001'
+const JSON_SERVER = 'http://localhost:3005'
 
 // Get all messages for a lead
 router.get('/lead/:leadId', async (req, res) => {

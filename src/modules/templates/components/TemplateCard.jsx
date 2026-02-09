@@ -48,9 +48,9 @@ const categoryConfig = {
 }
 
 const statusBadges = {
-  draft: { label: 'Draft', className: 'bg-gray-500/20 text-gray-300' },
-  published: { label: 'Published', className: 'bg-green-500/20 text-green-300' },
-  archived: { label: 'Archived', className: 'bg-red-500/20 text-red-300' }
+  draft: { label: 'Draft', className: 'bg-gray-500/10 text-gray-500 border border-gray-500/20' },
+  published: { label: 'Published', className: 'bg-green-500/10 text-green-600 border border-green-500/20' },
+  archived: { label: 'Archived', className: 'bg-red-500/10 text-red-600 border border-red-500/20' }
 }
 
 export function TemplateCard({
@@ -173,7 +173,7 @@ export function TemplateCard({
           {template.tags.slice(0, 3).map(tag => (
             <span
               key={tag}
-              className="text-[10px] px-1.5 py-0.5 bg-bg-tertiary rounded text-text-muted"
+              className="text-[10px] px-1.5 py-0.5 bg-bg-tertiary rounded text-text-secondary border border-border/50"
             >
               {tag}
             </span>

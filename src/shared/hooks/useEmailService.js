@@ -1,20 +1,20 @@
 import { useState, useCallback } from 'react'
 
-const API_SERVER = 'http://localhost:3002'
+import { API_SERVER } from '../../config/api'
 
 export function useEmailService() {
   const [sending, setSending] = useState(false)
   const [error, setError] = useState(null)
   const [lastResult, setLastResult] = useState(null)
 
-  const sendEmail = useCallback(async ({ to, subject, body, leadId, templateId }) => {
+  const sendEmail = useCallback(async ({ to, subject, body, leadId, templateId, cvId }) => {
     setSending(true)
     setError(null)
     try {
       const res = await fetch(`${API_SERVER}/api/email/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to, subject, body, leadId, templateId })
+        body: JSON.stringify({ to, subject, body, leadId, templateId, cvId })
       })
       const data = await res.json()
       setLastResult(data)
