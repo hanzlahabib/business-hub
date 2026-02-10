@@ -43,6 +43,15 @@ app.use(express.json())
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
+// Health check — MUST be before route registration
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    database: 'prisma/postgresql',
+    timestamp: new Date().toISOString()
+  })
+})
+
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/leads', leadRoutes)
@@ -59,15 +68,6 @@ app.use('/api/agents', authMiddleware, agentRoutes)
 app.use('/api/email', emailRoutes)
 app.use('/api/messages', messagesRoutes)
 app.use('/api', uploadRoutes)
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    database: 'prisma/postgresql',
-    timestamp: new Date().toISOString()
-  })
-})
 
 // Read file content endpoint - for markdown viewer
 app.get('/api/file/read', async (req, res) => {

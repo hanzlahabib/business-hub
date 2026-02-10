@@ -29,8 +29,10 @@ export const userRepository = {
                 passwordHash: data.passwordHash,
                 settings: {
                     create: {
-                        theme: 'dark',
-                        notifications: true
+                        config: {
+                            theme: 'dark',
+                            notifications: true
+                        }
                     }
                 }
             }
