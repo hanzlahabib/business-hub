@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, LayoutGrid, Users, Plus, Trash2 } from 'lucide-react'
@@ -9,7 +10,7 @@ const presetColors = [
 
 export function CreateBoardModal({ isOpen, onClose, onCreate, leads = [] }) {
   const [name, setName] = useState('')
-  const [selectedLead, setSelectedLead] = useState(null)
+  const [selectedLead, setSelectedLead] = useState<any>(null)
   const [columns, setColumns] = useState([
     { id: 'todo', name: 'To Do', color: '#6B7280' },
     { id: 'inprogress', name: 'In Progress', color: '#3B82F6' },

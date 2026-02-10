@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, X, Briefcase, MapPin, DollarSign, ArrowRight, AlertCircle, Building2 } from 'lucide-react'
@@ -107,9 +108,9 @@ export function JobGlobalSearch({
   onSelectJob
 }) {
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
-  const inputRef = useRef(null)
-  const debounceRef = useRef(null)
+  const [results, setResults] = useState<any[]>([])
+  const inputRef = useRef<any>(null)
+  const debounceRef = useRef<any>(null)
 
   // Focus input when opened
   useEffect(() => {

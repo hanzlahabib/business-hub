@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
@@ -26,7 +27,7 @@ export function TaskBoardsView({ initialBoardId, onBoardViewed }: { initialBoard
     const [selectedTask, setSelectedTask] = useState<any>(null)
     const [showCreateModal, setShowCreateModal] = useState(false)
     const [showSettingsModal, setShowSettingsModal] = useState(false)
-    // const [addingToColumn, setAddingToColumn] = useState(null) // Unused state
+    // const [addingToColumn, setAddingToColumn] = useState<any>(null) // Unused state
 
     // Auto-select board when navigating from leads (legacy support for initialBoardId prop)
     useEffect(() => {

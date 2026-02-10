@@ -6,7 +6,7 @@ const languages = [
 ]
 
 export function CodeBlock({ block, onChange, onKeyDown, isActive }) {
-  const inputRef = useRef(null)
+  const inputRef = useRef<any>(null)
   const [showLangPicker, setShowLangPicker] = useState(false)
   const language = block.language || 'javascript'
 

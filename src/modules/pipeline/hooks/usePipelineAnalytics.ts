@@ -3,7 +3,7 @@ import { differenceInDays, differenceInHours, parseISO, isPast, startOfWeek, end
 
 const STAGES = ['idea', 'script', 'recording', 'editing', 'thumbnail', 'published']
 
-export function usePipelineAnalytics(contents = [], settings = {}) {
+export function usePipelineAnalytics(contents: any[] = [], settings: any = {}) {
   // Calculate time in current stage for each content
   const contentWithAge = useMemo(() => {
     if (!contents || contents.length === 0) return []
@@ -34,7 +34,7 @@ export function usePipelineAnalytics(contents = [], settings = {}) {
   const bottleneck = useMemo(() => {
     if (!contentWithAge || contentWithAge.length === 0) return null
 
-    const stageCounts = {}
+    const stageCounts: Record<string, number> = {}
     STAGES.forEach(stage => {
       stageCounts[stage] = contentWithAge.filter(
         c => c.status === stage && c.daysInStage > 3 && stage !== 'published'
@@ -43,16 +43,16 @@ export function usePipelineAnalytics(contents = [], settings = {}) {
 
     const maxStage = Object.entries(stageCounts)
       .filter(([stage]) => stage !== 'published')
-      .sort((a, b) => b[1] - a[1])[0]
+      .sort((a: any, b: any) => (b[1] as number) - (a[1] as number))[0]
 
-    return maxStage && maxStage[1] > 0 ? { stage: maxStage[0], count: maxStage[1] } : null
+    return maxStage && (maxStage[1] as number) > 0 ? { stage: maxStage[0], count: maxStage[1] as number } : null
   }, [contentWithAge])
 
   // Average time per stage (from published content history)
   const avgTimePerStage = useMemo(() => {
     // This would need status history tracking for accurate calculation
     // For now, estimate based on current content ages
-    const stageAvgs = {}
+    const stageAvgs: Record<string, number> = {}
     STAGES.forEach(stage => {
       const stageItems = contentWithAge.filter(c => c.status === stage)
       if (stageItems.length > 0) {
@@ -140,7 +140,7 @@ export function usePipelineAnalytics(contents = [], settings = {}) {
       try {
         const aDate = parseISO(a.scheduledDate)
         const bDate = parseISO(b.scheduledDate)
-        return aDate - bDate
+        return aDate.getTime() - bDate.getTime()
       } catch { return 0 }
     })
   }, [contentWithAge])

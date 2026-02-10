@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Mail, Loader2, TestTube, CheckCircle, AlertCircle, Key, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
+import { ENDPOINTS } from '../../config/api'
+import { useAuth } from '../../hooks/useAuth'
 
 // Constants
-const JSON_SERVER = 'http://localhost:3005'
-const API_SERVER = 'http://localhost:3002'
-
 const providers = [
     { id: 'gmail', name: 'Gmail', description: 'Use Google SMTP with App Password' },
     { id: 'sendgrid', name: 'SendGrid', description: 'Professional email delivery service' },
@@ -72,6 +71,7 @@ interface TestResult {
 }
 
 export function EmailSettingsTab() {
+    const { user } = useAuth()
     const [settings, setSettings] = useState<EmailSettings | null>(null)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -82,9 +82,12 @@ export function EmailSettingsTab() {
 
     // Fetch current settings
     useEffect(() => {
+        if (!user) return
         const fetchSettings = async () => {
             try {
-                const res = await fetch(`${JSON_SERVER}/emailSettings`)
+                const res = await fetch(ENDPOINTS.EMAIL_SETTINGS, {
+                    headers: { 'x-user-id': user.id }
+                })
                 const data = await res.json()
                 setSettings(data)
             } catch (error) {
@@ -94,7 +97,7 @@ export function EmailSettingsTab() {
             }
         }
         fetchSettings()
-    }, [])
+    }, [user])
 
     const handleProviderChange = (provider: string) => {
         setSettings(prev => prev ? ({ ...prev, provider }) : null)
@@ -117,12 +120,15 @@ export function EmailSettingsTab() {
     }
 
     const handleSave = async () => {
-        if (!settings) return
+        if (!settings || !user) return
         setSaving(true)
         try {
-            await fetch(`${JSON_SERVER}/emailSettings`, {
+            await fetch(ENDPOINTS.EMAIL_SETTINGS, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-user-id': user.id
+                },
                 body: JSON.stringify(settings)
             })
             setTestResult({ success: true, message: 'Settings saved!' })
@@ -134,20 +140,25 @@ export function EmailSettingsTab() {
     }
 
     const handleTestConnection = async () => {
-        if (!settings) return
+        if (!settings || !user) return
         setTesting(true)
         setTestResult(null)
         try {
+            const headers = {
+                'Content-Type': 'application/json',
+                'x-user-id': user.id
+            }
             // Save first
-            await fetch(`${JSON_SERVER}/emailSettings`, {
+            await fetch(ENDPOINTS.EMAIL_SETTINGS, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify(settings)
             })
 
             // Then test
-            const res = await fetch(`${API_SERVER}/api/email/test`, {
-                method: 'POST'
+            const res = await fetch(ENDPOINTS.EMAIL_TEST, {
+                method: 'POST',
+                headers
             })
             const data = await res.json()
             setTestResult(data)

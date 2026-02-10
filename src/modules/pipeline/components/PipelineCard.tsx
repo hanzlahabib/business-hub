@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { memo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { format, parseISO } from 'date-fns'

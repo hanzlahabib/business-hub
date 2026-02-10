@@ -258,22 +258,22 @@ export const progressFill = (percentage: number): Variants => ({
 // HOVER AND TAP ANIMATIONS
 // ============================================================================
 
-export const buttonHover: Variants = {
+export const buttonHover = {
     scale: 1.02,
     transition: { duration: 0.2 }
 }
 
-export const buttonTap: Variants = {
+export const buttonTap = {
     scale: 0.98
 }
 
-export const cardHover: Variants = {
+export const cardHover = {
     y: -4,
     boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
     transition: { duration: 0.2 }
 }
 
-export const iconSpin: Variants = {
+export const iconSpin = {
     rotate: 360,
     transition: { duration: 0.5, ease: "easeInOut" }
 }

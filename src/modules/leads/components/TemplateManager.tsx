@@ -201,7 +201,7 @@ function TemplateEditor({ template, onSave, onCancel }) {
 
 export function TemplateManager({ isOpen, onClose }) {
   const { templates, loading, createTemplate, updateTemplate, deleteTemplate } = useEmailTemplates()
-  const [editingTemplate, setEditingTemplate] = useState(null)
+  const [editingTemplate, setEditingTemplate] = useState<any>(null)
   const [isCreating, setIsCreating] = useState(false)
 
   const handleSave = async (formData) => {

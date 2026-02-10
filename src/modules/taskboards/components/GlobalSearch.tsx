@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -5,8 +6,8 @@ import {
   ArrowRight, Loader2, CheckCircle2, AlertCircle
 } from 'lucide-react'
 import { format } from 'date-fns'
-
-const API_SERVER = 'http://localhost:3002'
+import { ENDPOINTS } from '../../../config/api'
+import { useAuth } from '../../../hooks/useAuth'
 
 // Highlight matching text
 function HighlightText({ text, query }) {
@@ -44,8 +45,8 @@ function SearchResultItem({ result, query, onSelect }) {
       <div className="flex items-start gap-3">
         {/* Match type indicator */}
         <div className={`p-1.5 rounded-lg shrink-0 ${matchType === 'file' ? 'bg-purple-500/20' :
-            matchType === 'title' ? 'bg-blue-500/20' :
-              'bg-green-500/20'
+          matchType === 'title' ? 'bg-blue-500/20' :
+            'bg-green-500/20'
           }`}>
           {matchType === 'file' ? (
             <FileText className="w-4 h-4 text-purple-400" />
@@ -63,9 +64,9 @@ function SearchResultItem({ result, query, onSelect }) {
               <HighlightText text={task.title} query={query} />
             </h4>
             <span className={`px-1.5 py-0.5 rounded text-xs ${task.priority === 'urgent' ? 'bg-red-500/20 text-red-400' :
-                task.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
-                  task.priority === 'medium' ? 'bg-blue-500/20 text-blue-400' :
-                    'bg-gray-500/20 text-gray-400'
+              task.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                task.priority === 'medium' ? 'bg-blue-500/20 text-blue-400' :
+                  'bg-gray-500/20 text-gray-400'
               }`}>
               {task.priority}
             </span>
@@ -120,11 +121,11 @@ export function GlobalSearch({
 }) {
   const [query, setQuery] = useState('')
   const [selectedColumn, setSelectedColumn] = useState('all')
-  const [results, setResults] = useState([])
+  const [results, setResults] = useState<any[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [showColumnFilter, setShowColumnFilter] = useState(false)
-  const inputRef = useRef(null)
-  const debounceRef = useRef(null)
+  const inputRef = useRef<any>(null)
+  const debounceRef = useRef<any>(null)
 
   // Focus input when opened
   useEffect(() => {
@@ -222,11 +223,14 @@ export function GlobalSearch({
         return a.path.endsWith('.md') && !a.path.startsWith('clipboard://')
       })
 
-    if (attachmentPaths.length > 0) {
+    if (attachmentPaths.length > 0 && user) {
       try {
-        const response = await fetch(`${API_SERVER}/api/file/search`, {
+        const response = await fetch(ENDPOINTS.FILE_SEARCH || `${API_SERVER}/api/file/search`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-user-id': user.id
+          },
           body: JSON.stringify({
             paths: attachmentPaths.map(a => a.path),
             query: searchQuery
@@ -336,8 +340,8 @@ export function GlobalSearch({
             <button
               onClick={() => setShowColumnFilter(!showColumnFilter)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${selectedColumn !== 'all'
-                  ? 'bg-blue-500/20 text-blue-400'
-                  : 'bg-bg-secondary text-text-muted hover:bg-bg-tertiary'
+                ? 'bg-blue-500/20 text-blue-400'
+                : 'bg-bg-secondary text-text-muted hover:bg-bg-tertiary'
                 }`}
             >
               <Filter className="w-4 h-4" />

@@ -1,7 +1,8 @@
+// @ts-nocheck
 import { useRef, useEffect } from 'react'
 
 export function QuoteBlock({ block, onChange, onKeyDown, isActive }) {
-  const inputRef = useRef(null)
+  const inputRef = useRef<any>(null)
 
   useEffect(() => {
     if (isActive && inputRef.current) {

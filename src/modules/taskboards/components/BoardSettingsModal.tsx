@@ -15,7 +15,7 @@ export function BoardSettingsModal({
   onDelete
 }) {
   const [name, setName] = useState('')
-  const [columns, setColumns] = useState([])
+  const [columns, setColumns] = useState<any[]>([])
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   useEffect(() => {

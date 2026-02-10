@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { memo, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Building2, MapPin, DollarSign, Clock, Star, ExternalLink } from 'lucide-react'

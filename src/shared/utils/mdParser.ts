@@ -2,9 +2,9 @@
  * Parse Markdown table to leads array
  * Supports standard MD table format with | separators
  */
-export function parseMDTable(mdContent) {
+export function parseMDTable(mdContent: string) {
   const lines = mdContent.trim().split('\n')
-  const leads = []
+  const leads: any[] = []
 
   // Find table start (line with | at start)
   let headerLine = -1
@@ -80,7 +80,7 @@ export function parseMDTable(mdContent) {
 
     normalizedHeaders.forEach((header, index) => {
       if (lead.hasOwnProperty(header) && values[index]) {
-        lead[header] = values[index].trim()
+        (lead as any)[header] = values[index].trim()
       }
     })
 
@@ -96,7 +96,7 @@ export function parseMDTable(mdContent) {
 /**
  * Parse a single MD table row
  */
-function parseMDRow(row) {
+function parseMDRow(row: string) {
   // Remove leading/trailing | and split
   const trimmed = row.trim()
   const withoutEdges = trimmed.startsWith('|') ? trimmed.slice(1) : trimmed
@@ -108,7 +108,7 @@ function parseMDRow(row) {
 /**
  * Export leads to Markdown table
  */
-export function leadsToMDTable(leads) {
+export function leadsToMDTable(leads: any[]) {
   const headers = ['Name', 'Contact Person', 'Email', 'Phone', 'Industry', 'Status']
   const headerRow = `| ${headers.join(' | ')} |`
   const separatorRow = `| ${headers.map(() => '---').join(' | ')} |`
@@ -130,7 +130,7 @@ export function leadsToMDTable(leads) {
 /**
  * Parse leads from any text content (auto-detect format)
  */
-export function parseLeadsFromText(content) {
+export function parseLeadsFromText(content: string) {
   // Try MD table first
   if (content.includes('|')) {
     const mdLeads = parseMDTable(content)

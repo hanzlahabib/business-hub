@@ -29,8 +29,8 @@ const menuItems = [
 export function BlockMenu({ isOpen, onClose, onSelect, position = { x: 0, y: 0 } }) {
   const [search, setSearch] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const menuRef = useRef(null)
-  const inputRef = useRef(null)
+  const menuRef = useRef<any>(null)
+  const inputRef = useRef<any>(null)
 
   const filteredItems = menuItems.filter(item =>
     item.label.toLowerCase().includes(search.toLowerCase()) ||

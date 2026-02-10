@@ -9,9 +9,9 @@ import { useState, useCallback } from 'react'
 import { historyApi, templateApi } from '../services/templateApi'
 
 export function useTemplateHistory(templateId = null) {
-  const [history, setHistory] = useState([])
+  const [history, setHistory] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   // Fetch history for a template
   const fetchHistory = useCallback(async (id = templateId) => {
@@ -24,7 +24,7 @@ export function useTemplateHistory(templateId = null) {
       const data = await historyApi.getByTemplateId(id)
       setHistory(data)
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return []
     } finally {
@@ -59,7 +59,7 @@ export function useTemplateHistory(templateId = null) {
       setHistory(prev => [saved, ...prev])
 
       return saved
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error saving version:', err)
       return null
     }
@@ -96,7 +96,7 @@ export function useTemplateHistory(templateId = null) {
       )
 
       return restored
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       console.error('Error restoring version:', err)
       return null
@@ -107,7 +107,7 @@ export function useTemplateHistory(templateId = null) {
   const getVersion = useCallback(async (historyId) => {
     try {
       return await historyApi.getById(historyId)
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching version:', err)
       return null
     }
@@ -117,7 +117,7 @@ export function useTemplateHistory(templateId = null) {
   const compareVersions = useCallback((version1, version2) => {
     if (!version1 || !version2) return null
 
-    const changes = []
+    const changes: any[] = []
 
     // Compare name
     if (version1.name !== version2.name) {
@@ -189,7 +189,7 @@ export function useTemplateHistory(templateId = null) {
 
       // Update local state
       setHistory(allHistory.slice(0, keepCount))
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error pruning history:', err)
     }
   }, [templateId])

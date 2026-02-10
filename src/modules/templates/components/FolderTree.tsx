@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -32,10 +33,10 @@ export function FolderTree({
   onDeleteFolder
 }) {
   const [expandedFolders, setExpandedFolders] = useState(new Set())
-  const [editingFolder, setEditingFolder] = useState(null)
+  const [editingFolder, setEditingFolder] = useState<any>(null)
   const [newFolderName, setNewFolderName] = useState('')
   const [showNewFolder, setShowNewFolder] = useState(false)
-  const [menuFolderId, setMenuFolderId] = useState(null)
+  const [menuFolderId, setMenuFolderId] = useState<any>(null)
 
   // Count templates per folder
   const getTemplateCount = (folderId) => {

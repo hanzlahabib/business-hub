@@ -24,6 +24,8 @@ const LeadsView = lazy(() => import('./components/Views').then(m => ({ default: 
 const TaskBoardsView = lazy(() => import('./components/Views').then(m => ({ default: m.TaskBoardsView })))
 const JobsView = lazy(() => import('./components/Views').then(m => ({ default: m.JobsView })))
 const TemplatesView = lazy(() => import('./components/Views').then(m => ({ default: m.TemplatesView })))
+const CallingView = lazy(() => import('./modules/calling').then(m => ({ default: m.CallingView })))
+const AutomationViewPage = lazy(() => import('./modules/automation').then(m => ({ default: m.AutomationView })))
 
 // Loading fallback for lazy-loaded modules
 function ModuleLoader() {
@@ -382,6 +384,20 @@ function App() {
                             {activeModule === 'skillmastery' && (
                                 <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
                                     <SkillMasteryView />
+                                </main>
+                            )}
+
+                            {/* AI Calling Module */}
+                            {activeModule === 'calling' && (
+                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                                    <CallingView />
+                                </main>
+                            )}
+
+                            {/* Automation Module */}
+                            {activeModule === 'automation' && (
+                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
+                                    <AutomationViewPage />
                                 </main>
                             )}
                         </Suspense>

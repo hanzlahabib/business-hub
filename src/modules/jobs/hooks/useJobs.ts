@@ -1,36 +1,59 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { JOB_STATUSES } from '../constants/pipelineStages'
+import { ENDPOINTS } from '../../../config/api'
+import { useAuth } from '../../../hooks/useAuth'
 
-const JSON_SERVER = 'http://localhost:3005'
+export interface Job {
+  id: string
+  title: string
+  company: string
+  location?: string
+  status: string
+  skills: string[]
+  requirements: string[]
+  interviewDates: string[]
+  notes: string
+  salaryMin?: number
+  salaryMax?: number
+  appliedAt?: string
+  createdAt: string
+  updatedAt: string
+  source?: string
+  priority?: string
+}
 
 export function useJobs() {
-  const [jobs, setJobs] = useState([])
+  const { user } = useAuth()
+  const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchJobs = useCallback(async () => {
+    if (!user) return []
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${JSON_SERVER}/jobs`)
+      const res = await fetch(ENDPOINTS.JOBS, {
+        headers: { 'x-user-id': user.id }
+      })
       const data = await res.json()
-      setJobs(data)
+      setJobs(Array.isArray(data) ? data : [])
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return []
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
-  const createJob = useCallback(async (jobData) => {
+  const createJob = useCallback(async (jobData: Partial<Job>) => {
+    if (!user) return null
     setLoading(true)
     setError(null)
     try {
       const newJob = {
         ...jobData,
-        id: crypto.randomUUID(),
         status: jobData.status || 'saved',
         skills: jobData.skills || [],
         requirements: jobData.requirements || [],
@@ -40,29 +63,36 @@ export function useJobs() {
         updatedAt: new Date().toISOString()
       }
 
-      const res = await fetch(`${JSON_SERVER}/jobs`, {
+      const res = await fetch(ENDPOINTS.JOBS, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': user.id
+        },
         body: JSON.stringify(newJob)
       })
       const data = await res.json()
       setJobs(prev => [...prev, data])
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
-  const updateJob = useCallback(async (id, updates) => {
+  const updateJob = useCallback(async (id: string, updates: Partial<Job>) => {
+    if (!user) return null
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${JSON_SERVER}/jobs/${id}`, {
+      const res = await fetch(`${ENDPOINTS.JOBS}/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': user.id
+        },
         body: JSON.stringify({
           ...updates,
           updatedAt: new Date().toISOString()
@@ -71,35 +101,36 @@ export function useJobs() {
       const data = await res.json()
       setJobs(prev => prev.map(j => j.id === id ? data : j))
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
-  const deleteJob = useCallback(async (id) => {
+  const deleteJob = useCallback(async (id: string) => {
+    if (!user) return false
     setLoading(true)
     setError(null)
     try {
-      await fetch(`${JSON_SERVER}/jobs/${id}`, {
-        method: 'DELETE'
+      await fetch(`${ENDPOINTS.JOBS}/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-user-id': user.id }
       })
       setJobs(prev => prev.filter(j => j.id !== id))
       return true
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return false
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
-  const moveJob = useCallback(async (id, newStatus) => {
-    const updates = { status: newStatus }
+  const moveJob = useCallback(async (id: string, newStatus: string) => {
+    const updates: Partial<Job> = { status: newStatus }
 
-    // Auto-set appliedAt when moving to applied
     if (newStatus === 'applied') {
       updates.appliedAt = new Date().toISOString()
     }
@@ -107,7 +138,7 @@ export function useJobs() {
     return updateJob(id, updates)
   }, [updateJob])
 
-  const addInterviewDate = useCallback(async (id, interviewDate) => {
+  const addInterviewDate = useCallback(async (id: string, interviewDate: string) => {
     const job = jobs.find(j => j.id === id)
     if (!job) return null
 
@@ -115,9 +146,8 @@ export function useJobs() {
     return updateJob(id, { interviewDates: newDates })
   }, [jobs, updateJob])
 
-  // Computed data
   const jobsByStatus = useMemo(() => {
-    const grouped = {}
+    const grouped: Record<string, Job[]> = {}
     JOB_STATUSES.forEach(status => {
       grouped[status.id] = jobs.filter(j => j.status === status.id)
     })
@@ -125,7 +155,7 @@ export function useJobs() {
   }, [jobs])
 
   const getStats = useCallback(() => {
-    const stats = {
+    const stats: any = {
       total: jobs.length,
       byStatus: {},
       bySource: {},
@@ -149,12 +179,10 @@ export function useJobs() {
         stats.byPriority[job.priority] = (stats.byPriority[job.priority] || 0) + 1
       }
 
-      // Applied this week
       if (job.appliedAt && new Date(job.appliedAt) > oneWeekAgo) {
         stats.appliedThisWeek++
       }
 
-      // Interviews scheduled
       if (job.status === 'interview' && job.interviewDates?.length > 0) {
         const futureInterviews = job.interviewDates.filter(d => new Date(d) > new Date())
         stats.interviewsScheduled += futureInterviews.length
@@ -164,32 +192,32 @@ export function useJobs() {
     return stats
   }, [jobs])
 
-  const searchJobs = useCallback((query) => {
+  const searchJobs = useCallback((query: string) => {
     const q = query.toLowerCase()
     return jobs.filter(j =>
       j.company?.toLowerCase().includes(q) ||
-      j.role?.toLowerCase().includes(q) ||
+      j.title?.toLowerCase().includes(q) ||
       j.skills?.some(s => s.toLowerCase().includes(q)) ||
       j.location?.toLowerCase().includes(q)
     )
   }, [jobs])
 
-  const filterBySkills = useCallback((skills) => {
+  const filterBySkills = useCallback((skills: string[]) => {
     if (!skills || skills.length === 0) return jobs
     return jobs.filter(j =>
       skills.some(skill => j.skills?.includes(skill))
     )
   }, [jobs])
 
-  const filterBySalary = useCallback((minSalary) => {
-    return jobs.filter(j => j.salaryMin >= minSalary || j.salaryMax >= minSalary)
+  const filterBySalary = useCallback((minSalary: number) => {
+    return jobs.filter(j => (j.salaryMin || 0) >= minSalary || (j.salaryMax || 0) >= minSalary)
   }, [jobs])
 
-  const getDaysSinceApplied = useCallback((job) => {
+  const getDaysSinceApplied = useCallback((job: Job) => {
     if (!job.appliedAt) return null
     const appliedDate = new Date(job.appliedAt)
     const now = new Date()
-    const diffTime = Math.abs(now - appliedDate)
+    const diffTime = Math.abs(now.getTime() - appliedDate.getTime())
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
   }, [])
 
@@ -216,5 +244,6 @@ export function useJobs() {
     getDaysSinceApplied
   }
 }
+
 
 export default useJobs

@@ -1,20 +1,34 @@
 import { useState, useCallback, useEffect } from 'react'
-import { JSON_SERVER } from '../../../config/api'
+import { API_SERVER } from '../../../config/api'
 import { SKILL_TEMPLATES } from '../data/templates'
 
+const SKILL_MASTERY_URL = `${API_SERVER}/api/skillmastery`
+
+function getAuthHeaders(): Record<string, string> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  try {
+    const stored = localStorage.getItem('auth_user')
+    if (stored) {
+      const user = JSON.parse(stored)
+      headers['x-user-id'] = user.id
+    }
+  } catch { }
+  return headers
+}
+
 export function useSkillMastery() {
-  const [data, setData] = useState(null)
+  const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   // Fetch all data
   const fetchData = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch(`${JSON_SERVER}/skillMastery`)
+      const res = await fetch(SKILL_MASTERY_URL, { headers: getAuthHeaders() })
       const result = await res.json()
       setData(result)
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
     } finally {
       setLoading(false)
@@ -24,13 +38,13 @@ export function useSkillMastery() {
   // Save data
   const saveData = useCallback(async (newData) => {
     try {
-      await fetch(`${JSON_SERVER}/skillMastery`, {
+      await fetch(SKILL_MASTERY_URL, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(newData)
       })
       setData(newData)
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
     }
   }, [])

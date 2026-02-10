@@ -1,21 +1,21 @@
 import { useState, useCallback, useEffect } from 'react'
 
-import { JSON_SERVER } from '../../config/api'
+import { ENDPOINTS } from '../../config/api'
 
 export function useEmailTemplates() {
-  const [templates, setTemplates] = useState([])
+  const [templates, setTemplates] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchTemplates = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${JSON_SERVER}/emailTemplates`)
+      const res = await fetch(ENDPOINTS.EMAIL_TEMPLATES)
       const data = await res.json()
       setTemplates(data)
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return []
     } finally {
@@ -33,7 +33,7 @@ export function useEmailTemplates() {
         createdAt: new Date().toISOString()
       }
 
-      const res = await fetch(`${JSON_SERVER}/emailTemplates`, {
+      const res = await fetch(ENDPOINTS.EMAIL_TEMPLATES, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newTemplate)
@@ -41,7 +41,7 @@ export function useEmailTemplates() {
       const data = await res.json()
       setTemplates(prev => [...prev, data])
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
@@ -53,7 +53,7 @@ export function useEmailTemplates() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${JSON_SERVER}/emailTemplates/${id}`, {
+      const res = await fetch(`${ENDPOINTS.EMAIL_TEMPLATES}/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
@@ -61,7 +61,7 @@ export function useEmailTemplates() {
       const data = await res.json()
       setTemplates(prev => prev.map(t => t.id === id ? data : t))
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
@@ -73,12 +73,12 @@ export function useEmailTemplates() {
     setLoading(true)
     setError(null)
     try {
-      await fetch(`${JSON_SERVER}/emailTemplates/${id}`, {
+      await fetch(`${ENDPOINTS.EMAIL_TEMPLATES}/${id}`, {
         method: 'DELETE'
       })
       setTemplates(prev => prev.filter(t => t.id !== id))
       return true
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return false
     } finally {

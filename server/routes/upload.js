@@ -3,13 +3,15 @@ import multer from 'multer'
 import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
+import authMiddleware from '../middleware/auth.js'
+import prisma from '../config/prisma.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const router = express.Router()
 
-// Storage configuration - easy to swap for cloud storage (S3, GCS) in production
+// Storage configuration
 const UPLOADS_DIR = path.join(__dirname, '../uploads')
 
 // Ensure uploads directory exists
@@ -29,7 +31,6 @@ const storage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-  // Only allow PDF files
   if (file.mimetype === 'application/pdf') {
     cb(null, true)
   } else {
@@ -40,58 +41,19 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
-  }
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
 })
 
-// ============================================
-// CV FILES SERVICE - Abstract for easy migration
-// Replace JSON Server calls with your DB of choice
-// ============================================
+// All CV routes require auth
+router.use(authMiddleware)
 
-const JSON_SERVER = 'http://localhost:3005'
-
-async function getAllCvFiles() {
-  const res = await fetch(`${JSON_SERVER}/cvFiles`)
-  return res.json()
-}
-
-async function getCvFileById(id) {
-  const res = await fetch(`${JSON_SERVER}/cvFiles/${id}`)
-  return res.json()
-}
-
-async function createCvFile(data) {
-  const res = await fetch(`${JSON_SERVER}/cvFiles`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  return res.json()
-}
-
-async function updateCvFile(id, data) {
-  const res = await fetch(`${JSON_SERVER}/cvFiles/${id}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  })
-  return res.json()
-}
-
-async function deleteCvFile(id) {
-  await fetch(`${JSON_SERVER}/cvFiles/${id}`, { method: 'DELETE' })
-}
-
-// ============================================
-// ROUTES
-// ============================================
-
-// List all CVs
+// List all CVs for the logged-in user
 router.get('/cvs', async (req, res) => {
   try {
-    const cvFiles = await getAllCvFiles()
+    const cvFiles = await prisma.cVFile.findMany({
+      where: { userId: req.user.id },
+      orderBy: { createdAt: 'desc' }
+    })
     res.json(cvFiles)
   } catch (error) {
     res.status(500).json({ success: false, error: error.message })
@@ -101,7 +63,10 @@ router.get('/cvs', async (req, res) => {
 // Get single CV
 router.get('/cvs/:id', async (req, res) => {
   try {
-    const cvFile = await getCvFileById(req.params.id)
+    const cvFile = await prisma.cVFile.findFirst({
+      where: { id: req.params.id, userId: req.user.id }
+    })
+    if (!cvFile) return res.status(404).json({ success: false, error: 'CV not found' })
     res.json(cvFile)
   } catch (error) {
     res.status(500).json({ success: false, error: error.message })
@@ -116,32 +81,30 @@ router.post('/upload/cv', upload.single('cv'), async (req, res) => {
     }
 
     const { name, isDefault } = req.body
-
-    const cvData = {
-      id: `cv-${Date.now()}`,
-      name: name || req.file.originalname,
-      filename: req.file.filename,
-      originalName: req.file.originalname,
-      type: 'uploaded',
-      url: `/uploads/${req.file.filename}`,
-      cloudUrl: null,
-      size: req.file.size,
-      isDefault: isDefault === 'true',
-      createdAt: new Date().toISOString()
-    }
+    const setDefault = isDefault === 'true'
 
     // If this is set as default, unset other defaults
-    if (cvData.isDefault) {
-      const allCvs = await getAllCvFiles()
-      for (const cv of allCvs) {
-        if (cv.isDefault) {
-          await updateCvFile(cv.id, { isDefault: false })
-        }
-      }
+    if (setDefault) {
+      await prisma.cVFile.updateMany({
+        where: { userId: req.user.id, isDefault: true },
+        data: { isDefault: false }
+      })
     }
 
-    const created = await createCvFile(cvData)
-    res.json({ success: true, cv: created })
+    const cvFile = await prisma.cVFile.create({
+      data: {
+        name: name || req.file.originalname,
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        type: 'uploaded',
+        url: `/uploads/${req.file.filename}`,
+        size: req.file.size,
+        isDefault: setDefault,
+        userId: req.user.id
+      }
+    })
+
+    res.json({ success: true, cv: cvFile })
   } catch (error) {
     res.status(500).json({ success: false, error: error.message })
   }
@@ -156,31 +119,24 @@ router.post('/cvs/link', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Name and cloudUrl are required' })
     }
 
-    const cvData = {
-      id: `cv-${Date.now()}`,
-      name,
-      filename: null,
-      originalName: null,
-      type: 'cloud',
-      url: null,
-      cloudUrl,
-      size: null,
-      isDefault: isDefault || false,
-      createdAt: new Date().toISOString()
+    if (isDefault) {
+      await prisma.cVFile.updateMany({
+        where: { userId: req.user.id, isDefault: true },
+        data: { isDefault: false }
+      })
     }
 
-    // If this is set as default, unset other defaults
-    if (cvData.isDefault) {
-      const allCvs = await getAllCvFiles()
-      for (const cv of allCvs) {
-        if (cv.isDefault) {
-          await updateCvFile(cv.id, { isDefault: false })
-        }
+    const cvFile = await prisma.cVFile.create({
+      data: {
+        name,
+        type: 'cloud',
+        cloudUrl,
+        isDefault: isDefault || false,
+        userId: req.user.id
       }
-    }
+    })
 
-    const created = await createCvFile(cvData)
-    res.json({ success: true, cv: created })
+    res.json({ success: true, cv: cvFile })
   } catch (error) {
     res.status(500).json({ success: false, error: error.message })
   }
@@ -189,16 +145,17 @@ router.post('/cvs/link', async (req, res) => {
 // Set CV as default
 router.patch('/cvs/:id/default', async (req, res) => {
   try {
-    // Unset all defaults first
-    const allCvs = await getAllCvFiles()
-    for (const cv of allCvs) {
-      if (cv.isDefault) {
-        await updateCvFile(cv.id, { isDefault: false })
-      }
-    }
+    // Unset all defaults
+    await prisma.cVFile.updateMany({
+      where: { userId: req.user.id, isDefault: true },
+      data: { isDefault: false }
+    })
 
     // Set this one as default
-    const updated = await updateCvFile(req.params.id, { isDefault: true })
+    const updated = await prisma.cVFile.update({
+      where: { id: req.params.id, userId: req.user.id },
+      data: { isDefault: true }
+    })
     res.json({ success: true, cv: updated })
   } catch (error) {
     res.status(500).json({ success: false, error: error.message })
@@ -213,7 +170,10 @@ router.patch('/cvs/:id', async (req, res) => {
     if (name) updates.name = name
     if (cloudUrl) updates.cloudUrl = cloudUrl
 
-    const updated = await updateCvFile(req.params.id, updates)
+    const updated = await prisma.cVFile.update({
+      where: { id: req.params.id, userId: req.user.id },
+      data: updates
+    })
     res.json({ success: true, cv: updated })
   } catch (error) {
     res.status(500).json({ success: false, error: error.message })
@@ -223,7 +183,11 @@ router.patch('/cvs/:id', async (req, res) => {
 // Delete CV
 router.delete('/cvs/:id', async (req, res) => {
   try {
-    const cv = await getCvFileById(req.params.id)
+    const cv = await prisma.cVFile.findFirst({
+      where: { id: req.params.id, userId: req.user.id }
+    })
+
+    if (!cv) return res.status(404).json({ success: false, error: 'CV not found' })
 
     // Delete physical file if it exists
     if (cv.filename) {
@@ -233,7 +197,7 @@ router.delete('/cvs/:id', async (req, res) => {
       }
     }
 
-    await deleteCvFile(req.params.id)
+    await prisma.cVFile.delete({ where: { id: req.params.id } })
     res.json({ success: true })
   } catch (error) {
     res.status(500).json({ success: false, error: error.message })
@@ -243,9 +207,11 @@ router.delete('/cvs/:id', async (req, res) => {
 // Get CV file content (for attachments)
 router.get('/cvs/:id/file', async (req, res) => {
   try {
-    const cv = await getCvFileById(req.params.id)
+    const cv = await prisma.cVFile.findFirst({
+      where: { id: req.params.id, userId: req.user.id }
+    })
 
-    if (!cv.filename) {
+    if (!cv || !cv.filename) {
       return res.status(400).json({ success: false, error: 'No file attached to this CV entry' })
     }
 

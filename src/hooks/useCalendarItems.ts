@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { Video, Smartphone, CheckSquare, Briefcase, Users, Target, type LucideIcon } from 'lucide-react'
 import type { Content } from './useSchedule'
-
-const JSON_SERVER = 'http://localhost:3005'
+import { ENDPOINTS } from '../config/api'
+import { useAuth } from './useAuth'
 
 export interface CalendarFilters {
     contents: boolean
@@ -80,6 +80,7 @@ export interface CalendarItem {
 }
 
 export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
+    const { user } = useAuth()
     const [contents, setContents] = useState<Content[]>([])
     const [tasks, setTasks] = useState<any[]>([])
     const [jobs, setJobs] = useState<any[]>([])
@@ -89,29 +90,32 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
 
     // Fetch data based on enabled filters
     const fetchData = useCallback(async () => {
+        if (!user) return
         setLoading(true)
         try {
-            const promises = []
+            const promises: Promise<any>[] = []
             const fetchMap: string[] = []
 
+            const headers = { 'x-user-id': user.id }
+
             if (filters.contents) {
-                promises.push(fetch(`${JSON_SERVER}/contents`).then(r => r.json()))
+                promises.push(fetch(ENDPOINTS.CONTENTS, { headers }).then(r => r.json()))
                 fetchMap.push('contents')
             }
             if (filters.tasks) {
-                promises.push(fetch(`${JSON_SERVER}/tasks`).then(r => r.json()))
+                promises.push(fetch(ENDPOINTS.TEMPLATES.replace('templates', 'tasks'), { headers }).then(r => r.json()))
                 fetchMap.push('tasks')
             }
             if (filters.jobs) {
-                promises.push(fetch(`${JSON_SERVER}/jobs`).then(r => r.json()))
+                promises.push(fetch(ENDPOINTS.JOBS, { headers }).then(r => r.json()))
                 fetchMap.push('jobs')
             }
             if (filters.leads) {
-                promises.push(fetch(`${JSON_SERVER}/leads`).then(r => r.json()))
+                promises.push(fetch(ENDPOINTS.LEADS, { headers }).then(r => r.json()))
                 fetchMap.push('leads')
             }
             if (filters.milestones) {
-                promises.push(fetch(`${JSON_SERVER}/skillMastery`).then(r => r.json()))
+                promises.push(fetch(ENDPOINTS.SETTINGS.replace('resources/settings', 'skillmastery'), { headers }).then(r => r.json()))
                 fetchMap.push('skillMastery')
             }
 
@@ -119,20 +123,20 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
 
             results.forEach((data, index) => {
                 const type = fetchMap[index]
-                if (type === 'contents') setContents(data)
-                if (type === 'tasks') setTasks(data)
-                if (type === 'jobs') setJobs(data)
-                if (type === 'leads') setLeads(data)
+                if (type === 'contents') setContents(Array.isArray(data) ? data : [])
+                if (type === 'tasks') setTasks(Array.isArray(data) ? data : [])
+                if (type === 'jobs') setJobs(Array.isArray(data) ? data : [])
+                if (type === 'leads') setLeads(Array.isArray(data) ? data : [])
                 if (type === 'skillMastery') setSkillMasteryData(data)
             })
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to fetch calendar items:', err)
         } finally {
             setLoading(false)
         }
-    }, [filters.contents, filters.tasks, filters.jobs, filters.leads, filters.milestones])
+    }, [user, filters])
 
-    // Refetch when filters change
+    // Refetch when filters or user changes
     useEffect(() => {
         fetchData()
     }, [fetchData])
@@ -263,32 +267,37 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
 
     // Reschedule an item - routes to correct update function
     const rescheduleItem = useCallback(async (item: CalendarItem, newDate: string | Date) => {
+        if (!user) return false
         const dateStr = typeof newDate === 'string' ? newDate : newDate.toISOString().split('T')[0]
+        const headers = {
+            'Content-Type': 'application/json',
+            'x-user-id': user.id
+        }
 
         try {
             switch (item.type) {
                 case 'content': {
-                    await fetch(`${JSON_SERVER}/contents/${item.id}`, {
+                    await fetch(`${ENDPOINTS.CONTENTS}/${item.id}`, {
                         method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers,
                         body: JSON.stringify({ scheduledDate: dateStr })
                     })
                     setContents(prev => prev.map(c => c.id === item.id ? { ...c, scheduledDate: dateStr } : c))
                     break
                 }
                 case 'task': {
-                    await fetch(`${JSON_SERVER}/tasks/${item.id}`, {
+                    await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${item.id}`, {
                         method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers,
                         body: JSON.stringify({ dueDate: dateStr + 'T00:00:00Z' })
                     })
                     setTasks(prev => prev.map(t => t.id === item.id ? { ...t, dueDate: dateStr + 'T00:00:00Z' } : t))
                     break
                 }
                 case 'lead': {
-                    await fetch(`${JSON_SERVER}/leads/${item.id}`, {
+                    await fetch(`${ENDPOINTS.LEADS}/${item.id}`, {
                         method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers,
                         body: JSON.stringify({ followUpDate: dateStr })
                     })
                     setLeads(prev => prev.map(l => l.id === item.id ? { ...l, followUpDate: dateStr } : l))
@@ -308,9 +317,9 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
                                 ) || []
                             }))
                         }
-                        await fetch(`${JSON_SERVER}/skillMastery`, {
+                        await fetch(ENDPOINTS.SETTINGS.replace('resources/settings', 'skillmastery'), {
                             method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers,
                             body: JSON.stringify(newData)
                         })
                         setSkillMasteryData(newData)
@@ -320,11 +329,11 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
                 // Interviews are not draggable, so no case needed
             }
             return true
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to reschedule item:', err)
             return false
         }
-    }, [skillMasteryData])
+    }, [skillMasteryData, user])
 
     return {
         items,
@@ -340,5 +349,6 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
         skillMasteryData
     }
 }
+
 
 export default useCalendarItems

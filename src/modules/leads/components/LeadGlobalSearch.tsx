@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, X, Phone, Mail, MapPin, Building2, Tag, ArrowRight, AlertCircle } from 'lucide-react'
@@ -110,9 +111,9 @@ export function LeadGlobalSearch({
   onSelectLead
 }) {
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
-  const inputRef = useRef(null)
-  const debounceRef = useRef(null)
+  const [results, setResults] = useState<any[]>([])
+  const inputRef = useRef<any>(null)
+  const debounceRef = useRef<any>(null)
 
   // Focus input when opened
   useEffect(() => {

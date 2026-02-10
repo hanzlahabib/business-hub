@@ -2,7 +2,7 @@
  * Parse CSV content to leads array
  * Expected columns: name, contactPerson, email, phone, website, industry, source, notes
  */
-export function parseCSV(csvContent) {
+export function parseCSV(csvContent: string) {
   const lines = csvContent.trim().split('\n')
   if (lines.length < 2) return []
 
@@ -39,7 +39,7 @@ export function parseCSV(csvContent) {
   const normalizedHeaders = headers.map(h => headerMap[h] || h)
 
   // Parse data rows
-  const leads = []
+  const leads: any[] = []
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim()
     if (!line) continue
@@ -67,7 +67,7 @@ export function parseCSV(csvContent) {
 
     normalizedHeaders.forEach((header, index) => {
       if (lead.hasOwnProperty(header) && values[index]) {
-        lead[header] = values[index].trim().replace(/^"|"$/g, '')
+        (lead as any)[header] = values[index].trim().replace(/^"|"$/g, '')
       }
     })
 
@@ -83,8 +83,8 @@ export function parseCSV(csvContent) {
 /**
  * Parse a single CSV line handling quoted values
  */
-function parseCSVLine(line) {
-  const values = []
+function parseCSVLine(line: string) {
+  const values: string[] = []
   let current = ''
   let inQuotes = false
 
@@ -108,7 +108,7 @@ function parseCSVLine(line) {
 /**
  * Export leads to CSV string
  */
-export function leadsToCSV(leads) {
+export function leadsToCSV(leads: any[]) {
   const headers = ['name', 'contactPerson', 'email', 'phone', 'website', 'industry', 'status', 'source', 'notes']
   const headerRow = headers.join(',')
 

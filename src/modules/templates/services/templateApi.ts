@@ -2,15 +2,22 @@
  * Template API Service Layer
  *
  * This abstraction layer makes the templates module database-agnostic.
- * To migrate to a different database (Supabase, Firebase, PostgreSQL, etc.):
- * 1. Create a new adapter file (e.g., templateApi.supabase.js)
- * 2. Implement the same interface
- * 3. Update the import in hooks
- *
- * Current implementation: JSON Server (REST API)
+ * Current implementation: Express API with Prisma/PostgreSQL
  */
 
 import { ENDPOINTS } from '../../../config/api'
+
+// Helper to get auth headers from stored session
+function getAuthHeaders(): Record<string, string> {
+  try {
+    const stored = localStorage.getItem('auth_user')
+    if (stored) {
+      const user = JSON.parse(stored)
+      return { 'x-user-id': user.id }
+    }
+  } catch { }
+  return {}
+}
 
 // ============================================
 // TEMPLATES
@@ -21,14 +28,14 @@ export const templateApi = {
   async getAll(params = {}) {
     const query = new URLSearchParams(params).toString()
     const url = query ? `${ENDPOINTS.TEMPLATES}?${query}` : ENDPOINTS.TEMPLATES
-    const response = await fetch(url)
+    const response = await fetch(url, { headers: getAuthHeaders() })
     if (!response.ok) throw new Error('Failed to fetch templates')
     return response.json()
   },
 
   // Fetch single template by ID
   async getById(id) {
-    const response = await fetch(`${ENDPOINTS.TEMPLATES}/${id}`)
+    const response = await fetch(`${ENDPOINTS.TEMPLATES}/${id}`, { headers: getAuthHeaders() })
     if (!response.ok) throw new Error('Template not found')
     return response.json()
   },
@@ -37,7 +44,7 @@ export const templateApi = {
   async create(data) {
     const response = await fetch(ENDPOINTS.TEMPLATES, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify({
         ...data,
         id: data.id || `template-${Date.now()}`,
@@ -55,7 +62,7 @@ export const templateApi = {
   async update(id, data) {
     const response = await fetch(`${ENDPOINTS.TEMPLATES}/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify({
         ...data,
         updatedAt: new Date().toISOString()
@@ -68,7 +75,8 @@ export const templateApi = {
   // Delete template
   async delete(id) {
     const response = await fetch(`${ENDPOINTS.TEMPLATES}/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getAuthHeaders()
     })
     if (!response.ok) throw new Error('Failed to delete template')
     return true
@@ -80,10 +88,10 @@ export const templateApi = {
     if (query) params.append('q', query)
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
-        params.append(key, value)
+        params.append(key, String(value))
       }
     })
-    const response = await fetch(`${ENDPOINTS.TEMPLATES}?${params}`)
+    const response = await fetch(`${ENDPOINTS.TEMPLATES}?${params}`, { headers: getAuthHeaders() })
     if (!response.ok) throw new Error('Search failed')
     return response.json()
   }
@@ -97,13 +105,13 @@ export const folderApi = {
   async getAll(params = {}) {
     const query = new URLSearchParams(params).toString()
     const url = query ? `${ENDPOINTS.TEMPLATE_FOLDERS}?${query}` : ENDPOINTS.TEMPLATE_FOLDERS
-    const response = await fetch(url)
+    const response = await fetch(url, { headers: getAuthHeaders() })
     if (!response.ok) throw new Error('Failed to fetch folders')
     return response.json()
   },
 
   async getById(id) {
-    const response = await fetch(`${ENDPOINTS.TEMPLATE_FOLDERS}/${id}`)
+    const response = await fetch(`${ENDPOINTS.TEMPLATE_FOLDERS}/${id}`, { headers: getAuthHeaders() })
     if (!response.ok) throw new Error('Folder not found')
     return response.json()
   },
@@ -111,7 +119,7 @@ export const folderApi = {
   async create(data) {
     const response = await fetch(ENDPOINTS.TEMPLATE_FOLDERS, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify({
         ...data,
         id: data.id || `folder-${Date.now()}`,
@@ -125,7 +133,7 @@ export const folderApi = {
   async update(id, data) {
     const response = await fetch(`${ENDPOINTS.TEMPLATE_FOLDERS}/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(data)
     })
     if (!response.ok) throw new Error('Failed to update folder')
@@ -134,7 +142,8 @@ export const folderApi = {
 
   async delete(id) {
     const response = await fetch(`${ENDPOINTS.TEMPLATE_FOLDERS}/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getAuthHeaders()
     })
     if (!response.ok) throw new Error('Failed to delete folder')
     return true
@@ -153,13 +162,13 @@ export const historyApi = {
       _order: 'desc',
       ...params
     }).toString()
-    const response = await fetch(`${ENDPOINTS.TEMPLATE_HISTORY}?${query}`)
+    const response = await fetch(`${ENDPOINTS.TEMPLATE_HISTORY}?${query}`, { headers: getAuthHeaders() })
     if (!response.ok) throw new Error('Failed to fetch history')
     return response.json()
   },
 
   async getById(id) {
-    const response = await fetch(`${ENDPOINTS.TEMPLATE_HISTORY}/${id}`)
+    const response = await fetch(`${ENDPOINTS.TEMPLATE_HISTORY}/${id}`, { headers: getAuthHeaders() })
     if (!response.ok) throw new Error('Version not found')
     return response.json()
   },
@@ -167,7 +176,7 @@ export const historyApi = {
   async create(data) {
     const response = await fetch(ENDPOINTS.TEMPLATE_HISTORY, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify({
         ...data,
         id: data.id || `history-${Date.now()}`,
@@ -180,7 +189,8 @@ export const historyApi = {
 
   async delete(id) {
     const response = await fetch(`${ENDPOINTS.TEMPLATE_HISTORY}/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getAuthHeaders()
     })
     if (!response.ok) throw new Error('Failed to delete version')
     return true
@@ -204,14 +214,14 @@ export const commentApi = {
       _order: 'desc',
       ...params
     }).toString()
-    const response = await fetch(`${ENDPOINTS.TEMPLATE_COMMENTS}?${query}`)
+    const response = await fetch(`${ENDPOINTS.TEMPLATE_COMMENTS}?${query}`, { headers: getAuthHeaders() })
     if (!response.ok) throw new Error('Failed to fetch comments')
     return response.json()
   },
 
   async getByBlockId(templateId, blockId) {
     const query = new URLSearchParams({ templateId, blockId }).toString()
-    const response = await fetch(`${ENDPOINTS.TEMPLATE_COMMENTS}?${query}`)
+    const response = await fetch(`${ENDPOINTS.TEMPLATE_COMMENTS}?${query}`, { headers: getAuthHeaders() })
     if (!response.ok) throw new Error('Failed to fetch block comments')
     return response.json()
   },
@@ -219,7 +229,7 @@ export const commentApi = {
   async create(data) {
     const response = await fetch(ENDPOINTS.TEMPLATE_COMMENTS, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify({
         ...data,
         id: data.id || `comment-${Date.now()}`,
@@ -234,7 +244,7 @@ export const commentApi = {
   async update(id, data) {
     const response = await fetch(`${ENDPOINTS.TEMPLATE_COMMENTS}/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(data)
     })
     if (!response.ok) throw new Error('Failed to update comment')
@@ -243,7 +253,8 @@ export const commentApi = {
 
   async delete(id) {
     const response = await fetch(`${ENDPOINTS.TEMPLATE_COMMENTS}/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getAuthHeaders()
     })
     if (!response.ok) throw new Error('Failed to delete comment')
     return true

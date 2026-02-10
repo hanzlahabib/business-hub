@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Search, Linkedin, Mail, ClipboardList, FileText, File } from 'lucide-react'

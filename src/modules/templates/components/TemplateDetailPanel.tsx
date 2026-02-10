@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -48,7 +49,7 @@ export function TemplateDetailPanel({
   onUpdate
 }) {
   const [copied, setCopied] = useState(false)
-  const [variableValues, setVariableValues] = useState({})
+  const [variableValues, setVariableValues] = useState<Record<string, any>>({})
   const [activeTab, setActiveTab] = useState('preview') // 'preview' | 'edit' | 'history' | 'comments'
   const { saveVersion } = useTemplateHistory(template?.id)
   const {

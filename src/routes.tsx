@@ -23,7 +23,10 @@ export const MODULE_ROUTES: Record<string, string> = {
     '/jobs': 'jobs',
     '/templates': 'templates',
     '/skills': 'skillmastery',
-    '/skills/:pathId': 'skillmastery'
+    '/skills/:pathId': 'skillmastery',
+    '/calling': 'calling',
+    '/calling/agents': 'calling',
+    '/automation': 'automation'
 }
 
 // View route to view name mapping for schedule module
@@ -53,6 +56,8 @@ export function getModuleFromPath(pathname: string): string {
     if (pathname.startsWith('/leads')) return 'leads'
     if (pathname.startsWith('/taskboards')) return 'taskboards'
     if (pathname.startsWith('/skills')) return 'skillmastery'
+    if (pathname.startsWith('/calling')) return 'calling'
+    if (pathname.startsWith('/automation')) return 'automation'
     if (pathname === '/jobs') return 'jobs'
     if (pathname === '/templates') return 'templates'
 
@@ -76,7 +81,9 @@ export function getModuleRoute(module: string): string {
         taskboards: '/taskboards',
         jobs: '/jobs',
         templates: '/templates',
-        skillmastery: '/skills'
+        skillmastery: '/skills',
+        calling: '/calling',
+        automation: '/automation'
     }
     return routes[module] || '/'
 }
@@ -168,6 +175,20 @@ export const router = createBrowserRouter([
     },
     {
         path: '/skills/:pathId',
+        element: ProtectedApp
+    },
+    // AI Calling Module
+    {
+        path: '/calling',
+        element: ProtectedApp
+    },
+    {
+        path: '/calling/agents',
+        element: ProtectedApp
+    },
+    // Automation Module
+    {
+        path: '/automation',
         element: ProtectedApp
     },
     // Catch-all 404

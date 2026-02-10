@@ -1,19 +1,28 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, Send, FileText, User, Building2, Mail, ChevronDown, Check, Loader2, Eye, Paperclip, FileIcon } from 'lucide-react'
-import { JSON_SERVER, API_SERVER } from '../../../config/api'
+import { ENDPOINTS, API_SERVER } from '../../../config/api'
+
+function getAuthHeaders(): Record<string, string> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  try {
+    const stored = localStorage.getItem('auth_user')
+    if (stored) { headers['x-user-id'] = JSON.parse(stored).id }
+  } catch { }
+  return headers
+}
 
 export function OutreachComposer({ isOpen, onClose, job }) {
-  const [templates, setTemplates] = useState([])
-  const [userProfile, setUserProfile] = useState(null)
-  const [cvFiles, setCvFiles] = useState([])
-  const [selectedTemplate, setSelectedTemplate] = useState(null)
-  const [selectedCvId, setSelectedCvId] = useState(null)
+  const [templates, setTemplates] = useState<any[]>([])
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const [cvFiles, setCvFiles] = useState<any[]>([])
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(null)
+  const [selectedCvId, setSelectedCvId] = useState<any>(null)
   const [showTemplates, setShowTemplates] = useState(false)
   const [showCvSelector, setShowCvSelector] = useState(false)
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
-  const [sendResult, setSendResult] = useState(null)
+  const [sendResult, setSendResult] = useState<any>(null)
   const [showPreview, setShowPreview] = useState(false)
 
   const [formData, setFormData] = useState({
@@ -27,9 +36,9 @@ export function OutreachComposer({ isOpen, onClose, job }) {
     const fetchData = async () => {
       try {
         const [templatesRes, profileRes, cvsRes] = await Promise.all([
-          fetch(`${JSON_SERVER}/jobTemplates`),
-          fetch(`${JSON_SERVER}/userProfile`),
-          fetch(`${API_SERVER}/api/cvs`)
+          fetch(ENDPOINTS.JOB_TEMPLATES, { headers: getAuthHeaders() }),
+          fetch(ENDPOINTS.USER_PROFILE, { headers: getAuthHeaders() }),
+          fetch(`${API_SERVER}/api/cvs`, { headers: getAuthHeaders() })
         ])
         const templatesData = await templatesRes.json()
         const profileData = await profileRes.json()
@@ -44,7 +53,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
         if (defaultCv) {
           setSelectedCvId(defaultCv.id)
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('Failed to fetch data:', err)
       } finally {
         setLoading(false)
@@ -150,9 +159,9 @@ export function OutreachComposer({ isOpen, onClose, job }) {
 
         // Save to outreach history
         try {
-          await fetch(`${JSON_SERVER}/jobOutreachHistory`, {
+          await fetch(ENDPOINTS.JOB_OUTREACH_HISTORY, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getAuthHeaders(),
             body: JSON.stringify({
               id: crypto.randomUUID(),
               jobId: job?.id,
@@ -165,7 +174,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
               sentAt: new Date().toISOString()
             })
           })
-        } catch (err) {
+        } catch (err: any) {
           console.error('Failed to save outreach history:', err)
         }
 
@@ -406,11 +415,10 @@ export function OutreachComposer({ isOpen, onClose, job }) {
 
                 {/* Result Message */}
                 {sendResult && (
-                  <div className={`p-4 rounded-lg ${
-                    sendResult.success
+                  <div className={`p-4 rounded-lg ${sendResult.success
                       ? 'bg-green-500/20 text-green-300 border border-green-500/30'
                       : 'bg-red-500/20 text-red-300 border border-red-500/30'
-                  }`}>
+                    }`}>
                     {sendResult.message}
                   </div>
                 )}

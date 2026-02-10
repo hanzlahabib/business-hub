@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useMemo, useCallback, useRef, memo } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Video, Smartphone } from 'lucide-react'

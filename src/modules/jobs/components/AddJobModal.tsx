@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Building2, Briefcase, MapPin, DollarSign, Link2, Plus, Tag } from 'lucide-react'

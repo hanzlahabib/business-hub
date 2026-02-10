@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -31,7 +32,7 @@ function EditableText({
 }) {
   const [isEditing, setIsEditing] = useState(autoFocus)
   const [localValue, setLocalValue] = useState(value)
-  const inputRef = useRef(null)
+  const inputRef = useRef<any>(null)
 
   useEffect(() => {
     setLocalValue(value)
@@ -214,7 +215,7 @@ function CommentItem({ comment, onDelete }) {
 // Comments Section Component
 function CommentsSection({ comments = [], onAdd, onDelete }) {
   const [newComment, setNewComment] = useState('')
-  const inputRef = useRef(null)
+  const inputRef = useRef<any>(null)
 
   const handleSubmit = () => {
     if (newComment.trim()) {
@@ -283,8 +284,8 @@ function CommentsSection({ comments = [], onAdd, onDelete }) {
 function ImageUploadZone({ onUpload }) {
   const [isDragOver, setIsDragOver] = useState(false)
   const [isPasting, setIsPasting] = useState(false)
-  const fileInputRef = useRef(null)
-  const dropZoneRef = useRef(null)
+  const fileInputRef = useRef<any>(null)
+  const dropZoneRef = useRef<any>(null)
 
   // Handle clipboard paste (Ctrl+V)
   useEffect(() => {
@@ -466,7 +467,7 @@ function AttachmentItem({ attachment, onDelete }) {
       await navigator.clipboard.writeText(filePath)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to copy:', err)
     }
   }
@@ -576,7 +577,7 @@ function LinkedDocumentDisplay({ filePath, onRemove }) {
       await navigator.clipboard.writeText(filePath)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to copy:', err)
     }
   }

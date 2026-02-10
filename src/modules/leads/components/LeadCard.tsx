@@ -137,6 +137,23 @@ export function LeadCard({ lead, onClick, onMenuClick, isDragging, selected, onS
         )}
       </div>
 
+      {/* Last call outcome badge */}
+      {lead.lastCallOutcome && (
+        <div className="flex justify-end mt-1.5">
+          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${lead.lastCallOutcome === 'booked' ? 'bg-emerald-500/15 text-emerald-400' :
+              lead.lastCallOutcome === 'follow-up' ? 'bg-amber-500/15 text-amber-400' :
+                lead.lastCallOutcome === 'not-interested' ? 'bg-red-500/15 text-red-400' :
+                  'bg-gray-500/15 text-gray-400'
+            }`}>
+            {lead.lastCallOutcome === 'booked' ? '✅ Booked' :
+              lead.lastCallOutcome === 'follow-up' ? '📅 Follow-up' :
+                lead.lastCallOutcome === 'not-interested' ? '❌ Rejected' :
+                  lead.lastCallOutcome === 'no-answer' ? '📵 No Answer' :
+                    lead.lastCallOutcome}
+          </span>
+        </div>
+      )}
+
       {/* Tags */}
       {lead.tags && lead.tags.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-2">

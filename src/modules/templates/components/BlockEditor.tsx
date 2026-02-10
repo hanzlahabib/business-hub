@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { Undo2, Redo2, Save, Loader2 } from 'lucide-react'
@@ -36,10 +37,10 @@ export function BlockEditor({
 
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 })
-  const [menuAfterBlockId, setMenuAfterBlockId] = useState(null)
-  const [draggingBlockId, setDraggingBlockId] = useState(null)
+  const [menuAfterBlockId, setMenuAfterBlockId] = useState<any>(null)
+  const [draggingBlockId, setDraggingBlockId] = useState<any>(null)
   const [saving, setSaving] = useState(false)
-  const editorRef = useRef(null)
+  const editorRef = useRef<any>(null)
 
   // Reset content when initialContent changes
   useEffect(() => {

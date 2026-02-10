@@ -7,13 +7,13 @@ import {
 import { API_SERVER } from '../../../config/api'
 
 export function CVManager({ isOpen, onClose }) {
-  const [cvFiles, setCvFiles] = useState([])
+  const [cvFiles, setCvFiles] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
   const [addingLink, setAddingLink] = useState(false)
   const [linkForm, setLinkForm] = useState({ name: '', cloudUrl: '' })
-  const [message, setMessage] = useState(null)
-  const fileInputRef = useRef(null)
+  const [message, setMessage] = useState<any>(null)
+  const fileInputRef = useRef<any>(null)
 
   // Fetch CVs
   useEffect(() => {

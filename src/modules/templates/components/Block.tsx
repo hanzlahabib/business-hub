@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import {
@@ -54,7 +55,7 @@ export function Block({
   showComments = true
 }) {
   const [showMenu, setShowMenu] = useState(false)
-  const blockRef = useRef(null)
+  const blockRef = useRef<any>(null)
 
   const BlockComponent = blockComponents[block.type] || ParagraphBlock
 

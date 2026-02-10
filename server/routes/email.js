@@ -2,12 +2,25 @@ import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { sendEmail, testConnection } from '../services/emailService.js'
+import authMiddleware from '../middleware/auth.js'
+import prisma from '../config/prisma.js'
+import { emailSettingsRepository } from '../repositories/extraRepositories.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const router = express.Router()
 const UPLOADS_DIR = path.join(__dirname, '../uploads')
+
+// All email routes require authentication
+router.use(authMiddleware)
+
+// Helper: get this user's email settings from DB
+async function getUserEmailSettings(userId) {
+  const record = await emailSettingsRepository.findByUserId(userId)
+  if (!record || !record.config) return null
+  return record.config
+}
 
 // Send email with optional CV attachment
 router.post('/send', async (req, res) => {
@@ -21,11 +34,10 @@ router.post('/send', async (req, res) => {
   }
 
   try {
-    // Get email settings from JSON Server
-    const settingsRes = await fetch('http://localhost:3005/emailSettings')
-    const settings = await settingsRes.json()
+    // Get email settings for this specific user from DB
+    const settings = await getUserEmailSettings(req.user.id)
 
-    if (!settings.provider) {
+    if (!settings || !settings.provider) {
       return res.status(400).json({
         success: false,
         error: 'Email not configured. Please set up email provider in settings.'
@@ -35,22 +47,21 @@ router.post('/send', async (req, res) => {
     // Prepare attachments
     const attachments = []
 
-    // If cvId is provided, attach the CV
+    // If cvId is provided, look up the CV file in uploads
     if (cvId) {
       try {
-        const cvRes = await fetch(`http://localhost:3005/cvFiles/${cvId}`)
-        const cv = await cvRes.json()
-
-        if (cv.type === 'uploaded' && cv.filename) {
-          // Attach local file
+        // Try to find a file in the uploads directory matching the cvId
+        const fs = await import('fs')
+        const uploadFiles = await fs.promises.readdir(UPLOADS_DIR).catch(() => [])
+        const cvFile = uploadFiles.find(f => f.includes(cvId))
+        if (cvFile) {
           attachments.push({
-            filename: cv.name || cv.originalName || 'cv.pdf',
-            path: path.join(UPLOADS_DIR, cv.filename)
+            filename: cvFile,
+            path: path.join(UPLOADS_DIR, cvFile)
           })
         }
-        // Note: Cloud URLs are included in email body, not as attachments
       } catch (cvError) {
-        console.error('Failed to fetch CV:', cvError)
+        console.error('Failed to find CV file:', cvError)
         // Continue without attachment
       }
     }
@@ -60,40 +71,35 @@ router.post('/send', async (req, res) => {
 
     // Log to messages if leadId provided
     if (leadId) {
-      const message = {
-        id: crypto.randomUUID(),
-        leadId,
-        type: 'sent',
-        channel: 'email',
-        subject,
-        body,
-        templateId: templateId || null,
-        status: result.success ? 'sent' : 'failed',
-        createdAt: new Date().toISOString()
-      }
-
-      await fetch('http://localhost:3005/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(message)
-      })
-
-      // Update lead's lastContactedAt
-      await fetch(`http://localhost:3005/leads/${leadId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lastContactedAt: new Date().toISOString(),
-          status: 'contacted'
+      try {
+        await prisma.message.create({
+          data: {
+            leadId,
+            type: 'sent',
+            channel: 'email',
+            subject,
+            body,
+            status: result.success ? 'sent' : 'failed',
+            userId: req.user.id
+          }
         })
-      })
+
+        // Update lead's lastContactedAt
+        await prisma.lead.update({
+          where: { id: leadId, userId: req.user.id },
+          data: {
+            lastContactedAt: new Date(),
+            status: 'contacted'
+          }
+        })
+      } catch (logError) {
+        console.error('Failed to log message/update lead:', logError)
+      }
     }
 
     res.json(result)
   } catch (error) {
-    // Debug logging
-    const fs = await import('fs');
-    fs.appendFileSync('server_error.log', `${new Date().toISOString()} - ${error.message}\n${error.stack}\n\n`);
+    console.error('Email send error:', error)
     res.status(500).json({ success: false, error: error.message })
   }
 })
@@ -101,8 +107,14 @@ router.post('/send', async (req, res) => {
 // Test email connection
 router.post('/test', async (req, res) => {
   try {
-    const settingsRes = await fetch('http://localhost:3005/emailSettings')
-    const settings = await settingsRes.json()
+    const settings = await getUserEmailSettings(req.user.id)
+
+    if (!settings || !settings.provider) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email not configured. Please set up email provider in settings.'
+      })
+    }
 
     const result = await testConnection(settings)
     res.json(result)
@@ -123,17 +135,27 @@ router.post('/send-template', async (req, res) => {
   }
 
   try {
-    // Get lead data
-    const leadRes = await fetch(`http://localhost:3005/leads/${leadId}`)
-    const lead = await leadRes.json()
+    // Get lead data from DB (user-scoped)
+    const lead = await prisma.lead.findFirst({
+      where: { id: leadId, userId: req.user.id }
+    })
 
-    // Get template
-    const templateRes = await fetch(`http://localhost:3005/emailTemplates/${templateId}`)
-    const template = await templateRes.json()
+    if (!lead) {
+      return res.status(404).json({ success: false, error: 'Lead not found' })
+    }
+
+    // Get template from DB (user-scoped)
+    const template = await prisma.template.findFirst({
+      where: { id: templateId, userId: req.user.id }
+    })
+
+    if (!template) {
+      return res.status(404).json({ success: false, error: 'Template not found' })
+    }
 
     // Replace variables in template
-    let subject = template.subject
-    let body = template.body
+    let subject = template.subject || template.title || ''
+    let body = template.body || template.content || ''
 
     // Replace common variables
     const variables = {
@@ -150,20 +172,51 @@ router.post('/send-template', async (req, res) => {
       body = body.replace(regex, value || '')
     }
 
-    // Send the email
-    const sendRes = await fetch('http://localhost:3002/api/email/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        to: lead.email,
-        subject,
-        body,
-        leadId,
-        templateId
+    // Get user's email settings
+    const settings = await getUserEmailSettings(req.user.id)
+
+    if (!settings || !settings.provider) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email not configured. Please set up email provider in settings.'
       })
+    }
+
+    // Send the email
+    const result = await sendEmail(settings, {
+      to: lead.email,
+      subject,
+      body,
+      attachments: []
     })
 
-    const result = await sendRes.json()
+    // Log message
+    if (result.success) {
+      try {
+        await prisma.message.create({
+          data: {
+            leadId,
+            type: 'sent',
+            channel: 'email',
+            subject,
+            body,
+            status: 'sent',
+            userId: req.user.id
+          }
+        })
+
+        await prisma.lead.update({
+          where: { id: leadId, userId: req.user.id },
+          data: {
+            lastContactedAt: new Date(),
+            status: 'contacted'
+          }
+        })
+      } catch (logError) {
+        console.error('Failed to log message/update lead:', logError)
+      }
+    }
+
     res.json(result)
   } catch (error) {
     res.status(500).json({ success: false, error: error.message })

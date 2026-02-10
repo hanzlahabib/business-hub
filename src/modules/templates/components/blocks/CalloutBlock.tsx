@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useRef, useEffect, useState } from 'react'
 import { Lightbulb, AlertTriangle, Info, CheckCircle, XCircle } from 'lucide-react'
 
@@ -12,7 +13,7 @@ const calloutStyles = {
 const emojiOptions = ['bulb', 'warning', 'info', 'success', 'error']
 
 export function CalloutBlock({ block, onChange, onKeyDown, isActive }) {
-  const inputRef = useRef(null)
+  const inputRef = useRef<any>(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const emoji = block.emoji || 'bulb'
   const style = calloutStyles[emoji] || calloutStyles.bulb

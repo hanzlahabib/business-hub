@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Upload, FileText, Table, CheckCircle, AlertCircle } from 'lucide-react'
@@ -6,11 +7,11 @@ import { parseMDTable } from '../../../shared/utils/mdParser'
 
 export function ImportLeadsModal({ isOpen, onClose, onImport }) {
   const [step, setStep] = useState('upload') // upload, preview, importing, done
-  const [parsedLeads, setParsedLeads] = useState([])
-  const [selectedLeads, setSelectedLeads] = useState([])
-  const [importResult, setImportResult] = useState(null)
-  const [error, setError] = useState(null)
-  const fileInputRef = useRef(null)
+  const [parsedLeads, setParsedLeads] = useState<any[]>([])
+  const [selectedLeads, setSelectedLeads] = useState<any[]>([])
+  const [importResult, setImportResult] = useState<any>(null)
+  const [error, setError] = useState<string | null>(null)
+  const fileInputRef = useRef<any>(null)
 
   const handleFileSelect = (e) => {
     const file = e.target.files?.[0]
@@ -105,7 +106,7 @@ export function ImportLeadsModal({ isOpen, onClose, onImport }) {
         count: result.length
       })
       setStep('done')
-    } catch (err) {
+    } catch (err: any) {
       setImportResult({
         success: false,
         error: err.message

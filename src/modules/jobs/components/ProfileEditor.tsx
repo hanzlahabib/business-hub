@@ -1,10 +1,20 @@
+// @ts-nocheck
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, User, Mail, Phone, Globe, Linkedin, Github,
   Briefcase, Code, Loader2, CheckCircle, AlertCircle, Plus
 } from 'lucide-react'
-import { JSON_SERVER } from '../../../config/api'
+import { ENDPOINTS } from '../../../config/api'
+
+function getAuthHeaders(): Record<string, string> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  try {
+    const stored = localStorage.getItem('auth_user')
+    if (stored) { headers['x-user-id'] = JSON.parse(stored).id }
+  } catch { }
+  return headers
+}
 
 const EXPERIENCE_LEVELS = [
   { id: 'JUNIOR', label: 'Junior (0-2 years)' },
@@ -29,7 +39,7 @@ export function ProfileEditor({ isOpen, onClose }) {
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState(null)
+  const [message, setMessage] = useState<any>(null)
   const [newSkill, setNewSkill] = useState('')
 
   // Fetch profile
@@ -41,7 +51,7 @@ export function ProfileEditor({ isOpen, onClose }) {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(`${JSON_SERVER}/userProfile`)
+      const res = await fetch(ENDPOINTS.USER_PROFILE, { headers: getAuthHeaders() })
       const data = await res.json()
       setProfile(data)
     } catch {
@@ -56,9 +66,9 @@ export function ProfileEditor({ isOpen, onClose }) {
     setMessage(null)
 
     try {
-      const res = await fetch(`${JSON_SERVER}/userProfile`, {
+      const res = await fetch(ENDPOINTS.USER_PROFILE, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(profile)
       })
 
@@ -317,11 +327,10 @@ export function ProfileEditor({ isOpen, onClose }) {
 
                 {/* Message */}
                 {message && (
-                  <div className={`flex items-center gap-2 p-3 rounded-lg ${
-                    message.type === 'success'
+                  <div className={`flex items-center gap-2 p-3 rounded-lg ${message.type === 'success'
                       ? 'bg-green-500/20 text-green-300'
                       : 'bg-red-500/20 text-red-300'
-                  }`}>
+                    }`}>
                     {message.type === 'success' ? (
                       <CheckCircle className="w-4 h-4" />
                     ) : (

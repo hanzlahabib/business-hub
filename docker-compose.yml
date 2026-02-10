@@ -1,0 +1,56 @@
+# Docker Compose for Business Hub (Schedule Manager)
+# Orchestrates PostgreSQL, Express Backend, and Vite Frontend
+
+version: '3.8'
+
+services:
+  # Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: business-hub-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: business_hub
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Service (Express + Prisma)
+  backend:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: business-hub-backend
+    restart: always
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres_password@db:5432/business_hub?schema=public"
+      PORT: 3002
+      NODE_ENV: production
+    ports:
+      - "3002:3002"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Frontend Service (Vite / Production Build served via Nginx)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: business-hub-frontend
+    restart: always
+    ports:
+      - "5175:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

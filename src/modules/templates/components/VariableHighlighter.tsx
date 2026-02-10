@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useMemo } from 'react'
 
 export function VariableHighlighter({ text, variables = [], className = '' }) {

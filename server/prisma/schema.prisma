@@ -1,0 +1,434 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  passwordHash  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  contents      Content[]
+  leads         Lead[]
+  jobs          Job[]
+  tasks         Task[]
+  taskBoards    TaskBoard[]
+  templates     Template[]
+  templateFolders TemplateFolder[]
+  messages      Message[]
+  emailTemplates EmailTemplate[]
+  emailSettings EmailSettings?
+  settings      Settings?
+  jobTemplates  JobTemplate[]
+  jobSearchPrompts JobSearchPrompt[]
+  cvFiles       CVFile[]
+  templateHistory TemplateHistory[]
+  templateComments TemplateComment[]
+  // AI Calling System
+  calls         Call[]
+  callScripts   CallScript[]
+  meetingNotes  MeetingNote[]
+  agentInstances AgentInstance[]
+  rateNegotiations RateNegotiation[]
+}
+
+// ============================================
+// CONTENT
+// ============================================
+model Content {
+  id              String    @id @default(cuid())
+  title           String
+  type            String?   // 'long', 'short'
+  status          String?   // 'idea', 'script', 'recording', etc.
+  topic           String?
+  hook            String?
+  notes           String?
+  scheduledDate   String?   // stored as string in db.json
+  publishedDate   String?
+  presentationReady Boolean? @default(false)
+  sourceVideoId   String?
+  slideDetails    Json?     // { lectureNumber, lectureFolder, ... }
+  comments        Json?     // array of comment objects
+  urls            Json?     // array of URL strings
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+}
+
+// ============================================
+// LEADS
+// ============================================
+model Lead {
+  id              String    @id @default(cuid())
+  name            String
+  company         String?
+  contactPerson   String?
+  email           String?
+  phone           String?
+  status          String?   // 'new', 'contacted', 'replied', etc.
+  source          String?
+  industry        String?
+  website         String?
+  websiteIssues   Json?     // string array
+  tags            Json?     // string array
+  linkedBoardId   String?
+  followUpDate    DateTime?
+  lastContactedAt DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  messages        Message[]
+  calls           Call[]
+}
+
+// ============================================
+// JOBS
+// ============================================
+model Job {
+  id              String    @id @default(cuid())
+  title           String?
+  role            String?
+  company         String
+  location        String?
+  locationType    String?   // 'remote', 'onsite', 'hybrid'
+  status          String?
+  description     String?
+  contactPerson   String?
+  contactEmail    String?
+  experienceLevel String?
+  priority        String?
+  notes           String?
+  source          String?
+  sourceUrl       String?
+  requirements    Json?     // string array
+  skills          Json?     // string array
+  salaryCurrency  String?
+  salaryMin       Float?
+  salaryMax       Float?
+  appliedAt       DateTime?
+  interviewDates  Json?     // string array
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+}
+
+// ============================================
+// TASKS & TASK BOARDS
+// ============================================
+model Task {
+  id            String    @id @default(cuid())
+  title         String
+  description   String?
+  status        String?
+  priority      String?
+  columnId      String?
+  position      Int?      @default(0)
+  assignee      String?
+  leadId        String?
+  subtasks      Json?     // array of { id, text, done }
+  tags          Json?     // string array
+  dueDate       DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  boardId       String?
+  board         TaskBoard? @relation(fields: [boardId], references: [id])
+
+  userId        String
+  user          User       @relation(fields: [userId], references: [id])
+}
+
+model TaskBoard {
+  id            String    @id @default(cuid())
+  name          String
+  columns       Json?     // array of { id, name, color }
+  leadId        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  tasks         Task[]
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+// ============================================
+// TEMPLATES
+// ============================================
+model Template {
+  id            String    @id @default(cuid())
+  name          String
+  category      String?   // 'linkedin', 'email', 'proposal', etc.
+  description   String?
+  icon          String?
+  coverImage    String?
+  content       Json?     // structured content object
+  rawMarkdown   String?
+  subject       String?
+  status        String?   // 'draft', 'published', 'archived'
+  tags          Json?     // string array
+  variables     Json?     // string array
+  isFavorite    Boolean?  @default(false)
+  isPinned      Boolean?  @default(false)
+  isLocked      Boolean?  @default(false)
+  lockedBy      String?
+  lastUsedAt    DateTime?
+  usageCount    Int?      @default(0)
+  version       Int?      @default(1)
+  permissions   Json?     // { visibility, canEdit, canView }
+  createdBy     String?
+  updatedBy     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  folderId      String?
+  folder        TemplateFolder? @relation(fields: [folderId], references: [id])
+
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+model TemplateFolder {
+  id            String    @id @default(cuid())
+  name          String
+  icon          String?
+  color         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  templates     Template[]
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+// ============================================
+// MESSAGING
+// ============================================
+model Message {
+  id            String    @id @default(cuid())
+  leadId        String?
+  lead          Lead?     @relation(fields: [leadId], references: [id])
+  type          String    // 'sent', 'received'
+  channel       String    // 'email', 'whatsapp', 'linkedin', 'call'
+  subject       String?
+  body          String?
+  templateId    String?
+  status        String?   // 'sent', 'delivered', 'read', 'received'
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+// ============================================
+// EMAIL & SETTINGS
+// ============================================
+model EmailTemplate {
+  id            String    @id @default(cuid())
+  name          String
+  subject       String?
+  body          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+model EmailSettings {
+  id            String    @id @default(cuid())
+  config        Json?
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+model Settings {
+  id            String    @id @default(cuid())
+  config        Json?
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+// ============================================
+// JOB SEARCH
+// ============================================
+model JobTemplate {
+  id            String    @id @default(cuid())
+  name          String
+  description   String?
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+model JobSearchPrompt {
+  id            String    @id @default(cuid())
+  name          String
+  source        String?
+  description   String?
+  url           String?
+  tags          String[]  @default([])
+  prompt        String?
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+model CVFile {
+  id            String    @id @default(cuid())
+  name          String
+  filename      String?
+  originalName  String?
+  type          String?   // 'uploaded', 'cloud'
+  url           String?
+  cloudUrl      String?
+  size          Int?
+  isDefault     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+// ============================================
+// TEMPLATE HISTORY & COMMENTS
+// ============================================
+model TemplateHistory {
+  id            String    @id @default(cuid())
+  templateId    String
+  action        String
+  details       String?
+  createdAt     DateTime  @default(now())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+model TemplateComment {
+  id            String    @id @default(cuid())
+  templateId    String
+  content       String
+  createdAt     DateTime  @default(now())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+// ============================================
+// AI CALLING SYSTEM
+// ============================================
+model Call {
+  id              String    @id @default(cuid())
+  leadId          String
+  lead            Lead      @relation(fields: [leadId], references: [id])
+  direction       String    // 'outbound', 'inbound'
+  status          String    // 'queued','ringing','in-progress','completed','failed','no-answer','busy'
+  duration        Int?      // seconds
+  recordingUrl    String?
+  transcription   String?   // full text transcription
+  summary         String?   // AI-generated summary
+  sentiment       String?   // 'positive','neutral','negative'
+  outcome         String?   // 'booked','follow-up','not-interested','voicemail'
+  scriptId        String?
+  script          CallScript? @relation(fields: [scriptId], references: [id])
+  agentInstanceId String?
+  agentInstance   AgentInstance? @relation(fields: [agentInstanceId], references: [id])
+  providerCallId  String?   @unique  // Vapi callId / Twilio SID — provider-agnostic
+  scheduledAt     DateTime?
+  startedAt       DateTime?
+  endedAt         DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  meetingNotes    MeetingNote[]
+  negotiations    RateNegotiation[]
+}
+
+model CallScript {
+  id                String    @id @default(cuid())
+  name              String
+  purpose           String?   // 'discovery','follow-up','closing','rate-negotiation'
+  industry          String?
+  openingLine       String?
+  talkingPoints     Json?     // [{ topic, script, fallback }]
+  objectionHandlers Json?     // [{ objection, response }]
+  closingStrategy   String?
+  rateRange         Json?     // { min, max, target, currency }
+  isActive          Boolean   @default(true)
+  usageCount        Int       @default(0)
+  successRate       Float?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  calls             Call[]
+}
+
+model MeetingNote {
+  id              String    @id @default(cuid())
+  callId          String
+  call            Call      @relation(fields: [callId], references: [id])
+  content         String    // raw notes / transcription excerpt
+  summary         String?   // AI summary
+  actionItems     Json?     // [{ task, assignee, deadline }]
+  decisions       Json?     // string array
+  followUpDate    DateTime?
+  tags            Json?     // string array
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+}
+
+model RateNegotiation {
+  id              String    @id @default(cuid())
+  callId          String
+  call            Call      @relation(fields: [callId], references: [id])
+  leadId          String
+  initialRate     Float?
+  proposedRate    Float?
+  finalRate       Float?
+  currency        String    @default("USD")
+  status          String    // 'pending','negotiating','accepted','rejected','counter-offered'
+  strategy        String?   // AI-suggested strategy
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+}
+
+model AgentInstance {
+  id              String    @id @default(cuid())
+  name            String?   // e.g. "Agent Alpha"
+  status          String    @default("idle") // 'idle','running','paused','completed','error'
+  currentStep     String?   // 'lead-selected','dialing','speaking','negotiating','booked','skipped'
+  currentLeadId   String?   // which lead is being called right now
+  currentLeadName String?   // denormalized for quick display
+  scriptId        String?   // which script this agent uses
+  leadQueue       Json?     // [leadId, leadId, ...] remaining leads
+  completedLeads  Json?     // [{ leadId, outcome, rate }]
+  config          Json?     // { voiceId, llmModel, maxCalls, ... }
+  stats           Json?     // { totalCalls, booked, skipped, avgDuration }
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  calls           Call[]
+}

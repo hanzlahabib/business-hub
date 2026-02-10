@@ -7,9 +7,9 @@ const TEMPLATE_STATUSES = ['draft', 'published', 'archived']
 
 export function useTemplates() {
   const { user } = useAuth()
-  const [templates, setTemplates] = useState([])
+  const [templates, setTemplates] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchTemplates = useCallback(async () => {
     setLoading(true)
@@ -18,7 +18,7 @@ export function useTemplates() {
       const data = await templateApi.getAll()
       setTemplates(data)
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return []
     } finally {
@@ -60,7 +60,7 @@ export function useTemplates() {
       const data = await templateApi.create(newTemplate)
       setTemplates(prev => [...prev, data])
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
@@ -78,7 +78,7 @@ export function useTemplates() {
       })
       setTemplates(prev => prev.map(t => t.id === id ? data : t))
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
@@ -93,7 +93,7 @@ export function useTemplates() {
       await templateApi.delete(id)
       setTemplates(prev => prev.filter(t => t.id !== id))
       return true
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return false
     } finally {
@@ -170,7 +170,7 @@ export function useTemplates() {
   const getRecent = useCallback((limit = 5) => {
     return [...templates]
       .filter(t => t.lastUsedAt)
-      .sort((a, b) => new Date(b.lastUsedAt) - new Date(a.lastUsedAt))
+      .sort((a, b) => new Date(b.lastUsedAt).getTime() - new Date(a.lastUsedAt).getTime())
       .slice(0, limit)
   }, [templates])
 

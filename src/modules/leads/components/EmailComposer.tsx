@@ -10,12 +10,12 @@ export function EmailComposer({ isOpen, onClose, lead, onSuccess }) {
   const { sendEmail, sending, error: sendError } = useEmailService()
   const { cvFiles, fetchCvFiles, getDefaultCv } = useCV()
 
-  const [selectedTemplate, setSelectedTemplate] = useState(null)
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(null)
   const [selectedCvId, setSelectedCvId] = useState('')
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState('')
   const [showPreview, setShowPreview] = useState(false)
-  const [sendResult, setSendResult] = useState(null)
+  const [sendResult, setSendResult] = useState<any>(null)
 
   // Load CVs when open
   useEffect(() => {

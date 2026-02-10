@@ -7,7 +7,7 @@ const headingSizes = {
 }
 
 export function HeadingBlock({ block, onChange, onKeyDown, isActive }) {
-  const inputRef = useRef(null)
+  const inputRef = useRef<any>(null)
   const level = block.level || 2
 
   useEffect(() => {

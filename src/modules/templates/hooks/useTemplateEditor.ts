@@ -10,20 +10,20 @@ const BLOCK_TYPES = {
   code: { label: 'Code', shortcut: '`', icon: 'code' }
 }
 
-export function useTemplateEditor(initialContent = null, onSave = null) {
-  const [blocks, setBlocks] = useState(() => {
+export function useTemplateEditor(initialContent: any = null, onSave: any = null) {
+  const [blocks, setBlocks] = useState<any[]>(() => {
     if (initialContent?.blocks?.length) {
       return initialContent.blocks
     }
     return [{ id: crypto.randomUUID(), type: 'paragraph', text: '' }]
   })
 
-  const [activeBlockId, setActiveBlockId] = useState(null)
+  const [activeBlockId, setActiveBlockId] = useState<string | null>(null)
   const [isDirty, setIsDirty] = useState(false)
-  const [undoStack, setUndoStack] = useState([])
-  const [redoStack, setRedoStack] = useState([])
+  const [undoStack, setUndoStack] = useState<string[]>([])
+  const [redoStack, setRedoStack] = useState<string[]>([])
 
-  const saveTimeoutRef = useRef(null)
+  const saveTimeoutRef = useRef<any>(null)
 
   // Save current state to undo stack
   const pushToUndo = useCallback(() => {

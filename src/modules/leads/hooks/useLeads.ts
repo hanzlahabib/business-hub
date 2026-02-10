@@ -1,37 +1,57 @@
 import { useState, useCallback, useEffect } from 'react'
-
-const JSON_SERVER = 'http://localhost:3005'
+import { ENDPOINTS } from '../../../config/api'
+import { useAuth } from '../../../hooks/useAuth'
 
 const LEAD_STATUSES = ['new', 'contacted', 'replied', 'meeting', 'won', 'lost']
 
+export interface Lead {
+  id: string
+  name: string
+  company?: string
+  email: string
+  status: string
+  industry?: string
+  source?: string
+  contactPerson?: string
+  websiteIssues?: string[]
+  tags?: string[]
+  createdAt: string
+  lastContactedAt?: string | null
+  linkedBoardId?: string | null
+}
+
 export function useLeads() {
-  const [leads, setLeads] = useState([])
+  const { user } = useAuth()
+  const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchLeads = useCallback(async () => {
+    if (!user) return []
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${JSON_SERVER}/leads`)
+      const res = await fetch(ENDPOINTS.LEADS, {
+        headers: { 'x-user-id': user.id }
+      })
       const data = await res.json()
-      setLeads(data)
+      setLeads(Array.isArray(data) ? data : [])
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return []
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   const createLead = useCallback(async (leadData) => {
+    if (!user) return null
     setLoading(true)
     setError(null)
     try {
       const newLead = {
         ...leadData,
-        id: crypto.randomUUID(),
         status: leadData.status || 'new',
         websiteIssues: leadData.websiteIssues || [],
         tags: leadData.tags || [],
@@ -40,58 +60,67 @@ export function useLeads() {
         linkedBoardId: null
       }
 
-      const res = await fetch(`${JSON_SERVER}/leads`, {
+      const res = await fetch(ENDPOINTS.LEADS, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': user.id
+        },
         body: JSON.stringify(newLead)
       })
       const data = await res.json()
       setLeads(prev => [...prev, data])
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   const updateLead = useCallback(async (id, updates) => {
+    if (!user) return null
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${JSON_SERVER}/leads/${id}`, {
+      const res = await fetch(`${ENDPOINTS.LEADS}/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': user.id
+        },
         body: JSON.stringify(updates)
       })
       const data = await res.json()
       setLeads(prev => prev.map(l => l.id === id ? data : l))
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   const deleteLead = useCallback(async (id) => {
+    if (!user) return false
     setLoading(true)
     setError(null)
     try {
-      await fetch(`${JSON_SERVER}/leads/${id}`, {
-        method: 'DELETE'
+      await fetch(`${ENDPOINTS.LEADS}/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-user-id': user.id }
       })
       setLeads(prev => prev.filter(l => l.id !== id))
       return true
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return false
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   const changeStatus = useCallback(async (id, newStatus) => {
     return updateLead(id, { status: newStatus })
@@ -105,14 +134,14 @@ export function useLeads() {
   }, [updateLead])
 
   const importLeads = useCallback(async (leadsArray) => {
+    if (!user) return []
     setLoading(true)
     setError(null)
-    const imported = []
+    const imported: any[] = []
     try {
       for (const lead of leadsArray) {
         const newLead = {
           ...lead,
-          id: lead.id || crypto.randomUUID(),
           status: lead.status || 'new',
           websiteIssues: lead.websiteIssues || [],
           tags: lead.tags || [],
@@ -121,9 +150,12 @@ export function useLeads() {
           linkedBoardId: null
         }
 
-        const res = await fetch(`${JSON_SERVER}/leads`, {
+        const res = await fetch(ENDPOINTS.LEADS, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-user-id': user.id
+          },
           body: JSON.stringify(newLead)
         })
         const data = await res.json()
@@ -131,13 +163,13 @@ export function useLeads() {
       }
       setLeads(prev => [...prev, ...imported])
       return imported
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return imported
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   const getLeadsByStatus = useCallback((status) => {
     return leads.filter(l => l.status === status)
@@ -203,5 +235,6 @@ export function useLeads() {
     getStats
   }
 }
+
 
 export default useLeads

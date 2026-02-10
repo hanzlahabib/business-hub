@@ -11,9 +11,9 @@ import { useAuth } from '../../../hooks/useAuth'
 
 export function useTemplateComments(templateId = null) {
   const { user } = useAuth()
-  const [comments, setComments] = useState([])
+  const [comments, setComments] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   // Fetch all comments for a template
   const fetchComments = useCallback(async (id = templateId) => {
@@ -26,7 +26,7 @@ export function useTemplateComments(templateId = null) {
       const data = await commentApi.getByTemplateId(id)
       setComments(data)
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return []
     } finally {
@@ -61,7 +61,7 @@ export function useTemplateComments(templateId = null) {
       const data = await commentApi.create(newComment)
       setComments(prev => [data, ...prev])
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
@@ -81,7 +81,7 @@ export function useTemplateComments(templateId = null) {
       })
       setComments(prev => prev.map(c => c.id === commentId ? data : c))
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
@@ -98,7 +98,7 @@ export function useTemplateComments(templateId = null) {
       await commentApi.delete(commentId)
       setComments(prev => prev.filter(c => c.id !== commentId))
       return true
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return false
     } finally {
@@ -140,21 +140,21 @@ export function useTemplateComments(templateId = null) {
   const getBlockComments = useCallback((blockId) => {
     return comments
       .filter(c => c.blockId === blockId && !c.parentId)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   }, [comments])
 
   // Get replies to a comment
   const getReplies = useCallback((parentId) => {
     return comments
       .filter(c => c.parentId === parentId)
-      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
   }, [comments])
 
   // Get template-level comments (not attached to blocks)
   const getTemplateComments = useCallback(() => {
     return comments
       .filter(c => !c.blockId && !c.parentId)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
   }, [comments])
 
   // Get unresolved comments count

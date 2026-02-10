@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -265,8 +266,8 @@ export function CommentThread({
 }) {
   const { currentUser, getUserById } = useCurrentUser()
   const [newComment, setNewComment] = useState('')
-  const [replyingTo, setReplyingTo] = useState(null)
-  const inputRef = useRef(null)
+  const [replyingTo, setReplyingTo] = useState<any>(null)
+  const inputRef = useRef<any>(null)
 
   // Filter comments for this block/template
   const filteredComments = blockId

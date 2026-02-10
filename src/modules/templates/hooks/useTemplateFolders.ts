@@ -4,9 +4,9 @@ import { useAuth } from '../../../hooks/useAuth'
 
 export function useTemplateFolders() {
   const { user } = useAuth()
-  const [folders, setFolders] = useState([])
+  const [folders, setFolders] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchFolders = useCallback(async () => {
     setLoading(true)
@@ -15,7 +15,7 @@ export function useTemplateFolders() {
       const data = await folderApi.getAll()
       setFolders(data)
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return []
     } finally {
@@ -40,7 +40,7 @@ export function useTemplateFolders() {
       const data = await folderApi.create(newFolder)
       setFolders(prev => [...prev, data])
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
@@ -55,7 +55,7 @@ export function useTemplateFolders() {
       const data = await folderApi.update(id, updates)
       setFolders(prev => prev.map(f => f.id === id ? data : f))
       return data
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return null
     } finally {
@@ -70,7 +70,7 @@ export function useTemplateFolders() {
       await folderApi.delete(id)
       setFolders(prev => prev.filter(f => f.id !== id))
       return true
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return false
     } finally {
@@ -99,7 +99,7 @@ export function useTemplateFolders() {
       await Promise.all(updates)
       await fetchFolders()
       return true
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message)
       return false
     } finally {

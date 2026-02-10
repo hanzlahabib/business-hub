@@ -35,11 +35,11 @@ export function VersionHistory({
     compareVersions
   } = useTemplateHistory(templateId)
 
-  const [selectedVersion, setSelectedVersion] = useState(null)
+  const [selectedVersion, setSelectedVersion] = useState<any>(null)
   const [compareMode, setCompareMode] = useState(false)
-  const [compareSelection, setCompareSelection] = useState([])
-  const [comparison, setComparison] = useState(null)
-  const [previewVersion, setPreviewVersion] = useState(null)
+  const [compareSelection, setCompareSelection] = useState<any[]>([])
+  const [comparison, setComparison] = useState<any>(null)
+  const [previewVersion, setPreviewVersion] = useState<any>(null)
 
   useEffect(() => {
     if (templateId) {

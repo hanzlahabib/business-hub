@@ -3,10 +3,30 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import path from 'path'
 import fs from 'fs/promises'
+import http from 'http'
 import { fileURLToPath } from 'url'
+
+// Legacy Routes
 import emailRoutes from './routes/email.js'
 import messagesRoutes from './routes/messages.js'
 import uploadRoutes from './routes/upload.js'
+
+// New Prisma Routes
+import authRoutes from './routes/auth.js'
+import leadRoutes from './routes/leads.js'
+import jobRoutes from './routes/jobs.js'
+import contentRoutes from './routes/contents.js'
+import extraRoutes from './routes/extra.js'
+import skillMasteryRoutes from './routes/skillMastery.js'
+import scraperRoutes from './routes/scraper.js'
+import outreachRoutes from './routes/outreach.js'
+import callRoutes from './routes/calls.js'
+import agentRoutes from './routes/agents.js'
+import authMiddleware from './middleware/auth.js'
+import prisma from './config/prisma.js'
+import { initWebSocket } from './services/callWebSocket.js'
+import agentCallingService from './services/agentCallingService.js'
+import callService from './services/callService.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -24,13 +44,29 @@ app.use(express.json())
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 // Routes
+app.use('/api/auth', authRoutes)
+app.use('/api/leads', leadRoutes)
+app.use('/api/jobs', jobRoutes)
+app.use('/api/contents', contentRoutes)
+app.use('/api/resources', extraRoutes)
+app.use('/api/skillmastery', skillMasteryRoutes)
+app.use('/api/scraper', scraperRoutes)
+app.use('/api/outreach', outreachRoutes)
+app.use('/api/calls', authMiddleware, callRoutes)
+app.use('/api/agents', authMiddleware, agentRoutes)
+
+// Legacy / Support Routes
 app.use('/api/email', emailRoutes)
 app.use('/api/messages', messagesRoutes)
 app.use('/api', uploadRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+  res.json({
+    status: 'ok',
+    database: 'prisma/postgresql',
+    timestamp: new Date().toISOString()
+  })
 })
 
 // Read file content endpoint - for markdown viewer
@@ -127,17 +163,21 @@ app.post('/api/file/search', async (req, res) => {
   res.json({ success: true, results, query })
 })
 
-// AI Agent endpoint - for Claude/AI automation
-app.post('/api/agent/execute', async (req, res) => {
+// AI Agent endpoint - for automation
+
+app.post('/api/agent/execute', authMiddleware, async (req, res) => {
   const { action, params } = req.body
+  const userId = req.user.id
 
   try {
     switch (action) {
       case 'send_email':
-        // Forward to email route
         const emailRes = await fetch(`http://localhost:${PORT}/api/email/send`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-user-id': userId
+          },
           body: JSON.stringify(params)
         })
         const emailData = await emailRes.json()
@@ -145,36 +185,36 @@ app.post('/api/agent/execute', async (req, res) => {
         break
 
       case 'get_leads':
-        const leadsRes = await fetch('http://localhost:3005/leads')
-        const leads = await leadsRes.json()
+        const leads = await prisma.lead.findMany({ where: { userId } })
         res.json({ success: true, action, result: leads })
         break
 
       case 'update_lead_status':
         const { leadId, status } = params
-        const updateRes = await fetch(`http://localhost:3005/leads/${leadId}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status, lastContactedAt: new Date().toISOString() })
+        const updated = await prisma.lead.update({
+          where: { id: leadId, userId },
+          data: { status, lastContactedAt: new Date() }
         })
-        const updated = await updateRes.json()
         res.json({ success: true, action, result: updated })
         break
 
       case 'get_leads_by_status':
-        const allLeads = await fetch('http://localhost:3005/leads').then(r => r.json())
-        const filtered = allLeads.filter(l => l.status === params.status)
+        const filtered = await prisma.lead.findMany({
+          where: { userId, status: params.status }
+        })
         res.json({ success: true, action, result: filtered })
         break
 
       case 'send_bulk_emails':
-        // Send to multiple leads
         const results = []
         for (const lead of params.leads) {
           try {
-            const sendRes = await fetch(`http://localhost:${PORT}/api/email/send`, {
+            await fetch(`http://localhost:${PORT}/api/email/send`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: {
+                'Content-Type': 'application/json',
+                'x-user-id': userId
+              },
               body: JSON.stringify({
                 leadId: lead.id,
                 to: lead.email,
@@ -191,6 +231,43 @@ app.post('/api/agent/execute', async (req, res) => {
         res.json({ success: true, action, result: results })
         break
 
+      // ===== AI Calling Actions =====
+      case 'initiate_call': {
+        const call = await callService.initiateCall(userId, params)
+        res.json({ success: true, action, result: call })
+        break
+      }
+
+      case 'get_call_history': {
+        const callHistory = await callService.getAll(userId, params)
+        res.json({ success: true, action, result: callHistory })
+        break
+      }
+
+      case 'get_call_stats': {
+        const callStats = await callService.getStats(userId)
+        res.json({ success: true, action, result: callStats })
+        break
+      }
+
+      case 'spawn_agent': {
+        const agent = await agentCallingService.spawn(userId, params)
+        res.json({ success: true, action, result: agent })
+        break
+      }
+
+      case 'start_agent': {
+        const startResult = await agentCallingService.start(params.agentId, userId)
+        res.json({ success: true, action, result: startResult })
+        break
+      }
+
+      case 'get_agent_status': {
+        const agentStatus = await agentCallingService.getById(params.agentId, userId)
+        res.json({ success: true, action, result: agentStatus })
+        break
+      }
+
       default:
         res.status(400).json({ success: false, error: `Unknown action: ${action}` })
     }
@@ -199,8 +276,17 @@ app.post('/api/agent/execute', async (req, res) => {
   }
 })
 
-app.listen(PORT, () => {
+// Create HTTP server for WebSocket support
+const server = http.createServer(app)
+
+// Initialize WebSocket
+initWebSocket(server)
+
+server.listen(PORT, () => {
   console.log(`🚀 Business Hub API running on http://localhost:${PORT}`)
   console.log(`📧 Email endpoint: POST /api/email/send`)
   console.log(`🤖 AI Agent endpoint: POST /api/agent/execute`)
+  console.log(`📞 AI Calling API: /api/calls`)
+  console.log(`🤖 Agent API: /api/agents`)
+  console.log(`🔌 WebSocket: ws://localhost:${PORT}/ws/calls`)
 })

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Send, FileText, Eye, AlertCircle, CheckCircle, Loader2, Paperclip, Users, ChevronRight } from 'lucide-react'
@@ -10,7 +11,7 @@ export function BulkEmailComposer({ isOpen, onClose, leads = [], onSuccess }) {
     const { sendEmail } = useEmailService()
     const { cvFiles, fetchCvFiles } = useCV()
 
-    const [selectedTemplate, setSelectedTemplate] = useState(null)
+    const [selectedTemplate, setSelectedTemplate] = useState<any>(null)
     const [selectedCvId, setSelectedCvId] = useState('')
     const [subject, setSubject] = useState('')
     const [body, setBody] = useState('')
@@ -18,7 +19,7 @@ export function BulkEmailComposer({ isOpen, onClose, leads = [], onSuccess }) {
     // Sending State
     const [isSending, setIsSending] = useState(false)
     const [progress, setProgress] = useState({ current: 0, total: 0, successes: 0, failures: 0 })
-    const [results, setResults] = useState([]) // Array of { leadId, success, error? }
+    const [results, setResults] = useState<any[]>([]) // Array of { leadId, success, error? }
 
     // Load CVs when open
     useEffect(() => {

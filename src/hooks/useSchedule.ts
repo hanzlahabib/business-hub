@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-
-const API_URL = 'http://localhost:3005'
+import { ENDPOINTS } from '../config/api'
+import { useAuth } from './useAuth'
 
 export interface Comment {
     id: string
@@ -60,40 +59,50 @@ export interface ContentStats {
 }
 
 export function useSchedule() {
+    const { user } = useAuth()
     const [contents, setContents] = useState<Content[]>([])
     const [settings, setSettings] = useState<Settings>({ weeklyGoals: { long: 2, shorts: 5 } })
     const [loading, setLoading] = useState(true)
 
     // Fetch all contents
     const fetchContents = useCallback(async () => {
+        if (!user) return
         try {
-            const res = await fetch(`${API_URL}/contents`)
+            const res = await fetch(ENDPOINTS.CONTENTS, {
+                headers: { 'x-user-id': user.id }
+            })
             const data = await res.json()
-            setContents(data)
-        } catch (err) {
+            setContents(Array.isArray(data) ? data : [])
+        } catch (err: any) {
             console.error('Failed to fetch contents:', err)
         }
-    }, [])
+    }, [user])
 
     // Fetch settings
     const fetchSettings = useCallback(async () => {
+        if (!user) return
         try {
-            const res = await fetch(`${API_URL}/settings`)
+            const res = await fetch(ENDPOINTS.SETTINGS, {
+                headers: { 'x-user-id': user.id }
+            })
             const data = await res.json()
-            setSettings(data)
-        } catch (err) {
+            if (data) setSettings(data)
+        } catch (err: any) {
             console.error('Failed to fetch settings:', err)
         }
-    }, [])
+    }, [user])
 
     // Initial load
     useEffect(() => {
-        Promise.all([fetchContents(), fetchSettings()]).then(() => setLoading(false))
-    }, [fetchContents, fetchSettings])
+        if (user) {
+            Promise.all([fetchContents(), fetchSettings()]).then(() => setLoading(false))
+        }
+    }, [user, fetchContents, fetchSettings])
 
     const addContent = async (content: Partial<Content>) => {
-        const newContent: Content = {
-            id: uuidv4(),
+        if (!user) return
+        const newContent = {
+            ...content,
             type: content.type || 'short',
             title: content.title || '',
             topic: content.topic || '',
@@ -109,38 +118,49 @@ export function useSchedule() {
         }
 
         try {
-            const res = await fetch(`${API_URL}/contents`, {
+            const res = await fetch(ENDPOINTS.CONTENTS, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-user-id': user.id
+                },
                 body: JSON.stringify(newContent)
             })
             const data = await res.json()
             setContents(prev => [...prev, data])
             return data
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to add content:', err)
         }
     }
 
     const updateContent = async (id: string, updates: Partial<Content>) => {
+        if (!user) return
         try {
-            const res = await fetch(`${API_URL}/contents/${id}`, {
+            const res = await fetch(`${ENDPOINTS.CONTENTS}/${id}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-user-id': user.id
+                },
                 body: JSON.stringify(updates)
             })
             const data = await res.json()
             setContents(prev => prev.map(c => c.id === id ? data : c))
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to update content:', err)
         }
     }
 
     const deleteContent = async (id: string) => {
+        if (!user) return
         try {
-            await fetch(`${API_URL}/contents/${id}`, { method: 'DELETE' })
+            await fetch(`${ENDPOINTS.CONTENTS}/${id}`, {
+                method: 'DELETE',
+                headers: { 'x-user-id': user.id }
+            })
             setContents(prev => prev.filter(c => c.id !== id))
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to delete content:', err)
         }
     }
@@ -179,12 +199,11 @@ export function useSchedule() {
     const getStats = (): ContentStats => {
         const now = new Date()
         const weekStart = new Date(now)
-        weekStart.setDate(now.getDate() - now.getDay() + 1)
+        weekStart.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1))
         weekStart.setHours(0, 0, 0, 0)
 
         const weekContents = getWeekContents(weekStart.toISOString().split('T')[0])
 
-        // Count late items (scheduled date passed but not published)
         const today = new Date()
         today.setHours(23, 59, 59, 999)
         const lateCount = contents.filter(c => {
@@ -232,7 +251,6 @@ export function useSchedule() {
         return streak
     }
 
-    // URL type detection helper
     const detectUrlType = (url: string): Url['type'] => {
         if (!url) return 'other'
         const lowerUrl = url.toLowerCase()
@@ -242,13 +260,12 @@ export function useSchedule() {
         return 'other'
     }
 
-    // Add URL to content
     const addUrl = async (contentId: string, urlData: { url: string; label?: string }) => {
         const content = contents.find(c => c.id === contentId)
         if (!content) return
 
         const newUrl: Url = {
-            id: uuidv4(),
+            id: crypto.randomUUID(),
             type: detectUrlType(urlData.url),
             url: urlData.url,
             label: urlData.label || ''
@@ -258,7 +275,6 @@ export function useSchedule() {
         return newUrl
     }
 
-    // Remove URL from content
     const removeUrl = async (contentId: string, urlId: string) => {
         const content = contents.find(c => c.id === contentId)
         if (!content) return
@@ -267,15 +283,14 @@ export function useSchedule() {
         await updateContent(contentId, { urls: updatedUrls })
     }
 
-    // Add comment to content
     const addComment = async (contentId: string, text: string) => {
         const content = contents.find(c => c.id === contentId)
         if (!content) return
 
         const newComment: Comment = {
-            id: uuidv4(),
+            id: crypto.randomUUID(),
             text,
-            author: 'User', // Prepared for multi-user
+            author: 'User',
             createdAt: new Date().toISOString()
         }
         const updatedComments = [...(content.comments || []), newComment]
@@ -283,7 +298,6 @@ export function useSchedule() {
         return newComment
     }
 
-    // Delete comment from content
     const deleteComment = async (contentId: string, commentId: string) => {
         const content = contents.find(c => c.id === contentId)
         if (!content) return
@@ -293,16 +307,20 @@ export function useSchedule() {
     }
 
     const updateSettings = async (newSettings: Partial<Settings>) => {
+        if (!user) return
         try {
-            const res = await fetch(`${API_URL}/settings`, {
+            const res = await fetch(ENDPOINTS.SETTINGS, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-user-id': user.id
+                },
                 body: JSON.stringify(newSettings)
             })
             const data = await res.json()
             setSettings(data)
             return data
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to update settings:', err)
         }
     }
@@ -322,13 +340,12 @@ export function useSchedule() {
         getStats,
         getStreak,
         updateSettings,
-        // URL functions
         detectUrlType,
         addUrl,
         removeUrl,
-        // Comment functions
         addComment,
         deleteComment,
         refetch: fetchContents
     }
 }
+

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { NavLink } from 'react-router-dom'
 import {
   Calendar, Film, Users, LayoutGrid, Briefcase, FileText, GraduationCap,
-  Menu, X, ChevronLeft, ChevronRight
+  Menu, X, ChevronLeft, ChevronRight, Phone, Zap
 } from 'lucide-react'
 
 const modules = [
@@ -61,6 +61,22 @@ const modules = [
     description: 'Learn & master new skills',
     color: 'from-violet-500 to-purple-600',
     path: '/skills'
+  },
+  {
+    id: 'calling',
+    name: 'AI Calling',
+    icon: Phone,
+    description: 'AI-powered outbound calls',
+    color: 'from-cyan-500 to-blue-600',
+    path: '/calling'
+  },
+  {
+    id: 'automation',
+    name: 'Automation',
+    icon: Zap,
+    description: 'Lead scraping & outreach',
+    color: 'from-amber-500 to-orange-600',
+    path: '/automation'
   }
 ]
 
@@ -82,9 +98,8 @@ export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollaps
 
       {/* Sidebar - always visible on desktop, drawer on mobile */}
       <aside
-        className={`fixed left-0 top-0 bottom-0 ${sidebarWidth} bg-bg-secondary border-r border-border z-50 flex flex-col transition-all duration-300 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        }`}
+        className={`fixed left-0 top-0 bottom-0 ${sidebarWidth} bg-bg-secondary border-r border-border z-50 flex flex-col transition-all duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+          }`}
       >
         {/* Header */}
         <div className="h-14 flex items-center justify-between px-3 border-b border-border">
@@ -134,11 +149,10 @@ export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollaps
                       onToggle()
                     }
                   }}
-                  className={`relative flex items-center gap-2 px-2 py-2 rounded-lg transition-all group ${
-                    isActive
-                      ? 'text-white'
-                      : 'text-text-muted hover:text-text-primary hover:bg-bg-tertiary'
-                  }`}
+                  className={`relative flex items-center gap-2 px-2 py-2 rounded-lg transition-all group ${isActive
+                    ? 'text-white'
+                    : 'text-text-muted hover:text-text-primary hover:bg-bg-tertiary'
+                    }`}
                   title={isCollapsed ? module.name : ''}
                 >
                   {/* Active indicator */}

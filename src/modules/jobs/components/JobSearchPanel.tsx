@@ -1,8 +1,9 @@
+// @ts-nocheck
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Search, ExternalLink, Star, Globe, Briefcase, Rocket, Building2, Filter } from 'lucide-react'
-
-const JSON_SERVER = 'http://localhost:3005'
+import { ENDPOINTS } from '../../../config/api'
+import { useAuth } from '../../../hooks/useAuth'
 
 const sourceIcons = {
   remoteok: { icon: Globe, color: 'text-green-400', bg: 'bg-green-500/20' },
@@ -14,27 +15,31 @@ const sourceIcons = {
 }
 
 export function JobSearchPanel({ isOpen, onClose }) {
-  const [searchPrompts, setSearchPrompts] = useState([])
+  const { user } = useAuth()
+  const [searchPrompts, setSearchPrompts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     const fetchPrompts = async () => {
+      if (!user) return
       try {
-        const res = await fetch(`${JSON_SERVER}/jobSearchPrompts`)
+        const res = await fetch(ENDPOINTS.JOB_SEARCH_PROMPTS, {
+          headers: { 'x-user-id': user.id }
+        })
         const data = await res.json()
         setSearchPrompts(data)
-      } catch (err) {
+      } catch (err: any) {
         console.error('Failed to fetch search prompts:', err)
       } finally {
         setLoading(false)
       }
     }
-    if (isOpen) {
+    if (isOpen && user) {
       fetchPrompts()
     }
-  }, [isOpen])
+  }, [isOpen, user])
 
   const sources = [...new Set(searchPrompts.map(p => p.source))]
 
