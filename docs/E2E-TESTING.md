@@ -250,7 +250,14 @@ Expected: 200 { skills: [], totalMastered: 0, ... }
 
 ## Test Suite 11: Browser UI Tests
 
+### Full Regression Recording
+
+![Full browser regression test recording](assets/full-regression-test.webp)
+
 ### Test 11.1: Login Page Renders
+
+![Login Page](assets/login-page.png)
+
 ```
 Navigate: http://localhost:5173
 Assert: Email input visible, Password input visible, "Sign In" button visible
@@ -258,6 +265,9 @@ Assert: "Create one" registration link visible
 ```
 
 ### Test 11.2: Registration Flow
+
+![Dashboard after registration](assets/dashboard-home.png)
+
 ```
 1. Click "Create one" link
 2. Fill: Name = "E2E User", Email = "e2e@test.com", Password = "test123", Confirm = "test123"
@@ -267,6 +277,15 @@ Assert: "Create one" registration link visible
 ```
 
 ### Test 11.3: Sidebar Navigation
+
+| Page | Screenshot |
+|---|---|
+| Leads | ![Leads](assets/leads-page.png) |
+| Jobs | ![Jobs](assets/jobs-page.png) |
+| Task Boards | ![Task Boards](assets/taskboards-page.png) |
+| Templates | ![Templates](assets/templates-page.png) |
+| Automation | ![Automation Hub](assets/automation-hub.png) |
+
 ```
 For each sidebar item:
   Calendar       → Assert: Calendar view renders
@@ -281,6 +300,9 @@ For each sidebar item:
 ```
 
 ### Test 11.4: Leads Page — Automation Widget
+
+![Automation Widget on Leads Page](assets/automation-widget.png)
+
 ```
 1. Navigate to Leads page
 2. Assert: Bottom-right shows Automation widget with stats (Uncontacted, Sent Today, All Time)

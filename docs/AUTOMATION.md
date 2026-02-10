@@ -176,6 +176,8 @@ Sends personalized emails using Nodemailer. Features:
 
 Located at `src/modules/leads/components/AutomationView.tsx`. Three-tab interface:
 
+![Automation Hub UI](assets/automation-hub.png)
+
 1. **Lead Scraper Tab**
    - Search input with Google query
    - "Enrich with contact info" checkbox
@@ -197,6 +199,8 @@ Located at `src/modules/leads/components/AutomationView.tsx`. Three-tab interfac
 Two entry points:
 1. **Sidebar** → "Automation" menu item → navigates to `/automation`
 2. **Leads page** → Bottom-right "Automation" widget → "Open Hub" link
+
+![Automation Widget on Leads Page](assets/automation-widget.png)
 
 ---
 
