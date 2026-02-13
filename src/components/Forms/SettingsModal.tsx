@@ -1,14 +1,16 @@
 import { useState, useEffect, useCallback, memo } from 'react'
 import { Modal } from '../ui/modal'
 import { Button } from '../ui/button'
-import { Video, Smartphone, Tag, Plus, X, Target, Settings, Mail } from 'lucide-react'
+import { Video, Smartphone, Tag, Plus, X, Target, Settings, Mail, Key } from 'lucide-react'
 import { EmailSettingsTab } from './EmailSettingsTab'
+import { ApiKeysTab } from './ApiKeysTab'
 
 const DEFAULT_TOPICS = ['React Hooks', 'React 19', 'Performance', 'Interview Prep', 'JavaScript', 'React Basics', 'Other']
 
 const tabs = [
     { id: 'general', label: 'General', icon: Settings },
-    { id: 'email', label: 'Email', icon: Mail }
+    { id: 'email', label: 'Email', icon: Mail },
+    { id: 'apikeys', label: 'API Keys', icon: Key }
 ]
 
 interface WeeklyGoals {
@@ -123,6 +125,9 @@ export const SettingsModal = memo(function SettingsModal({
 
             {/* Email Tab */}
             {activeTab === 'email' && <EmailSettingsTab />}
+
+            {/* API Keys Tab */}
+            {activeTab === 'apikeys' && <ApiKeysTab />}
 
             {/* General Tab */}
             {activeTab === 'general' && (

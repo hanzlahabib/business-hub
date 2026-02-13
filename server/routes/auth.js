@@ -17,6 +17,10 @@ router.post('/login', async (req, res) => {
 
 router.post('/register', async (req, res) => {
     try {
+        const { email, password } = req.body || {}
+        if (!email || !password) {
+            return res.status(400).json({ success: false, error: 'Email and password are required' })
+        }
         const user = await authService.register(req.body)
         res.json({ success: true, user })
     } catch (error) {

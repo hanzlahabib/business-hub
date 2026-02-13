@@ -2,6 +2,7 @@ import express from 'express'
 import prisma from '../config/prisma.js'
 import authMiddleware from '../middleware/auth.js'
 import { settingsRepository, emailSettingsRepository, jobSearchPromptRepository } from '../repositories/extraRepositories.js'
+import { loadUserKeys } from '../services/apiKeyService.js'
 
 const router = express.Router()
 router.use(authMiddleware)
@@ -11,6 +12,19 @@ router.use(authMiddleware)
 router.get('/taskboards', async (req, res) => {
     const data = await prisma.taskBoard.findMany({ where: { userId: req.user.id }, include: { tasks: true } })
     res.json(data)
+})
+
+router.get('/taskboards/:id', async (req, res) => {
+    try {
+        const board = await prisma.taskBoard.findFirst({
+            where: { id: req.params.id, userId: req.user.id },
+            include: { tasks: true }
+        })
+        if (!board) return res.status(404).json({ error: 'Task board not found' })
+        res.json(board)
+    } catch (e) {
+        res.status(400).json({ error: e.message })
+    }
 })
 
 router.post('/taskboards', async (req, res) => {
@@ -278,6 +292,10 @@ router.get('/settings', async (req, res) => {
 
 router.patch('/settings', async (req, res) => {
     const updated = await settingsRepository.upsert(req.user.id, req.body)
+    // Reload this user's keys into per-user cache (invalidates their adapter instances)
+    if (req.body.apiKeys) {
+        await loadUserKeys(req.user.id)
+    }
     res.json(updated.config)
 })
 

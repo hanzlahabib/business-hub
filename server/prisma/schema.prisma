@@ -35,6 +35,7 @@ model User {
   cvFiles       CVFile[]
   templateHistory TemplateHistory[]
   templateComments TemplateComment[]
+  skillMastery SkillMastery?
   // AI Calling System
   calls         Call[]
   callScripts   CallScript[]
@@ -328,6 +329,17 @@ model TemplateComment {
 }
 
 // ============================================
+// SKILL MASTERY
+// ============================================
+model SkillMastery {
+  id        String   @id @default(cuid())
+  data      Json?
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
 // AI CALLING SYSTEM
 // ============================================
 model Call {
@@ -368,6 +380,7 @@ model CallScript {
   objectionHandlers Json?     // [{ objection, response }]
   closingStrategy   String?
   rateRange         Json?     // { min, max, target, currency }
+  assistantConfig   Json?     // { businessName, businessWebsite, businessLocation, agentName, agentRole, voiceId, llmModel, llmProvider, temperature, maxDuration, conversationStyle, endCallPhrases, customSystemPrompt }
   isActive          Boolean   @default(true)
   usageCount        Int       @default(0)
   successRate       Float?

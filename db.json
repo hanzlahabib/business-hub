@@ -5065,6 +5065,573 @@
         "verified"
       ],
       "createdAt": "2026-01-31T00:00:00Z"
+    },
+    {
+      "id": "lead-henderson-ev-venture-electric",
+      "name": "Venture Electric",
+      "contactPerson": "Bradley Pickett",
+      "email": "",
+      "phone": "(702) 580-1414",
+      "website": "ventureelectricalcontracting.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Tesla-certified installer since 2017. Specializes in EV charger installations. Family-owned, owner handles jobs personally. Address: 10940 S Eastern Ave, Henderson, NV 89052. HIGH PRIORITY - already in EV space.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-1",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-eco-electric",
+      "name": "Eco Electric",
+      "contactPerson": "Chris Dodson",
+      "email": "",
+      "phone": "(702) 323-5624",
+      "website": "ecoelectriclv.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "US Navy trained. Master Electrician. Est. 2010. Actively markets EV charger services. 520+ Yelp reviews. Large online presence. Address: 4205 W Tompkins Ave, Las Vegas, NV.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-1",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-dead-on-electrical",
+      "name": "Dead On Electrical Services",
+      "contactPerson": "Michael Pearce",
+      "email": "",
+      "phone": "(702) 867-2204",
+      "website": "deadonelectricalservices.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Est. 2018. Actively markets EV charger installation. Serves Henderson, Summerlin, Spring Valley. Address: 3888 Jewel Ave, Las Vegas, NV 89121.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-1",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-frequency-x",
+      "name": "Frequency X Electric",
+      "contactPerson": "Francisco R. Pimentel-Roque",
+      "email": "",
+      "phone": "(702) 539-2999",
+      "website": "frequencyxelectric.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Family-owned. Has dedicated EV charger page on website. Smaller operation - good lead buyer. Address: 4922 Rancho Domingo Ct, N. Las Vegas, NV 89031.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-1",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-g3-electrical",
+      "name": "G3 Electrical",
+      "contactPerson": "Unknown",
+      "email": "",
+      "phone": "",
+      "website": "g3electrical.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Est. 2010. EV charger installation is their ONLY residential service - pure EV specialist. Address: Las Vegas, NV. HIGH PRIORITY.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-1",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-charge-home",
+      "name": "Charge Home Solutions",
+      "contactPerson": "Unknown",
+      "email": "",
+      "phone": "(888) 995-6044",
+      "website": "chargehomesolutions.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Tesla-certified. EV charger and Powerwall specialist. Handles Clark County permits. Address: Las Vegas/Henderson area. HIGH PRIORITY - pure EV play.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-1",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-friends-electric",
+      "name": "Friends Electric",
+      "contactPerson": "Fara",
+      "email": "",
+      "phone": "(702) 800-0505",
+      "website": "friendselectriclv.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Est. 2012. Henderson-based. Licensed, bonded, insured. Offers EV charger installations. Family-owned. Address: 2420 Pebble Springs Ct, Henderson, NV 89074.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-1",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-southwest-electric",
+      "name": "Southwest Electric",
+      "contactPerson": "Tom Sarnelli",
+      "email": "",
+      "phone": "(702) 564-5003",
+      "website": "southwestelectricnv.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Est. 1992. Henderson-based. 30+ years experience. Markets EV charger services. Well-established. Address: 921 American Pacific Dr, Unit 307, Henderson, NV.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-1",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-callidus-electric",
+      "name": "Callidus Electric",
+      "contactPerson": "Brandon McCoy",
+      "email": "",
+      "phone": "(702) 403-4562",
+      "website": "calliduselectric.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Family-owned, est. 2011. 300+ five-star reviews. Residential and commercial. Henderson headquarters. Address: 334 Banuelo Dr, Henderson, NV 89014.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-2",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-penny-electric",
+      "name": "Penny Electric",
+      "contactPerson": "David C. Penny",
+      "email": "",
+      "phone": "(702) 279-6040",
+      "website": "pennyelectric.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Family-owned, est. 2008. Full-service residential and commercial. Henderson headquarters. Address: 1987 Whitney Mesa Dr, Henderson, NV 89014.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-2",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-neptune-electric",
+      "name": "Neptune Electric",
+      "contactPerson": "Jose",
+      "email": "",
+      "phone": "(702) 831-1170",
+      "website": "neptuneelectriclv.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Family-run (Jose and wife). Small operation - ideal lead buyer. Highly rated on Yelp. Address: 11850 Bella Luna St, Las Vegas, NV 89183.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-2",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-citywide-electric",
+      "name": "Citywide Electric & Maintenance",
+      "contactPerson": "Desiree Freels",
+      "email": "",
+      "phone": "(702) 664-6250",
+      "website": "citywideelectriclv.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Woman and family owned. President: Desiree Freels, Jeffrey Freels. 22+ years experience. Offers EV charger installation. Serves Henderson. Address: 1655 Stone Hill Road, Las Vegas, NV 89156.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-2",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-origin-electric",
+      "name": "Origin Electric",
+      "contactPerson": "James Fish",
+      "email": "",
+      "phone": "(702) 957-0011",
+      "website": "originelectricnv.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Founder/CEO: James Fish. Est. 2021. 25+ years master electrician experience. Markets EV charger installation. Newer company, hungry for leads. Address: 2480 N Decatur Blvd #175, Las Vegas, NV 89108.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-2",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-electricode",
+      "name": "Electricode",
+      "contactPerson": "Unknown",
+      "email": "",
+      "phone": "(725) 208-5456",
+      "website": "electricodeapi.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Family-owned. Actively markets EV charging station installation in Henderson. License NSCB C-2 #0082813. Address: Henderson, NV.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-2",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-central-power",
+      "name": "Central Power LLC",
+      "contactPerson": "George A. Diaz",
+      "email": "",
+      "phone": "(702) 830-9742",
+      "website": "centralpowerllc.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Est. 2016. Full-service residential/commercial/industrial. 381 Yelp reviews. Address: 4580 S Eastern Ave, Ste 31E, Las Vegas, NV 89119.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-2",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-pdq-electric",
+      "name": "PDQ Electric",
+      "contactPerson": "Unknown",
+      "email": "",
+      "phone": "(702) 382-1100",
+      "website": "pdqelectricnv.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Licensed, full-service. Est. 2010. Serves Henderson, Las Vegas, Summerlin. 229 Yelp reviews. Address: 3111 S Valley View Blvd, Ste A-104, Las Vegas, NV 89102.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-2",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-jb-electric",
+      "name": "JB Electric",
+      "contactPerson": "Unknown",
+      "email": "",
+      "phone": "(725) 306-7488",
+      "website": "nev.jb-electric.net",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Family-owned. 25+ years experience. Henderson-based. Address: Henderson, NV.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-canyon-electric",
+      "name": "Canyon Electric",
+      "contactPerson": "Terry Gomes",
+      "email": "",
+      "phone": "(702) 384-4747",
+      "website": "canyonelectric.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Family-owned, est. 1986. President: Terry Gomes. 24/7 emergency. 30+ years. Serves Henderson. Address: 4357 Corporate Center Dr, Suite 430, N. Las Vegas, NV 89030.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-pacific-electric",
+      "name": "Pacific Electric",
+      "contactPerson": "Jean Gaumond",
+      "email": "",
+      "phone": "(702) 433-8777",
+      "website": "pacificelectriclv.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Est. 1986. 39 years in business. BBB Accredited. Henderson Chamber member. 10% senior/military discount. Address: 3035 E Patrick Ln, Ste 13-14, Las Vegas, NV 89120.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-have-lights",
+      "name": "Have Lights Will Travel",
+      "contactPerson": "Kyle McClelland",
+      "email": "",
+      "phone": "(702) 789-7433",
+      "website": "havelights.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "40+ years experience. Actively markets EV charger installation. Residential and commercial. Address: 6000 S Eastern Ave, Las Vegas, NV 89119.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-robco-electric",
+      "name": "Robco Electric",
+      "contactPerson": "Robert Kowalczik",
+      "email": "",
+      "phone": "(702) 614-4900",
+      "website": "robcoelectriclv.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "President: Robert Kowalczik. Est. 1997. Also does solar. Residential and commercial. Address: 5692 La Costa Canyon Ct, Ste 105, Las Vegas, NV 89139.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-ampere-electric",
+      "name": "Ampere Electric",
+      "contactPerson": "Shane Viggiani",
+      "email": "",
+      "phone": "(702) 979-1747",
+      "website": "ampereelectricnv.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "3rd gen family business, est. 1987. 40+ electricians. Markets EV charger services in Henderson. Larger operation but locally owned. Address: 4710 W Dewey Dr, Ste 112, Las Vegas, NV 89118.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-oe-services",
+      "name": "OE Services",
+      "contactPerson": "Unknown",
+      "email": "",
+      "phone": "",
+      "website": "oeservices.us",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "18+ years experience. Electrical and general contracting. Address: Henderson/Clark County, NV.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-sigma-companies",
+      "name": "Sigma Companies LLC",
+      "contactPerson": "Unknown",
+      "email": "",
+      "phone": "(877) 330-2610",
+      "website": "sigmacompanies.us",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Family-owned. 7+ years. 24/7 emergency. Residential and commercial. Address: Las Vegas, NV.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-ideal-services",
+      "name": "Ideal Services",
+      "contactPerson": "Unknown",
+      "email": "",
+      "phone": "(702) 396-5225",
+      "website": "idealservices.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "Est. 2001. Henderson-based. Multi-trade (plumbing, HVAC, electrical). Larger but local. Address: 648 Joey Ln, Henderson, NV 89011.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-vegas-electric",
+      "name": "Vegas Electric",
+      "contactPerson": "Unknown",
+      "email": "",
+      "phone": "",
+      "website": "vegas-electric.com",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "24/7 service. Licensed and insured. Contact form on site only. Address: Las Vegas, NV.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
+    },
+    {
+      "id": "lead-henderson-ev-lv-electrician",
+      "name": "The Las Vegas Electrician",
+      "contactPerson": "Unknown",
+      "email": "",
+      "phone": "",
+      "website": "",
+      "industry": "electrician",
+      "status": "new",
+      "source": "web-scrape",
+      "notes": "30 years experience. Troubleshooting specialist. Henderson-based per Yelp. Yelp only, no website.",
+      "websiteIssues": [],
+      "tags": [
+        "henderson-ev",
+        "tier-3",
+        "ev-charger"
+      ],
+      "linkedBoardId": "board-henderson-ev-outreach",
+      "createdAt": "2026-02-12T00:00:00Z",
+      "lastContactedAt": null
     }
   ],
   "messages": [
@@ -5739,6 +6306,44 @@
         }
       ],
       "createdAt": "2026-01-31T00:00:00Z"
+    },
+    {
+      "id": "board-henderson-ev-outreach",
+      "name": "Henderson EV - Contractor Outreach",
+      "leadId": null,
+      "columns": [
+        {
+          "id": "prospects",
+          "name": "Prospects",
+          "color": "#6B7280"
+        },
+        {
+          "id": "calling",
+          "name": "Calling",
+          "color": "#3B82F6"
+        },
+        {
+          "id": "interested",
+          "name": "Interested",
+          "color": "#F59E0B"
+        },
+        {
+          "id": "negotiating",
+          "name": "Negotiating",
+          "color": "#8B5CF6"
+        },
+        {
+          "id": "signed",
+          "name": "Signed",
+          "color": "#10B981"
+        },
+        {
+          "id": "rejected",
+          "name": "Rejected",
+          "color": "#EF4444"
+        }
+      ],
+      "createdAt": "2026-02-12T00:00:00Z"
     }
   ],
   "tasks": [
@@ -9415,6 +10020,302 @@
       ],
       "createdAt": "2026-02-01T00:00:00Z",
       "position": 0
+    },
+    {
+      "id": "task-hev-venture-electric",
+      "boardId": "board-henderson-ev-outreach",
+      "columnId": "prospects",
+      "title": "📞 Call Venture Electric - Bradley Pickett",
+      "description": "CALL SCRIPT:\n\nHi Bradley, my name is [Agent]. I run a local lead generation service for EV charger installers in Henderson, NV.\n\nI have a website — hendersonevcharger.com — that's ranking on Google and generating leads from homeowners looking for EV charger installation. Right now these leads are going unanswered.\n\nI'm looking for one reliable, licensed electrician in Henderson to send these leads to. Would you be interested in receiving free EV charger installation leads for your business?\n\nVALUE PROPS:\n- Pre-qualified homeowner leads in Henderson/Las Vegas area\n- They're actively searching Google for EV charger installation\n- No upfront cost — we can start with a trial period\n- You only pay for leads that convert\n\nOBJECTION HANDLERS:\n- 'How much?' → 'We can discuss pricing after the trial. Most contractors pay $50-150 per qualified lead.'\n- 'Too busy' → 'That's great — means you have demand. We can start with just 2-3 leads per week.'\n- 'Not interested in EV' → 'EV charger installation is the fastest-growing segment. Average ticket is $500-900 with minimal parts cost.'\n- 'Already have marketing' → 'This isn't marketing — these are ready-to-buy leads calling you directly. No ad spend on your end.'\n\nCONTACT INFO:\n- Phone: (702) 580-1414\n- Website: ventureelectricalcontracting.com\n- Notes: Tesla-certified installer since 2017. Specializes in EV charger installations. Family-owned, owner handles jobs personally. Address: 10940 S Eastern Ave, Henderson, NV 89052. HIGH PRIORITY - already in EV space.",
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "st-venture-electric-1",
+          "text": "Research business website",
+          "done": false
+        },
+        {
+          "id": "st-venture-electric-2",
+          "text": "Make initial call",
+          "done": false
+        },
+        {
+          "id": "st-venture-electric-3",
+          "text": "Send follow-up email",
+          "done": false
+        },
+        {
+          "id": "st-venture-electric-4",
+          "text": "Schedule demo/trial",
+          "done": false
+        }
+      ],
+      "leadId": "lead-henderson-ev-venture-electric",
+      "tags": [
+        "henderson-ev",
+        "outreach"
+      ],
+      "createdAt": "2026-02-12T00:00:00Z",
+      "position": 0
+    },
+    {
+      "id": "task-hev-eco-electric",
+      "boardId": "board-henderson-ev-outreach",
+      "columnId": "prospects",
+      "title": "📞 Call Eco Electric - Chris Dodson",
+      "description": "CALL SCRIPT:\n\nHi Chris, my name is [Agent]. I run a local lead generation service for EV charger installers in Henderson, NV.\n\nI have a website — hendersonevcharger.com — that's ranking on Google and generating leads from homeowners looking for EV charger installation. Right now these leads are going unanswered.\n\nI'm looking for one reliable, licensed electrician in Henderson to send these leads to. Would you be interested in receiving free EV charger installation leads for your business?\n\nVALUE PROPS:\n- Pre-qualified homeowner leads in Henderson/Las Vegas area\n- They're actively searching Google for EV charger installation\n- No upfront cost — we can start with a trial period\n- You only pay for leads that convert\n\nOBJECTION HANDLERS:\n- 'How much?' → 'We can discuss pricing after the trial. Most contractors pay $50-150 per qualified lead.'\n- 'Too busy' → 'That's great — means you have demand. We can start with just 2-3 leads per week.'\n- 'Not interested in EV' → 'EV charger installation is the fastest-growing segment. Average ticket is $500-900 with minimal parts cost.'\n- 'Already have marketing' → 'This isn't marketing — these are ready-to-buy leads calling you directly. No ad spend on your end.'\n\nCONTACT INFO:\n- Phone: (702) 323-5624\n- Website: ecoelectriclv.com\n- Notes: US Navy trained. Master Electrician. Est. 2010. Actively markets EV charger services. 520+ Yelp reviews. Large online presence. Address: 4205 W Tompkins Ave, Las Vegas, NV.",
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "st-eco-electric-1",
+          "text": "Research business website",
+          "done": false
+        },
+        {
+          "id": "st-eco-electric-2",
+          "text": "Make initial call",
+          "done": false
+        },
+        {
+          "id": "st-eco-electric-3",
+          "text": "Send follow-up email",
+          "done": false
+        },
+        {
+          "id": "st-eco-electric-4",
+          "text": "Schedule demo/trial",
+          "done": false
+        }
+      ],
+      "leadId": "lead-henderson-ev-eco-electric",
+      "tags": [
+        "henderson-ev",
+        "outreach"
+      ],
+      "createdAt": "2026-02-12T00:00:00Z",
+      "position": 1
+    },
+    {
+      "id": "task-hev-dead-on-electrical",
+      "boardId": "board-henderson-ev-outreach",
+      "columnId": "prospects",
+      "title": "📞 Call Dead On Electrical Services - Michael Pearce",
+      "description": "CALL SCRIPT:\n\nHi Michael, my name is [Agent]. I run a local lead generation service for EV charger installers in Henderson, NV.\n\nI have a website — hendersonevcharger.com — that's ranking on Google and generating leads from homeowners looking for EV charger installation. Right now these leads are going unanswered.\n\nI'm looking for one reliable, licensed electrician in Henderson to send these leads to. Would you be interested in receiving free EV charger installation leads for your business?\n\nVALUE PROPS:\n- Pre-qualified homeowner leads in Henderson/Las Vegas area\n- They're actively searching Google for EV charger installation\n- No upfront cost — we can start with a trial period\n- You only pay for leads that convert\n\nOBJECTION HANDLERS:\n- 'How much?' → 'We can discuss pricing after the trial. Most contractors pay $50-150 per qualified lead.'\n- 'Too busy' → 'That's great — means you have demand. We can start with just 2-3 leads per week.'\n- 'Not interested in EV' → 'EV charger installation is the fastest-growing segment. Average ticket is $500-900 with minimal parts cost.'\n- 'Already have marketing' → 'This isn't marketing — these are ready-to-buy leads calling you directly. No ad spend on your end.'\n\nCONTACT INFO:\n- Phone: (702) 867-2204\n- Website: deadonelectricalservices.com\n- Notes: Est. 2018. Actively markets EV charger installation. Serves Henderson, Summerlin, Spring Valley. Address: 3888 Jewel Ave, Las Vegas, NV 89121.",
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "st-dead-on-electrical-1",
+          "text": "Research business website",
+          "done": false
+        },
+        {
+          "id": "st-dead-on-electrical-2",
+          "text": "Make initial call",
+          "done": false
+        },
+        {
+          "id": "st-dead-on-electrical-3",
+          "text": "Send follow-up email",
+          "done": false
+        },
+        {
+          "id": "st-dead-on-electrical-4",
+          "text": "Schedule demo/trial",
+          "done": false
+        }
+      ],
+      "leadId": "lead-henderson-ev-dead-on-electrical",
+      "tags": [
+        "henderson-ev",
+        "outreach"
+      ],
+      "createdAt": "2026-02-12T00:00:00Z",
+      "position": 2
+    },
+    {
+      "id": "task-hev-frequency-x",
+      "boardId": "board-henderson-ev-outreach",
+      "columnId": "prospects",
+      "title": "📞 Call Frequency X Electric - Francisco R. Pimentel-Roque",
+      "description": "CALL SCRIPT:\n\nHi Francisco, my name is [Agent]. I run a local lead generation service for EV charger installers in Henderson, NV.\n\nI have a website — hendersonevcharger.com — that's ranking on Google and generating leads from homeowners looking for EV charger installation. Right now these leads are going unanswered.\n\nI'm looking for one reliable, licensed electrician in Henderson to send these leads to. Would you be interested in receiving free EV charger installation leads for your business?\n\nVALUE PROPS:\n- Pre-qualified homeowner leads in Henderson/Las Vegas area\n- They're actively searching Google for EV charger installation\n- No upfront cost — we can start with a trial period\n- You only pay for leads that convert\n\nOBJECTION HANDLERS:\n- 'How much?' → 'We can discuss pricing after the trial. Most contractors pay $50-150 per qualified lead.'\n- 'Too busy' → 'That's great — means you have demand. We can start with just 2-3 leads per week.'\n- 'Not interested in EV' → 'EV charger installation is the fastest-growing segment. Average ticket is $500-900 with minimal parts cost.'\n- 'Already have marketing' → 'This isn't marketing — these are ready-to-buy leads calling you directly. No ad spend on your end.'\n\nCONTACT INFO:\n- Phone: (702) 539-2999\n- Website: frequencyxelectric.com\n- Notes: Family-owned. Has dedicated EV charger page on website. Smaller operation - good lead buyer. Address: 4922 Rancho Domingo Ct, N. Las Vegas, NV 89031.",
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "st-frequency-x-1",
+          "text": "Research business website",
+          "done": false
+        },
+        {
+          "id": "st-frequency-x-2",
+          "text": "Make initial call",
+          "done": false
+        },
+        {
+          "id": "st-frequency-x-3",
+          "text": "Send follow-up email",
+          "done": false
+        },
+        {
+          "id": "st-frequency-x-4",
+          "text": "Schedule demo/trial",
+          "done": false
+        }
+      ],
+      "leadId": "lead-henderson-ev-frequency-x",
+      "tags": [
+        "henderson-ev",
+        "outreach"
+      ],
+      "createdAt": "2026-02-12T00:00:00Z",
+      "position": 3
+    },
+    {
+      "id": "task-hev-g3-electrical",
+      "boardId": "board-henderson-ev-outreach",
+      "columnId": "prospects",
+      "title": "📞 Call G3 Electrical - Unknown",
+      "description": "CALL SCRIPT:\n\nHi [Owner], my name is [Agent]. I run a local lead generation service for EV charger installers in Henderson, NV.\n\nI have a website — hendersonevcharger.com — that's ranking on Google and generating leads from homeowners looking for EV charger installation. Right now these leads are going unanswered.\n\nI'm looking for one reliable, licensed electrician in Henderson to send these leads to. Would you be interested in receiving free EV charger installation leads for your business?\n\nVALUE PROPS:\n- Pre-qualified homeowner leads in Henderson/Las Vegas area\n- They're actively searching Google for EV charger installation\n- No upfront cost — we can start with a trial period\n- You only pay for leads that convert\n\nOBJECTION HANDLERS:\n- 'How much?' → 'We can discuss pricing after the trial. Most contractors pay $50-150 per qualified lead.'\n- 'Too busy' → 'That's great — means you have demand. We can start with just 2-3 leads per week.'\n- 'Not interested in EV' → 'EV charger installation is the fastest-growing segment. Average ticket is $500-900 with minimal parts cost.'\n- 'Already have marketing' → 'This isn't marketing — these are ready-to-buy leads calling you directly. No ad spend on your end.'\n\nCONTACT INFO:\n- Phone: \n- Website: g3electrical.com\n- Notes: Est. 2010. EV charger installation is their ONLY residential service - pure EV specialist. Address: Las Vegas, NV. HIGH PRIORITY.",
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "st-g3-electrical-1",
+          "text": "Research business website",
+          "done": false
+        },
+        {
+          "id": "st-g3-electrical-2",
+          "text": "Make initial call",
+          "done": false
+        },
+        {
+          "id": "st-g3-electrical-3",
+          "text": "Send follow-up email",
+          "done": false
+        },
+        {
+          "id": "st-g3-electrical-4",
+          "text": "Schedule demo/trial",
+          "done": false
+        }
+      ],
+      "leadId": "lead-henderson-ev-g3-electrical",
+      "tags": [
+        "henderson-ev",
+        "outreach"
+      ],
+      "createdAt": "2026-02-12T00:00:00Z",
+      "position": 4
+    },
+    {
+      "id": "task-hev-charge-home",
+      "boardId": "board-henderson-ev-outreach",
+      "columnId": "prospects",
+      "title": "📞 Call Charge Home Solutions - Unknown",
+      "description": "CALL SCRIPT:\n\nHi [Owner], my name is [Agent]. I run a local lead generation service for EV charger installers in Henderson, NV.\n\nI have a website — hendersonevcharger.com — that's ranking on Google and generating leads from homeowners looking for EV charger installation. Right now these leads are going unanswered.\n\nI'm looking for one reliable, licensed electrician in Henderson to send these leads to. Would you be interested in receiving free EV charger installation leads for your business?\n\nVALUE PROPS:\n- Pre-qualified homeowner leads in Henderson/Las Vegas area\n- They're actively searching Google for EV charger installation\n- No upfront cost — we can start with a trial period\n- You only pay for leads that convert\n\nOBJECTION HANDLERS:\n- 'How much?' → 'We can discuss pricing after the trial. Most contractors pay $50-150 per qualified lead.'\n- 'Too busy' → 'That's great — means you have demand. We can start with just 2-3 leads per week.'\n- 'Not interested in EV' → 'EV charger installation is the fastest-growing segment. Average ticket is $500-900 with minimal parts cost.'\n- 'Already have marketing' → 'This isn't marketing — these are ready-to-buy leads calling you directly. No ad spend on your end.'\n\nCONTACT INFO:\n- Phone: (888) 995-6044\n- Website: chargehomesolutions.com\n- Notes: Tesla-certified. EV charger and Powerwall specialist. Handles Clark County permits. Address: Las Vegas/Henderson area. HIGH PRIORITY - pure EV play.",
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "st-charge-home-1",
+          "text": "Research business website",
+          "done": false
+        },
+        {
+          "id": "st-charge-home-2",
+          "text": "Make initial call",
+          "done": false
+        },
+        {
+          "id": "st-charge-home-3",
+          "text": "Send follow-up email",
+          "done": false
+        },
+        {
+          "id": "st-charge-home-4",
+          "text": "Schedule demo/trial",
+          "done": false
+        }
+      ],
+      "leadId": "lead-henderson-ev-charge-home",
+      "tags": [
+        "henderson-ev",
+        "outreach"
+      ],
+      "createdAt": "2026-02-12T00:00:00Z",
+      "position": 5
+    },
+    {
+      "id": "task-hev-friends-electric",
+      "boardId": "board-henderson-ev-outreach",
+      "columnId": "prospects",
+      "title": "📞 Call Friends Electric - Fara",
+      "description": "CALL SCRIPT:\n\nHi Fara, my name is [Agent]. I run a local lead generation service for EV charger installers in Henderson, NV.\n\nI have a website — hendersonevcharger.com — that's ranking on Google and generating leads from homeowners looking for EV charger installation. Right now these leads are going unanswered.\n\nI'm looking for one reliable, licensed electrician in Henderson to send these leads to. Would you be interested in receiving free EV charger installation leads for your business?\n\nVALUE PROPS:\n- Pre-qualified homeowner leads in Henderson/Las Vegas area\n- They're actively searching Google for EV charger installation\n- No upfront cost — we can start with a trial period\n- You only pay for leads that convert\n\nOBJECTION HANDLERS:\n- 'How much?' → 'We can discuss pricing after the trial. Most contractors pay $50-150 per qualified lead.'\n- 'Too busy' → 'That's great — means you have demand. We can start with just 2-3 leads per week.'\n- 'Not interested in EV' → 'EV charger installation is the fastest-growing segment. Average ticket is $500-900 with minimal parts cost.'\n- 'Already have marketing' → 'This isn't marketing — these are ready-to-buy leads calling you directly. No ad spend on your end.'\n\nCONTACT INFO:\n- Phone: (702) 800-0505\n- Website: friendselectriclv.com\n- Notes: Est. 2012. Henderson-based. Licensed, bonded, insured. Offers EV charger installations. Family-owned. Address: 2420 Pebble Springs Ct, Henderson, NV 89074.",
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "st-friends-electric-1",
+          "text": "Research business website",
+          "done": false
+        },
+        {
+          "id": "st-friends-electric-2",
+          "text": "Make initial call",
+          "done": false
+        },
+        {
+          "id": "st-friends-electric-3",
+          "text": "Send follow-up email",
+          "done": false
+        },
+        {
+          "id": "st-friends-electric-4",
+          "text": "Schedule demo/trial",
+          "done": false
+        }
+      ],
+      "leadId": "lead-henderson-ev-friends-electric",
+      "tags": [
+        "henderson-ev",
+        "outreach"
+      ],
+      "createdAt": "2026-02-12T00:00:00Z",
+      "position": 6
+    },
+    {
+      "id": "task-hev-southwest-electric",
+      "boardId": "board-henderson-ev-outreach",
+      "columnId": "prospects",
+      "title": "📞 Call Southwest Electric - Tom Sarnelli",
+      "description": "CALL SCRIPT:\n\nHi Tom, my name is [Agent]. I run a local lead generation service for EV charger installers in Henderson, NV.\n\nI have a website — hendersonevcharger.com — that's ranking on Google and generating leads from homeowners looking for EV charger installation. Right now these leads are going unanswered.\n\nI'm looking for one reliable, licensed electrician in Henderson to send these leads to. Would you be interested in receiving free EV charger installation leads for your business?\n\nVALUE PROPS:\n- Pre-qualified homeowner leads in Henderson/Las Vegas area\n- They're actively searching Google for EV charger installation\n- No upfront cost — we can start with a trial period\n- You only pay for leads that convert\n\nOBJECTION HANDLERS:\n- 'How much?' → 'We can discuss pricing after the trial. Most contractors pay $50-150 per qualified lead.'\n- 'Too busy' → 'That's great — means you have demand. We can start with just 2-3 leads per week.'\n- 'Not interested in EV' → 'EV charger installation is the fastest-growing segment. Average ticket is $500-900 with minimal parts cost.'\n- 'Already have marketing' → 'This isn't marketing — these are ready-to-buy leads calling you directly. No ad spend on your end.'\n\nCONTACT INFO:\n- Phone: (702) 564-5003\n- Website: southwestelectricnv.com\n- Notes: Est. 1992. Henderson-based. 30+ years experience. Markets EV charger services. Well-established. Address: 921 American Pacific Dr, Unit 307, Henderson, NV.",
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "st-southwest-electric-1",
+          "text": "Research business website",
+          "done": false
+        },
+        {
+          "id": "st-southwest-electric-2",
+          "text": "Make initial call",
+          "done": false
+        },
+        {
+          "id": "st-southwest-electric-3",
+          "text": "Send follow-up email",
+          "done": false
+        },
+        {
+          "id": "st-southwest-electric-4",
+          "text": "Schedule demo/trial",
+          "done": false
+        }
+      ],
+      "leadId": "lead-henderson-ev-southwest-electric",
+      "tags": [
+        "henderson-ev",
+        "outreach"
+      ],
+      "createdAt": "2026-02-12T00:00:00Z",
+      "position": 7
     }
   ],
   "emailSettings": {

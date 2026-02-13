@@ -31,6 +31,32 @@ export interface Call {
     negotiations?: any[]
 }
 
+export interface AssistantConfig {
+    // Business context
+    businessName?: string
+    businessWebsite?: string
+    businessLocation?: string
+    // Agent persona
+    agentName?: string
+    agentRole?: string
+    conversationStyle?: string
+    // Voice settings
+    voiceId?: string            // ElevenLabs preset name ("adam","rachel") or raw ID
+    voiceStability?: number     // 0-1
+    voiceSimilarity?: number    // 0-1
+    // LLM settings
+    llmModel?: string           // gpt-4o-mini, gpt-4o, etc.
+    llmProvider?: string        // openai
+    temperature?: number        // 0-1
+    // Call settings
+    maxDuration?: number        // seconds
+    silenceTimeout?: number     // seconds
+    endCallPhrases?: string[]
+    endCallMessage?: string
+    // Custom prompt (overrides auto-generated)
+    customSystemPrompt?: string
+}
+
 export interface CallScript {
     id: string
     name: string
@@ -41,6 +67,7 @@ export interface CallScript {
     objectionHandlers?: Array<{ objection: string; response: string }>
     closingStrategy?: string
     rateRange?: { min: number; max: number; target: number; currency?: string }
+    assistantConfig?: AssistantConfig
     usageCount: number
     createdAt: string
     updatedAt: string

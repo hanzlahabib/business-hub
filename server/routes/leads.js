@@ -24,12 +24,33 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.get('/:id', async (req, res) => {
+    try {
+        const lead = await leadService.getById(req.params.id, req.user.id)
+        res.json(lead)
+    } catch (error) {
+        const status = error.message === 'Lead not found' ? 404 : 400
+        res.status(status).json({ error: error.message })
+    }
+})
+
+router.put('/:id', async (req, res) => {
+    try {
+        const lead = await leadService.update(req.params.id, req.user.id, req.body)
+        res.json(lead)
+    } catch (error) {
+        const status = error.message === 'Lead not found' ? 404 : 400
+        res.status(status).json({ error: error.message })
+    }
+})
+
 router.patch('/:id', async (req, res) => {
     try {
         const lead = await leadService.update(req.params.id, req.user.id, req.body)
         res.json(lead)
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        const status = error.message === 'Lead not found' ? 404 : 400
+        res.status(status).json({ error: error.message })
     }
 })
 
@@ -38,7 +59,8 @@ router.delete('/:id', async (req, res) => {
         await leadService.delete(req.params.id, req.user.id)
         res.status(204).send()
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        const status = error.message === 'Lead not found' ? 404 : 400
+        res.status(status).json({ error: error.message })
     }
 })
 

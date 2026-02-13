@@ -5,7 +5,7 @@
  */
 
 import prisma from '../config/prisma.js'
-import { getAdapters } from '../adapters/index.js'
+import { getAdaptersForUser } from './apiKeyService.js'
 
 export const meetingNoteService = {
     async getByCall(callId, userId) {
@@ -43,7 +43,7 @@ export const meetingNoteService = {
      * Transcribe a call recording and create meeting notes
      */
     async transcribeAndSummarize(userId, callId) {
-        const { stt, llm } = getAdapters()
+        const { stt, llm } = getAdaptersForUser(userId)
 
         const call = await prisma.call.findFirst({ where: { id: callId, userId } })
         if (!call) throw new Error('Call not found')

@@ -9,7 +9,7 @@
  *   const { telephony, voice, llm, stt } = getAdapters()
  * 
  * Switch providers by changing .env:
- *   TELEPHONY_PROVIDER=vapi|mock
+ *   TELEPHONY_PROVIDER=vapi|twilio|mock
  *   VOICE_PROVIDER=elevenlabs|mock
  *   LLM_PROVIDER=openai|mock
  *   STT_PROVIDER=deepgram|mock
@@ -17,6 +17,7 @@
  */
 
 import { VapiAdapter } from './telephony/vapiAdapter.js'
+import { TwilioAdapter } from './telephony/twilioAdapter.js'
 import { ElevenLabsAdapter } from './voice/elevenLabsAdapter.js'
 import { OpenAIAdapter } from './llm/openaiAdapter.js'
 import { DeepgramAdapter } from './stt/deepgramAdapter.js'
@@ -30,6 +31,7 @@ import {
 // Adapter registries — add new adapters here
 const TELEPHONY_ADAPTERS = {
     vapi: VapiAdapter,
+    twilio: TwilioAdapter,
     mock: MockTelephonyAdapter
 }
 
@@ -88,6 +90,47 @@ export function getAdapters(force = false) {
     console.log(`🔌 Adapters loaded: telephony=${telephonyProvider}, voice=${voiceProvider}, llm=${llmProvider}, stt=${sttProvider}`)
 
     return _adapters
+}
+
+/**
+ * Create fresh adapter instances with explicit config (no global singleton mutation).
+ * Used by apiKeyService for per-user adapter isolation.
+ *
+ * @param {Object} config - Keys to pass to adapter constructors
+ * @param {Object} [config.vapi] - { apiKey, phoneNumberId }
+ * @param {Object} [config.twilio] - { accountSid, apiKeySid, apiKeySecret, phoneNumber }
+ * @param {Object} [config.openai] - { apiKey }
+ * @param {Object} [config.elevenlabs] - { apiKey }
+ * @param {Object} [config.deepgram] - { apiKey }
+ * @param {Object} [config.webhook] - { baseUrl }
+ * @returns {{ telephony, voice, llm, stt }}
+ */
+export function createAdapters(config = {}) {
+    const isMockMode = process.env.CALLING_MOCK_MODE === 'true'
+
+    const telephonyProvider = isMockMode ? 'mock' : (process.env.TELEPHONY_PROVIDER || 'vapi')
+    const voiceProvider = isMockMode ? 'mock' : (process.env.VOICE_PROVIDER || 'elevenlabs')
+    const llmProvider = isMockMode ? 'mock' : (process.env.LLM_PROVIDER || 'openai')
+    const sttProvider = isMockMode ? 'mock' : (process.env.STT_PROVIDER || 'deepgram')
+
+    const TelephonyClass = TELEPHONY_ADAPTERS[telephonyProvider]
+    const VoiceClass = VOICE_ADAPTERS[voiceProvider]
+    const LLMClass = LLM_ADAPTERS[llmProvider]
+    const STTClass = STT_ADAPTERS[sttProvider]
+
+    // Build per-adapter config from the flat keys object
+    const telephonyConfig = telephonyProvider === 'vapi'
+        ? { ...config.vapi, webhookBaseUrl: config.webhook?.baseUrl }
+        : telephonyProvider === 'twilio'
+            ? { ...config.twilio, webhookBaseUrl: config.webhook?.baseUrl }
+            : {}
+
+    return {
+        telephony: new TelephonyClass(telephonyConfig),
+        voice: new VoiceClass(config.elevenlabs || {}),
+        llm: new LLMClass(config.openai || {}),
+        stt: new STTClass(config.deepgram || {})
+    }
 }
 
 /**

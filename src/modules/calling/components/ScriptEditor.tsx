@@ -1,6 +1,20 @@
 import { useState } from 'react'
-import { Save, X, Plus, Trash2 } from 'lucide-react'
-import type { CallScript } from '../hooks/useCalls'
+import { Save, X, Plus, Trash2, ChevronDown, ChevronRight, Bot, Building2, Mic } from 'lucide-react'
+import type { CallScript, AssistantConfig } from '../hooks/useCalls'
+
+const VOICE_PRESETS = [
+    { value: 'adam', label: 'Adam (Deep Male)' },
+    { value: 'josh', label: 'Josh (Natural Male)' },
+    { value: 'rachel', label: 'Rachel (Female)' },
+    { value: 'arnold', label: 'Arnold (Deep Male)' },
+    { value: 'bella', label: 'Bella (Soft Female)' },
+]
+
+const LLM_MODELS = [
+    { value: 'gpt-4o-mini', label: 'GPT-4o Mini (Fast, Cheap)' },
+    { value: 'gpt-4o', label: 'GPT-4o (Best Quality)' },
+    { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo (Fastest)' },
+]
 
 interface Props {
     script: CallScript | null
@@ -9,6 +23,9 @@ interface Props {
 }
 
 export function ScriptEditor({ script, onSave, onCancel }: Props) {
+    const ac = script?.assistantConfig || {} as AssistantConfig
+
+    // Script fields
     const [name, setName] = useState(script?.name || '')
     const [purpose, setPurpose] = useState(script?.purpose || '')
     const [industry, setIndustry] = useState(script?.industry || '')
@@ -24,8 +41,39 @@ export function ScriptEditor({ script, onSave, onCancel }: Props) {
     const [rateMax, setRateMax] = useState<number>((script?.rateRange as any)?.max || 0)
     const [rateTarget, setRateTarget] = useState<number>((script?.rateRange as any)?.target || 0)
 
+    // Assistant config fields
+    const [businessName, setBusinessName] = useState(ac.businessName || '')
+    const [businessWebsite, setBusinessWebsite] = useState(ac.businessWebsite || '')
+    const [businessLocation, setBusinessLocation] = useState(ac.businessLocation || '')
+    const [agentName, setAgentName] = useState(ac.agentName || '')
+    const [agentRole, setAgentRole] = useState(ac.agentRole || '')
+    const [conversationStyle, setConversationStyle] = useState(ac.conversationStyle || '')
+    const [voiceId, setVoiceId] = useState(ac.voiceId || 'adam')
+    const [llmModel, setLlmModel] = useState(ac.llmModel || 'gpt-4o-mini')
+    const [temperature, setTemperature] = useState(ac.temperature ?? 0.7)
+    const [maxDuration, setMaxDuration] = useState(ac.maxDuration ?? 300)
+    const [customSystemPrompt, setCustomSystemPrompt] = useState(ac.customSystemPrompt || '')
+
+    // UI state
+    const [showAiConfig, setShowAiConfig] = useState(!!ac.businessName)
+
     const handleSave = () => {
         if (!name.trim()) return
+
+        // Build assistantConfig from fields
+        const assistantConfig: AssistantConfig = {}
+        if (businessName) assistantConfig.businessName = businessName
+        if (businessWebsite) assistantConfig.businessWebsite = businessWebsite
+        if (businessLocation) assistantConfig.businessLocation = businessLocation
+        if (agentName) assistantConfig.agentName = agentName
+        if (agentRole) assistantConfig.agentRole = agentRole
+        if (conversationStyle) assistantConfig.conversationStyle = conversationStyle
+        if (voiceId && voiceId !== 'adam') assistantConfig.voiceId = voiceId
+        if (llmModel && llmModel !== 'gpt-4o-mini') assistantConfig.llmModel = llmModel
+        if (temperature !== 0.7) assistantConfig.temperature = temperature
+        if (maxDuration !== 300) assistantConfig.maxDuration = maxDuration
+        if (customSystemPrompt) assistantConfig.customSystemPrompt = customSystemPrompt
+
         onSave({
             name,
             purpose: purpose || undefined,
@@ -35,10 +83,13 @@ export function ScriptEditor({ script, onSave, onCancel }: Props) {
             talkingPoints: talkingPoints.filter(t => t.topic.trim()) as any,
             objectionHandlers: objectionHandlers.filter(o => o.objection.trim()) as any,
             rateRange: (rateMin || rateMax || rateTarget) ? { min: rateMin, max: rateMax, target: rateTarget } as any : undefined,
+            assistantConfig: Object.keys(assistantConfig).length > 0 ? assistantConfig as any : undefined,
         })
     }
 
     const inputClass = "w-full text-xs bg-bg-tertiary border border-border rounded-lg px-3 py-2 text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20"
+    const selectClass = inputClass + " appearance-none cursor-pointer"
+    const sectionHeader = "flex items-center gap-2 cursor-pointer select-none group"
 
     return (
         <div className="bg-bg-secondary rounded-xl border border-border p-6 space-y-5">
@@ -59,18 +110,146 @@ export function ScriptEditor({ script, onSave, onCancel }: Props) {
                 </div>
                 <div>
                     <label className="text-[10px] font-medium text-text-muted uppercase tracking-wide mb-1 block">Purpose</label>
-                    <input type="text" value={purpose} onChange={e => setPurpose(e.target.value)} placeholder="e.g., Schedule demo call" className={inputClass} />
+                    <input type="text" value={purpose} onChange={e => setPurpose(e.target.value)} placeholder="e.g., Get contractor interested in free leads" className={inputClass} />
                 </div>
                 <div>
                     <label className="text-[10px] font-medium text-text-muted uppercase tracking-wide mb-1 block">Industry</label>
-                    <input type="text" value={industry} onChange={e => setIndustry(e.target.value)} placeholder="e.g., SaaS" className={inputClass} />
+                    <input type="text" value={industry} onChange={e => setIndustry(e.target.value)} placeholder="e.g., Electrician" className={inputClass} />
                 </div>
             </div>
 
             {/* Opening Line */}
             <div>
                 <label className="text-[10px] font-medium text-text-muted uppercase tracking-wide mb-1 block">Opening Line</label>
-                <textarea value={openingLine} onChange={e => setOpeningLine(e.target.value)} placeholder="Hi, this is..." rows={2} className={inputClass + ' resize-none'} />
+                <textarea value={openingLine} onChange={e => setOpeningLine(e.target.value)} placeholder="Hi, this is Mike from Henderson EV Charger Pros..." rows={2} className={inputClass + ' resize-none'} />
+            </div>
+
+            {/* ========== AI CONFIGURATION (Collapsible) ========== */}
+            <div className="border border-border/50 rounded-lg overflow-hidden">
+                <button
+                    type="button"
+                    onClick={() => setShowAiConfig(!showAiConfig)}
+                    className={`${sectionHeader} w-full px-4 py-3 bg-bg-tertiary/50 hover:bg-bg-tertiary transition-colors`}
+                >
+                    {showAiConfig ? <ChevronDown size={14} className="text-cyan-400" /> : <ChevronRight size={14} className="text-text-muted" />}
+                    <Bot size={14} className="text-cyan-400" />
+                    <span className="text-xs font-semibold text-text-primary">AI Assistant Configuration</span>
+                    {!showAiConfig && businessName && (
+                        <span className="ml-auto text-[10px] text-text-muted">{businessName} / {agentName || 'AI Agent'}</span>
+                    )}
+                </button>
+
+                {showAiConfig && (
+                    <div className="p-4 space-y-4">
+                        {/* Business Context */}
+                        <div>
+                            <div className="flex items-center gap-1.5 mb-2">
+                                <Building2 size={12} className="text-emerald-400" />
+                                <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wide">Business Context</span>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div>
+                                    <label className="text-[10px] text-text-muted mb-1 block">Business Name</label>
+                                    <input type="text" value={businessName} onChange={e => setBusinessName(e.target.value)} placeholder="Henderson EV Charger Pros" className={inputClass} />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] text-text-muted mb-1 block">Website</label>
+                                    <input type="text" value={businessWebsite} onChange={e => setBusinessWebsite(e.target.value)} placeholder="hendersonevcharger.com" className={inputClass} />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] text-text-muted mb-1 block">Location</label>
+                                    <input type="text" value={businessLocation} onChange={e => setBusinessLocation(e.target.value)} placeholder="Henderson, Nevada" className={inputClass} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* AI Persona */}
+                        <div>
+                            <div className="flex items-center gap-1.5 mb-2">
+                                <Bot size={12} className="text-violet-400" />
+                                <span className="text-[10px] font-semibold text-violet-400 uppercase tracking-wide">AI Persona</span>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div>
+                                    <label className="text-[10px] text-text-muted mb-1 block">Agent Name</label>
+                                    <input type="text" value={agentName} onChange={e => setAgentName(e.target.value)} placeholder="Mike" className={inputClass} />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] text-text-muted mb-1 block">Role</label>
+                                    <input type="text" value={agentRole} onChange={e => setAgentRole(e.target.value)} placeholder="sales representative" className={inputClass} />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] text-text-muted mb-1 block">Conversation Style</label>
+                                    <input type="text" value={conversationStyle} onChange={e => setConversationStyle(e.target.value)} placeholder="friendly and professional" className={inputClass} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Voice & LLM */}
+                        <div>
+                            <div className="flex items-center gap-1.5 mb-2">
+                                <Mic size={12} className="text-amber-400" />
+                                <span className="text-[10px] font-semibold text-amber-400 uppercase tracking-wide">Voice & AI Model</span>
+                            </div>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <div>
+                                    <label className="text-[10px] text-text-muted mb-1 block">Voice</label>
+                                    <select value={voiceId} onChange={e => setVoiceId(e.target.value)} className={selectClass}>
+                                        {VOICE_PRESETS.map(v => (
+                                            <option key={v.value} value={v.value}>{v.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] text-text-muted mb-1 block">LLM Model</label>
+                                    <select value={llmModel} onChange={e => setLlmModel(e.target.value)} className={selectClass}>
+                                        {LLM_MODELS.map(m => (
+                                            <option key={m.value} value={m.value}>{m.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] text-text-muted mb-1 block">Temperature ({temperature})</label>
+                                    <input
+                                        type="range"
+                                        min={0}
+                                        max={1}
+                                        step={0.1}
+                                        value={temperature}
+                                        onChange={e => setTemperature(Number(e.target.value))}
+                                        className="w-full h-2 bg-bg-tertiary rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] text-text-muted mb-1 block">Max Duration ({Math.floor(maxDuration / 60)}m)</label>
+                                    <input
+                                        type="range"
+                                        min={60}
+                                        max={600}
+                                        step={30}
+                                        value={maxDuration}
+                                        onChange={e => setMaxDuration(Number(e.target.value))}
+                                        className="w-full h-2 bg-bg-tertiary rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Custom System Prompt (Advanced) */}
+                        <div>
+                            <label className="text-[10px] font-medium text-text-muted uppercase tracking-wide mb-1 block">
+                                Custom System Prompt <span className="text-text-muted/50">(optional — overrides auto-generated prompt)</span>
+                            </label>
+                            <textarea
+                                value={customSystemPrompt}
+                                onChange={e => setCustomSystemPrompt(e.target.value)}
+                                placeholder="Leave empty to auto-generate from the fields above. Only set this if you want full control over the AI's system prompt."
+                                rows={4}
+                                className={inputClass + ' resize-y font-mono text-[10px]'}
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Talking Points */}

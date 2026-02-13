@@ -1,13 +1,26 @@
 /**
  * Vapi AI Telephony Adapter
- * 
- * Handles outbound calling via Vapi AI API.
+ *
+ * Handles outbound AI calling via Vapi API.
+ * Vapi manages the full conversation: STT + LLM + TTS.
+ * We configure the assistant from CallScript.assistantConfig and Vapi handles the rest.
+ *
+ * All business-specific content (prompts, voice, persona) comes from the CallScript,
+ * NOT hardcoded here. This adapter is niche-agnostic.
+ *
  * Docs: https://docs.vapi.ai
- * 
- * Swap out by setting TELEPHONY_PROVIDER=twilio in .env
  */
 
 import { TelephonyAdapter } from './interface.js'
+
+// Named voice presets — users can pick by name or provide raw ElevenLabs voice ID
+const VOICE_PRESETS = {
+    adam: 'pNInz6obpgDQGcFmaJgB',      // Deep male
+    josh: 'TxGEqnHWrfWFTfGW9XjX',      // Natural male
+    rachel: '21m00Tcm4TlvDq8ikWAM',     // Female
+    arnold: 'VR6AewLTigWG4xSOukaG',     // Deep male
+    bella: 'EXAVITQu4vr4xnSDxMaL',      // Soft female
+}
 
 export class VapiAdapter extends TelephonyAdapter {
     constructor(config = {}) {
@@ -35,32 +48,61 @@ export class VapiAdapter extends TelephonyAdapter {
     }
 
     async initiateCall({ phoneNumber, leadId, scriptId, assistantConfig = {} }) {
+        const webhookUrl = process.env.WEBHOOK_BASE_URL || 'http://localhost:3002'
+
+        // Resolve voice ID — could be a preset name ("adam") or raw ElevenLabs ID
+        const rawVoice = assistantConfig.voiceId || process.env.ELEVENLABS_VOICE_ID || 'adam'
+        const voiceId = VOICE_PRESETS[rawVoice] || rawVoice
+
+        // Build first message — use openingLine from script, or generic greeting
+        const agentName = assistantConfig.agentName || 'there'
+        const businessName = assistantConfig.businessName || ''
+        const contactName = assistantConfig.contractorName || 'there'
+        const firstMessage = assistantConfig.openingLine
+            || `Hi ${contactName}, this is ${agentName}${businessName ? ' from ' + businessName : ''}. How are you doing today?`
+
+        // Build end call phrases — defaults + any custom ones
+        const defaultEndPhrases = ['goodbye', 'bye', 'not interested', 'stop calling', 'don\'t call again', 'remove my number', 'take me off the list']
+        const endCallPhrases = assistantConfig.endCallPhrases || defaultEndPhrases
+
         const payload = {
             phoneNumberId: this.phoneNumberId,
             customer: {
                 number: phoneNumber
             },
             assistant: {
-                firstMessage: assistantConfig.openingLine || 'Hello, this is a call regarding our services.',
+                firstMessage,
                 model: {
                     provider: assistantConfig.llmProvider || 'openai',
                     model: assistantConfig.llmModel || 'gpt-4o-mini',
-                    messages: assistantConfig.systemMessages || [
+                    messages: [
                         {
                             role: 'system',
-                            content: assistantConfig.systemPrompt || 'You are a professional sales agent. Be concise, friendly, and persuasive.'
+                            content: assistantConfig.systemPrompt || 'You are a professional sales agent. Keep responses short (1-2 sentences). Be friendly and conversational.'
                         }
-                    ]
+                    ],
+                    temperature: assistantConfig.temperature ?? 0.7,
+                    maxTokens: assistantConfig.maxTokens ?? 150,
                 },
                 voice: {
-                    provider: assistantConfig.voiceProvider || 'elevenlabs',
-                    voiceId: assistantConfig.voiceId || process.env.ELEVENLABS_VOICE_ID || 'rachel'
+                    provider: '11labs',
+                    voiceId,
+                    stability: assistantConfig.voiceStability ?? 0.5,
+                    similarityBoost: assistantConfig.voiceSimilarity ?? 0.75,
                 },
                 transcriber: {
                     provider: 'deepgram',
-                    model: 'nova-2'
+                    model: 'nova-2',
+                    language: assistantConfig.language || 'en-US',
                 },
-                ...(assistantConfig.endCallPhrases && { endCallPhrases: assistantConfig.endCallPhrases })
+                endCallFunctionEnabled: true,
+                endCallMessage: assistantConfig.endCallMessage || 'Thanks for your time! Have a great day. Goodbye.',
+                endCallPhrases,
+                silenceTimeoutSeconds: assistantConfig.silenceTimeout ?? 15,
+                maxDurationSeconds: assistantConfig.maxDuration ?? 300,
+                backgroundSound: 'off',
+                serverUrl: `${webhookUrl}/api/calls/vapi/webhook`,
+                serverUrlSecret: process.env.VAPI_WEBHOOK_SECRET || undefined,
             },
             metadata: {
                 leadId,
@@ -77,7 +119,7 @@ export class VapiAdapter extends TelephonyAdapter {
         }
     }
 
-    async batchCall({ leads, scriptId, delayMs = 5000, assistantConfig = {} }) {
+    async batchCall({ leads, scriptId, delayMs = 15000, assistantConfig = {} }) {
         const results = []
         for (let i = 0; i < leads.length; i++) {
             try {
@@ -85,11 +127,13 @@ export class VapiAdapter extends TelephonyAdapter {
                     phoneNumber: leads[i].phone,
                     leadId: leads[i].id,
                     scriptId,
-                    assistantConfig
+                    assistantConfig: {
+                        ...assistantConfig,
+                        contractorName: leads[i].contactPerson?.split(' ')[0] || 'there'
+                    }
                 })
                 results.push({ leadId: leads[i].id, ...result, success: true })
 
-                // Delay between calls (except last)
                 if (i < leads.length - 1 && delayMs > 0) {
                     await new Promise(r => setTimeout(r, delayMs))
                 }
@@ -109,7 +153,7 @@ export class VapiAdapter extends TelephonyAdapter {
     async getCallStatus(providerCallId) {
         const result = await this._request(`/call/${providerCallId}`)
         return {
-            status: result.status,
+            status: this._mapCallStatus(result.status),
             duration: result.endedAt && result.startedAt
                 ? Math.round((new Date(result.endedAt) - new Date(result.startedAt)) / 1000)
                 : null,
@@ -130,7 +174,6 @@ export class VapiAdapter extends TelephonyAdapter {
     }
 
     async handleWebhook(payload) {
-        // Normalize Vapi webhook payload to our standard format
         const { message } = payload
         const type = message?.type
 
@@ -156,9 +199,17 @@ export class VapiAdapter extends TelephonyAdapter {
         }))
     }
 
+    // Send SMS via Twilio (Vapi doesn't do SMS)
+    async sendSms(to, body) {
+        const { TwilioAdapter } = await import('./twilioAdapter.js')
+        const twilio = new TwilioAdapter()
+        return twilio.sendSms(to, body)
+    }
+
     _mapStatus(webhookType) {
         const map = {
             'call-started': 'ringing',
+            'status-update': 'in-progress',
             'speech-update': 'in-progress',
             'transcript': 'in-progress',
             'tool-calls': 'in-progress',
@@ -167,6 +218,17 @@ export class VapiAdapter extends TelephonyAdapter {
             'call-failed': 'failed'
         }
         return map[webhookType] || 'unknown'
+    }
+
+    _mapCallStatus(vapiStatus) {
+        const map = {
+            'queued': 'queued',
+            'ringing': 'ringing',
+            'in-progress': 'in-progress',
+            'forwarding': 'in-progress',
+            'ended': 'completed',
+        }
+        return map[vapiStatus] || vapiStatus
     }
 }
 

@@ -1,8 +1,8 @@
 import leadRepository from '../repositories/leadRepository.js'
 
-export const leadService = {
+const leadService = {
     async getAll(userId) {
-        return leadRepository.findAllByUserId(userId)
+        return leadRepository.findAll(userId)
     },
 
     async getById(id, userId) {
@@ -12,17 +12,18 @@ export const leadService = {
     },
 
     async create(userId, data) {
-        return leadRepository.create({
-            ...data,
-            userId
-        })
+        return leadRepository.create({ ...data, userId })
     },
 
     async update(id, userId, data) {
+        const existing = await leadRepository.findById(id, userId)
+        if (!existing) throw new Error('Lead not found')
         return leadRepository.update(id, userId, data)
     },
 
     async delete(id, userId) {
+        const existing = await leadRepository.findById(id, userId)
+        if (!existing) throw new Error('Lead not found')
         return leadRepository.delete(id, userId)
     }
 }

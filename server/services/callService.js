@@ -6,27 +6,33 @@
  */
 
 import prisma from '../config/prisma.js'
-import { getAdapters } from '../adapters/index.js'
+import { getAdaptersForUser } from './apiKeyService.js'
 
 export const callService = {
     /**
      * Initiate an outbound call to a lead
      */
     async initiateCall(userId, { leadId, scriptId, assistantConfig = {} }) {
-        const { telephony } = getAdapters()
+        const { telephony } = getAdaptersForUser(userId)
 
         // Get lead
         const lead = await prisma.lead.findFirst({ where: { id: leadId, userId } })
         if (!lead) throw new Error('Lead not found')
         if (!lead.phone) throw new Error('Lead has no phone number')
 
-        // Get script if provided
+        // Get script if provided — merge assistantConfig from script + call params
         let script = null
         if (scriptId) {
             script = await prisma.callScript.findFirst({ where: { id: scriptId, userId } })
             if (script) {
-                assistantConfig.openingLine = assistantConfig.openingLine || script.openingLine
-                assistantConfig.systemPrompt = this._buildSystemPrompt(script)
+                const scriptConfig = script.assistantConfig || {}
+                // Script config is the base, call-level params override
+                assistantConfig = {
+                    ...scriptConfig,
+                    ...assistantConfig,
+                    openingLine: assistantConfig.openingLine || script.openingLine,
+                    systemPrompt: assistantConfig.systemPrompt || this._buildSystemPrompt(script),
+                }
             }
         }
 
@@ -190,7 +196,12 @@ export const callService = {
      * Process webhook from telephony provider
      */
     async handleWebhook(payload) {
-        const { telephony } = getAdapters()
+        // Look up call first to get userId for per-user adapters
+        const callLookup = await prisma.call.findFirst({
+            where: { providerCallId: payload.call_id || payload.CallSid || payload.providerCallId },
+            select: { userId: true }
+        })
+        const { telephony } = getAdaptersForUser(callLookup?.userId)
         const normalized = await telephony.handleWebhook(payload)
 
         if (!normalized.providerCallId) return { processed: false }
@@ -219,28 +230,77 @@ export const callService = {
     },
 
     /**
-     * Build system prompt from a call script
+     * Build system prompt from a call script + assistantConfig
+     * If customSystemPrompt is set in assistantConfig, use that directly.
+     * Otherwise, auto-generate from script fields + business context.
      */
     _buildSystemPrompt(script) {
-        let prompt = `You are a professional sales agent making an outbound call.\n\n`
-        if (script.purpose) prompt += `Purpose: ${script.purpose}\n`
-        if (script.industry) prompt += `Industry: ${script.industry}\n`
-        if (script.talkingPoints) {
-            prompt += `\nKey Talking Points:\n`
+        const ac = script.assistantConfig || {}
+
+        // If user provided a full custom system prompt, use it directly
+        if (ac.customSystemPrompt) return ac.customSystemPrompt
+
+        const agentName = ac.agentName || 'Alex'
+        const agentRole = ac.agentRole || 'sales representative'
+        const businessName = ac.businessName || 'our company'
+        const businessWebsite = ac.businessWebsite || ''
+        const businessLocation = ac.businessLocation || ''
+        const style = ac.conversationStyle || 'friendly and professional'
+
+        let prompt = `You are ${agentName}, a ${style} ${agentRole} for ${businessName}.\n\n`
+
+        // Goal from script purpose
+        if (script.purpose) {
+            prompt += `YOUR GOAL: ${script.purpose}\n\n`
+        }
+
+        // Business context
+        const contextParts = []
+        if (businessWebsite) contextParts.push(`- You represent ${businessWebsite}`)
+        if (businessLocation) contextParts.push(`- Based in ${businessLocation}`)
+        if (script.industry) contextParts.push(`- Industry: ${script.industry}`)
+        if (contextParts.length > 0) {
+            prompt += `CONTEXT:\n${contextParts.join('\n')}\n\n`
+        }
+
+        // Talking points
+        if (script.talkingPoints?.length > 0) {
+            prompt += `KEY TALKING POINTS:\n`
             for (const tp of script.talkingPoints) {
                 prompt += `- ${tp.topic}: ${tp.script}\n`
             }
+            prompt += '\n'
         }
-        if (script.objectionHandlers) {
-            prompt += `\nObjection Handlers:\n`
+
+        // Objection handlers
+        if (script.objectionHandlers?.length > 0) {
+            prompt += `OBJECTION HANDLING:\n`
             for (const oh of script.objectionHandlers) {
-                prompt += `- If they say "${oh.objection}": ${oh.response}\n`
+                prompt += `- "${oh.objection}" → "${oh.response}"\n`
             }
+            prompt += '\n'
         }
-        if (script.closingStrategy) prompt += `\nClosing Strategy: ${script.closingStrategy}\n`
+
+        // Rate negotiation
         if (script.rateRange) {
-            prompt += `\nRate Negotiation: Target $${script.rateRange.target}, range $${script.rateRange.min}-$${script.rateRange.max} ${script.rateRange.currency || 'USD'}\n`
+            const r = script.rateRange
+            prompt += `RATE NEGOTIATION:\n`
+            prompt += `- Target: $${r.target}${r.currency ? ' ' + r.currency : ''}\n`
+            prompt += `- Range: $${r.min} - $${r.max}\n\n`
         }
+
+        // Closing strategy
+        if (script.closingStrategy) {
+            prompt += `CLOSING STRATEGY:\n${script.closingStrategy}\n\n`
+        }
+
+        // Conversation style rules
+        prompt += `CONVERSATION STYLE:\n`
+        prompt += `- Keep ALL responses SHORT — 1-2 sentences max (this is a phone call, not an essay)\n`
+        prompt += `- Sound natural and conversational\n`
+        prompt += `- Don't be pushy — if they say no, be gracious\n`
+        prompt += `- NEVER make claims you can't back up\n`
+
         return prompt
     }
 }

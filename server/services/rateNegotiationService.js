@@ -5,7 +5,7 @@
  */
 
 import prisma from '../config/prisma.js'
-import { getAdapters } from '../adapters/index.js'
+import { getAdaptersForUser } from './apiKeyService.js'
 
 export const rateNegotiationService = {
     async getByCall(callId, userId) {
@@ -45,7 +45,7 @@ export const rateNegotiationService = {
      * Get AI-suggested negotiation strategy
      */
     async suggestStrategy(userId, callId, { currentRate, targetRate, marketContext }) {
-        const { llm } = getAdapters()
+        const { llm } = getAdaptersForUser(userId)
 
         const call = await prisma.call.findFirst({
             where: { id: callId, userId },

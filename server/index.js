@@ -22,11 +22,17 @@ import scraperRoutes from './routes/scraper.js'
 import outreachRoutes from './routes/outreach.js'
 import callRoutes from './routes/calls.js'
 import agentRoutes from './routes/agents.js'
+import twilioWebhookRoutes from './routes/twilioWebhooks.js'
+import vapiWebhookRoutes from './routes/vapiWebhooks.js'
+import campaignRoutes from './routes/campaignRoutes.js'
 import authMiddleware from './middleware/auth.js'
+import { validateTwilioRequest } from './middleware/twilioValidation.js'
 import prisma from './config/prisma.js'
 import { initWebSocket } from './services/callWebSocket.js'
+import { initMediaStreamWebSocket } from './services/twilioMediaStream.js'
 import agentCallingService from './services/agentCallingService.js'
 import callService from './services/callService.js'
+import { loadAllUserKeys } from './services/apiKeyService.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -61,8 +67,11 @@ app.use('/api/resources', extraRoutes)
 app.use('/api/skillmastery', skillMasteryRoutes)
 app.use('/api/scraper', scraperRoutes)
 app.use('/api/outreach', outreachRoutes)
+app.use('/api/calls/twilio', validateTwilioRequest(), twilioWebhookRoutes)  // Twilio webhooks (validation optional via env)
+app.use('/api/calls/vapi', vapiWebhookRoutes)  // Vapi webhooks (no auth — Vapi can't send our headers)
 app.use('/api/calls', authMiddleware, callRoutes)
 app.use('/api/agents', authMiddleware, agentRoutes)
+app.use('/api/campaigns', authMiddleware, campaignRoutes)
 
 // Legacy / Support Routes
 app.use('/api/email', emailRoutes)
@@ -279,8 +288,12 @@ app.post('/api/agent/execute', authMiddleware, async (req, res) => {
 // Create HTTP server for WebSocket support
 const server = http.createServer(app)
 
-// Initialize WebSocket
+// Initialize WebSocket servers
 initWebSocket(server)
+initMediaStreamWebSocket(server)
+
+// Load all users' API keys from DB into per-user cache (no process.env mutation)
+loadAllUserKeys().catch(err => console.error('API key loading failed:', err.message))
 
 server.listen(PORT, () => {
   console.log(`🚀 Business Hub API running on http://localhost:${PORT}`)
@@ -288,5 +301,7 @@ server.listen(PORT, () => {
   console.log(`🤖 AI Agent endpoint: POST /api/agent/execute`)
   console.log(`📞 AI Calling API: /api/calls`)
   console.log(`🤖 Agent API: /api/agents`)
+  console.log(`📢 Campaign API: /api/campaigns`)
   console.log(`🔌 WebSocket: ws://localhost:${PORT}/ws/calls`)
+  console.log(`🎙️ Media Streams: ws://localhost:${PORT}/ws/twilio-media`)
 })

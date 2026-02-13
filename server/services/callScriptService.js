@@ -5,7 +5,7 @@
  */
 
 import prisma from '../config/prisma.js'
-import { getAdapters } from '../adapters/index.js'
+import { getAdaptersForUser } from './apiKeyService.js'
 
 export const callScriptService = {
     async getAll(userId) {
@@ -43,7 +43,7 @@ export const callScriptService = {
      * Generate a script using AI
      */
     async generate(userId, { purpose, industry, rateRange, context }) {
-        const { llm } = getAdapters()
+        const { llm } = getAdaptersForUser(userId)
         const generated = await llm.generateScript({ purpose, industry, rateRange, context })
 
         // Save generated script

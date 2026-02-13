@@ -15,7 +15,7 @@
  */
 
 import prisma from '../config/prisma.js'
-import { getAdapters } from '../adapters/index.js'
+import { getAdaptersForUser } from './apiKeyService.js'
 import { isValidTransition, generateFlowGraph, AGENT_STEPS } from './agentStepMachine.js'
 import { emitStepChange, emitAgentStatus, emitAgentLog, emitCallUpdate } from './callWebSocket.js'
 import callService from './callService.js'
@@ -335,7 +335,7 @@ export const agentCallingService = {
             emitAgentLog(agentId, `📞 Connected with ${lead.name}`)
 
             // Wait for call to complete (poll status)
-            const result = await this._waitForCallCompletion(call.id, call.providerCallId, agentId)
+            const result = await this._waitForCallCompletion(call.id, call.providerCallId, agentId, userId)
 
             // Step 4: Process outcome
             if (result.status === 'completed') {
@@ -396,8 +396,8 @@ export const agentCallingService = {
     /**
      * Wait for a call to finish (poll adapter)
      */
-    async _waitForCallCompletion(callId, providerCallId, agentId) {
-        const { telephony } = getAdapters()
+    async _waitForCallCompletion(callId, providerCallId, agentId, userId) {
+        const { telephony } = getAdaptersForUser(userId)
         const maxWait = 300000 // 5 minutes max
         const pollInterval = 3000
         let elapsed = 0
