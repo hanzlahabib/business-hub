@@ -1,43 +1,18 @@
 /**
  * Security middleware for Express.
- * Adds common security headers and basic protections.
+ * Upload validation and file security checks.
  * 
+ * Note: HTTP security headers are now handled by `helmet` in index.js.
+ *
  * Usage:
- *   const { securityHeaders } = require('./middleware/security')
- *   app.use(securityHeaders())
+ *   import { validateUpload } from './middleware/security.js'
+ *   app.use('/api/upload', validateUpload())
  */
-
-function securityHeaders() {
-    return (req, res, next) => {
-        // Prevent clickjacking
-        res.setHeader('X-Frame-Options', 'DENY')
-
-        // Prevent MIME sniffing
-        res.setHeader('X-Content-Type-Options', 'nosniff')
-
-        // Enable XSS filter
-        res.setHeader('X-XSS-Protection', '1; mode=block')
-
-        // Referrer policy
-        res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
-
-        // Content Security Policy (permissive for dev, tighten for production)
-        res.setHeader(
-            'Content-Security-Policy',
-            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' http://localhost:*"
-        )
-
-        // Permissions policy
-        res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
-
-        next()
-    }
-}
 
 /**
- * Validate file upload (check extension, size)
+ * Validate file upload (check extension, size, path traversal)
  */
-function validateUpload(options = {}) {
+export function validateUpload(options = {}) {
     const maxSize = options.maxSize || 10 * 1024 * 1024 // 10MB default
     const allowedExtensions = options.allowedExtensions || [
         '.pdf', '.doc', '.docx', '.txt', '.md',
@@ -76,5 +51,3 @@ function validateUpload(options = {}) {
         next()
     }
 }
-
-module.exports = { securityHeaders, validateUpload }

@@ -17,6 +17,10 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
+        const { title, company } = req.body || {}
+        if (!title || !company) {
+            return res.status(422).json({ error: 'Validation failed', fields: { title: !title ? 'Title is required' : undefined, company: !company ? 'Company is required' : undefined } })
+        }
         const job = await jobService.create(req.user.id, req.body)
         res.status(201).json(job)
     } catch (error) {

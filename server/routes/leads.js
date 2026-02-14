@@ -17,6 +17,10 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
+        const { name, status } = req.body || {}
+        if (!name || !status) {
+            return res.status(422).json({ error: 'Validation failed', fields: { name: !name ? 'Name is required' : undefined, status: !status ? 'Status is required' : undefined } })
+        }
         const lead = await leadService.create(req.user.id, req.body)
         res.status(201).json(lead)
     } catch (error) {

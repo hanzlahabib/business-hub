@@ -21,6 +21,12 @@ router.post('/register', async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ success: false, error: 'Email and password are required' })
         }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            return res.status(422).json({ success: false, error: 'Invalid email format' })
+        }
+        if (password.length < 6) {
+            return res.status(422).json({ success: false, error: 'Password must be at least 6 characters' })
+        }
         const user = await authService.register(req.body)
         res.json({ success: true, user })
     } catch (error) {

@@ -100,3 +100,28 @@ export function getAdaptersForUser(userId) {
 export function invalidateUserAdapters(userId) {
     _adapterCache.delete(userId)
 }
+
+/**
+ * Mask API keys for safe transmission to the client.
+ * Replaces all key values with masked versions showing only last 4 chars.
+ * e.g. "sk-abc123def456" → "sk-****f456"
+ */
+export function maskApiKeys(apiKeys) {
+    if (!apiKeys || typeof apiKeys !== 'object') return apiKeys
+    const masked = {}
+    for (const [key, value] of Object.entries(apiKeys)) {
+        if (typeof value === 'object' && value !== null) {
+            // Recurse into nested objects (e.g., {openai: {apiKey: "sk-xxx"}})
+            masked[key] = maskApiKeys(value)
+        } else if (typeof value === 'string' && value.length > 4) {
+            const prefix = value.includes('-') ? value.slice(0, value.indexOf('-') + 1) : ''
+            const lastFour = value.slice(-4)
+            masked[key] = `${prefix}****${lastFour}`
+        } else if (typeof value === 'string' && value.length > 0) {
+            masked[key] = '****'
+        } else {
+            masked[key] = value
+        }
+    }
+    return masked
+}

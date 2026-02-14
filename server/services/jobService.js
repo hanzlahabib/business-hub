@@ -2,7 +2,7 @@ import jobRepository from '../repositories/jobRepository.js'
 
 const jobService = {
     async getAll(userId) {
-        return jobRepository.findAll(userId)
+        return jobRepository.findAllByUserId(userId)
     },
 
     async getById(id, userId) {

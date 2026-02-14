@@ -2,7 +2,7 @@ import leadRepository from '../repositories/leadRepository.js'
 
 const leadService = {
     async getAll(userId) {
-        return leadRepository.findAll(userId)
+        return leadRepository.findAllByUserId(userId)
     },
 
     async getById(id, userId) {

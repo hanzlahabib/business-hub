@@ -2,7 +2,7 @@ import express from 'express'
 import prisma from '../config/prisma.js'
 import authMiddleware from '../middleware/auth.js'
 import { settingsRepository, emailSettingsRepository, jobSearchPromptRepository } from '../repositories/extraRepositories.js'
-import { loadUserKeys } from '../services/apiKeyService.js'
+import { loadUserKeys, maskApiKeys } from '../services/apiKeyService.js'
 
 const router = express.Router()
 router.use(authMiddleware)
@@ -41,6 +41,8 @@ router.post('/taskboards', async (req, res) => {
 
 router.patch('/taskboards/:id', async (req, res) => {
     try {
+        const existing = await prisma.taskBoard.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Task board not found' })
         const board = await prisma.taskBoard.update({
             where: { id: req.params.id, userId: req.user.id },
             data: req.body,
@@ -54,6 +56,8 @@ router.patch('/taskboards/:id', async (req, res) => {
 
 router.put('/taskboards/:id', async (req, res) => {
     try {
+        const existing = await prisma.taskBoard.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Task board not found' })
         const board = await prisma.taskBoard.update({
             where: { id: req.params.id, userId: req.user.id },
             data: req.body,
@@ -67,6 +71,8 @@ router.put('/taskboards/:id', async (req, res) => {
 
 router.delete('/taskboards/:id', async (req, res) => {
     try {
+        const existing = await prisma.taskBoard.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Task board not found' })
         await prisma.taskBoard.delete({ where: { id: req.params.id, userId: req.user.id } })
         res.status(204).send()
     } catch (e) {
@@ -96,6 +102,8 @@ router.post('/tasks', async (req, res) => {
 
 router.patch('/tasks/:id', async (req, res) => {
     try {
+        const existing = await prisma.task.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Task not found' })
         const task = await prisma.task.update({
             where: { id: req.params.id, userId: req.user.id },
             data: req.body
@@ -108,6 +116,8 @@ router.patch('/tasks/:id', async (req, res) => {
 
 router.put('/tasks/:id', async (req, res) => {
     try {
+        const existing = await prisma.task.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Task not found' })
         const task = await prisma.task.update({
             where: { id: req.params.id, userId: req.user.id },
             data: req.body
@@ -120,6 +130,8 @@ router.put('/tasks/:id', async (req, res) => {
 
 router.delete('/tasks/:id', async (req, res) => {
     try {
+        const existing = await prisma.task.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Task not found' })
         await prisma.task.delete({ where: { id: req.params.id, userId: req.user.id } })
         res.status(204).send()
     } catch (e) {
@@ -153,6 +165,8 @@ router.post('/templates', async (req, res) => {
 
 router.patch('/templates/:id', async (req, res) => {
     try {
+        const existing = await prisma.template.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Template not found' })
         const template = await prisma.template.update({
             where: { id: req.params.id, userId: req.user.id },
             data: req.body
@@ -165,6 +179,8 @@ router.patch('/templates/:id', async (req, res) => {
 
 router.put('/templates/:id', async (req, res) => {
     try {
+        const existing = await prisma.template.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Template not found' })
         const template = await prisma.template.update({
             where: { id: req.params.id, userId: req.user.id },
             data: req.body
@@ -177,6 +193,8 @@ router.put('/templates/:id', async (req, res) => {
 
 router.delete('/templates/:id', async (req, res) => {
     try {
+        const existing = await prisma.template.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Template not found' })
         await prisma.template.delete({ where: { id: req.params.id, userId: req.user.id } })
         res.status(204).send()
     } catch (e) {
@@ -210,6 +228,8 @@ router.post('/templatefolders', async (req, res) => {
 
 router.patch('/templatefolders/:id', async (req, res) => {
     try {
+        const existing = await prisma.templateFolder.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Folder not found' })
         const folder = await prisma.templateFolder.update({
             where: { id: req.params.id, userId: req.user.id },
             data: req.body
@@ -222,6 +242,8 @@ router.patch('/templatefolders/:id', async (req, res) => {
 
 router.put('/templatefolders/:id', async (req, res) => {
     try {
+        const existing = await prisma.templateFolder.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Folder not found' })
         const folder = await prisma.templateFolder.update({
             where: { id: req.params.id, userId: req.user.id },
             data: req.body
@@ -234,6 +256,8 @@ router.put('/templatefolders/:id', async (req, res) => {
 
 router.delete('/templatefolders/:id', async (req, res) => {
     try {
+        const existing = await prisma.templateFolder.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Folder not found' })
         await prisma.templateFolder.delete({ where: { id: req.params.id, userId: req.user.id } })
         res.status(204).send()
     } catch (e) {
@@ -287,16 +311,34 @@ router.get('/emailtemplates', async (req, res) => {
 
 router.get('/settings', async (req, res) => {
     const settings = await settingsRepository.findByUserId(req.user.id)
-    res.json(settings ? settings.config : {})
+    const config = settings ? { ...settings.config } : {}
+    // Mask API keys before sending to client
+    if (config.apiKeys) {
+        config.apiKeys = maskApiKeys(config.apiKeys)
+    }
+    res.json(config)
 })
 
 router.patch('/settings', async (req, res) => {
-    const updated = await settingsRepository.upsert(req.user.id, req.body)
+    const data = { ...req.body }
+    // If client sends masked keys (containing ****), drop them so we don't overwrite real keys
+    if (data.apiKeys) {
+        const hasRealKeys = Object.values(data.apiKeys).some(v => typeof v === 'string' && !v.includes('****'))
+        if (!hasRealKeys) {
+            delete data.apiKeys
+        }
+    }
+    const updated = await settingsRepository.upsert(req.user.id, data)
     // Reload this user's keys into per-user cache (invalidates their adapter instances)
-    if (req.body.apiKeys) {
+    if (data.apiKeys) {
         await loadUserKeys(req.user.id)
     }
-    res.json(updated.config)
+    // Mask keys in the response too
+    const responseConfig = { ...updated.config }
+    if (responseConfig.apiKeys) {
+        responseConfig.apiKeys = maskApiKeys(responseConfig.apiKeys)
+    }
+    res.json(responseConfig)
 })
 
 // ============ EMAIL SETTINGS ============

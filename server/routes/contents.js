@@ -15,6 +15,16 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/:id', async (req, res) => {
+    try {
+        const content = await contentService.getById(req.params.id, req.user.id)
+        res.json(content)
+    } catch (error) {
+        const status = error.message === 'Content not found' ? 404 : 400
+        res.status(status).json({ error: error.message })
+    }
+})
+
 router.post('/', async (req, res) => {
     try {
         const content = await contentService.create(req.user.id, req.body)
@@ -29,7 +39,8 @@ router.patch('/:id', async (req, res) => {
         const content = await contentService.update(req.params.id, req.user.id, req.body)
         res.json(content)
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        const status = error.message === 'Content not found' ? 404 : 400
+        res.status(status).json({ error: error.message })
     }
 })
 
@@ -38,7 +49,8 @@ router.delete('/:id', async (req, res) => {
         await contentService.delete(req.params.id, req.user.id)
         res.status(204).send()
     } catch (error) {
-        res.status(400).json({ error: error.message })
+        const status = error.message === 'Content not found' ? 404 : 400
+        res.status(status).json({ error: error.message })
     }
 })
 

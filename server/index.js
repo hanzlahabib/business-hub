@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import helmet from 'helmet'
 import dotenv from 'dotenv'
 import path from 'path'
 import fs from 'fs/promises'
@@ -28,38 +29,79 @@ import campaignRoutes from './routes/campaignRoutes.js'
 import authMiddleware from './middleware/auth.js'
 import { validateTwilioRequest } from './middleware/twilioValidation.js'
 import prisma from './config/prisma.js'
-import { initWebSocket } from './services/callWebSocket.js'
+import { initWebSocket, getClientCount } from './services/callWebSocket.js'
 import { initMediaStreamWebSocket } from './services/twilioMediaStream.js'
 import agentCallingService from './services/agentCallingService.js'
 import callService from './services/callService.js'
 import { loadAllUserKeys } from './services/apiKeyService.js'
+import { globalErrorHandler } from './middleware/errorHandler.js'
+import { rateLimiter, authLimiter } from './middleware/rateLimiter.js'
+import { sanitizeInput } from './middleware/sanitize.js'
+import { requestLogger } from './middleware/requestLogger.js'
+import logger from './config/logger.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 dotenv.config()
 
+// Validate environment variables before proceeding
+import { validateEnv } from './config/validateEnv.js'
+validateEnv()
+
 const app = express()
 const PORT = process.env.PORT || 3002
 
-// Middleware
+// Security Middleware
+app.use(helmet({
+  contentSecurityPolicy: false,  // Disable CSP — frontend is a separate SPA
+  crossOriginEmbedderPolicy: false,  // Allow cross-origin resources
+}))
 app.use(cors())
 app.use(express.json())
+app.use(sanitizeInput())
+app.use(requestLogger())
+app.use('/api', rateLimiter())
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
-// Health check — MUST be before route registration
-app.get('/api/health', (req, res) => {
+// Swagger UI — serve OpenAPI docs
+import swaggerUi from 'swagger-ui-express'
+import { readFileSync } from 'fs'
+import YAML from 'yaml'
+const openapiSpec = YAML.parse(readFileSync(path.join(__dirname, '..', 'docs', 'openapi.yaml'), 'utf8'))
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Business Hub API Docs',
+}))
+
+// Health check — enhanced with diagnostics
+app.get('/api/health', async (req, res) => {
+  let dbStatus = 'unknown'
+  try {
+    await prisma.$queryRaw`SELECT 1`
+    dbStatus = 'connected'
+  } catch {
+    dbStatus = 'disconnected'
+  }
+
+  const mem = process.memoryUsage()
   res.json({
     status: 'ok',
-    database: 'prisma/postgresql',
+    uptime: `${Math.floor(process.uptime())}s`,
+    database: dbStatus,
+    memory: {
+      rss: `${Math.round(mem.rss / 1024 / 1024)}MB`,
+      heap: `${Math.round(mem.heapUsed / 1024 / 1024)}/${Math.round(mem.heapTotal / 1024 / 1024)}MB`,
+    },
+    wsClients: typeof getClientCount === 'function' ? getClientCount() : 0,
     timestamp: new Date().toISOString()
   })
 })
 
 // Routes
-app.use('/api/auth', authRoutes)
+app.use('/api/auth', authLimiter(), authRoutes)
 app.use('/api/leads', leadRoutes)
 app.use('/api/jobs', jobRoutes)
 app.use('/api/contents', contentRoutes)
@@ -293,15 +335,13 @@ initWebSocket(server)
 initMediaStreamWebSocket(server)
 
 // Load all users' API keys from DB into per-user cache (no process.env mutation)
-loadAllUserKeys().catch(err => console.error('API key loading failed:', err.message))
+loadAllUserKeys().catch(err => logger.error('API key loading failed', { error: err.message }))
+
+// Global error handler — catches all unhandled errors from routes
+app.use(globalErrorHandler)
 
 server.listen(PORT, () => {
-  console.log(`🚀 Business Hub API running on http://localhost:${PORT}`)
-  console.log(`📧 Email endpoint: POST /api/email/send`)
-  console.log(`🤖 AI Agent endpoint: POST /api/agent/execute`)
-  console.log(`📞 AI Calling API: /api/calls`)
-  console.log(`🤖 Agent API: /api/agents`)
-  console.log(`📢 Campaign API: /api/campaigns`)
-  console.log(`🔌 WebSocket: ws://localhost:${PORT}/ws/calls`)
-  console.log(`🎙️ Media Streams: ws://localhost:${PORT}/ws/twilio-media`)
+  logger.info(`🚀 Business Hub API running on http://localhost:${PORT}`)
+  logger.info('Routes: /api/auth, /api/leads, /api/jobs, /api/calls, /api/agents, /api/campaigns')
+  logger.info(`WebSocket: ws://localhost:${PORT}/ws/calls | ws://localhost:${PORT}/ws/twilio-media`)
 })

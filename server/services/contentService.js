@@ -19,10 +19,14 @@ export const contentService = {
     },
 
     async update(id, userId, data) {
+        const existing = await contentRepository.findById(id, userId)
+        if (!existing) throw new Error('Content not found')
         return contentRepository.update(id, userId, data)
     },
 
     async delete(id, userId) {
+        const existing = await contentRepository.findById(id, userId)
+        if (!existing) throw new Error('Content not found')
         return contentRepository.delete(id, userId)
     }
 }

@@ -1,89 +1,137 @@
-# Architecture
+# Business Hub API — Architecture
 
-## Overview
+## System Overview
 
-Business Hub is a single-page application (SPA) using a modular architecture. Each major feature is a self-contained module with its own components, hooks, and data layer.
+```mermaid
+graph TB
+    subgraph Frontend["Frontend (Vite + React)"]
+        SPA["SPA (React Router)"]
+        WS_CLIENT["WebSocket Client"]
+    end
 
-## Architecture Diagram
+    subgraph Backend["Backend (Express.js)"]
+        MW["Middleware Stack"]
+        ROUTES["API Routes"]
+        SERVICES["Service Layer"]
+        WS_SERVER["WebSocket Server"]
+    end
+
+    subgraph Data["Data Layer"]
+        DB["PostgreSQL"]
+        PRISMA["Prisma ORM"]
+        CACHE["In-Memory Cache"]
+    end
+
+    subgraph External["External APIs"]
+        TWILIO["Twilio (Voice)"]
+        VAPI["Vapi (AI Agents)"]
+        OPENAI["OpenAI (GPT)"]
+        DEEPGRAM["Deepgram (STT)"]
+        SMTP["SMTP (Email)"]
+    end
+
+    SPA -->|HTTP| MW
+    WS_CLIENT -->|WebSocket| WS_SERVER
+    MW --> ROUTES
+    ROUTES --> SERVICES
+    SERVICES --> PRISMA
+    PRISMA --> DB
+    SERVICES --> CACHE
+    SERVICES --> External
+    WS_SERVER -->|Events| WS_CLIENT
+```
+
+## Middleware Chain
 
 ```
-┌──────────────────────────────────────────────────────┐
-│                     Browser                           │
-│  ┌───────────────────────────────────────────────┐   │
-│  │ React SPA (Vite)                              │   │
-│  │  ┌─────────────────────────────────────────┐  │   │
-│  │  │ ErrorBoundary → AuthProvider → Router   │  │   │
-│  │  │  ┌───────────────────────────────────┐  │  │   │
-│  │  │  │  App Layout (Sidebar + Content)   │  │  │   │
-│  │  │  │   ├── ProtectedRoute              │  │  │   │
-│  │  │  │   ├── Module Views                │  │  │   │
-│  │  │  │   └── Shared Components           │  │  │   │
-│  │  │  └───────────────────────────────────┘  │  │   │
-│  │  └─────────────────────────────────────────┘  │   │
-│  └───────────────────────────────────────────────┘   │
-│              │ fetch                │ fetch           │
-│              ▼                      ▼                 │
-│     JSON Server :3005        Express API :3002        │
-│     (db.json data)           (email, uploads)         │
-└──────────────────────────────────────────────────────┘
+Request → Helmet → CORS → JSON Parser → Sanitize → Request Logger → Rate Limiter → Auth → Route Handler → Error Handler
 ```
 
-## Module Structure
+| Middleware | File | Purpose |
+|---|---|---|
+| Helmet | `helmet` (npm) | Security headers (X-Frame-Options, HSTS, etc.) |
+| CORS | `cors` (npm) | Cross-origin resource sharing |
+| Sanitize | `middleware/sanitize.js` | Strip XSS from body/query/params |
+| Request Logger | `middleware/requestLogger.js` | Log method, URL, status, duration |
+| Rate Limiter | `middleware/rateLimiter.js` | 100 req/15min (general), 10 req/5min (auth) |
+| Auth | `middleware/auth.js` | `x-user-id` header validation |
+| Error Handler | `middleware/errorHandler.js` | Global catch-all for unhandled errors |
 
-Each module follows this pattern:
+## API Route Map
 
+| Prefix | Route File | Auth | Description |
+|---|---|---|---|
+| `/api/auth` | `routes/auth.js` | ❌ | Login, register, profile |
+| `/api/leads` | `routes/leads.js` | ✅ | Lead CRUD + pipeline |
+| `/api/jobs` | `routes/jobs.js` | ✅ | Job CRUD + applications |
+| `/api/contents` | `routes/contents.js` | ✅ | Content studio |
+| `/api/resources` | `routes/extra.js` | ✅ | Task boards, templates, settings |
+| `/api/skillmastery` | `routes/skillMastery.js` | ✅ | Skill tracking + mastery |
+| `/api/calls` | `routes/calls.js` | ✅ | Call CRUD, scripts, stats |
+| `/api/agents` | `routes/agents.js` | ✅ | AI agent management |
+| `/api/campaigns` | `routes/campaignRoutes.js` | ✅ | Campaign CRUD + analytics |
+| `/api/calls/twilio` | `routes/twilioWebhooks.js` | Twilio | Twilio webhooks |
+| `/api/calls/vapi` | `routes/vapiWebhooks.js` | ❌ | Vapi webhooks |
+
+## WebSocket Events
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    
+    Client->>Server: connect /ws/calls
+    Server->>Client: { type: "connected", clientId }
+    Client->>Server: { type: "auth", userId }
+    Server->>Client: { type: "auth:ok" }
+    Client->>Server: { type: "subscribe:agent", agentId }
+    Server->>Client: { type: "subscribed", agentId }
+    
+    loop Heartbeat every 30s
+        Server->>Client: ping
+        Client->>Server: pong
+    end
+    
+    loop Agent Events
+        Server->>Client: { type: "agent:step-change" }
+        Server->>Client: { type: "agent:status" }
+        Server->>Client: { type: "agent:log" }
+        Server->>Client: { type: "call:update" }
+    end
 ```
-modules/<name>/
-├── components/     # UI components
-├── hooks/          # Data & logic hooks
-├── data/           # Static data (optional)
-└── index.ts        # Public API (re-exports)
-```
-
-### Modules
-
-| Module         | Purpose                              |
-|----------------|--------------------------------------|
-| `contentStudio`| Video content planning & scripts     |
-| `jobs`         | Job application tracking             |
-| `leads`        | Business lead management (Kanban)    |
-| `pipeline`     | Content pipeline with analytics      |
-| `skillMastery` | Gamified learning system             |
-| `taskboards`   | Flexible task management             |
-| `templates`    | Block-based template editor          |
 
 ## Data Flow
 
-1. **Hooks** fetch data from JSON Server via `fetch()` or `apiClient`
-2. **Components** consume hooks and render UI
-3. **Mutations** (create, update, delete) go through hooks → JSON Server REST API
-4. **Auth state** managed via `AuthContext` with `localStorage` persistence
-
-## Authentication Flow
-
-```
-Login → POST check against /users → Store in AuthContext + localStorage
-         │
-         ▼
-  ProtectedRoute checks AuthContext
-         │
-    ┌────┴────┐
-    │ Logged  │ Not logged in
-    │   in    │ → Redirect /login
-    │         │
-    ▼         
-  Render App
+```mermaid
+graph LR
+    subgraph Calling Flow
+        LEAD[Lead] --> CAMPAIGN[Campaign]
+        CAMPAIGN --> AGENT[AI Agent]
+        AGENT --> CALL[Call via Twilio/Vapi]
+        CALL --> WEBHOOK[Webhook]
+        WEBHOOK --> UPDATE[Update Call Record]
+        UPDATE --> WS[WebSocket Broadcast]
+    end
 ```
 
-## Theming
+## Directory Structure
 
-CSS custom properties defined in `index.css` with `:root` (light) and `.dark` (dark) selectors. Theme toggle managed by `useTheme` hook with `localStorage` persistence.
-
-Key CSS variables: `--bg-primary`, `--bg-secondary`, `--text-primary`, `--accent-primary`, `--border`, etc.
-
-## Error Handling
-
-- **ErrorBoundary** — Top-level catch for React rendering errors
-- **ModuleErrorBoundary** — Per-module error isolation  
-- **apiClient** — Retry logic with exponential backoff
-- **errorHandler** — Severity-based logging + user-friendly messages
+```
+server/
+├── config/           # Database, logger, env validation
+│   ├── prisma.js
+│   ├── logger.js
+│   └── validateEnv.js
+├── middleware/        # Express middleware
+│   ├── auth.js
+│   ├── errorHandler.js
+│   ├── rateLimiter.js
+│   ├── requestLogger.js
+│   ├── sanitize.js
+│   └── security.js
+├── routes/            # API route handlers
+├── services/          # Business logic
+├── adapters/          # External API adapters (Twilio, Vapi, Deepgram)
+├── repositories/      # Data access layer
+└── index.js           # Server entry point
+```
