@@ -94,7 +94,9 @@ export function QuickDialer({ scripts, onInitiateCall, prefilledLeadId, prefille
         setCalling(true)
         try {
             const result = await onInitiateCall({ leadId: selectedLead.id, scriptId: scriptId || undefined })
-            if (result) {
+            if (result?.error) {
+                toast.error(result.error)
+            } else if (result) {
                 toast.success(`Call initiated to ${selectedLead.name}`)
                 if (!prefilledLeadId) {
                     setSelectedLead(null)
@@ -103,8 +105,8 @@ export function QuickDialer({ scripts, onInitiateCall, prefilledLeadId, prefille
             } else {
                 toast.error('Failed to initiate call')
             }
-        } catch {
-            toast.error('Failed to initiate call')
+        } catch (err: any) {
+            toast.error(err?.message || 'Failed to initiate call')
         } finally {
             setCalling(false)
         }

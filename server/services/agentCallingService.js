@@ -20,6 +20,8 @@ import { isValidTransition, generateFlowGraph, AGENT_STEPS } from './agentStepMa
 import { emitStepChange, emitAgentStatus, emitAgentLog, emitCallUpdate } from './callWebSocket.js'
 import callService from './callService.js'
 import meetingNoteService from './meetingNoteService.js'
+import { callLogService } from './callLogService.js'
+import logger from '../config/logger.js'
 
 // In-memory map of running agent processes (agentId → interval/timeout refs)
 const runningAgents = new Map()
@@ -385,6 +387,7 @@ export const agentCallingService = {
             await this._transitionStep(agentId, null, 'next-lead', {})
 
         } catch (err) {
+            logger.error('Agent call failed', { agentId, leadId, leadName: lead.name, error: err.message })
             emitAgentLog(agentId, `Call failed for ${lead.name}: ${err.message}`, 'error')
             await this._transitionStep(agentId, null, 'failed', { leadName: lead.name, error: err.message })
             await this._transitionStep(agentId, 'failed', 'skipped', {})

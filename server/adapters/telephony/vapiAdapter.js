@@ -12,6 +12,7 @@
  */
 
 import { TelephonyAdapter } from './interface.js'
+import logger from '../../config/logger.js'
 
 // Named voice presets — users can pick by name or provide raw ElevenLabs voice ID
 const VOICE_PRESETS = {
@@ -42,6 +43,7 @@ export class VapiAdapter extends TelephonyAdapter {
         })
         if (!res.ok) {
             const error = await res.text()
+            logger.error('Vapi API request failed', { endpoint, method, status: res.status, error })
             throw new Error(`Vapi API error (${res.status}): ${error}`)
         }
         return res.json()

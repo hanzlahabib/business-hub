@@ -1,4 +1,4 @@
-import { Phone, BarChart3, ScrollText, Bot, Zap, PieChart, Settings, Keyboard } from 'lucide-react'
+import { Phone, BarChart3, ScrollText, Bot, Zap, PieChart, Settings, Keyboard, Activity } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CallStatsCards } from './CallStatsCards'
@@ -10,6 +10,7 @@ import { AgentDashboard } from './AgentDashboard'
 import { BatchCallLauncher } from './BatchCallLauncher'
 import { CallingAnalytics } from './CallingAnalytics'
 import { CallingSettings } from './CallingSettings'
+import { CallActivityLog } from './CallActivityLog'
 import { CallDetailPanel } from './CallDetailPanel'
 import { LiveCallBanner } from './LiveCallBanner'
 import { useCalls } from '../hooks/useCalls'
@@ -22,6 +23,7 @@ const TABS = [
     { id: 'scripts', label: 'Scripts', icon: ScrollText, path: '/calling' },
     { id: 'agents', label: 'AI Agents', icon: Bot, path: '/calling/agents' },
     { id: 'batch', label: 'Batch Calls', icon: Zap, path: '/calling' },
+    { id: 'activity', label: 'Activity', icon: Activity, path: '/calling' },
     { id: 'analytics', label: 'Analytics', icon: PieChart, path: '/calling' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/calling' },
 ]
@@ -217,6 +219,10 @@ export function CallingView({ activeCalls = [] }: CallingViewProps) {
 
                 {activeTab === 'batch' && (
                     <BatchCallLauncher />
+                )}
+
+                {activeTab === 'activity' && (
+                    <CallActivityLog onCallSelect={setSelectedCallId} />
                 )}
 
                 {activeTab === 'analytics' && (

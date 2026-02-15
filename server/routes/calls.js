@@ -10,7 +10,9 @@ import { callService } from '../services/callService.js'
 import { callScriptService } from '../services/callScriptService.js'
 import { meetingNoteService } from '../services/meetingNoteService.js'
 import { rateNegotiationService } from '../services/rateNegotiationService.js'
+import { callLogService } from '../services/callLogService.js'
 import { getAdapterInfo } from '../adapters/index.js'
+import { getAdaptersForUser } from '../services/apiKeyService.js'
 
 const router = express.Router()
 
@@ -52,6 +54,46 @@ router.get('/providers', async (req, res) => {
     }
 })
 
+// GET /api/calls/activity — Recent call activity feed
+router.get('/activity', async (req, res) => {
+    try {
+        const limit = req.query.limit ? parseInt(req.query.limit) : 50
+        const logs = await callLogService.getRecent(req.user.id, limit)
+        res.json(logs)
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
+// GET /api/calls/provider-health — Check provider status
+router.get('/provider-health', async (req, res) => {
+    try {
+        const result = { status: 'unknown', issues: [] }
+
+        try {
+            const { telephony } = getAdaptersForUser(req.user.id)
+
+            // Check if Vapi key is valid by fetching phone numbers
+            const phones = await telephony.getPhoneNumbers()
+            result.status = 'ok'
+            result.phoneNumbers = phones.length
+            result.provider = telephony.providerName
+
+            if (phones.length === 0) {
+                result.status = 'warning'
+                result.issues.push('No phone numbers configured')
+            }
+        } catch (err) {
+            result.status = 'error'
+            result.issues.push(err.message)
+        }
+
+        res.json(result)
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
 // GET /api/calls/:id — Single call details
 router.get('/:id', async (req, res) => {
     try {
@@ -59,6 +101,16 @@ router.get('/:id', async (req, res) => {
         res.json(call)
     } catch (err) {
         res.status(404).json({ error: err.message })
+    }
+})
+
+// GET /api/calls/:id/logs — Get logs for a specific call
+router.get('/:id/logs', async (req, res) => {
+    try {
+        const logs = await callLogService.getByCall(req.params.id, req.user.id)
+        res.json(logs)
+    } catch (err) {
+        res.status(500).json({ error: err.message })
     }
 })
 

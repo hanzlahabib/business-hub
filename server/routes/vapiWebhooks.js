@@ -20,6 +20,8 @@ import express from 'express'
 import prisma from '../config/prisma.js'
 import dncService from '../services/dncService.js'
 import campaignService from '../services/campaignService.js'
+import { callLogService } from '../services/callLogService.js'
+import logger from '../config/logger.js'
 import { emitCallUpdate, emitAgentLog } from '../services/callWebSocket.js'
 
 const router = express.Router()
@@ -42,12 +44,25 @@ router.post('/webhook', async (req, res) => {
     const leadId = metadata.leadId
     const scriptId = metadata.scriptId
 
-    console.log(`📞 Vapi webhook: ${type} — callId=${callId}, leadId=${leadId}`)
+    logger.info('Vapi webhook received', { type, callId, leadId })
+
+    // Log webhook to CallLog if we can find the call
+    const dbCall = callId ? await prisma.call.findFirst({
+        where: { providerCallId: callId },
+        select: { id: true, userId: true }
+    }) : null
+
+    if (dbCall) {
+        await callLogService.log(dbCall.id, dbCall.userId, 'webhook-received',
+            `Webhook: ${type}`,
+            { type, status: message.status, endedReason: message.endedReason }, 'info'
+        )
+    }
 
     try {
         switch (type) {
             case 'status-update':
-                await handleStatusUpdate(callId, callData, message)
+                await handleStatusUpdate(callId, callData, message, dbCall)
                 break
 
             case 'end-of-call-report':
@@ -59,29 +74,33 @@ router.post('/webhook', async (req, res) => {
                 break
 
             case 'speech-update':
-                // Real-time speech event — emit via WebSocket for live UI
                 emitCallUpdate(callId, {
                     status: 'in-progress',
-                    speechEvent: message.role, // 'assistant' or 'user'
+                    speechEvent: message.role,
                     text: message.transcript || ''
                 })
                 break
 
             case 'tool-calls':
-                console.log(`🔧 Vapi tool call: ${JSON.stringify(message.toolCalls || [])}`)
-                // Handle function calls if configured
-                res.json({ results: [] }) // Return empty results for now
+                logger.info('Vapi tool call', { callId, tools: message.toolCalls })
+                res.json({ results: [] })
                 return
 
             case 'hang':
-                console.log(`📞 Vapi call hung up: ${callId}`)
+                logger.info('Vapi call hung up', { callId })
                 break
 
             default:
-                console.log(`📞 Vapi unknown event: ${type}`)
+                logger.info('Vapi unknown event', { type, callId })
         }
     } catch (err) {
-        console.error(`Vapi webhook error (${type}):`, err.message)
+        logger.error('Vapi webhook error', { type, callId, error: err.message })
+        if (dbCall) {
+            await callLogService.log(dbCall.id, dbCall.userId, 'error',
+                `Webhook processing error: ${err.message}`,
+                { type, error: err.message }, 'error'
+            )
+        }
     }
 
     res.json({ success: true })
@@ -90,7 +109,7 @@ router.post('/webhook', async (req, res) => {
 /**
  * Handle call status update
  */
-async function handleStatusUpdate(providerCallId, callData, message) {
+async function handleStatusUpdate(providerCallId, callData, message, dbCall) {
     if (!providerCallId) return
 
     const statusMap = {
@@ -116,6 +135,13 @@ async function handleStatusUpdate(providerCallId, callData, message) {
         data: updateData
     })
 
+    if (dbCall) {
+        await callLogService.log(dbCall.id, dbCall.userId, 'status-change',
+            `Status changed to: ${status}`,
+            { from: message.status, mapped: status }, 'info'
+        )
+    }
+
     emitCallUpdate(providerCallId, { status })
 }
 
@@ -138,7 +164,7 @@ async function handleEndOfCallReport(providerCallId, callData, message, metadata
     // Analyze conversation for outcome
     const analysis = analyzeConversation(transcript, summary, endedReason)
 
-    console.log(`📞 Vapi call report: ${providerCallId} — ${duration}s, outcome=${analysis.outcome}, sentiment=${analysis.sentiment}`)
+    logger.info('Vapi call report', { providerCallId, duration, outcome: analysis.outcome, sentiment: analysis.sentiment })
 
     // Update Call record
     const updateData = {
@@ -210,7 +236,7 @@ async function handleEndOfCallReport(providerCallId, callData, message, metadata
                 tags: ['vapi-auto'],
                 userId: call.userId
             }
-        }).catch(err => console.error('MeetingNote create error:', err.message))
+        }).catch(err => logger.error('MeetingNote create error', { error: err.message }))
     }
 
     emitCallUpdate(providerCallId, { status: 'completed', outcome: analysis.outcome })
@@ -318,9 +344,9 @@ async function sendFollowUpSms(leadId) {
         const message = `Hi ${lead.contactPerson || 'there'}! Thanks for your interest in receiving EV charger installation leads. Visit hendersonevcharger.com to see our site. Mike will reach out shortly to discuss the details. - Henderson EV Charger Pros`
 
         await twilio.sendSms(lead.phone, message)
-        console.log(`📱 Follow-up SMS sent to ${lead.phone}`)
+        logger.info('Follow-up SMS sent', { phone: lead.phone, leadId })
     } catch (err) {
-        console.error('Vapi follow-up SMS error:', err.message)
+        logger.error('Follow-up SMS error', { error: err.message, leadId })
     }
 }
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Settings, Radio, Mic, Brain, AudioLines, Loader2, CheckCircle, XCircle, Volume2 } from 'lucide-react'
+import { Settings, Radio, Mic, Brain, AudioLines, Loader2, CheckCircle, XCircle, Volume2, HeartPulse, AlertTriangle } from 'lucide-react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
 
@@ -9,6 +9,13 @@ interface ProviderInfo {
     llm: { name: string; configured: boolean }
     stt: { name: string; configured: boolean }
     mockMode: boolean
+}
+
+interface ProviderHealth {
+    status: 'ok' | 'warning' | 'error' | 'unknown'
+    issues: string[]
+    provider?: string
+    phoneNumbers?: number
 }
 
 const PROVIDER_ICONS: Record<string, any> = {
@@ -28,7 +35,9 @@ const PROVIDER_COLORS: Record<string, string> = {
 export function CallingSettings() {
     const { user } = useAuth()
     const [providers, setProviders] = useState<ProviderInfo | null>(null)
+    const [health, setHealth] = useState<ProviderHealth | null>(null)
     const [loading, setLoading] = useState(true)
+    const [healthLoading, setHealthLoading] = useState(false)
 
     const fetchProviders = useCallback(async () => {
         if (!user) return
@@ -43,7 +52,20 @@ export function CallingSettings() {
         finally { setLoading(false) }
     }, [user])
 
-    useEffect(() => { fetchProviders() }, [fetchProviders])
+    const fetchHealth = useCallback(async () => {
+        if (!user) return
+        setHealthLoading(true)
+        try {
+            const res = await fetch(ENDPOINTS.CALL_PROVIDER_HEALTH, {
+                headers: { 'Content-Type': 'application/json', 'x-user-id': user.id }
+            })
+            const data = await res.json()
+            setHealth(data)
+        } catch { /* ignore */ }
+        finally { setHealthLoading(false) }
+    }, [user])
+
+    useEffect(() => { fetchProviders(); fetchHealth() }, [fetchProviders, fetchHealth])
 
     if (loading) {
         return (
@@ -70,6 +92,47 @@ export function CallingSettings() {
                     </div>
                 </div>
             )}
+
+            {/* Provider Health Check */}
+            <div className={`rounded-xl p-4 border flex items-center gap-3 ${
+                health?.status === 'ok' ? 'bg-emerald-500/5 border-emerald-500/20' :
+                health?.status === 'warning' ? 'bg-amber-500/5 border-amber-500/20' :
+                health?.status === 'error' ? 'bg-red-500/5 border-red-500/20' :
+                'bg-bg-secondary border-border'
+            }`}>
+                <div className={`p-2 rounded-lg ${
+                    health?.status === 'ok' ? 'bg-emerald-500/10 text-emerald-400' :
+                    health?.status === 'warning' ? 'bg-amber-500/10 text-amber-400' :
+                    health?.status === 'error' ? 'bg-red-500/10 text-red-400' :
+                    'bg-bg-tertiary text-text-muted'
+                }`}>
+                    {healthLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <HeartPulse className="w-5 h-5" />}
+                </div>
+                <div className="flex-1">
+                    <h3 className="text-sm font-semibold text-text-primary">Provider Health</h3>
+                    {healthLoading ? (
+                        <p className="text-xs text-text-muted">Checking provider status...</p>
+                    ) : health?.status === 'ok' ? (
+                        <p className="text-xs text-emerald-400">
+                            All systems operational — {health.phoneNumbers} phone number{health.phoneNumbers !== 1 ? 's' : ''} active
+                        </p>
+                    ) : health?.status === 'warning' ? (
+                        <p className="text-xs text-amber-400">{health.issues?.[0] || 'Provider has warnings'}</p>
+                    ) : health?.status === 'error' ? (
+                        <p className="text-xs text-red-400">{health.issues?.[0] || 'Provider check failed'}</p>
+                    ) : (
+                        <p className="text-xs text-text-muted">Unable to check provider status</p>
+                    )}
+                </div>
+                <button
+                    onClick={fetchHealth}
+                    disabled={healthLoading}
+                    className="p-1.5 rounded-lg hover:bg-bg-tertiary text-text-muted transition-colors disabled:opacity-50"
+                    title="Re-check health"
+                >
+                    <HeartPulse size={14} />
+                </button>
+            </div>
 
             {/* Provider Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

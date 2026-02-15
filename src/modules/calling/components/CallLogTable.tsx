@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowUpDown, Filter, Phone, Clock, User, ChevronLeft, ChevronRight, ExternalLink, ChevronRight as ChevronRightIcon } from 'lucide-react'
+import { ArrowUpDown, Filter, Phone, Clock, User, ChevronLeft, ChevronRight, ExternalLink, ChevronRight as ChevronRightIcon, AlertTriangle } from 'lucide-react'
 import type { Call } from '../hooks/useCalls'
 
 interface Props {
@@ -148,9 +148,19 @@ export function CallLogTable({ calls, loading, total, onRefresh, onCallSelect }:
                                             </div>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <span className={`text-[10px] px-2 py-0.5 rounded-full ${status.bg} ${status.text} font-medium`}>
-                                                {call.status}
-                                            </span>
+                                            <div className="flex items-center gap-1.5">
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full ${status.bg} ${status.text} font-medium`}>
+                                                    {call.status}
+                                                </span>
+                                                {call.status === 'failed' && call.errorReason && (
+                                                    <span className="relative group">
+                                                        <AlertTriangle size={12} className="text-red-400 cursor-help" />
+                                                        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-bg-primary border border-border rounded text-[10px] text-red-300 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-10">
+                                                            {call.errorReason}
+                                                        </span>
+                                                    </span>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="px-4 py-3">
                                             {outcome ? (

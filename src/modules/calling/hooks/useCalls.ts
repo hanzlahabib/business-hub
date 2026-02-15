@@ -13,6 +13,8 @@ export interface Call {
     summary?: string
     transcription?: string
     recordingUrl?: string
+    errorReason?: string
+    failedAt?: string
     providerCallId?: string
     scriptId?: string
     agentInstanceId?: string
@@ -159,14 +161,15 @@ export function useCalls() {
             })
             const call = await res.json()
             if (res.ok) {
-                // Re-fetch to get proper lead relations instead of adding raw response
                 await fetchCalls()
                 await fetchStats()
+                return call
             }
-            return call
+            // Return error object so caller can display specific message
+            return { error: call.error || 'Failed to initiate call' }
         } catch (err: any) {
             setError(err.message)
-            return null
+            return { error: err.message }
         } finally {
             setLoading(false)
         }

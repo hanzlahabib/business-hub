@@ -69,6 +69,8 @@ export const ENDPOINTS = {
   CALL_SCRIPTS_LIST: `${API_SERVER}/api/calls/scripts/list`,
   CALL_SCRIPTS_GENERATE: `${API_SERVER}/api/calls/scripts/generate`,
   CALL_WEBHOOK: `${API_SERVER}/api/calls/webhook`,
+  CALL_ACTIVITY: `${API_SERVER}/api/calls/activity`,
+  CALL_PROVIDER_HEALTH: `${API_SERVER}/api/calls/provider-health`,
   AGENTS: `${API_SERVER}/api/agents`,
   AGENTS_FLOW_CONFIG: `${API_SERVER}/api/agents/flow-config`
 }

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
     X, Phone, Clock, User, Building2, FileText, MessageSquare,
     Info, Play, Pause, Volume2, Mic, Calendar, Hash, Bot,
-    ChevronRight, Loader2, Sparkles
+    ChevronRight, Loader2, Sparkles, AlertTriangle
 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { useCalls } from '../hooks/useCalls'
@@ -205,6 +205,17 @@ export function CallDetailPanel({ callId, isOpen, onClose }: Props) {
                                         <Mic size={10} /> Recorded
                                     </span>
                                 )}
+                            </div>
+                        )}
+
+                        {/* Error Banner */}
+                        {call && call.status === 'failed' && call.errorReason && (
+                            <div className="mt-3 flex items-start gap-2 px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-lg">
+                                <AlertTriangle size={14} className="text-red-400 flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="text-xs font-medium text-red-400">Call Failed</p>
+                                    <p className="text-[11px] text-red-300/80 mt-0.5">{call.errorReason}</p>
+                                </div>
                             </div>
                         )}
                     </div>

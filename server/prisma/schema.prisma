@@ -39,6 +39,7 @@ model User {
   // AI Calling System
   calls         Call[]
   callScripts   CallScript[]
+  callLogs      CallLog[]
   meetingNotes  MeetingNote[]
   agentInstances AgentInstance[]
   rateNegotiations RateNegotiation[]
@@ -359,6 +360,8 @@ model Call {
   agentInstanceId String?
   agentInstance   AgentInstance? @relation(fields: [agentInstanceId], references: [id])
   providerCallId  String?   @unique  // Vapi callId / Twilio SID — provider-agnostic
+  errorReason     String?   // Provider error message (e.g. "Voice calling disabled")
+  failedAt        DateTime?
   scheduledAt     DateTime?
   startedAt       DateTime?
   endedAt         DateTime?
@@ -368,6 +371,7 @@ model Call {
   user            User      @relation(fields: [userId], references: [id])
   meetingNotes    MeetingNote[]
   negotiations    RateNegotiation[]
+  callLogs        CallLog[]
 }
 
 model CallScript {
@@ -423,6 +427,22 @@ model RateNegotiation {
   updatedAt       DateTime  @updatedAt
   userId          String
   user            User      @relation(fields: [userId], references: [id])
+}
+
+model CallLog {
+  id        String   @id @default(cuid())
+  callId    String
+  call      Call     @relation(fields: [callId], references: [id])
+  event     String   // 'initiated', 'status-change', 'webhook-received', 'error', 'timeout'
+  message   String   // Human-readable description
+  details   Json?    // Raw data (webhook payload, API response, etc.)
+  level     String   @default("info") // 'info', 'warn', 'error'
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([callId])
+  @@index([userId, createdAt])
 }
 
 model AgentInstance {

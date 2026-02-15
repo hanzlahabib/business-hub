@@ -7,6 +7,8 @@
 
 import prisma from '../config/prisma.js'
 import { getAdaptersForUser } from './apiKeyService.js'
+import { callLogService } from './callLogService.js'
+import logger from '../config/logger.js'
 
 export const callService = {
     /**
@@ -65,6 +67,12 @@ export const callService = {
                 }
             })
 
+            // Log successful initiation
+            await callLogService.log(call.id, userId, 'initiated',
+                `Call initiated to ${lead.name || lead.phone}`,
+                { leadId, phone: lead.phone, scriptId, providerCallId: result.providerCallId }
+            )
+
             // Increment script usage
             if (scriptId) {
                 await prisma.callScript.update({
@@ -77,8 +85,16 @@ export const callService = {
         } catch (err) {
             await prisma.call.update({
                 where: { id: call.id },
-                data: { status: 'failed' }
+                data: { status: 'failed', errorReason: err.message, failedAt: new Date() }
             })
+
+            // Log the error
+            await callLogService.log(call.id, userId, 'error',
+                `Call failed: ${err.message}`,
+                { error: err.message, stack: err.stack }, 'error'
+            )
+            logger.error('Call initiation failed', { callId: call.id, leadId, error: err.message })
+
             throw err
         }
     },
@@ -87,6 +103,9 @@ export const callService = {
      * Get all calls for a user (with filters)
      */
     async getAll(userId, { leadId, status, outcome, limit = 50, offset = 0 } = {}) {
+        // Reconcile stuck calls on every fetch (lightweight — only runs if stuck calls exist)
+        this.reconcileStuckCalls(userId).catch(() => {})
+
         const where = { userId }
         if (leadId) where.leadId = leadId
         if (status) where.status = status
@@ -226,7 +245,71 @@ export const callService = {
         }
 
         await prisma.call.update({ where: { id: call.id }, data: updateData })
+
+        // Log the webhook event
+        await callLogService.log(call.id, call.userId, 'webhook-received',
+            `Webhook: ${normalized.type || 'unknown'} → status=${normalized.status}`,
+            { type: normalized.type, status: normalized.status, duration: normalized.duration }, 'info'
+        )
+
         return { processed: true, callId: call.id, status: normalized.status }
+    },
+
+    /**
+     * Reconcile stuck "queued" calls older than 2 minutes
+     * Checks provider for actual status, updates DB accordingly.
+     */
+    async reconcileStuckCalls(userId) {
+        const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000)
+
+        const stuckCalls = await prisma.call.findMany({
+            where: {
+                userId,
+                status: 'queued',
+                createdAt: { lt: twoMinutesAgo }
+            },
+            take: 10
+        })
+
+        if (stuckCalls.length === 0) return []
+
+        const results = []
+        let telephony = null
+        try {
+            const adapters = getAdaptersForUser(userId)
+            telephony = adapters.telephony
+        } catch {
+            // No adapter available — mark all as timed out
+        }
+
+        for (const call of stuckCalls) {
+            let errorReason = 'Call timed out — no response from provider'
+
+            if (telephony && call.providerCallId) {
+                try {
+                    const providerStatus = await telephony.getCallStatus(call.providerCallId)
+                    if (providerStatus.status === 'completed' || providerStatus.status === 'failed') {
+                        errorReason = `Provider reports: ${providerStatus.status}`
+                    }
+                } catch (err) {
+                    errorReason = `Provider check failed: ${err.message}`
+                }
+            }
+
+            await prisma.call.update({
+                where: { id: call.id },
+                data: { status: 'failed', errorReason, failedAt: new Date() }
+            })
+
+            await callLogService.log(call.id, userId, 'timeout',
+                `Stuck call reconciled: ${errorReason}`,
+                { originalStatus: 'queued', createdAt: call.createdAt }, 'warn'
+            )
+            logger.warn('Reconciled stuck call', { callId: call.id, errorReason })
+            results.push({ callId: call.id, errorReason })
+        }
+
+        return results
     },
 
     /**
