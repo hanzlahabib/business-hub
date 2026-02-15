@@ -30,12 +30,14 @@ services:
       dockerfile: server/Dockerfile
     container_name: business-hub-backend
     restart: always
+    env_file:
+      - .env
     environment:
       DATABASE_URL: "postgresql://postgres:postgres_password@db:5432/business_hub?schema=public"
       PORT: 3002
       NODE_ENV: production
     ports:
-      - "3002:3002"
+      - "3003:3002"
     depends_on:
       db:
         condition: service_healthy

@@ -17,10 +17,11 @@ RUN npm install -g pnpm && pnpm install
 # Copy application code
 COPY server/ ./server/
 COPY src/config/ ./src/config/
+COPY docs/ ./docs/
+COPY prisma.config.ts ./
 
-# Generate Prisma Client
-# Note: Path to schema may vary based on setup
-RUN pnpm prisma generate --schema=server/prisma/schema.prisma
+# Generate Prisma Client (dummy DATABASE_URL needed at build time for prisma.config.ts)
+RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" pnpm prisma generate --schema=server/prisma/schema.prisma
 
 EXPOSE 3002
 

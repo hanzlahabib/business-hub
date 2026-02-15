@@ -7,15 +7,18 @@ const env = import.meta.env.MODE || 'development'
 const config = {
   development: {
     JSON_SERVER: 'http://localhost:3005',
-    API_SERVER: 'http://localhost:3002'
+    API_SERVER: 'http://localhost:3002',
+    WS_SERVER: 'ws://localhost:3002'
   },
   staging: {
     JSON_SERVER: 'https://staging-api.example.com/db',
-    API_SERVER: 'https://staging-api.example.com'
+    API_SERVER: 'https://staging-api.example.com',
+    WS_SERVER: 'wss://staging-api.example.com'
   },
   production: {
-    JSON_SERVER: 'https://api.example.com/db',
-    API_SERVER: 'https://api.example.com'
+    JSON_SERVER: 'https://brain.hanzla.com/api/db',
+    API_SERVER: 'https://brain.hanzla.com',
+    WS_SERVER: 'wss://brain.hanzla.com:3004'
   }
 }
 
@@ -23,6 +26,7 @@ const currentConfig = config[env] || config.development
 
 export const JSON_SERVER = currentConfig.JSON_SERVER
 export const API_SERVER = currentConfig.API_SERVER
+export const WS_SERVER = currentConfig.WS_SERVER
 
 // Common endpoints
 export const ENDPOINTS = {
@@ -71,6 +75,7 @@ export const ENDPOINTS = {
 
 export default {
   API_SERVER,
+  WS_SERVER,
   ENDPOINTS
 }
 

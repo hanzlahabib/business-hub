@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { API_SERVER } from '../../../config/api'
+import { WS_SERVER } from '../../../config/api'
 
 interface AgentLog {
     timestamp: number
@@ -35,7 +35,7 @@ export function useAgentFlow(agentId: string | null, userId: string | null) {
         if (!userId) return
 
         // Build WS URL from API server
-        const wsUrl = API_SERVER.replace('http', 'ws') + '/ws/calls'
+        const wsUrl = WS_SERVER + '/ws/calls'
         const ws = new WebSocket(wsUrl)
         wsRef.current = ws
 

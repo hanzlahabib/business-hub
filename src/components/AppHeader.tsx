@@ -2,19 +2,22 @@ import { memo } from 'react'
 import { Calendar, Sun, Moon, Settings, LogOut } from 'lucide-react'
 import { SidebarToggleButton } from '../shared/components/Sidebar'
 import { useAuth } from '../hooks/useAuth'
+import { GlobalCallIndicator } from './GlobalCallIndicator'
 
 interface AppHeaderProps {
     theme: 'light' | 'dark'
     onToggleTheme: () => void
     onToggleSidebar: () => void
     onOpenSettings: () => void
+    activeCalls?: Array<{ id: string; leadId: string; leadName: string; status: string; startedAt: string }>
 }
 
 export const AppHeader = memo(function AppHeader({
     theme,
     onToggleTheme,
     onToggleSidebar,
-    onOpenSettings
+    onOpenSettings,
+    activeCalls = []
 }: AppHeaderProps) {
     const { user, logout } = useAuth()
 
@@ -35,6 +38,9 @@ export const AppHeader = memo(function AppHeader({
             </div>
 
             <div className="flex items-center gap-3">
+                {/* Live Call Indicator — visible globally */}
+                <GlobalCallIndicator activeCalls={activeCalls} />
+
                 {/* User greeting */}
                 {user && (
                     <span className="text-xs text-text-muted hidden md:inline">

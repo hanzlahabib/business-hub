@@ -15,7 +15,7 @@
  */
 export function rateLimiter(options = {}) {
     const windowMs = options.windowMs || 15 * 60 * 1000  // 15 minutes
-    const max = options.max || 100
+    const max = options.max || 500
     const message = options.message || 'Too many requests, please try again later.'
 
     const requests = new Map()  // IP → { count, resetTime }
@@ -29,7 +29,7 @@ export function rateLimiter(options = {}) {
     }, windowMs)
 
     return (req, res, next) => {
-        const ip = req.ip || req.connection?.remoteAddress || 'unknown'
+        const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip || req.connection?.remoteAddress || 'unknown'
         const now = Date.now()
 
         if (!requests.has(ip) || now > requests.get(ip).resetTime) {

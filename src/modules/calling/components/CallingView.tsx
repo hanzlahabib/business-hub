@@ -10,6 +10,8 @@ import { AgentDashboard } from './AgentDashboard'
 import { BatchCallLauncher } from './BatchCallLauncher'
 import { CallingAnalytics } from './CallingAnalytics'
 import { CallingSettings } from './CallingSettings'
+import { CallDetailPanel } from './CallDetailPanel'
+import { LiveCallBanner } from './LiveCallBanner'
 import { useCalls } from '../hooks/useCalls'
 import { useCallScripts } from '../hooks/useCallScripts'
 import { useAgents } from '../hooks/useAgents'
@@ -24,15 +26,39 @@ const TABS = [
     { id: 'settings', label: 'Settings', icon: Settings, path: '/calling' },
 ]
 
-export function CallingView() {
+interface ActiveCall {
+    id: string
+    leadId: string
+    leadName: string
+    status: string
+    startedAt: string
+}
+
+interface CallingViewProps {
+    activeCalls?: ActiveCall[]
+}
+
+export function CallingView({ activeCalls = [] }: CallingViewProps) {
     const location = useLocation()
     const navigate = useNavigate()
     const isAgentsPath = location.pathname === '/calling/agents'
     const [activeTab, setActiveTab] = useState(isAgentsPath ? 'agents' : 'overview')
 
+    const [selectedCallId, setSelectedCallId] = useState<string | null>(null)
+
     const callsHook = useCalls()
     const scriptsHook = useCallScripts()
     const agentsHook = useAgents()
+
+    // Listen for global call update events (from App-level WebSocket) — silent refresh
+    useEffect(() => {
+        const handler = () => {
+            callsHook.fetchCalls({ silent: true })
+            callsHook.fetchStats({ silent: true })
+        }
+        window.addEventListener('call:updated', handler)
+        return () => window.removeEventListener('call:updated', handler)
+    }, [callsHook.fetchCalls, callsHook.fetchStats])
 
     const handleTabChange = (tabId: string) => {
         setActiveTab(tabId)
@@ -124,6 +150,9 @@ export function CallingView() {
                 })}
             </div>
 
+            {/* Live Call Banner */}
+            <LiveCallBanner activeCalls={activeCalls} onViewCall={setSelectedCallId} />
+
             {/* Tab Content */}
             <div>
                 {activeTab === 'overview' && (
@@ -134,6 +163,7 @@ export function CallingView() {
                                 <RecentCallsList
                                     calls={callsHook.calls.slice(0, 10)}
                                     loading={callsHook.loading}
+                                    onCallSelect={setSelectedCallId}
                                 />
                             </div>
                             <div>
@@ -152,6 +182,7 @@ export function CallingView() {
                         loading={callsHook.loading}
                         total={callsHook.total}
                         onRefresh={callsHook.fetchCalls}
+                        onCallSelect={setSelectedCallId}
                     />
                 )}
 
@@ -196,6 +227,13 @@ export function CallingView() {
                     <CallingSettings />
                 )}
             </div>
+
+            {/* Call Detail Panel */}
+            <CallDetailPanel
+                callId={selectedCallId}
+                isOpen={!!selectedCallId}
+                onClose={() => setSelectedCallId(null)}
+            />
         </div>
     )
 }

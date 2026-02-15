@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Mail, Phone, PhoneCall, Globe, Building2, Calendar, Edit, Trash2, Send, ExternalLink, MessageSquare, LayoutGrid, Eye, Clock, User } from 'lucide-react'
+import { X, Mail, Phone, PhoneCall, Globe, Building2, Calendar, Edit, Trash2, Send, ExternalLink, MessageSquare, LayoutGrid, Eye, Clock, User, Mic, ChevronDown, ChevronRight, Play, Pause, Volume2, FileText } from 'lucide-react'
 import { format, formatDistanceToNow } from 'date-fns'
 import { MessageThread } from '../../../shared/components/MessageThread'
 import { useMessages } from '../../../shared/hooks/useMessages'
@@ -37,6 +37,7 @@ export function LeadDetailPanel({
   const [leadCalls, setLeadCalls] = useState<any[]>([])
   const [callsLoading, setCallsLoading] = useState(false)
   const [callingLead, setCallingLead] = useState(false)
+  const [expandedCallId, setExpandedCallId] = useState<string | null>(null)
 
   const fetchLeadCalls = useCallback(async (leadId) => {
     if (!user) return
@@ -411,30 +412,78 @@ export function LeadDetailPanel({
                       voicemail: '📩 Voicemail'
                     }[call.outcome] || null
 
+                    const isExpanded = expandedCallId === call.id
+
                     return (
-                      <div key={call.id} className="p-3 bg-bg-secondary rounded-lg hover:bg-bg-tertiary transition-colors">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full ${statusColor} font-medium`}>
-                            {call.status}
-                          </span>
-                          <span className="text-[10px] text-text-muted">
-                            {formatDistanceToNow(new Date(call.createdAt), { addSuffix: true })}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          {outcomeLabel && (
-                            <span className="text-xs font-medium">{outcomeLabel}</span>
-                          )}
-                          {call.duration && (
-                            <span className="text-xs text-text-muted flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {Math.floor(call.duration / 60)}:{String(call.duration % 60).padStart(2, '0')}
+                      <div key={call.id} className="bg-bg-secondary rounded-lg overflow-hidden">
+                        <div
+                          onClick={() => setExpandedCallId(isExpanded ? null : call.id)}
+                          className="p-3 hover:bg-bg-tertiary transition-colors cursor-pointer"
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="flex items-center gap-2">
+                              {isExpanded ? <ChevronDown className="w-3 h-3 text-text-muted" /> : <ChevronRight className="w-3 h-3 text-text-muted" />}
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full ${statusColor} font-medium`}>
+                                {call.status}
+                              </span>
+                              {call.recordingUrl && <Mic className="w-3 h-3 text-cyan-400" />}
+                            </div>
+                            <span className="text-[10px] text-text-muted">
+                              {formatDistanceToNow(new Date(call.createdAt), { addSuffix: true })}
                             </span>
-                          )}
-                          {call.summary && (
-                            <span className="text-xs text-text-muted truncate flex-1">{call.summary}</span>
-                          )}
+                          </div>
+                          <div className="flex items-center gap-3 ml-5">
+                            {outcomeLabel && (
+                              <span className="text-xs font-medium">{outcomeLabel}</span>
+                            )}
+                            {call.duration && (
+                              <span className="text-xs text-text-muted flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {Math.floor(call.duration / 60)}:{String(call.duration % 60).padStart(2, '0')}
+                              </span>
+                            )}
+                            {call.summary && !isExpanded && (
+                              <span className="text-xs text-text-muted truncate flex-1">{call.summary}</span>
+                            )}
+                          </div>
                         </div>
+
+                        {/* Expanded inline details */}
+                        {isExpanded && (
+                          <div className="px-3 pb-3 space-y-3 border-t border-border/50 pt-3">
+                            {/* Summary */}
+                            {call.summary && (
+                              <div className="p-2.5 bg-bg-tertiary rounded-lg">
+                                <p className="text-[10px] text-text-muted mb-1 flex items-center gap-1">
+                                  <FileText className="w-3 h-3" /> Summary
+                                </p>
+                                <p className="text-xs text-text-secondary leading-relaxed">{call.summary}</p>
+                              </div>
+                            )}
+
+                            {/* Transcript preview */}
+                            {call.transcription && (
+                              <div className="p-2.5 bg-bg-tertiary rounded-lg">
+                                <p className="text-[10px] text-text-muted mb-2 flex items-center gap-1">
+                                  <MessageSquare className="w-3 h-3" /> Transcript Preview
+                                </p>
+                                <LeadCallTranscriptPreview transcription={call.transcription} />
+                              </div>
+                            )}
+
+                            {/* Audio player */}
+                            {call.recordingUrl && (
+                              <LeadCallAudioPlayer src={call.recordingUrl} />
+                            )}
+
+                            <a
+                              href="/calling"
+                              className="inline-flex items-center gap-1 text-[10px] text-cyan-400 hover:text-cyan-300"
+                            >
+                              View Full Details <ExternalLink className="w-3 h-3" />
+                            </a>
+                          </div>
+                        )}
                       </div>
                     )
                   })
@@ -452,6 +501,69 @@ export function LeadDetailPanel({
         </motion.div>
       </motion.div>
     </AnimatePresence>
+  )
+}
+
+function LeadCallTranscriptPreview({ transcription }: { transcription: string }) {
+  let messages: Array<{ role: string; content: string }> = []
+  try {
+    const parsed = JSON.parse(transcription)
+    if (Array.isArray(parsed)) {
+      messages = parsed.slice(0, 5).map(m => ({
+        role: m.role === 'user' || m.role === 'human' ? 'user' : 'assistant',
+        content: m.content || m.text || '',
+      }))
+    }
+  } catch {
+    const lines = transcription.split('\n').filter(l => l.trim()).slice(0, 5)
+    messages = lines.map(line => {
+      const match = line.match(/^(assistant|agent|ai|user|lead|human|customer):\s*(.*)/i)
+      if (match) {
+        const role = ['user', 'lead', 'human', 'customer'].includes(match[1].toLowerCase()) ? 'user' : 'assistant'
+        return { role, content: match[2] }
+      }
+      return { role: 'assistant', content: line }
+    })
+  }
+
+  if (messages.length === 0) return <p className="text-[10px] text-text-muted">Empty transcript</p>
+
+  return (
+    <div className="space-y-1.5">
+      {messages.map((msg, i) => (
+        <div key={i} className="flex gap-1.5">
+          <span className={`text-[10px] font-medium flex-shrink-0 ${msg.role === 'user' ? 'text-text-muted' : 'text-cyan-400'}`}>
+            {msg.role === 'user' ? 'Lead:' : 'Agent:'}
+          </span>
+          <span className="text-[10px] text-text-secondary truncate">{msg.content}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function LeadCallAudioPlayer({ src }: { src: string }) {
+  const [playing, setPlaying] = useState(false)
+  const [audio] = useState(() => new Audio(src))
+
+  useEffect(() => {
+    const onEnded = () => setPlaying(false)
+    audio.addEventListener('ended', onEnded)
+    return () => { audio.pause(); audio.removeEventListener('ended', onEnded) }
+  }, [audio])
+
+  return (
+    <button
+      onClick={() => {
+        if (playing) { audio.pause(); setPlaying(false) }
+        else { audio.play(); setPlaying(true) }
+      }}
+      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 text-[10px] font-medium hover:bg-cyan-500/20 transition-colors"
+    >
+      {playing ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+      {playing ? 'Pause' : 'Play Recording'}
+      <Volume2 className="w-3 h-3 opacity-60" />
+    </button>
   )
 }
 

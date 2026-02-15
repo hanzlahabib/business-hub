@@ -15,7 +15,7 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { API_SERVER } from '../config/api'
+import { WS_SERVER } from '../config/api'
 
 export type WSState = 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
 
@@ -73,7 +73,7 @@ export function useWebSocket(
         clearReconnectTimer()
         setState(retriesRef.current > 0 ? 'reconnecting' : 'connecting')
 
-        const wsUrl = API_SERVER.replace('http', 'ws') + path
+        const wsUrl = WS_SERVER + path
         const ws = new WebSocket(wsUrl)
         wsRef.current = ws
 

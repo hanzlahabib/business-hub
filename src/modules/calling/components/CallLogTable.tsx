@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowUpDown, Filter, Phone, Clock, User, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react'
+import { ArrowUpDown, Filter, Phone, Clock, User, ChevronLeft, ChevronRight, ExternalLink, ChevronRight as ChevronRightIcon } from 'lucide-react'
 import type { Call } from '../hooks/useCalls'
 
 interface Props {
@@ -7,6 +7,7 @@ interface Props {
     loading: boolean
     total: number
     onRefresh: (filters?: any) => void
+    onCallSelect?: (callId: string) => void
 }
 
 const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
@@ -31,7 +32,7 @@ function formatDuration(seconds?: number): string {
     return `${m}:${String(s).padStart(2, '0')}`
 }
 
-export function CallLogTable({ calls, loading, total, onRefresh }: Props) {
+export function CallLogTable({ calls, loading, total, onRefresh, onCallSelect }: Props) {
     const [statusFilter, setStatusFilter] = useState('')
     const [outcomeFilter, setOutcomeFilter] = useState('')
     const [sortBy, setSortBy] = useState<'createdAt' | 'duration'>('createdAt')
@@ -135,7 +136,7 @@ export function CallLogTable({ calls, loading, total, onRefresh }: Props) {
                                 const outcome = call.outcome ? OUTCOME_STYLES[call.outcome] : null
 
                                 return (
-                                    <tr key={call.id} className="border-b border-border/50 hover:bg-bg-tertiary/30 transition-colors cursor-pointer">
+                                    <tr key={call.id} onClick={() => onCallSelect?.(call.id)} className="border-b border-border/50 hover:bg-bg-tertiary/30 transition-colors cursor-pointer group">
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-2">
                                                 <div className="w-6 h-6 rounded-full bg-cyan-500/10 flex items-center justify-center">
@@ -165,9 +166,12 @@ export function CallLogTable({ calls, loading, total, onRefresh }: Props) {
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <span className="text-[10px] text-text-muted">
-                                                {new Date(call.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                                            </span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[10px] text-text-muted">
+                                                    {new Date(call.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                                </span>
+                                                <ChevronRightIcon size={12} className="text-text-muted/0 group-hover:text-text-muted transition-colors ml-auto" />
+                                            </div>
                                         </td>
                                     </tr>
                                 )

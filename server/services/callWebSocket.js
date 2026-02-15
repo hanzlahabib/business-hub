@@ -1,19 +1,20 @@
 /**
  * Call WebSocket Server
- * 
+ *
  * Real-time event broadcasting for agent actions + call status.
  * Frontend subscribes per agentId to receive step changes for React Flow.
- * 
+ *
  * Events emitted:
  *   agent:step-change  → { agentId, fromStep, toStep, data }
  *   agent:status       → { agentId, status, stats }
  *   call:update        → { callId, status, duration }
  *   agent:log          → { agentId, message, level, timestamp }
- * 
+ *
  * Reliability features:
- *   - Server-side heartbeat every 30s
+ *   - Application-level JSON heartbeat every 30s
  *   - Dead connection cleanup (no pong within 10s)
  *   - Connection state tracking
+ *   - noServer mode to avoid HTTP middleware interference
  */
 
 import { WebSocketServer } from 'ws'
@@ -23,13 +24,24 @@ let wss = null
 const clients = new Map()  // ws → { userId, subscribedAgents: Set }
 
 const HEARTBEAT_INTERVAL = 30_000  // 30 seconds
-const PONG_TIMEOUT = 10_000        // 10 seconds to respond
 
 /**
  * Initialize WebSocket server on a given HTTP server
+ * Uses noServer mode + manual upgrade to avoid middleware interference
  */
 export function initWebSocket(server) {
-    wss = new WebSocketServer({ server, path: '/ws/calls' })
+    wss = new WebSocketServer({ noServer: true, perMessageDeflate: false })
+
+    // Handle upgrade manually — bypasses all Express middleware
+    server.on('upgrade', (req, socket, head) => {
+        const pathname = new URL(req.url, 'http://localhost').pathname
+        if (pathname === '/ws/calls') {
+            wss.handleUpgrade(req, socket, head, (ws) => {
+                wss.emit('connection', ws, req)
+            })
+        }
+        // Don't destroy — other WS servers (twilio-media) also listen for upgrade
+    })
 
     wss.on('connection', (ws, req) => {
         const clientId = `client_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
@@ -37,10 +49,6 @@ export function initWebSocket(server) {
         clients.set(ws, { id: clientId, subscribedAgents: new Set(), userId: null })
 
         logger.info('WS client connected', { clientId })
-
-        ws.on('pong', () => {
-            ws.isAlive = true
-        })
 
         ws.on('message', (data) => {
             try {
@@ -65,7 +73,7 @@ export function initWebSocket(server) {
         ws.send(JSON.stringify({ type: 'connected', clientId }))
     })
 
-    // Server-side heartbeat — ping every 30s, kill dead connections
+    // Application-level heartbeat — send JSON ping, expect JSON pong
     const heartbeat = setInterval(() => {
         if (!wss) return
         wss.clients.forEach((ws) => {
@@ -76,7 +84,10 @@ export function initWebSocket(server) {
                 return ws.terminate()
             }
             ws.isAlive = false
-            ws.ping()
+            // Use application-level JSON ping instead of binary ws.ping()
+            if (ws.readyState === ws.OPEN) {
+                ws.send(JSON.stringify({ type: 'ping' }))
+            }
         })
     }, HEARTBEAT_INTERVAL)
 
@@ -114,6 +125,10 @@ function handleClientMessage(ws, msg) {
         case 'subscribe:all':
             client.subscribedAgents.add('*')
             ws.send(JSON.stringify({ type: 'subscribed', agentId: '*' }))
+            break
+
+        case 'pong':
+            ws.isAlive = true
             break
 
         case 'ping':

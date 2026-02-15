@@ -80,7 +80,7 @@ const modules = [
   }
 ]
 
-export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollapse }) {
+export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollapse, hasActiveCalls = false }) {
   const sidebarWidth = isCollapsed ? 'w-16' : 'w-52'
 
   return (
@@ -168,12 +168,24 @@ export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollaps
                   {/* Icon */}
                   <div className={`relative flex items-center justify-center ${isCollapsed ? 'mx-auto' : ''}`}>
                     <Icon className="w-4 h-4 relative z-10" />
+                    {/* Pulsing dot for active calls on Calling module */}
+                    {module.id === 'calling' && hasActiveCalls && (
+                      <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2 z-20">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                      </span>
+                    )}
                   </div>
 
                   {/* Label */}
                   {!isCollapsed && (
-                    <div className="relative flex-1">
+                    <div className="relative flex-1 flex items-center gap-1.5">
                       <p className="font-medium text-xs">{module.name}</p>
+                      {module.id === 'calling' && hasActiveCalls && !isCollapsed && (
+                        <span className="text-[9px] px-1 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-medium relative z-10">
+                          LIVE
+                        </span>
+                      )}
                     </div>
                   )}
                 </NavLink>

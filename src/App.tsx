@@ -15,6 +15,7 @@ import { Sidebar } from './shared/components/Sidebar'
 import { SettingsModal } from './components/Forms/SettingsModal'
 import { AppHeader } from './components/AppHeader'
 import { getModuleFromPath, getViewFromPath, getViewRoute } from './routes'
+import { useCallUpdates } from './modules/calling/hooks/useCallUpdates'
 
 // Lazy-loaded module views (code splitting)
 const SkillMasteryView = lazy(() => import('./modules/skillMastery').then(m => ({ default: m.SkillMasteryView })))
@@ -105,6 +106,14 @@ function App() {
     const { theme, toggleTheme } = useTheme()
     const { dialogState, confirm, close: closeDialog } = useConfirmDialog()
     const [state, dispatch] = useReducer(appReducer, initialState)
+
+    // Global active call tracking (visible across all pages)
+    const { activeCalls } = useCallUpdates({
+        onCallUpdate: () => {
+            // Dispatch custom event so CallingView can refresh its data
+            window.dispatchEvent(new CustomEvent('call:updated'))
+        },
+    })
 
     // Calendar filters state
     const [calendarFilters, setCalendarFilters] = useState<CalendarFiltersType>({
@@ -261,6 +270,7 @@ function App() {
                 onToggle={toggleSidebar}
                 isCollapsed={sidebarCollapsed}
                 onCollapse={toggleSidebarCollapse}
+                hasActiveCalls={activeCalls.length > 0}
             />
 
             {/* Main content area - add padding for desktop sidebar */}
@@ -273,6 +283,7 @@ function App() {
                             onToggleTheme={toggleTheme}
                             onToggleSidebar={toggleSidebar}
                             onOpenSettings={toggleSettings}
+                            activeCalls={activeCalls}
                         />
 
                         <Suspense fallback={<ModuleLoader />}>
@@ -390,7 +401,7 @@ function App() {
                             {/* AI Calling Module */}
                             {activeModule === 'calling' && (
                                 <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                    <CallingView />
+                                    <CallingView activeCalls={activeCalls} />
                                 </main>
                             )}
 

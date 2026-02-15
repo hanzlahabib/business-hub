@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
 
@@ -97,10 +97,12 @@ export function useCalls() {
         'x-user-id': user?.id || ''
     }), [user])
 
-    const fetchCalls = useCallback(async (filters?: { leadId?: string; status?: string; outcome?: string; limit?: number; offset?: number }) => {
+    const fetchCalls = useCallback(async (filters?: { leadId?: string; status?: string; outcome?: string; limit?: number; offset?: number; silent?: boolean }) => {
         if (!user) return
-        setLoading(true)
-        setError(null)
+        if (!filters?.silent) {
+            setLoading(true)
+            setError(null)
+        }
         try {
             const params = new URLSearchParams()
             if (filters?.leadId) params.set('leadId', filters.leadId)
@@ -116,9 +118,9 @@ export function useCalls() {
             setTotal(data.total || 0)
             return data
         } catch (err: any) {
-            setError(err.message)
+            if (!filters?.silent) setError(err.message)
         } finally {
-            setLoading(false)
+            if (!filters?.silent) setLoading(false)
         }
     }, [user, headers])
 
@@ -133,6 +135,19 @@ export function useCalls() {
         }
     }, [user, headers])
 
+    const fetchStats = useCallback(async (options?: { silent?: boolean }) => {
+        if (!user) return null
+        try {
+            const res = await fetch(ENDPOINTS.CALL_STATS, { headers: headers() })
+            const data = await res.json()
+            setStats(data)
+            return data
+        } catch (err: any) {
+            if (!options?.silent) setError(err.message)
+            return null
+        }
+    }, [user, headers])
+
     const initiateCall = useCallback(async (data: { leadId: string; scriptId?: string; assistantConfig?: any }) => {
         if (!user) return null
         setLoading(true)
@@ -143,7 +158,11 @@ export function useCalls() {
                 body: JSON.stringify(data)
             })
             const call = await res.json()
-            if (res.ok) setCalls(prev => [call, ...prev])
+            if (res.ok) {
+                // Re-fetch to get proper lead relations instead of adding raw response
+                await fetchCalls()
+                await fetchStats()
+            }
             return call
         } catch (err: any) {
             setError(err.message)
@@ -151,7 +170,7 @@ export function useCalls() {
         } finally {
             setLoading(false)
         }
-    }, [user, headers])
+    }, [user, headers, fetchCalls, fetchStats])
 
     const updateCall = useCallback(async (id: string, data: Partial<Call>) => {
         if (!user) return null
@@ -164,19 +183,6 @@ export function useCalls() {
             const updated = await res.json()
             setCalls(prev => prev.map(c => c.id === id ? updated : c))
             return updated
-        } catch (err: any) {
-            setError(err.message)
-            return null
-        }
-    }, [user, headers])
-
-    const fetchStats = useCallback(async () => {
-        if (!user) return null
-        try {
-            const res = await fetch(ENDPOINTS.CALL_STATS, { headers: headers() })
-            const data = await res.json()
-            setStats(data)
-            return data
         } catch (err: any) {
             setError(err.message)
             return null
@@ -201,6 +207,25 @@ export function useCalls() {
     useEffect(() => {
         fetchCalls()
         fetchStats()
+    }, [fetchCalls, fetchStats])
+
+    // Track active calls in a ref to avoid re-creating the polling interval
+    const hasActiveCallsRef = useRef(false)
+    useEffect(() => {
+        hasActiveCallsRef.current = calls.some(c =>
+            c.status === 'queued' || c.status === 'ringing' || c.status === 'in-progress'
+        )
+    }, [calls])
+
+    // Poll for updates when there are active calls — silent to avoid UI flicker
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (!hasActiveCallsRef.current) return
+            fetchCalls({ silent: true })
+            fetchStats({ silent: true })
+        }, 10000) // Poll every 10s while calls are active
+
+        return () => clearInterval(interval)
     }, [fetchCalls, fetchStats])
 
     return {

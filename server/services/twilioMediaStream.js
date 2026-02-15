@@ -28,7 +28,17 @@ const activeSessions = new Map()
  * Mounts at /ws/twilio-media on the given HTTP server
  */
 export function initMediaStreamWebSocket(server) {
-    const wss = new WebSocketServer({ server, path: '/ws/twilio-media' })
+    const wss = new WebSocketServer({ noServer: true, perMessageDeflate: false })
+
+    // Handle upgrade manually — same pattern as callWebSocket
+    server.on('upgrade', (req, socket, head) => {
+        const pathname = new URL(req.url, 'http://localhost').pathname
+        if (pathname === '/ws/twilio-media') {
+            wss.handleUpgrade(req, socket, head, (ws) => {
+                wss.emit('connection', ws, req)
+            })
+        }
+    })
 
     wss.on('connection', (ws) => {
         console.log('🎙️ Twilio Media Stream connected')

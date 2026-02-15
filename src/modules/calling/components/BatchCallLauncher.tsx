@@ -4,7 +4,7 @@ import {
     PhoneCall, Users, FileText, Loader2, Play, Pause, Square,
     CheckCircle, XCircle, SkipForward, Clock, Zap, ChevronDown
 } from 'lucide-react'
-import { ENDPOINTS } from '../../../config/api'
+import { ENDPOINTS, WS_SERVER } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
 import { toast } from 'sonner'
 
@@ -141,8 +141,7 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
     // WebSocket for live tracking
     function connectWebSocket(agentId: string) {
         if (!user) return
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-        const ws = new WebSocket(`${protocol}//${window.location.host}/ws/calls`)
+        const ws = new WebSocket(`${WS_SERVER}/ws/calls`)
         wsRef.current = ws
 
         ws.onopen = () => {

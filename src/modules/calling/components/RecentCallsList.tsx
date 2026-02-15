@@ -4,6 +4,7 @@ import type { Call } from '../hooks/useCalls'
 interface Props {
     calls: Call[]
     loading: boolean
+    onCallSelect?: (callId: string) => void
 }
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
@@ -40,7 +41,7 @@ function timeAgo(date: string): string {
     return `${days}d ago`
 }
 
-export function RecentCallsList({ calls, loading }: Props) {
+export function RecentCallsList({ calls, loading, onCallSelect }: Props) {
     if (loading) {
         return (
             <div className="bg-bg-secondary rounded-xl border border-border p-4">
@@ -82,6 +83,7 @@ export function RecentCallsList({ calls, loading }: Props) {
                         return (
                             <div
                                 key={call.id}
+                                onClick={() => onCallSelect?.(call.id)}
                                 className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-bg-tertiary/50 transition-colors cursor-pointer group"
                             >
                                 {/* Avatar */}
