@@ -215,9 +215,12 @@ select optgroup {
    ============================================================================ */
 
 @keyframes gradient-border {
-  0%, 100% {
+
+  0%,
+  100% {
     border-color: var(--color-accent-primary);
   }
+
   50% {
     border-color: var(--color-accent-secondary);
   }
@@ -228,10 +231,13 @@ select optgroup {
 }
 
 @keyframes border-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     border-color: rgba(59, 130, 246, 0.3);
     box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
   }
+
   50% {
     border-color: rgba(59, 130, 246, 0.8);
     box-shadow: 0 0 20px 0 rgba(59, 130, 246, 0.3);
@@ -247,17 +253,20 @@ select optgroup {
    ============================================================================ */
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--color-bg-tertiary) 25%,
-    var(--color-bg-secondary) 50%,
-    var(--color-bg-tertiary) 75%
-  );
+  background: linear-gradient(90deg,
+      var(--color-bg-tertiary) 25%,
+      var(--color-bg-secondary) 50%,
+      var(--color-bg-tertiary) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
@@ -285,18 +294,23 @@ select optgroup {
 
 /* Animated gradient */
 @keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .gradient-animated {
-  background: linear-gradient(
-    -45deg,
-    var(--color-accent-primary),
-    var(--color-accent-secondary),
-    #2563eb,
-    var(--color-accent-primary)
-  );
+  background: linear-gradient(-45deg,
+      var(--color-accent-primary),
+      var(--color-accent-secondary),
+      #2563eb,
+      var(--color-accent-primary));
   background-size: 400% 400%;
   animation: gradient-shift 8s ease infinite;
 }
@@ -341,12 +355,10 @@ select optgroup {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
   transition: left 0.5s ease;
 }
 
@@ -359,8 +371,15 @@ select optgroup {
    ============================================================================ */
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .float {
@@ -372,10 +391,13 @@ select optgroup {
    ============================================================================ */
 
 @keyframes pulse-dot {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.5);
     opacity: 0.5;
@@ -394,9 +416,11 @@ select optgroup {
   0% {
     box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
   }
+
   70% {
     box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
   }
@@ -677,12 +701,10 @@ select optgroup {
 
 /* Light mode skeleton */
 .light .skeleton {
-  background: linear-gradient(
-    90deg,
-    #e4e4e7 25%,
-    #f4f4f5 50%,
-    #e4e4e7 75%
-  );
+  background: linear-gradient(90deg,
+      #e4e4e7 25%,
+      #f4f4f5 50%,
+      #e4e4e7 75%);
   background-size: 200% 100%;
 }
 
@@ -699,10 +721,214 @@ select optgroup {
   background: #2563eb;
 }
 
+/* ============================================================================
+   ENTERPRISE UI UTILITIES — Matching Stitch Design System
+   ============================================================================ */
+
+/* Glass Panel — header/toolbar backdrop (from Stitch) */
+.glass-panel {
+  background: rgba(22, 27, 34, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Glass Card — content cards (from Stitch) */
+.glass-card {
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+
+.glass-card:hover {
+  border-color: rgba(60, 131, 246, 0.3);
+  background: rgba(30, 41, 59, 0.6);
+}
+
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(228, 228, 231, 0.8);
+}
+
+.light .glass-card:hover {
+  border-color: rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+.light .glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(228, 228, 231, 0.6);
+}
+
+/* Grid Background Pattern (from Stitch) */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+.light .bg-grid-pattern {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+}
+
+/* Card Shine Effect (from Stitch — hover sweep) */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  transform: translateX(-100%);
+  transition: transform 1s ease;
+  pointer-events: none;
+}
+
+.card-shine:hover::after {
+  transform: translateX(100%);
+}
+
+/* Delta badges (from Stitch) */
+.stat-delta-up {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  gap: 4px;
+}
+
+.stat-delta-down {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  gap: 4px;
+}
+
+.stat-delta-flat {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 4px;
+}
+
+/* Module-specific sidebar glow */
+.glow-module-blue {
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.glow-module-emerald {
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+}
+
+.glow-module-cyan {
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+}
+
+.glow-module-amber {
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+}
+
+.glow-module-violet {
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+}
+
+.glow-module-rose {
+  box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
+}
+
+.glow-module-orange {
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
+}
+
+.glow-module-purple {
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+}
+
+.glow-module-indigo {
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+}
+
+/* Timeline vertical line (from Stitch activity feed) */
+.timeline-line {
+  position: absolute;
+  left: 9px;
+  top: 8px;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Timeline node dot (from Stitch) */
+.timeline-node {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0f1419;
+  border-width: 2px;
+  border-style: solid;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+/* Heat score bar (from Stitch Hot Leads table) */
+.heat-bar {
+  width: 96px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #374151;
+  overflow: hidden;
+}
+
+.heat-bar>div {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+/* Custom scrollbar for dense calendar/table areas */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

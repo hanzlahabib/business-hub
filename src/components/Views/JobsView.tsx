@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { Briefcase } from 'lucide-react'
 import {
     JobBoard,
     JobDetailPanel,
@@ -73,12 +74,25 @@ export function JobsView() {
     }, [addInterviewDate, selectedJob])
 
     return (
-        <div className="h-[calc(100vh-200px)]">
-            <JobBoard
-                onJobClick={handleJobClick}
-                onAddClick={handleAddJob}
-                onSearchClick={() => setShowSearchPanel(true)}
-            />
+        <div className="h-full flex flex-col">
+            {/* Stitch Header */}
+            <div className="shrink-0 mb-6">
+                <div className="flex items-center gap-4">
+                    <div className="p-2 bg-indigo-500/10 rounded-lg">
+                        <Briefcase className="w-6 h-6 text-indigo-500" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-text-primary tracking-tight">Job Tracker</h1>
+                </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-auto">
+                <JobBoard
+                    onJobClick={handleJobClick}
+                    onAddClick={handleAddJob}
+                    onSearchClick={() => setShowSearchPanel(true)}
+                />
+            </div>
 
             {/* Job Detail Panel */}
             <JobDetailPanel

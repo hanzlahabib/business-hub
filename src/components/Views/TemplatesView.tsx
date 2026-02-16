@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useState, useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
-import { LayoutGrid, List, Plus, AlertCircle } from 'lucide-react'
+import { LayoutGrid, List, Plus, AlertCircle, FileText } from 'lucide-react'
 import { TemplateBoard } from '../../modules/templates/components/TemplateBoard'
 import { TemplateList } from '../../modules/templates/components/TemplateList'
 import { TemplateDetailPanel } from '../../modules/templates/components/TemplateDetailPanel'
@@ -191,46 +191,51 @@ export function TemplatesView() {
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col min-w-0">
-                {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-border">
-                    <div>
-                        <h2 className="text-lg font-semibold text-text-primary">{viewTitle}</h2>
-                        <p className="text-sm text-text-muted">{filteredTemplates.length} templates</p>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        {/* View Toggle */}
-                        <div className="flex items-center bg-bg-tertiary rounded-lg p-1">
+                {/* Stitch Header */}
+                <div className="p-4 shrink-0">
+                    <div className="flex flex-col gap-5">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="p-2 bg-pink-500/10 rounded-lg">
+                                    <FileText className="w-6 h-6 text-pink-500" />
+                                </div>
+                                <div>
+                                    <h1 className="text-2xl font-bold text-text-primary tracking-tight">{viewTitle}</h1>
+                                    <p className="text-sm text-text-muted">{filteredTemplates.length} templates</p>
+                                </div>
+                            </div>
                             <button
-                                onClick={() => setView('board')}
-                                className={`p-2 rounded-lg transition-colors ${view === 'board'
-                                    ? 'bg-accent-primary text-white'
-                                    : 'text-text-muted hover:text-text-primary'
-                                    }`}
-                                title="Board view"
+                                onClick={() => handleAddClick()}
+                                className="flex items-center gap-2 px-4 py-2 bg-pink-500 rounded-lg text-sm font-medium text-white hover:bg-pink-600 transition-colors"
                             >
-                                <LayoutGrid className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={() => setView('list')}
-                                className={`p-2 rounded-lg transition-colors ${view === 'list'
-                                    ? 'bg-accent-primary text-white'
-                                    : 'text-text-muted hover:text-text-primary'
-                                    }`}
-                                title="List view"
-                            >
-                                <List className="w-4 h-4" />
+                                <Plus className="w-4 h-4" />
+                                New Template
                             </button>
                         </div>
 
-                        {/* Add Button */}
-                        <button
-                            onClick={() => handleAddClick()}
-                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg text-sm font-medium text-white hover:opacity-90 transition-opacity"
-                        >
-                            <Plus className="w-4 h-4" />
-                            New Template
-                        </button>
+                        {/* Stitch View Tabs */}
+                        <div className="flex items-center border-b border-border">
+                            <button
+                                onClick={() => setView('board')}
+                                className={`flex items-center gap-1.5 px-1 py-3 mr-6 text-sm font-medium border-b-2 transition-colors ${view === 'board'
+                                    ? 'text-pink-500 border-pink-500'
+                                    : 'text-text-muted border-transparent hover:text-text-secondary hover:border-border'
+                                    }`}
+                            >
+                                <LayoutGrid size={14} />
+                                Board
+                            </button>
+                            <button
+                                onClick={() => setView('list')}
+                                className={`flex items-center gap-1.5 px-1 py-3 mr-6 text-sm font-medium border-b-2 transition-colors ${view === 'list'
+                                    ? 'text-pink-500 border-pink-500'
+                                    : 'text-text-muted border-transparent hover:text-text-secondary hover:border-border'
+                                    }`}
+                            >
+                                <List size={14} />
+                                List
+                            </button>
+                        </div>
                     </div>
                 </div>
 

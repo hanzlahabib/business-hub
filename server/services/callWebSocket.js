@@ -19,6 +19,7 @@
 
 import { WebSocketServer } from 'ws'
 import logger from '../config/logger.js'
+import prisma from '../config/prisma.js'
 
 let wss = null
 const clients = new Map()  // ws → { userId, subscribedAgents: Set }
@@ -102,17 +103,41 @@ export function initWebSocket(server) {
 /**
  * Handle incoming client messages
  */
-function handleClientMessage(ws, msg) {
+async function handleClientMessage(ws, msg) {
     const client = clients.get(ws)
     if (!client) return
 
     switch (msg.type) {
-        case 'auth':
-            client.userId = msg.userId
-            ws.send(JSON.stringify({ type: 'auth:ok' }))
+        case 'auth': {
+            // Verify userId exists in the DB before trusting it
+            if (!msg.userId) {
+                ws.send(JSON.stringify({ type: 'auth:error', message: 'userId required' }))
+                break
+            }
+            try {
+                const user = await prisma.user.findUnique({
+                    where: { id: msg.userId },
+                    select: { id: true }
+                })
+                if (!user) {
+                    ws.send(JSON.stringify({ type: 'auth:error', message: 'Invalid userId' }))
+                    logger.warn('WS auth rejected — unknown userId', { clientId: client.id, userId: msg.userId })
+                    break
+                }
+                client.userId = user.id
+                ws.send(JSON.stringify({ type: 'auth:ok' }))
+            } catch (err) {
+                ws.send(JSON.stringify({ type: 'auth:error', message: 'Auth verification failed' }))
+                logger.error('WS auth error', { clientId: client.id, error: err.message })
+            }
             break
+        }
 
         case 'subscribe:agent':
+            if (!client.userId) {
+                ws.send(JSON.stringify({ type: 'error', message: 'Authenticate first' }))
+                break
+            }
             client.subscribedAgents.add(msg.agentId)
             ws.send(JSON.stringify({ type: 'subscribed', agentId: msg.agentId }))
             break
@@ -123,6 +148,10 @@ function handleClientMessage(ws, msg) {
             break
 
         case 'subscribe:all':
+            if (!client.userId) {
+                ws.send(JSON.stringify({ type: 'error', message: 'Authenticate first' }))
+                break
+            }
             client.subscribedAgents.add('*')
             ws.send(JSON.stringify({ type: 'subscribed', agentId: '*' }))
             break
@@ -138,7 +167,7 @@ function handleClientMessage(ws, msg) {
 }
 
 /**
- * Broadcast an event to all subscribed clients
+ * Broadcast an event to subscribed clients, filtered by userId when available
  */
 export function broadcast(eventType, data) {
     if (!wss) return
@@ -148,7 +177,10 @@ export function broadcast(eventType, data) {
     for (const [ws, client] of clients) {
         if (ws.readyState !== ws.OPEN) continue
 
-        // Filter: only send agent events to subscribed clients
+        // userId filter: if the event carries a userId, only send to that user's connections
+        if (data.userId && client.userId && client.userId !== data.userId) continue
+
+        // Agent subscription filter
         if (data.agentId) {
             if (client.subscribedAgents.has(data.agentId) || client.subscribedAgents.has('*')) {
                 ws.send(payload)
@@ -179,10 +211,10 @@ export function emitAgentStatus(agentId, status, stats = {}) {
 }
 
 /**
- * Emit call update
+ * Emit call update (userId optional — filters broadcast when provided)
  */
-export function emitCallUpdate(callId, update) {
-    broadcast('call:update', { callId, ...update })
+export function emitCallUpdate(callId, update, userId = null) {
+    broadcast('call:update', { callId, ...update, ...(userId && { userId }) })
 }
 
 /**
@@ -190,6 +222,26 @@ export function emitCallUpdate(callId, update) {
  */
 export function emitAgentLog(agentId, message, level = 'info') {
     broadcast('agent:log', { agentId, message, level })
+}
+
+/**
+ * Emit notification to a specific user via WebSocket
+ */
+export function emitNotification(userId, notification) {
+    if (!wss) return
+
+    const payload = JSON.stringify({
+        type: 'notification:new',
+        notification,
+        timestamp: Date.now()
+    })
+
+    for (const [ws, client] of clients) {
+        if (ws.readyState !== ws.OPEN) continue
+        if (client.userId === userId) {
+            ws.send(payload)
+        }
+    }
 }
 
 /**
@@ -206,5 +258,6 @@ export default {
     emitAgentStatus,
     emitCallUpdate,
     emitAgentLog,
+    emitNotification,
     getClientCount
 }

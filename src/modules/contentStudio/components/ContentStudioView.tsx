@@ -218,111 +218,104 @@ export const ContentStudioView = memo(function ContentStudioView() {
 
     return (
         <>
-            {/* Stats Bar */}
-            <div className="mb-6">
-                <ContentStats
-                    stats={stats}
-                    streak={streak}
-                    onOpenSettings={handleOpenSettings}
-                    goalsEnabled={settings.goalsEnabled !== false}
-                />
+            <div className="h-full flex flex-col">
+                {/* Stitch Header */}
+                <div className="shrink-0">
+                    <div className="flex flex-col gap-5">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="p-2 bg-orange-500/10 rounded-lg">
+                                    <LayoutGrid className="w-6 h-6 text-orange-500" />
+                                </div>
+                                <h1 className="text-2xl font-bold text-text-primary tracking-tight">Content Studio</h1>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={handleOpenVariantGuide}
+                                    className="px-3 py-2 rounded-lg bg-bg-secondary border border-border text-text-muted hover:text-accent-primary hover:border-accent-primary transition-colors flex items-center gap-1.5 text-xs"
+                                >
+                                    <BookOpen size={14} />
+                                    <span className="hidden sm:inline">Variants</span>
+                                </button>
+                                <Button onClick={() => handleAddContent(todayDate)}>
+                                    <Plus size={16} />
+                                    <span className="text-xs">Add Video</span>
+                                </Button>
+                            </div>
+                        </div>
+
+                        {/* Stats Summary Strip */}
+                        <ContentStats
+                            stats={stats}
+                            streak={streak}
+                            onOpenSettings={handleOpenSettings}
+                            goalsEnabled={settings.goalsEnabled !== false}
+                        />
+
+                        {/* Task Flow Pipeline (hidden in pipeline view) */}
+                        {view !== 'pipeline' && (
+                            <TaskFlow
+                                contents={contents}
+                                activeStage={state.filterStage}
+                                onStageClick={(stage) => dispatch({ type: 'SET_FILTER_STAGE', stage: stage as Content['status'] })}
+                                showStats={true}
+                            />
+                        )}
+
+                        {/* Stitch Tab Bar */}
+                        <div className="flex items-center border-b border-border">
+                            {[
+                                { id: 'pipeline', label: 'Pipeline', icon: LayoutGrid },
+                                { id: 'list', label: 'List', icon: List },
+                                { id: 'table', label: 'Table', icon: Table2 }
+                            ].map(tab => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => handleViewChange(tab.id)}
+                                    className={`flex items-center gap-1.5 px-1 py-3 mr-6 text-sm font-medium border-b-2 transition-colors ${view === tab.id
+                                        ? 'text-orange-500 border-orange-500'
+                                        : 'text-text-muted border-transparent hover:text-text-secondary hover:border-border'
+                                        }`}
+                                >
+                                    <tab.icon size={14} />
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-auto pt-6">
+                    {view === 'pipeline' && (
+                        <ContentPipeline
+                            contents={filteredContents}
+                            settings={settings}
+                            onEditContent={handleEditContent}
+                            onDeleteContent={handleDeleteContent}
+                            onStatusChange={moveToStatus}
+                            onAddContent={() => handleAddContent(todayDate)}
+                            onOpenDetail={handleOpenDetail}
+                        />
+                    )}
+                    {view === 'list' && (
+                        <ContentList
+                            contents={filteredContents}
+                            onEdit={handleEditContent}
+                            onDelete={handleDeleteContent}
+                            onOpenDetail={handleOpenDetail}
+                        />
+                    )}
+                    {view === 'table' && (
+                        <TableView
+                            contents={filteredContents}
+                            onEdit={handleEditContent}
+                            onUpdateStatus={handleUpdateStatus}
+                            onOpenDetail={handleOpenDetail}
+                        />
+                    )}
+                </div>
             </div>
-
-            {/* Task Flow Pipeline (hidden in pipeline view since it has its own analytics) */}
-            {view !== 'pipeline' && (
-                <div className="mb-6">
-                    <TaskFlow
-                        contents={contents}
-                        activeStage={state.filterStage}
-                        onStageClick={(stage) => dispatch({ type: 'SET_FILTER_STAGE', stage: stage as Content['status'] })}
-                        showStats={true}
-                    />
-                </div>
-            )}
-
-            {/* Main Content */}
-            <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                {/* Toolbar */}
-                <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
-                    {/* View Switcher */}
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => handleViewChange('pipeline')}
-                            className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${view === 'pipeline'
-                                ? 'bg-accent-primary text-white'
-                                : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
-                                }`}
-                        >
-                            <LayoutGrid size={14} />
-                            <span>Pipeline</span>
-                        </button>
-                        <button
-                            onClick={() => handleViewChange('list')}
-                            className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${view === 'list'
-                                ? 'bg-accent-primary text-white'
-                                : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
-                                }`}
-                        >
-                            <List size={14} />
-                            <span>List</span>
-                        </button>
-                        <button
-                            onClick={() => handleViewChange('table')}
-                            className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${view === 'table'
-                                ? 'bg-accent-primary text-white'
-                                : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
-                                }`}
-                        >
-                            <Table2 size={14} />
-                            <span>Table</span>
-                        </button>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={handleOpenVariantGuide}
-                            className="px-3 py-2 rounded-lg bg-bg-secondary border border-border text-text-muted hover:text-accent-primary hover:border-accent-primary transition-colors flex items-center gap-1.5 text-xs"
-                        >
-                            <BookOpen size={14} />
-                            <span className="hidden sm:inline">Variants</span>
-                        </button>
-                        <Button onClick={() => handleAddContent(todayDate)}>
-                            <Plus size={16} />
-                            <span className="text-xs">Add Video</span>
-                        </Button>
-                    </div>
-                </div>
-
-                {/* Views */}
-                {view === 'pipeline' && (
-                    <ContentPipeline
-                        contents={filteredContents}
-                        settings={settings}
-                        onEditContent={handleEditContent}
-                        onDeleteContent={handleDeleteContent}
-                        onStatusChange={moveToStatus}
-                        onAddContent={() => handleAddContent(todayDate)}
-                        onOpenDetail={handleOpenDetail}
-                    />
-                )}
-                {view === 'list' && (
-                    <ContentList
-                        contents={filteredContents}
-                        onEdit={handleEditContent}
-                        onDelete={handleDeleteContent}
-                        onOpenDetail={handleOpenDetail}
-                    />
-                )}
-                {view === 'table' && (
-                    <TableView
-                        contents={filteredContents}
-                        onEdit={handleEditContent}
-                        onUpdateStatus={handleUpdateStatus}
-                        onOpenDetail={handleOpenDetail}
-                    />
-                )}
-            </main>
 
             {/* Add/Edit Modal */}
             <AddContentModal

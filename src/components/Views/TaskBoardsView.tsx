@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { Kanban } from 'lucide-react'
 import {
     BoardList,
     TaskBoard,
@@ -110,21 +111,34 @@ export function TaskBoardsView({ initialBoardId, onBoardViewed }: { initialBoard
     }
 
     return (
-        <div className="h-[calc(100vh-200px)]">
-            {selectedBoard ? (
-                <TaskBoard
-                    board={selectedBoard}
-                    onBack={handleBackToList}
-                    onTaskClick={handleTaskClick}
-                    onAddTask={handleAddTask}
-                    onSettings={() => setShowSettingsModal(true)}
-                />
-            ) : (
-                <BoardList
-                    onSelectBoard={handleSelectBoard}
-                    onCreateBoard={() => setShowCreateModal(true)}
-                />
-            )}
+        <div className="h-full flex flex-col">
+            {/* Stitch Header */}
+            <div className="shrink-0 mb-6">
+                <div className="flex items-center gap-4">
+                    <div className="p-2 bg-teal-500/10 rounded-lg">
+                        <Kanban className="w-6 h-6 text-teal-500" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-text-primary tracking-tight">Task Boards</h1>
+                </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-auto">
+                {selectedBoard ? (
+                    <TaskBoard
+                        board={selectedBoard}
+                        onBack={handleBackToList}
+                        onTaskClick={handleTaskClick}
+                        onAddTask={handleAddTask}
+                        onSettings={() => setShowSettingsModal(true)}
+                    />
+                ) : (
+                    <BoardList
+                        onSelectBoard={handleSelectBoard}
+                        onCreateBoard={() => setShowCreateModal(true)}
+                    />
+                )}
+            </div>
 
             {/* Create Board Modal */}
             <CreateBoardModal

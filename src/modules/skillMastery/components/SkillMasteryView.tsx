@@ -153,34 +153,34 @@ function GardenView({ plants, onSelectPlant, onPlantNew, viewMode, onToggleView,
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      {/* Garden Header */}
-      <div className="relative mb-12 p-8 py-10 bg-bg-secondary rounded-[2rem] border border-border overflow-hidden">
-        {/* Abstract Background Shapes */}
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl" />
-
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-          <div>
-            <h1 className="text-4xl font-black text-text-primary tracking-tight mb-2 uppercase">
-              Skill Garden
-            </h1>
-            <p className="text-text-secondary max-w-lg font-medium">
-              Architecture for evolving potential. Nurture your skills into high-performance mastery.
-            </p>
+      {/* Stitch Header */}
+      <div className="mb-8">
+        <div className="flex flex-col gap-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-2 bg-emerald-500/10 rounded-lg">
+                <Leaf className="w-6 h-6 text-emerald-500" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-text-primary tracking-tight">Skill Garden</h1>
+                <p className="text-sm text-text-muted">Nurture your skills into mastery</p>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 p-1.5 bg-bg-tertiary rounded-2xl border border-border shadow-inner">
+          {/* Stitch View Tabs */}
+          <div className="flex items-center border-b border-border">
             {[
-              { id: 'grid', label: 'GRID' },
-              { id: 'compact', label: 'COMPACT' },
-              { id: 'tree', label: 'TREE' }
+              { id: 'grid', label: 'Grid' },
+              { id: 'compact', label: 'Compact' },
+              { id: 'tree', label: 'Tree' }
             ].map(mode => (
               <button
                 key={mode.id}
                 onClick={() => onToggleView(mode.id)}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all ${viewMode === mode.id
-                  ? 'bg-bg-primary text-text-primary shadow-sm border border-border'
-                  : 'text-text-secondary hover:text-text-primary'
+                className={`flex items-center gap-1.5 px-1 py-3 mr-6 text-sm font-medium border-b-2 transition-colors ${viewMode === mode.id
+                  ? 'text-emerald-500 border-emerald-500'
+                  : 'text-text-muted border-transparent hover:text-text-secondary hover:border-border'
                   }`}
               >
                 {mode.label}

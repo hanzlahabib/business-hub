@@ -43,6 +43,12 @@ model User {
   meetingNotes  MeetingNote[]
   agentInstances AgentInstance[]
   rateNegotiations RateNegotiation[]
+  // Automation Engine
+  automationRules AutomationRule[]
+  notifications   Notification[]
+  // Intelligence
+  leadIntelligence LeadIntelligence[]
+  proposals        Proposal[]
 }
 
 // ============================================
@@ -97,6 +103,8 @@ model Lead {
   user            User      @relation(fields: [userId], references: [id])
   messages        Message[]
   calls           Call[]
+  intelligence    LeadIntelligence?
+  proposals       Proposal[]
 }
 
 // ============================================
@@ -464,4 +472,91 @@ model AgentInstance {
   userId          String
   user            User      @relation(fields: [userId], references: [id])
   calls           Call[]
+}
+
+// ============================================
+// AUTOMATION ENGINE
+// ============================================
+
+model AutomationRule {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  trigger     String    // event name: 'call:completed', 'lead:status-changed', etc.
+  conditions  Json?     // [{ field: 'outcome', op: 'eq', value: 'booked' }]
+  actions     Json      // [{ type: 'create-task', config: {...} }]
+  enabled     Boolean   @default(true)
+  isSystem    Boolean   @default(false)
+  runCount    Int       @default(0)
+  lastRunAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@index([userId, trigger])
+  @@index([enabled])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // 'call', 'lead', 'task', 'campaign', 'system'
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  actionUrl String?  // e.g. '/leads', '/calling'
+  metadata  Json?    // { leadId, callId, etc. }
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+}
+
+// ============================================
+// INTELLIGENCE
+// ============================================
+model LeadIntelligence {
+  id              String   @id @default(cuid())
+  leadId          String   @unique
+  lead            Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  dealHeat        Int?     // 0-100 score
+  buyingIntent    String?  // 'low', 'medium', 'high', 'critical'
+  budget          String?  // Extracted: "$5k-$10k"
+  timeline        String?  // Extracted: "Next 3 months"
+  decisionMaker   String?  // Extracted: "CEO needs sign-off"
+  painPoints      Json?    // String array
+  keyInsights     Json?    // String array
+  risks           Json?    // String array
+  nextBestAction  String?  // AI-suggested next step
+  summary         String?  // Executive summary of all interactions
+  lastAnalyzedAt  DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, dealHeat])
+}
+
+model Proposal {
+  id              String    @id @default(cuid())
+  title           String
+  status          String    @default("draft") // 'draft','sent','accepted','rejected'
+  content         Json?     // { sections: [{ title, body }], pricing: [...] }
+  totalValue      Float?
+  currency        String    @default("USD")
+  validUntil      DateTime?
+  sentAt          DateTime?
+  acceptedAt      DateTime?
+  rejectionReason String?
+  leadId          String
+  lead            Lead      @relation(fields: [leadId], references: [id])
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId, status])
 }

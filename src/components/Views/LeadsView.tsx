@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
     LeadBoard,
+    LeadTableView,
     LeadDetailPanel,
     AddLeadModal,
     ImportLeadsModal,
@@ -11,7 +12,7 @@ import {
     useLeads
 } from '../../modules/leads'
 import { useTaskBoards } from '../../modules/taskboards'
-import { FileText, Zap } from 'lucide-react'
+import { LayoutGrid, List } from 'lucide-react'
 import { AutomationQuickWidget } from '../../modules/automation'
 import { toast } from 'sonner'
 
@@ -20,6 +21,9 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
     const navigate = useNavigate()
     const { leads, createLead, updateLead, deleteLead, changeStatus, importLeads } = useLeads()
     const { boards, createBoardFromLead, getBoardByLeadId } = useTaskBoards()
+
+    // View mode: table (Stitch default) or kanban
+    const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table')
 
     // Get selected lead from URL params
     const selectedLead = useMemo(() => {
@@ -57,32 +61,26 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
     }
 
     const handleDeleteLead = async (lead: any) => {
-        if (confirm(`Delete ${lead.name}? This cannot be undone.`)) {
-            await deleteLead(lead.id)
-            navigate('/leads')
-        }
+        await deleteLead(lead.id)
+        navigate('/leads')
     }
 
     const handleSendEmail = (lead: any) => {
         navigate('/leads')
         setShowEmailComposer(true)
-        // Store the lead for email composer
         window.__emailComposerLead = lead
     }
 
     const handleCreateBoard = async (lead: any) => {
-        // Check if board already exists
         const existingBoard = getBoardByLeadId(lead.id)
         if (existingBoard) {
             toast.info('Board already exists for this lead')
             handleViewBoard(existingBoard.id)
             return
         }
-
         const board = await createBoardFromLead(lead)
         if (board) {
             toast.success('Board created successfully!')
-            // linkedBoardId will be updated in the leads state automatically
         }
     }
 
@@ -96,20 +94,16 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
         }
     }
 
-    // Get linked board for selected lead
     const linkedBoard = useMemo(() => {
         if (!selectedLead) return null
-        // First check linkedBoardId on lead
         if (selectedLead.linkedBoardId) {
             return boards.find(b => b.id === selectedLead.linkedBoardId) || null
         }
-        // Fallback: check if any board has this leadId
         return getBoardByLeadId(selectedLead.id) || null
     }, [selectedLead, boards, getBoardByLeadId])
 
     const handleStatusChange = async (leadId: string, newStatus: string) => {
         await changeStatus(leadId, newStatus)
-        // selectedLead will be updated automatically via leads state
     }
 
     const handleImport = async (leadsData: any[]) => {
@@ -117,42 +111,78 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
     }
 
     return (
-        <div className="h-[calc(100vh-200px)]">
-            <LeadBoard
-                onLeadClick={handleLeadClick}
-                onAddClick={handleAddLead}
-                onImportClick={() => setShowImportModal(true)}
-            />
-
-            {/* Bottom Action Area */}
-            <div className="fixed bottom-6 right-6 flex flex-col items-end gap-3 z-20">
-                {/* Automation Quick Widget */}
-                <div className="w-72">
-                    <AutomationQuickWidget />
+        <div className="h-full flex flex-col">
+            {/* Stitch-style page header */}
+            <header className="h-14 border-b border-border flex items-center justify-between px-6 bg-bg-secondary/50 backdrop-blur-sm shrink-0">
+                <div className="flex items-center gap-3">
+                    <h1 className="text-xl font-semibold text-text-primary tracking-tight">Leads</h1>
+                    <span className="px-2 py-0.5 rounded text-xs font-medium bg-accent-primary/20 text-accent-primary border border-accent-primary/20">
+                        {leads.length} Active
+                    </span>
                 </div>
-                {/* Email Templates Button */}
-                <button
-                    onClick={() => setShowTemplateManager(true)}
-                    className="flex items-center gap-2 px-4 py-3 bg-accent-primary/15 text-accent-primary rounded-xl border border-accent-primary/20 hover:bg-accent-primary/25 transition-colors shadow-lg"
-                >
-                    <FileText className="w-5 h-5" />
-                    Email Templates
-                </button>
-            </div>
+                <div className="flex items-center gap-4">
+                    {/* View toggle */}
+                    <div className="flex items-center gap-1 bg-bg-tertiary rounded-lg p-0.5">
+                        <button
+                            onClick={() => setViewMode('table')}
+                            className={`p-1.5 rounded-md transition-colors ${viewMode === 'table' ? 'bg-bg-primary text-text-primary shadow-sm' : 'text-text-muted hover:text-text-primary'}`}
+                            title="Table View"
+                        >
+                            <List className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => setViewMode('kanban')}
+                            className={`p-1.5 rounded-md transition-colors ${viewMode === 'kanban' ? 'bg-bg-primary text-text-primary shadow-sm' : 'text-text-muted hover:text-text-primary'}`}
+                            title="Kanban View"
+                        >
+                            <LayoutGrid className="w-4 h-4" />
+                        </button>
+                    </div>
+                    <div className="h-8 w-px bg-border" />
+                    <div className="flex items-center gap-2 text-sm text-text-muted">
+                        <span>Sort by:</span>
+                        <button className="flex items-center gap-1 text-text-primary font-medium hover:text-accent-primary transition-colors">
+                            Last Active
+                        </button>
+                    </div>
+                </div>
+            </header>
 
-            {/* Lead Detail Panel */}
-            <LeadDetailPanel
-                lead={selectedLead}
-                isOpen={!!selectedLead}
-                onClose={() => navigate('/leads')}
-                onEdit={handleEditLead}
-                onDelete={handleDeleteLead}
-                onSendEmail={handleSendEmail}
-                onCreateBoard={handleCreateBoard}
-                onViewBoard={handleViewBoard}
-                onStatusChange={handleStatusChange}
-                linkedBoard={linkedBoard}
-            />
+            {/* Content: Table or Kanban + Inline Detail Panel */}
+            <div className="flex-1 overflow-hidden flex flex-row">
+                {viewMode === 'table' ? (
+                    <LeadTableView
+                        onLeadClick={handleLeadClick}
+                        onAddClick={handleAddLead}
+                        onImportClick={() => setShowImportModal(true)}
+                        selectedLeadId={leadId}
+                    />
+                ) : (
+                    <div className="flex-1 overflow-hidden">
+                        <LeadBoard
+                            onLeadClick={handleLeadClick}
+                            onAddClick={handleAddLead}
+                            onImportClick={() => setShowImportModal(true)}
+                        />
+                    </div>
+                )}
+
+                {/* Inline Detail Panel — Stitch-style aside sidebar */}
+                {selectedLead && (
+                    <LeadDetailPanel
+                        lead={selectedLead}
+                        isOpen={!!selectedLead}
+                        onClose={() => navigate('/leads')}
+                        onEdit={handleEditLead}
+                        onDelete={handleDeleteLead}
+                        onSendEmail={handleSendEmail}
+                        onCreateBoard={handleCreateBoard}
+                        onViewBoard={handleViewBoard}
+                        onStatusChange={handleStatusChange}
+                        linkedBoard={linkedBoard}
+                    />
+                )}
+            </div>
 
             {/* Add/Edit Lead Modal */}
             <AddLeadModal
@@ -177,9 +207,7 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
                     window.__emailComposerLead = null
                 }}
                 lead={window.__emailComposerLead}
-                onSuccess={() => {
-                    // Refresh leads if needed
-                }}
+                onSuccess={() => { }}
             />
 
             {/* Template Manager */}

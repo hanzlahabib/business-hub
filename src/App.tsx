@@ -27,6 +27,9 @@ const JobsView = lazy(() => import('./components/Views').then(m => ({ default: m
 const TemplatesView = lazy(() => import('./components/Views').then(m => ({ default: m.TemplatesView })))
 const CallingView = lazy(() => import('./modules/calling').then(m => ({ default: m.CallingView })))
 const AutomationViewPage = lazy(() => import('./modules/automation').then(m => ({ default: m.AutomationView })))
+const DashboardView = lazy(() => import('./modules/dashboard/DashboardView'))
+const NeuralBrainView = lazy(() => import('./modules/brain/NeuralBrainView'))
+const DealDeskView = lazy(() => import('./modules/dealdesk/DealDeskView'))
 
 // Loading fallback for lazy-loaded modules
 function ModuleLoader() {
@@ -129,7 +132,7 @@ function App() {
 
     // Sidebar state
     const [sidebarOpen, setSidebarOpen] = useState(true)
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(true)
     const [showSettings, setShowSettings] = useState(false)
     const toggleSidebar = useCallback(() => setSidebarOpen(prev => !prev), [])
     const toggleSidebarCollapse = useCallback(() => setSidebarCollapsed(prev => !prev), [])
@@ -262,7 +265,7 @@ function App() {
     const todayDate = useMemo(() => new Date().toISOString().split('T')[0], [])
 
     return (
-        <div className="min-h-screen bg-bg-primary">
+        <div className="h-screen flex overflow-hidden bg-[#0F1419]">
             {/* Sidebar - always rendered, positioned off-screen on mobile when closed */}
             <Sidebar
                 activeModule={activeModule}
@@ -273,203 +276,188 @@ function App() {
                 hasActiveCalls={activeCalls.length > 0}
             />
 
-            {/* Main content area - add padding for desktop sidebar */}
-            <div className={`${sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-52'} transition-all duration-300`}>
-                <div className="p-6">
-                    <div className="max-w-[1600px] mx-auto">
-                        {/* Header */}
-                        <AppHeader
-                            theme={theme}
-                            onToggleTheme={toggleTheme}
-                            onToggleSidebar={toggleSidebar}
-                            onOpenSettings={toggleSettings}
-                            activeCalls={activeCalls}
-                        />
+            {/* Main content area - Stitch layout: flex col, header flush, content scrollable */}
+            <div className={`flex-1 ${sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-52'} transition-all duration-300 flex flex-col h-full overflow-hidden relative bg-grid-pattern`}>
+                {/* Header - flush, no padding */}
+                <AppHeader
+                    theme={theme}
+                    onToggleTheme={toggleTheme}
+                    onToggleSidebar={toggleSidebar}
+                    onOpenSettings={toggleSettings}
+                    activeCalls={activeCalls}
+                />
 
+                {/* Calendar Module - needs full height, bypass scroll wrapper */}
+                {activeModule === 'schedule' && view === 'calendar' && (
+                    <div className="flex-1 overflow-hidden">
                         <Suspense fallback={<ModuleLoader />}>
-                            {/* Content Studio Module - Self-contained with its own UI */}
-                            {activeModule === 'contentstudio' && <ContentStudioView />}
-
-                            {/* Calendar Module - Clean unified scheduling */}
-                            {activeModule === 'schedule' && (
-                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                    {/* Calendar Module Toolbar */}
-                                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
-                                        {/* View Switcher - Calendar and List only */}
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                onClick={() => handleViewChange('calendar')}
-                                                className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${view === 'calendar'
-                                                    ? 'bg-accent-primary text-white'
-                                                    : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
-                                                    }`}
-                                            >
-                                                <Calendar size={14} />
-                                                <span>Calendar</span>
-                                            </button>
-                                            <button
-                                                onClick={() => handleViewChange('list')}
-                                                className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center gap-1.5 ${view === 'list'
-                                                    ? 'bg-accent-primary text-white'
-                                                    : 'bg-bg-secondary text-text-muted hover:text-text-primary border border-border'
-                                                    }`}
-                                            >
-                                                <List size={14} />
-                                                <span>List</span>
-                                            </button>
-                                        </div>
-
-                                        {/* Calendar/List Item Filters */}
-                                        <CalendarFilters
-                                            filters={calendarFilters}
-                                            onChange={handleCalendarFilterChange}
-                                        />
-
-                                        {/* Add Item Button */}
-                                        <Button onClick={() => handleAddContent(todayDate)}>
-                                            <Plus size={16} />
-                                            <span className="text-xs">Add Item</span>
-                                        </Button>
-                                    </div>
-
-                                    {view === 'calendar' && (
-                                        <WeekView
-                                            contents={contents}
-                                            items={calendarItems}
-                                            calendarFilters={calendarFilters}
-                                            onAddContent={handleAddContent}
-                                            onEditContent={handleEditContent}
-                                            onDeleteContent={handleDeleteContent}
-                                            onDateChange={scheduleContent}
-                                            onItemDateChange={handleItemDateChange}
-                                            onOpenDetail={handleOpenDetail}
-                                            onItemClick={handleCalendarItemClick}
-                                        />
-                                    )}
-                                    {view === 'list' && (
-                                        <ListView
-                                            contents={contents}
-                                            items={calendarItems}
-                                            calendarFilters={calendarFilters}
-                                            onEdit={handleEditContent}
-                                            onDelete={handleDeleteContent}
-                                            onOpenDetail={handleOpenDetail}
-                                            onItemClick={handleCalendarItemClick}
-                                        />
-                                    )}
-                                </main>
-                            )}
-
-                            {/* Leads Module */}
-                            {activeModule === 'leads' && (
-                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                    <LeadsView onNavigateToBoard={handleNavigateToBoard} />
-                                </main>
-                            )}
-
-                            {/* Task Boards Module */}
-                            {activeModule === 'taskboards' && (
-                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                    <TaskBoardsView
-                                        initialBoardId={navigateToBoardId || undefined}
-                                        onBoardViewed={() => setNavigateToBoardId(null)}
-                                    />
-                                </main>
-                            )}
-
-                            {/* Jobs Module */}
-                            {activeModule === 'jobs' && (
-                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                    <JobsView />
-                                </main>
-                            )}
-
-                            {/* Templates Module */}
-                            {activeModule === 'templates' && (
-                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                    <TemplatesView />
-                                </main>
-                            )}
-
-                            {/* Skill Mastery Module */}
-                            {activeModule === 'skillmastery' && (
-                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                    <SkillMasteryView />
-                                </main>
-                            )}
-
-                            {/* AI Calling Module */}
-                            {activeModule === 'calling' && (
-                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                    <CallingView activeCalls={activeCalls} />
-                                </main>
-                            )}
-
-                            {/* Automation Module */}
-                            {activeModule === 'automation' && (
-                                <main className="bg-bg-secondary/50 rounded-2xl border border-border p-6">
-                                    <AutomationViewPage />
-                                </main>
-                            )}
+                            <WeekView
+                                contents={contents}
+                                items={calendarItems}
+                                calendarFilters={calendarFilters}
+                                onAddContent={handleAddContent}
+                                onEditContent={handleEditContent}
+                                onDeleteContent={handleDeleteContent}
+                                onDateChange={scheduleContent}
+                                onItemDateChange={handleItemDateChange}
+                                onOpenDetail={handleOpenDetail}
+                                onItemClick={handleCalendarItemClick}
+                            />
                         </Suspense>
-
-                        {/* Add/Edit Modal - Only for Calendar module quick add */}
-                        {activeModule === 'schedule' && (
-                            <AddContentModal
-                                isOpen={state.showAddModal}
-                                onClose={handleCloseModal}
-                                onAdd={handleSaveContent}
-                                initialDate={state.selectedDate || undefined}
-                                editContent={state.editingContent}
-                                onAddComment={async (id, text) => { await addComment(id, text) }}
-                                onDeleteComment={async (id, commentId) => { await deleteComment(id, commentId) }}
-                                topics={settings.topics as any}
-                                videoVariants={settings.videoVariants}
-                                lastUsedVariant={lastUsedVariant}
-                            />
-                        )}
-
-                        {/* Content Detail Panel - Only for Calendar module */}
-                        {activeModule === 'schedule' && (
-                            <ContentDetailPanel
-                                content={currentDetailContent}
-                                isOpen={!!currentDetailContent}
-                                onClose={handleCloseDetail}
-                                onEdit={handleEditFromDetail}
-                                onAddComment={async (id, text) => { await addComment(id, text) }}
-                                onDeleteComment={async (id, commentId) => { await deleteComment(id, commentId) }}
-                                onAddUrl={async (id, urlData) => { await addUrl(id, urlData) }}
-                                onRemoveUrl={async (id, urlId) => { await removeUrl(id, urlId) }}
-                                onUpdateContent={async (content) => { handleUpdateContentFromDetail(content) }}
-                            />
-                        )}
-
-                        {/* Alert Dialog for confirmations */}
-                        <AlertDialog
-                            {...dialogState}
-                            onClose={closeDialog}
-                        />
-
-                        {/* Settings Modal */}
-                        <SettingsModal
-                            isOpen={showSettings}
-                            onClose={() => setShowSettings(false)}
-                            settings={settings}
-                            onSave={() => {
-                                // settings are saved within the modal internally via JSON Server
-                                setShowSettings(false)
-                            }}
-                        />
-
-                        {/* Toast notifications */}
-                        <Toaster
-                            position="bottom-right"
-                            theme="dark"
-                            richColors
-                            closeButton
-                        />
                     </div>
-                </div>
+                )}
+
+                {/* AI Calling Module - needs full height for schedule tab */}
+                {activeModule === 'calling' && (
+                    <div className="flex-1 overflow-hidden">
+                        <Suspense fallback={<ModuleLoader />}>
+                            <CallingView activeCalls={activeCalls} />
+                        </Suspense>
+                    </div>
+                )}
+
+                {/* Scrollable content area - for all other modules */}
+                {!(activeModule === 'schedule' && view === 'calendar') && activeModule !== 'calling' && (
+                    <div className="flex-1 overflow-y-auto p-6">
+                        <div className="max-w-[1600px] mx-auto">
+                            <Suspense fallback={<ModuleLoader />}>
+                                {/* Content Studio Module - Self-contained with its own UI */}
+                                {activeModule === 'contentstudio' && <ContentStudioView />}
+
+                                {/* Calendar List View */}
+                                {activeModule === 'schedule' && view === 'list' && (
+                                    <ListView
+                                        contents={contents}
+                                        items={calendarItems}
+                                        calendarFilters={calendarFilters}
+                                        onEdit={handleEditContent}
+                                        onDelete={handleDeleteContent}
+                                        onOpenDetail={handleOpenDetail}
+                                        onItemClick={handleCalendarItemClick}
+                                    />
+                                )}
+
+                                {/* Leads Module */}
+                                {activeModule === 'leads' && (
+                                    <main>
+                                        <LeadsView onNavigateToBoard={handleNavigateToBoard} />
+                                    </main>
+                                )}
+
+                                {/* Task Boards Module */}
+                                {activeModule === 'taskboards' && (
+                                    <main>
+                                        <TaskBoardsView
+                                            initialBoardId={navigateToBoardId || undefined}
+                                            onBoardViewed={() => setNavigateToBoardId(null)}
+                                        />
+                                    </main>
+                                )}
+
+                                {/* Jobs Module */}
+                                {activeModule === 'jobs' && (
+                                    <main>
+                                        <JobsView />
+                                    </main>
+                                )}
+
+                                {/* Templates Module */}
+                                {activeModule === 'templates' && (
+                                    <main>
+                                        <TemplatesView />
+                                    </main>
+                                )}
+
+                                {/* Skill Mastery Module */}
+                                {activeModule === 'skillmastery' && (
+                                    <main>
+                                        <SkillMasteryView />
+                                    </main>
+                                )}
+
+
+                                {/* Automation Module */}
+                                {activeModule === 'automation' && (
+                                    <main>
+                                        <AutomationViewPage />
+                                    </main>
+                                )}
+
+                                {/* Command Center Dashboard */}
+                                {activeModule === 'dashboard' && (
+                                    <main>
+                                        <DashboardView />
+                                    </main>
+                                )}
+
+                                {/* Neural Brain */}
+                                {activeModule === 'brain' && (
+                                    <main>
+                                        <NeuralBrainView />
+                                    </main>
+                                )}
+
+                                {/* Deal Desk */}
+                                {activeModule === 'dealdesk' && (
+                                    <main>
+                                        <DealDeskView />
+                                    </main>
+                                )}
+                            </Suspense>
+                        </div>
+                    </div>
+                )}
+
+                {/* Modals & overlays — always rendered */}
+                {activeModule === 'schedule' && (
+                    <AddContentModal
+                        isOpen={state.showAddModal}
+                        onClose={handleCloseModal}
+                        onAdd={handleSaveContent}
+                        initialDate={state.selectedDate || undefined}
+                        editContent={state.editingContent}
+                        onAddComment={async (id, text) => { await addComment(id, text) }}
+                        onDeleteComment={async (id, commentId) => { await deleteComment(id, commentId) }}
+                        topics={settings.topics as any}
+                        videoVariants={settings.videoVariants}
+                        lastUsedVariant={lastUsedVariant}
+                    />
+                )}
+
+                {activeModule === 'schedule' && (
+                    <ContentDetailPanel
+                        content={currentDetailContent}
+                        isOpen={!!currentDetailContent}
+                        onClose={handleCloseDetail}
+                        onEdit={handleEditFromDetail}
+                        onAddComment={async (id, text) => { await addComment(id, text) }}
+                        onDeleteComment={async (id, commentId) => { await deleteComment(id, commentId) }}
+                        onAddUrl={async (id, urlData) => { await addUrl(id, urlData) }}
+                        onRemoveUrl={async (id, urlId) => { await removeUrl(id, urlId) }}
+                        onUpdateContent={async (content) => { handleUpdateContentFromDetail(content) }}
+                    />
+                )}
+
+                <AlertDialog
+                    {...dialogState}
+                    onClose={closeDialog}
+                />
+
+                <SettingsModal
+                    isOpen={showSettings}
+                    onClose={() => setShowSettings(false)}
+                    settings={settings}
+                    onSave={() => {
+                        setShowSettings(false)
+                    }}
+                />
+
+                <Toaster
+                    position="bottom-right"
+                    theme="dark"
+                    richColors
+                    closeButton
+                />
             </div>
         </div>
     )

@@ -26,6 +26,8 @@ import agentRoutes from './routes/agents.js'
 import twilioWebhookRoutes from './routes/twilioWebhooks.js'
 import vapiWebhookRoutes from './routes/vapiWebhooks.js'
 import campaignRoutes from './routes/campaignRoutes.js'
+import notificationRoutes from './routes/notifications.js'
+import dashboardRoutes from './routes/dashboard.js'
 import authMiddleware from './middleware/auth.js'
 import { validateTwilioRequest } from './middleware/twilioValidation.js'
 import prisma from './config/prisma.js'
@@ -39,6 +41,11 @@ import { rateLimiter, authLimiter } from './middleware/rateLimiter.js'
 import { sanitizeInput } from './middleware/sanitize.js'
 import { requestLogger } from './middleware/requestLogger.js'
 import logger from './config/logger.js'
+import automationService from './services/automationService.js'
+import intelligenceService from './services/intelligenceService.js'
+import intelligenceRoutes from './routes/intelligence.js'
+import proposalRoutes from './routes/proposals.js'
+import automationRoutes from './routes/automation.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -114,6 +121,11 @@ app.use('/api/calls/vapi', vapiWebhookRoutes)  // Vapi webhooks (no auth — Vap
 app.use('/api/calls', authMiddleware, callRoutes)
 app.use('/api/agents', authMiddleware, agentRoutes)
 app.use('/api/campaigns', authMiddleware, campaignRoutes)
+app.use('/api/notifications', notificationRoutes)
+app.use('/api/dashboard', dashboardRoutes)
+app.use('/api/automation', automationRoutes)
+app.use('/api/intelligence', intelligenceRoutes)
+app.use('/api/proposals', proposalRoutes)
 
 // Legacy / Support Routes
 app.use('/api/email', emailRoutes)
@@ -336,6 +348,13 @@ initMediaStreamWebSocket(server)
 
 // Load all users' API keys from DB into per-user cache (no process.env mutation)
 loadAllUserKeys().catch(err => logger.error('API key loading failed', { error: err.message }))
+
+// Initialize automation engine — listens on event bus
+automationService.init()
+intelligenceService.init()
+
+// Reset zombie agents from previous server run
+agentCallingService.init().catch(err => logger.error('Agent init failed', { error: err.message }))
 
 // Global error handler — catches all unhandled errors from routes
 app.use(globalErrorHandler)

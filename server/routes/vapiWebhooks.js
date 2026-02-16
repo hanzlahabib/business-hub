@@ -23,14 +23,31 @@ import campaignService from '../services/campaignService.js'
 import { callLogService } from '../services/callLogService.js'
 import logger from '../config/logger.js'
 import { emitCallUpdate, emitAgentLog } from '../services/callWebSocket.js'
+import eventBus from '../services/eventBus.js'
 
 const router = express.Router()
+
+/**
+ * Verify Vapi webhook authenticity via shared secret.
+ * Set VAPI_WEBHOOK_SECRET in .env and in Vapi Dashboard → Server URL config.
+ */
+function verifyVapiSecret(req, res, next) {
+    const secret = process.env.VAPI_WEBHOOK_SECRET
+    if (!secret) return next() // Skip if not configured (dev mode)
+
+    const provided = req.headers['x-vapi-secret'] || req.query.secret
+    if (provided !== secret) {
+        logger.warn('Vapi webhook rejected — invalid secret', { ip: req.ip })
+        return res.status(401).json({ error: 'Unauthorized' })
+    }
+    next()
+}
 
 /**
  * POST /api/calls/vapi/webhook
  * Main Vapi webhook handler — processes all event types
  */
-router.post('/webhook', async (req, res) => {
+router.post('/webhook', verifyVapiSecret, async (req, res) => {
     const { message } = req.body
 
     if (!message) {
@@ -49,7 +66,7 @@ router.post('/webhook', async (req, res) => {
     // Log webhook to CallLog if we can find the call
     const dbCall = callId ? await prisma.call.findFirst({
         where: { providerCallId: callId },
-        select: { id: true, userId: true }
+        select: { id: true, userId: true, leadId: true }
     }) : null
 
     if (dbCall) {
@@ -142,7 +159,15 @@ async function handleStatusUpdate(providerCallId, callData, message, dbCall) {
         )
     }
 
-    emitCallUpdate(providerCallId, { status })
+    // Publish event for automation engine
+    if (dbCall) {
+        eventBus.publish('call:status-changed', {
+            userId: dbCall.userId, entityId: dbCall.id, entityType: 'call',
+            data: { status, leadId: dbCall.leadId, providerCallId }
+        })
+    }
+
+    emitCallUpdate(providerCallId, { status }, dbCall?.userId)
 }
 
 /**
@@ -202,7 +227,7 @@ async function handleEndOfCallReport(providerCallId, callData, message, metadata
                 status: leadStatusMap[analysis.outcome] || 'contacted',
                 lastContactedAt: new Date()
             }
-        }).catch(() => {})
+        }).catch(() => { })
 
         // Handle opt-outs
         if (analysis.optedOut) {
@@ -239,7 +264,22 @@ async function handleEndOfCallReport(providerCallId, callData, message, metadata
         }).catch(err => logger.error('MeetingNote create error', { error: err.message }))
     }
 
-    emitCallUpdate(providerCallId, { status: 'completed', outcome: analysis.outcome })
+    // Publish event for automation engine
+    if (call) {
+        eventBus.publish('call:completed', {
+            userId: call.userId, entityId: call.id, entityType: 'call',
+            data: {
+                leadId: metadata.leadId,
+                leadName: metadata.leadName || '',
+                outcome: analysis.outcome,
+                sentiment: analysis.sentiment,
+                duration,
+                summary: summary || analysis.summary
+            }
+        })
+    }
+
+    emitCallUpdate(providerCallId, { status: 'completed', outcome: analysis.outcome }, call?.userId)
 }
 
 /**

@@ -3,6 +3,7 @@ export { useLeads } from './hooks/useLeads'
 
 // Components
 export { LeadBoard } from './components/LeadBoard'
+export { LeadTableView } from './components/LeadTableView'
 export { LeadCard } from './components/LeadCard'
 export { LeadDetailPanel } from './components/LeadDetailPanel'
 export { AddLeadModal } from './components/AddLeadModal'

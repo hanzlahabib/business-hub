@@ -26,7 +26,10 @@ export const MODULE_ROUTES: Record<string, string> = {
     '/skills/:pathId': 'skillmastery',
     '/calling': 'calling',
     '/calling/agents': 'calling',
-    '/automation': 'automation'
+    '/automation': 'automation',
+    '/dashboard': 'dashboard',
+    '/brain': 'brain',
+    '/dealdesk': 'dealdesk'
 }
 
 // View route to view name mapping for schedule module
@@ -58,6 +61,9 @@ export function getModuleFromPath(pathname: string): string {
     if (pathname.startsWith('/skills')) return 'skillmastery'
     if (pathname.startsWith('/calling')) return 'calling'
     if (pathname.startsWith('/automation')) return 'automation'
+    if (pathname.startsWith('/dashboard')) return 'dashboard'
+    if (pathname.startsWith('/brain')) return 'brain'
+    if (pathname.startsWith('/dealdesk')) return 'dealdesk'
     if (pathname === '/jobs') return 'jobs'
     if (pathname === '/templates') return 'templates'
 
@@ -83,7 +89,10 @@ export function getModuleRoute(module: string): string {
         templates: '/templates',
         skillmastery: '/skills',
         calling: '/calling',
-        automation: '/automation'
+        automation: '/automation',
+        dashboard: '/dashboard',
+        brain: '/brain',
+        dealdesk: '/dealdesk'
     }
     return routes[module] || '/'
 }
@@ -189,6 +198,21 @@ export const router = createBrowserRouter([
     // Automation Module
     {
         path: '/automation',
+        element: ProtectedApp
+    },
+    // Dashboard / Command Center
+    {
+        path: '/dashboard',
+        element: ProtectedApp
+    },
+    // Neural Brain
+    {
+        path: '/brain',
+        element: ProtectedApp
+    },
+    // Deal Desk
+    {
+        path: '/dealdesk',
         element: ProtectedApp
     },
     // Catch-all 404

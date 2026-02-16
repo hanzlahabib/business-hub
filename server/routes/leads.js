@@ -1,6 +1,7 @@
 import express from 'express'
 import leadService from '../services/leadService.js'
 import authMiddleware from '../middleware/auth.js'
+import eventBus from '../services/eventBus.js'
 
 const router = express.Router()
 
@@ -40,7 +41,16 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
+        const oldLead = await leadService.getById(req.params.id, req.user.id)
         const lead = await leadService.update(req.params.id, req.user.id, req.body)
+
+        // Emit status change event if status actually changed
+        if (req.body.status && req.body.status !== oldLead.status) {
+            eventBus.publish('lead:status-changed', {
+                userId: req.user.id, entityId: lead.id, entityType: 'lead',
+                data: { leadName: lead.name, status: lead.status, previousStatus: oldLead.status }
+            })
+        }
         res.json(lead)
     } catch (error) {
         const status = error.message === 'Lead not found' ? 404 : 400
@@ -50,7 +60,16 @@ router.put('/:id', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
+        const oldLead = await leadService.getById(req.params.id, req.user.id)
         const lead = await leadService.update(req.params.id, req.user.id, req.body)
+
+        // Emit status change event if status actually changed
+        if (req.body.status && req.body.status !== oldLead.status) {
+            eventBus.publish('lead:status-changed', {
+                userId: req.user.id, entityId: lead.id, entityType: 'lead',
+                data: { leadName: lead.name, status: lead.status, previousStatus: oldLead.status }
+            })
+        }
         res.json(lead)
     } catch (error) {
         const status = error.message === 'Lead not found' ? 404 : 400
@@ -68,4 +87,76 @@ router.delete('/:id', async (req, res) => {
     }
 })
 
+// GET /api/leads/:id/activity — aggregated activity timeline
+router.get('/:id/activity', async (req, res) => {
+    try {
+        const leadId = req.params.id
+        const userId = req.user.id
+        const prisma = (await import('../config/prisma.js')).default
+
+        // Parallel queries
+        const [calls, messages, notifications] = await Promise.all([
+            prisma.call.findMany({
+                where: { leadId, userId },
+                orderBy: { createdAt: 'desc' },
+                take: 30,
+                select: {
+                    id: true, status: true, outcome: true, duration: true,
+                    summary: true, createdAt: true, sentiment: true
+                }
+            }),
+            prisma.message.findMany({
+                where: { leadId, userId },
+                orderBy: { createdAt: 'desc' },
+                take: 30,
+                select: {
+                    id: true, subject: true, status: true, type: true,
+                    channel: true, createdAt: true
+                }
+            }),
+            prisma.notification.findMany({
+                where: {
+                    userId,
+                    metadata: { path: ['leadId'], equals: leadId }
+                },
+                orderBy: { createdAt: 'desc' },
+                take: 20,
+                select: {
+                    id: true, type: true, title: true, message: true, createdAt: true
+                }
+            })
+        ])
+
+        // Unify into timeline
+        const timeline = [
+            ...calls.map(c => ({
+                id: c.id, type: 'call', icon: 'phone',
+                title: `Call ${c.status}${c.outcome ? ` — ${c.outcome}` : ''}`,
+                subtitle: c.summary || (c.duration ? `Duration: ${Math.floor(c.duration / 60)}m ${c.duration % 60}s` : ''),
+                timestamp: c.createdAt,
+                metadata: { callId: c.id, sentiment: c.sentiment }
+            })),
+            ...messages.map(m => ({
+                id: m.id, type: 'email', icon: 'mail',
+                title: `${m.type === 'received' ? 'Received' : 'Sent'} ${m.channel || 'email'}${m.subject ? `: ${m.subject}` : ''}`,
+                subtitle: `Status: ${m.status}`,
+                timestamp: m.createdAt,
+                metadata: { messageId: m.id }
+            })),
+            ...notifications.map(n => ({
+                id: n.id, type: 'notification', icon: 'bell',
+                title: n.title,
+                subtitle: n.message,
+                timestamp: n.createdAt,
+                metadata: {}
+            }))
+        ].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+
+        res.json(timeline)
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+})
+
 export default router
+

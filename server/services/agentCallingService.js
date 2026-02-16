@@ -22,11 +22,29 @@ import callService from './callService.js'
 import meetingNoteService from './meetingNoteService.js'
 import { callLogService } from './callLogService.js'
 import logger from '../config/logger.js'
+import eventBus from './eventBus.js'
 
 // In-memory map of running agent processes (agentId → interval/timeout refs)
 const runningAgents = new Map()
 
 export const agentCallingService = {
+    /**
+     * Initialize on server boot — reset zombie agents stuck in 'running' state
+     */
+    async init() {
+        try {
+            const { count } = await prisma.agentInstance.updateMany({
+                where: { status: 'running' },
+                data: { status: 'paused' }
+            })
+            if (count > 0) {
+                logger.warn(`Reset ${count} zombie agents to paused on startup`)
+            }
+        } catch (err) {
+            logger.error('Failed to reset zombie agents', { error: err.message })
+        }
+    },
+
     /**
      * Spawn a new agent instance
      */
@@ -74,6 +92,9 @@ export const agentCallingService = {
      * Start an agent — begins processing its lead queue
      */
     async start(agentId, userId) {
+        // Prevent double-start: check in-memory map first (fast path)
+        if (runningAgents.has(agentId)) throw new Error('Agent is already running')
+
         const agent = await prisma.agentInstance.findFirst({
             where: { id: agentId, userId }
         })
@@ -397,7 +418,8 @@ export const agentCallingService = {
     },
 
     /**
-     * Wait for a call to finish (poll adapter)
+     * Wait for a call to finish (poll DB for webhook-updated status + outcome)
+     * Falls back to provider polling if DB hasn't been updated yet.
      */
     async _waitForCallCompletion(callId, providerCallId, agentId, userId) {
         const { telephony } = getAdaptersForUser(userId)
@@ -409,24 +431,54 @@ export const agentCallingService = {
             await new Promise(r => setTimeout(r, pollInterval))
             elapsed += pollInterval
 
-            try {
-                const status = await telephony.getCallStatus(providerCallId)
-                emitCallUpdate(callId, { status: status.status, duration: status.duration })
+            // Check if agent was stopped/paused — abort polling
+            if (!runningAgents.has(agentId)) {
+                logger.info('Agent stopped during call wait', { agentId, callId })
+                return { status: 'failed', reason: 'agent-stopped' }
+            }
 
-                if (status.status === 'completed' || status.status === 'failed' || status.status === 'no-answer') {
-                    // Update call record
-                    await prisma.call.update({
-                        where: { id: callId },
-                        data: {
-                            status: status.status,
-                            duration: status.duration,
-                            recordingUrl: status.recordingUrl,
-                            transcription: status.transcript,
-                            summary: status.summary,
-                            endedAt: new Date()
-                        }
+            try {
+                // Primary: check DB (webhook updates outcome/transcript here)
+                const dbCall = await prisma.call.findUnique({
+                    where: { id: callId },
+                    select: { status: true, outcome: true, duration: true, recordingUrl: true, summary: true }
+                })
+
+                if (dbCall && (dbCall.status === 'completed' || dbCall.status === 'failed')) {
+                    return {
+                        status: dbCall.status,
+                        outcome: dbCall.outcome,
+                        duration: dbCall.duration,
+                        recordingUrl: dbCall.recordingUrl,
+                        summary: dbCall.summary
+                    }
+                }
+
+                // Fallback: poll provider for status updates (emit progress)
+                const providerStatus = await telephony.getCallStatus(providerCallId)
+                emitCallUpdate(callId, { status: providerStatus.status, duration: providerStatus.duration }, userId)
+
+                // If provider reports a terminal status but webhook hasn't fired,
+                // force-update DB and return to avoid 5-minute deadlock
+                const terminalStatuses = ['completed', 'failed', 'no-answer', 'busy', 'canceled']
+                if (terminalStatuses.includes(providerStatus.status)) {
+                    const updateData = {
+                        status: providerStatus.status === 'busy' || providerStatus.status === 'canceled'
+                            ? 'failed' : providerStatus.status,
+                        endedAt: new Date(),
+                        ...(providerStatus.duration && { duration: providerStatus.duration }),
+                        ...(providerStatus.recordingUrl && { recordingUrl: providerStatus.recordingUrl }),
+                    }
+                    await prisma.call.update({ where: { id: callId }, data: updateData })
+                    logger.warn('Provider terminal status used as fallback (webhook may have failed)', {
+                        callId, providerStatus: providerStatus.status
                     })
-                    return status
+                    return {
+                        status: updateData.status,
+                        outcome: providerStatus.outcome || null,
+                        duration: providerStatus.duration,
+                        recordingUrl: providerStatus.recordingUrl
+                    }
                 }
             } catch (err) {
                 // Continue polling on transient errors
@@ -472,6 +524,13 @@ export const agentCallingService = {
         })
 
         emitAgentStatus(agentId, 'running', stats)
+
+        // Publish event for automation engine
+        eventBus.publish('campaign:lead-processed', {
+            userId: (await prisma.agentInstance.findFirst({ where: { id: agentId }, select: { userId: true } }))?.userId,
+            entityId: leadId, entityType: 'lead',
+            data: { agentId, leadId, outcome, rate }
+        })
     }
 }
 

@@ -9,12 +9,18 @@ import prisma from '../config/prisma.js'
 import { getAdaptersForUser } from './apiKeyService.js'
 import { callLogService } from './callLogService.js'
 import logger from '../config/logger.js'
+import eventBus from './eventBus.js'
 
 export const callService = {
     /**
      * Initiate an outbound call to a lead
      */
-    async initiateCall(userId, { leadId, scriptId, assistantConfig = {} }) {
+    async initiateCall(userId, { leadId, scriptId, assistantConfig: rawAssistantConfig = {} }) {
+        // Whitelist allowed override fields — prevent systemPrompt injection
+        const ALLOWED_OVERRIDES = ['voiceId', 'llmModel', 'openingLine', 'language', 'temperature']
+        const assistantConfig = Object.fromEntries(
+            Object.entries(rawAssistantConfig).filter(([key]) => ALLOWED_OVERRIDES.includes(key))
+        )
         const { telephony } = getAdaptersForUser(userId)
 
         // Get lead
@@ -81,6 +87,12 @@ export const callService = {
                 })
             }
 
+            // Publish event for automation engine
+            eventBus.publish('call:initiated', {
+                userId, entityId: call.id, entityType: 'call',
+                data: { leadId, leadName: lead.name, phone: lead.phone, scriptId }
+            })
+
             return { ...call, providerCallId: result.providerCallId, status: result.status }
         } catch (err) {
             await prisma.call.update({
@@ -95,6 +107,12 @@ export const callService = {
             )
             logger.error('Call initiation failed', { callId: call.id, leadId, error: err.message })
 
+            // Publish event for automation engine
+            eventBus.publish('call:failed', {
+                userId, entityId: call.id, entityType: 'call',
+                data: { leadId, leadName: lead.name, error: err.message }
+            })
+
             throw err
         }
     },
@@ -104,7 +122,7 @@ export const callService = {
      */
     async getAll(userId, { leadId, status, outcome, limit = 50, offset = 0 } = {}) {
         // Reconcile stuck calls on every fetch (lightweight — only runs if stuck calls exist)
-        this.reconcileStuckCalls(userId).catch(() => {})
+        this.reconcileStuckCalls(userId).catch(() => { })
 
         const where = { userId }
         if (leadId) where.leadId = leadId

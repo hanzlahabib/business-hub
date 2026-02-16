@@ -61,6 +61,17 @@ export const ENDPOINTS = {
   TEMPLATE_HISTORY: `${API_SERVER}/api/resources/templatehistory`,
   TEMPLATE_COMMENTS: `${API_SERVER}/api/resources/templatecomments`,
 
+  // Outreach Campaigns
+  CAMPAIGNS: `${API_SERVER}/api/campaigns`,
+
+  // Automation Engine
+  NOTIFICATIONS: `${API_SERVER}/api/notifications`,
+  NOTIFICATIONS_COUNT: `${API_SERVER}/api/notifications/count`,
+  NOTIFICATIONS_READ_ALL: `${API_SERVER}/api/notifications/read-all`,
+  DASHBOARD: `${API_SERVER}/api/dashboard`,
+  LEAD_ACTIVITY: (leadId: string) => `${API_SERVER}/api/leads/${leadId}/activity`,
+  AUTOMATION_RULES: `${API_SERVER}/api/automation/rules`,
+
   // AI Calling System
   CALLS: `${API_SERVER}/api/calls`,
   CALL_STATS: `${API_SERVER}/api/calls/stats`,
@@ -72,7 +83,17 @@ export const ENDPOINTS = {
   CALL_ACTIVITY: `${API_SERVER}/api/calls/activity`,
   CALL_PROVIDER_HEALTH: `${API_SERVER}/api/calls/provider-health`,
   AGENTS: `${API_SERVER}/api/agents`,
-  AGENTS_FLOW_CONFIG: `${API_SERVER}/api/agents/flow-config`
+  AGENTS_FLOW_CONFIG: `${API_SERVER}/api/agents/flow-config`,
+
+  // Intelligence
+  INTELLIGENCE_LEAD: (leadId: string) => `${API_SERVER}/api/intelligence/lead/${leadId}`,
+  INTELLIGENCE_ANALYZE: (leadId: string) => `${API_SERVER}/api/intelligence/analyze/${leadId}`,
+  INTELLIGENCE_INSIGHTS: `${API_SERVER}/api/intelligence/insights`,
+  INTELLIGENCE_LEADERBOARD: `${API_SERVER}/api/intelligence/leaderboard`,
+
+  // Proposals
+  PROPOSALS: `${API_SERVER}/api/proposals`,
+  PROPOSAL_GENERATE: (leadId: string) => `${API_SERVER}/api/proposals/generate/${leadId}`
 }
 
 export default {

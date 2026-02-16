@@ -1,5 +1,8 @@
 export { WeekView } from './WeekView'
+export { MonthGrid } from './MonthGrid'
+export { DayGrid } from './DayGrid'
 export { DayColumn } from './DayColumn'
 export { ContentCard } from './ContentCard'
 export { CalendarItemCard } from './CalendarItemCard'
 export { CalendarFilters } from './CalendarFilters'
+export { CalendarSidebar } from './CalendarSidebar'

@@ -41,6 +41,7 @@
     "express": "^4.22.1",
     "framer-motion": "^12.23.26",
     "helmet": "^8.1.0",
+    "ioredis": "^5.9.3",
     "json-server": "1.0.0-beta.3",
     "lucide-react": "^0.562.0",
     "multer": "^2.0.2",
