@@ -1,4 +1,5 @@
 import { Phone, BarChart3, ScrollText, Bot, Zap, PieChart, Settings, Keyboard, Activity, CalendarDays } from 'lucide-react'
+import { CalendarFilters as CalendarFiltersType, CalendarItem } from '../../../hooks/useCalendarItems'
 import { useState, useEffect, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CallStatsCards } from './CallStatsCards'
@@ -40,9 +41,31 @@ interface ActiveCall {
 
 interface CallingViewProps {
     activeCalls?: ActiveCall[]
+    contents?: any[]
+    calendarItems?: CalendarItem[]
+    calendarFilters?: CalendarFiltersType
+    onAddContent?: (date: string) => void
+    onEditContent?: (content: any) => void
+    onDeleteContent?: (id: string) => void
+    onDateChange?: (id: string, date: string) => void
+    onItemDateChange?: (item: CalendarItem, date: string) => void
+    onOpenDetail?: (content: any) => void
+    onItemClick?: (item: CalendarItem) => void
 }
 
-export function CallingView({ activeCalls = [] }: CallingViewProps) {
+export function CallingView({
+    activeCalls = [],
+    contents = [],
+    calendarItems = [],
+    calendarFilters,
+    onAddContent,
+    onEditContent,
+    onDeleteContent,
+    onDateChange,
+    onItemDateChange,
+    onOpenDetail,
+    onItemClick
+}: CallingViewProps) {
     const location = useLocation()
     const navigate = useNavigate()
     const isAgentsPath = location.pathname === '/calling/agents'
@@ -161,7 +184,18 @@ export function CallingView({ activeCalls = [] }: CallingViewProps) {
 
                 {/* Schedule Tab — full bleed, no padding */}
                 {activeTab === 'schedule' && (
-                    <CallingSchedule />
+                    <CallingSchedule
+                        contents={contents}
+                        items={calendarItems}
+                        calendarFilters={calendarFilters}
+                        onAddContent={onAddContent}
+                        onEditContent={onEditContent}
+                        onDeleteContent={onDeleteContent}
+                        onDateChange={onDateChange}
+                        onItemDateChange={onItemDateChange}
+                        onOpenDetail={onOpenDetail}
+                        onItemClick={onItemClick}
+                    />
                 )}
 
                 {/* Live Call Banner — non-schedule tabs only */}

@@ -12,7 +12,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml* ./
 
 # Install dependencies (including dev deps for Prisma generation)
-RUN npm install -g pnpm && pnpm install
+RUN npm install -g pnpm && pnpm install --config.fetch-timeout=300000
 
 # Copy application code
 COPY server/ ./server/

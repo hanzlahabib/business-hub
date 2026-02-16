@@ -1,924 +1,466 @@
-# Business Hub Platform - Complete Feature Documentation
+# Business Hub - Comprehensive Feature Documentation
 
-> **Last Updated:** 2026-02-15
-> A unified AI-powered business operations platform combining CRM, AI calling, lead intelligence, deal management, content studio, automation, and project tracking.
-
----
-
-## Table of Contents
-
-1. [Dashboard (Command Center)](#1-dashboard-command-center)
-2. [Leads (CRM)](#2-leads-crm)
-3. [AI Calling System](#3-ai-calling-system)
-4. [Neural Brain (AI Intelligence)](#4-neural-brain-ai-intelligence)
-5. [Deal Desk (Pipeline & Proposals)](#5-deal-desk-pipeline--proposals)
-6. [Automation Hub (Scraper & Outreach)](#6-automation-hub-scraper--outreach)
-7. [Content Studio](#7-content-studio)
-8. [Templates Studio](#8-templates-studio)
-9. [Task Boards](#9-task-boards)
-10. [Jobs Module](#10-jobs-module)
-11. [Skill Mastery (The Garden)](#11-skill-mastery-the-garden)
-12. [Notifications System](#12-notifications-system)
-13. [Core Infrastructure](#13-core-infrastructure)
-14. [Data Flow Example](#14-data-flow-example)
+**System Overview**
+Business Hub is an all-in-one enterprise operating system designed to consolidate schedule management, CRM, AI-driven outreach, project management, and personal growth into a single unified platform. It utilizes a React frontend (Vite) and a Node.js/Express backend with PostgreSQL (Prisma) and Redis.
 
 ---
 
-## 1. Dashboard (Command Center)
+## 1. Authentication & User Management
+**Description:** Centralized identity management system ensuring secure access to the platform and user-specific data isolation.
 
-**Sidebar:** Dashboard | **Path:** `/dashboard` | **Icon:** LayoutDashboard
+**Key Capabilities:**
+- **User Registration/Login:** Email and password-based authentication.
+- **Profile Management:** Manage personal details, experience level, and skills (used for AI personalization in emails/proposals).
+- **Online Presence:** Store links to Portfolio, LinkedIn, and GitHub.
+- **Session Management:** Secure token-based session handling with automatic re-verification.
 
-The central analytics hub aggregating real-time metrics from every module.
+**API Endpoints:**
+- `POST /api/auth/register`: Create a new account.
+- `POST /api/auth/login`: Authenticate and receive session token.
+- `GET /api/auth/profile`: Retrieve current user details.
+- `PUT /api/auth/profile`: Update user profile fields.
 
-### What It Shows
-
-| Metric | Source | Description |
-|--------|--------|-------------|
-| Total Leads | `Lead` table | All CRM leads |
-| Today's Leads | `Lead` table | Created in last 24h |
-| Conversion Rate | `Lead` table | Won leads / total leads |
-| Total Calls | `Call` table | All call records |
-| Today's Calls | `Call` table | Initiated in last 24h |
-| Booking Rate | `Call` table | Booked outcomes / total calls |
-| Task Progress | `Task` table | Completed vs total, visual bar |
-| Active Agents | `AgentInstance` table | Currently running AI agents |
-| Unread Notifications | `Notification` table | Pending alerts |
-| Recent Activity | Calls + Notifications | Last 15 events, unified timeline |
-
-### Technical Details
-
-- **Backend:** `GET /api/dashboard` runs 10 parallel Prisma queries
-- **Caching:** Redis with 2-minute TTL, auto-invalidated on major events
-- **Frontend:** `src/modules/dashboard/DashboardView.tsx`
-- **Service:** `server/routes/dashboard.js` (inline queries, no separate service)
+**UI Components:**
+- `LoginForm`, `RegisterForm`: Authentication screens.
+- `ProfileEditor`: Modal to update user details and skills.
+- `ProtectedRoute`: Wrapper to ensure authorized access to routes.
 
 ---
 
-## 2. Leads (CRM)
+## 2. Dashboard / Command Center
+**Description:** The landing page providing a high-level real-time overview of business operations, health, and recent activities.
 
-**Sidebar:** Leads | **Path:** `/leads` | **Icon:** Users
+**Key Capabilities:**
+- **KPI Cards:** Visual metrics for Total Leads, Conversion Rate, Active Calls, and Booking Rate with trend indicators (sparklines).
+- **Pipeline Velocity:** Visual bar chart showing lead distribution across stages (New, Contacted, Won, etc.).
+- **Activity Timeline:** Chronological feed of recent system events (calls, emails, lead updates).
+- **AI Suggestions:** Dynamic insights prompting actions (e.g., "Review 5 new leads", "Follow up on stalled deal").
+- **Live Status:** Real-time indicators for active agents and unread notifications.
 
-The central CRM with Kanban pipeline, full lead profiles, activity timelines, and AI intelligence integration.
+**API Endpoints:**
+- `GET /api/dashboard`: Aggregated statistics and recent activity feed.
 
-### Lead Lifecycle
-
-```
-New -> Contacted -> Replied -> Qualified -> Booked -> Won
-                                                  \-> Lost
-                                                  \-> Not Interested
-                                                  \-> Follow-Up
-```
-
-### Lead Record Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| name | string | Business/contact name |
-| company | string | Company name |
-| contactPerson | string | Primary contact |
-| email | string | Contact email |
-| phone | string | Contact phone |
-| status | enum | Pipeline stage (new/contacted/replied/qualified/booked/won/lost) |
-| source | string | Lead origin (scraper, manual, campaign) |
-| industry | string | Business industry |
-| website | string | Company URL |
-| websiteIssues | JSON | Detected website problems (for pitch) |
-| tags | JSON | Custom labels |
-| followUpDate | date | Scheduled follow-up |
-| lastContactedAt | date | Auto-updated on calls/emails |
-| linkedBoardId | string | Linked TaskBoard for project tracking |
-| notes | text | Free-form notes |
-
-### Frontend Features
-
-- **LeadBoard** - Drag-and-drop Kanban with customizable columns
-- **Filters** - Industry, source, priority, tags, date range
-- **LeadDetailPanel** - Tabbed detail view:
-  - **Details** - Full profile with editable fields
-  - **Messages** - Email history
-  - **Calls** - Call records with transcripts
-  - **Activity** - Unified timeline (calls + emails + notifications)
-  - **Intelligence** - AI analysis (deal heat, insights, next action)
-- **Quick Actions** - Call, email, create board, analyze, generate proposal
-
-### API Routes
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/leads` | List leads with filters |
-| POST | `/api/leads` | Create lead |
-| GET | `/api/leads/:id` | Get lead with intelligence |
-| PUT | `/api/leads/:id` | Update lead (emits `lead:status-changed`) |
-| DELETE | `/api/leads/:id` | Delete lead |
-| GET | `/api/leads/:id/activity` | Unified activity timeline |
-
-### Integration Points
-
-- **AI Calling** - Leads are the call queue; outcomes update lead status
-- **Intelligence** - Auto-analyzes on status changes and call completions
-- **Task Boards** - Can spawn dedicated project board per lead
-- **Proposals** - AI generates proposals from lead context
-- **Outreach** - Bulk email campaigns target lead lists
+**UI Components:**
+- `DashboardView`: Main container.
+- `KpiCard`: Reusable metric display component.
+- `StatsBar`: High-level progress tracking.
 
 ---
 
-## 3. AI Calling System
+## 3. Leads CRM
+**Description:** A complete Customer Relationship Management system to track potential clients from discovery to deal closure.
 
-**Sidebar:** Calling | **Path:** `/calling` | **Icon:** Phone
+**Key Capabilities:**
+- **Lead Management:** CRUD operations for leads including company details, contact info, and status.
+- **Lead Scraping:** Integrated Google Search scraper to find new leads based on queries (e.g., "Web agencies in NYC").
+- **Auto-Enrichment:** Extracts contact info (emails, phones) from scraped websites.
+- **Import/Export:** Bulk import from CSV/Markdown and export functionality.
+- **Views:** Toggle between **Table View** (data-dense) and **Kanban Board** (visual pipeline).
+- **Detail Panel:** Slide-over panel showing lead intelligence, activity timeline, and notes.
+- **Deduplication:** Automatic checking against existing records during import/scraping.
 
-Autonomous AI agents that make outbound calls, handle live conversations, negotiate rates, and log results with transcriptions.
+**API Endpoints:**
+- `GET /api/leads`: List all leads with filtering, search, and pagination.
+- `POST /api/leads`: Create a lead.
+- `PUT /api/leads/:id`: Update lead details.
+- `DELETE /api/leads/:id`: Remove a lead.
+- `POST /api/leads/bulk`: Bulk create leads.
+- `POST /api/scraper/search`: Scrape Google for leads.
+- `POST /api/scraper/import`: Bulk save scraped leads.
+- `GET /api/leads/:id/activity`: Get aggregated history for a lead.
 
-### Architecture
-
-```
-User -> Spawns Agent -> Agent picks Lead -> Initiates Call (Vapi/Twilio)
-     -> Vapi Webhook updates status -> On completion:
-        -> Transcription (Deepgram)
-        -> LLM Summary + Sentiment
-        -> Meeting Notes generation
-        -> EventBus: call:completed
-        -> Auto-triggers: Automation Rules + Intelligence Analysis
-```
-
-### Agent State Machine
-
-```
-idle -> dialing -> speaking -> negotiating -> booked / skipped / failed
-                                           -> cooldown -> next lead
-```
-
-### Components
-
-| Component | Purpose |
-|-----------|---------|
-| AgentDashboard | React Flow visualization of agent state and lead queue |
-| QuickDialer | Single-lead call initiation |
-| BatchCallLauncher | Campaign setup (select leads, script, launch) |
-| CallLogTable | Paginated call history with filters |
-| CallDetailPanel | Full call details: audio, transcript, summary, notes |
-| ScriptEditor | Create/edit call scripts with AI generation |
-| CallingAnalytics | Charts: booking rate, call duration, outcomes |
-
-### Call Script System
-
-Scripts include:
-- **Opening lines** - First 10 seconds of the call
-- **Talking points** - Key value propositions
-- **Objection handlers** - Pre-loaded responses to common objections
-- **Closing strategies** - How to book the meeting
-- **AI config** - Model, voice, temperature settings
-
-Scripts can be AI-generated from industry + purpose templates.
-
-### Post-Call Processing
-
-1. **Transcription** - Deepgram STT processes call audio
-2. **Summary** - LLM generates 2-3 sentence call summary
-3. **Sentiment** - Positive/neutral/negative classification
-4. **Meeting Notes** - Extracted action items with deadlines
-5. **Rate Negotiation** - Tracks pricing discussions if applicable
-
-### API Routes
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/api/agents` | Spawn agent instance |
-| POST | `/api/agents/:id/start` | Start processing lead queue |
-| POST | `/api/agents/:id/pause` | Pause agent |
-| POST | `/api/agents/:id/resume` | Resume agent |
-| POST | `/api/agents/:id/stop` | Stop agent |
-| GET | `/api/calls` | List calls with filters |
-| GET | `/api/calls/stats` | Call analytics |
-| GET | `/api/calls/activity` | Activity feed |
-| GET | `/api/calls/provider-health` | Provider status check |
-| POST | `/api/calls` | Initiate single call |
-| POST | `/api/calls/webhook` | Vapi webhook receiver |
-
-### Services
-
-| Service | File | Responsibility |
-|---------|------|----------------|
-| Agent Calling | `agentCallingService.js` | Orchestrates agents, state machine, WebSocket events |
-| Call Service | `callService.js` | Provider-agnostic call management, stats |
-| Call Script | `callScriptService.js` | Script CRUD + AI generation |
-| Meeting Notes | `meetingNoteService.js` | Post-call note extraction |
-| Call Log | `callLogService.js` | Event audit trail |
-| Transcription | `transcriptionService.js` | Audio-to-text processing |
-| Rate Negotiation | `rateNegotiationService.js` | Price discussion tracking |
+**UI Components:**
+- `LeadsView`: Main controller with search, filters, and view toggles.
+- `LeadBoard`: Kanban view with drag-and-drop status changes.
+- `LeadTableView`: Data-dense grid view with sorting.
+- `LeadDetailPanel`: Comprehensive lead context with tabs (Details, Messages, Calls, Activity, Intelligence).
+- `ImportLeadsModal`: Tool for parsing and importing data.
+- `LeadActivityTimeline`: Chronological event feed per lead.
+- `LeadIntelligence`: AI-powered insights widget.
 
 ---
 
-## 4. Neural Brain (AI Intelligence)
+## 4. AI Calling System
+**Description:** An advanced telephony module enabling manual and autonomous AI-driven voice calls to leads. Supports integration with **Vapi** (AI Voice) and **Twilio** (Telephony).
 
-**Sidebar:** Neural Brain | **Path:** `/brain` | **Icon:** BrainCircuit
+**Key Capabilities:**
+- **Autonomous Agents:** "Spawn" AI agents to work through a queue of leads sequentially.
+- **Conversation Engine:** Real-time STT (Deepgram) to LLM (OpenAI) to TTS (ElevenLabs) pipeline for natural conversations.
+- **Call Scripts:** Template-based scripts with talking points, objection handlers, rate negotiation ranges, and closing strategies.
+- **Live Monitoring:** Real-time transcription and status updates via WebSocket.
+- **Batch Dialing:** Launch campaigns to call multiple leads with configurable delays.
+- **Call Recording & Transcription:** Auto-save audio and generate text transcripts + AI summaries.
+- **Analytics:** Track booking rates, average duration, and agent performance.
+- **Webhook Processing:** Inbound status updates from Vapi/Twilio with signature verification.
+- **Stuck Call Reconciliation:** Auto-detects and resolves calls stuck in "queued" state.
+- **Zombie Agent Recovery:** Resets agents left in "running" state on server restart.
 
-The AI-powered analysis engine that scores leads, extracts business intelligence from all interactions, and provides strategic recommendations.
+**API Endpoints:**
+- `POST /api/calls/initiate`: Start a single outbound call.
+- `GET /api/calls`: List call history with filters.
+- `GET /api/calls/:id`: Get call details with transcript.
+- `GET /api/calls/stats`: Aggregate calling performance metrics.
+- `GET /api/calls/scripts/list`: Retrieve available call scripts.
+- `POST /api/calls/scripts`: Create a call script.
+- `PUT /api/calls/scripts/:id`: Update a call script.
+- `POST /api/agents`: Spawn a new AI calling agent.
+- `POST /api/agents/:id/start`: Start an agent's calling queue.
+- `POST /api/agents/:id/pause`: Pause an active agent.
+- `GET /api/agents/:id`: Get agent status and progress.
+- `POST /api/calls/vapi/webhook`: Handle Vapi provider callbacks.
+- `POST /api/calls/twilio/webhook`: Handle Twilio provider callbacks.
 
-### How Analysis Works
-
-1. **Gather Context** - Fetches lead profile + last 15 calls + last 15 messages + meeting notes
-2. **LLM Processing** - Sends structured prompt to OpenAI/Anthropic requesting JSON extraction
-3. **Intelligence Record** - Upserts `LeadIntelligence` with extracted data
-4. **Cache + Invalidate** - Stores result (1h TTL), clears insights cache
-
-### Extracted Intelligence Fields
-
-| Field | Type | Example |
-|-------|------|---------|
-| dealHeat | 0-100 | 85 (probability of closing) |
-| buyingIntent | enum | "high" (low/medium/high/critical) |
-| budget | string | "$5k-$10k" |
-| timeline | string | "Next 3 months" |
-| decisionMaker | string | "CEO needs sign-off" |
-| painPoints | string[] | ["Outdated website", "Losing customers online"] |
-| keyInsights | string[] | ["Mentioned competitor pricing", "Budget approved Q2"] |
-| risks | string[] | ["Long decision cycle", "Multiple stakeholders"] |
-| nextBestAction | string | "Send case study from similar industry" |
-| summary | string | 2-3 sentence executive summary |
-
-### Auto-Triggers
-
-Intelligence analysis runs automatically when:
-- A call completes (`call:completed` event)
-- A lead's status changes (`lead:status-changed` event)
-
-### Fallback (No LLM Key)
-
-If no API key is configured, uses heuristic scoring:
-- Base score: `callCount * 15`
-- Positive sentiment bonus: +20
-- Capped at 100
-
-### NeuralBrainView Dashboard
-
-| Section | Description |
-|---------|-------------|
-| Stat Cards | Total analyzed, avg deal heat, hot leads count, action items |
-| Intent Breakdown | Distribution chart: critical / high / medium / low |
-| Hot Leads Leaderboard | Top 10 leads by dealHeat with progress bars |
-| AI Suggestions | Follow-up reminders, proposal recommendations |
-| Stalled Deals | Leads not contacted in 48+ hours |
-| Recent Analysis Feed | Last 8 analyses with timestamps and intent badges |
-
-### Intelligence in Lead Detail
-
-The LeadDetailPanel has an "Intelligence" tab showing:
-- Circular deal heat gauge (color-coded)
-- AI summary paragraph
-- Budget / Timeline / Decision Maker grid
-- Key insights as chips
-- Pain points as bullet list
-- Risks as warning-styled list
-- Next best action as highlighted card
-- "Re-analyze" and "Generate Proposal" buttons
-
-### API Routes
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/intelligence/lead/:leadId` | Get intelligence for a lead |
-| POST | `/api/intelligence/analyze/:leadId` | Force re-analysis |
-| GET | `/api/intelligence/insights` | Strategy insights (stats, hot leads, suggestions, stalled, recent) |
-| GET | `/api/intelligence/leaderboard` | Top 10 leads by dealHeat |
-
-### Caching
-
-| Key Pattern | TTL | Description |
-|-------------|-----|-------------|
-| `intel:{leadId}` | 1 hour | Individual lead intelligence |
-| `insights:{userId}` | 5 minutes | Strategy dashboard data |
+**UI Components:**
+- `CallingView`: Main hub with tabs for calls, scripts, agents, and analytics.
+- `AgentDashboard`: Control center for active AI agents with real-time status.
+- `LiveCallBanner`: Global indicator of active calls.
+- `ScriptEditor`: Builder for AI conversation flows with talking points and objection handlers.
+- `CallDetailPanel`: Review transcripts, recordings, and outcomes.
 
 ---
 
-## 5. Deal Desk (Pipeline & Proposals)
+## 5. Task Boards
+**Description:** A project management system using Kanban boards to organize work items.
 
-**Sidebar:** Deal Desk | **Path:** `/dealdesk` | **Icon:** Handshake
+**Key Capabilities:**
+- **Custom Boards:** Create multiple boards (e.g., "Project Alpha", "Marketing").
+- **Column Management:** Customizable workflow stages with color coding.
+- **Task Management:** Rich tasks with subtasks, due dates, priorities (high/medium/low), and descriptions.
+- **Block-Based Editor:** Notion-style rich text editor for task descriptions.
+- **Lead Integration:** Link boards directly to specific leads for deal-specific tracking.
+- **Drag-and-Drop:** Move tasks between columns to update status.
 
-Visual deal pipeline management and AI-powered proposal generation.
+**API Endpoints:**
+- `GET /api/resources/taskboards`: List all boards.
+- `POST /api/resources/taskboards`: Create a board.
+- `PUT /api/resources/taskboards/:id`: Update board (columns, name).
+- `DELETE /api/resources/taskboards/:id`: Delete a board.
+- `GET /api/resources/tasks`: List tasks (filterable by board/column).
+- `POST /api/resources/tasks`: Create a task.
+- `PATCH /api/resources/tasks/:id`: Update task status/content/position.
+- `DELETE /api/resources/tasks/:id`: Delete a task.
 
-### Two Tabs
-
-#### Pipeline Tab
-
-Displays all leads that have intelligence data, grouped by buying intent:
-
-| Group | Color | Description |
-|-------|-------|-------------|
-| Critical | Red | Immediate action needed, very high close probability |
-| High | Orange | Strong buying signals, ready for proposal |
-| Medium | Amber | Interested but needs nurturing |
-| Low | Gray | Early stage, minimal engagement |
-
-Each card shows: lead name, company, dealHeat score, budget, next best action.
-
-Quick actions per card:
-- **Analyze** - Re-run AI analysis
-- **Generate Proposal** - AI creates draft proposal
-- **View Lead** - Navigate to lead detail
-
-#### Proposals Tab
-
-Lists all proposals with:
-- Title and linked lead name
-- Total value (formatted currency)
-- Status badge: Draft (gray) / Sent (blue) / Accepted (green) / Rejected (red)
-- Created date
-- Click to open full editor
-
-### AI Proposal Generation
-
-When "Generate Proposal" is clicked:
-
-1. Fetches lead profile + intelligence record
-2. Builds context: budget, timeline, pain points, insights, call history
-3. Sends to LLM with structured prompt
-4. LLM returns JSON with:
-   - `title` - Proposal title
-   - `sections` - Array of `{ title, body }`:
-     - Executive Summary
-     - Understanding Your Needs
-     - Proposed Solution
-     - Deliverables
-     - Timeline
-     - Investment
-   - `pricing` - Array of `{ item, amount, description }`
-   - `totalValue` - Sum of all pricing items
-5. Creates `Proposal` record with status "draft"
-
-### Proposal Editor
-
-Full editor with:
-- Editable title
-- Section-by-section editing (title + body per section)
-- Pricing table (add/remove line items)
-- Auto-calculated total
-- Status transition buttons: "Mark as Sent", "Mark as Accepted", "Mark as Rejected"
-- Rejection reason field
-
-### Proposal Record Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| title | string | Proposal title |
-| status | enum | draft / sent / accepted / rejected |
-| content | JSON | `{ sections: [{title, body}], pricing: [{item, amount, description}] }` |
-| totalValue | float | Sum of pricing |
-| currency | string | Default: "USD" |
-| validUntil | date | Expiry date |
-| sentAt | date | When marked as sent |
-| acceptedAt | date | When accepted |
-| rejectionReason | string | Why rejected |
-| leadId | string | Linked lead |
-
-### API Routes
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/proposals` | List proposals (?leadId, ?status) |
-| POST | `/api/proposals` | Create proposal |
-| GET | `/api/proposals/:id` | Get proposal with lead |
-| PUT | `/api/proposals/:id` | Update proposal |
-| DELETE | `/api/proposals/:id` | Delete proposal |
-| POST | `/api/proposals/generate/:leadId` | AI-generate draft for lead |
+**UI Components:**
+- `TaskBoardsView`: Main view with board selector and kanban columns.
+- `TaskCard`: Drag-and-drop task item with priority badges.
+- `TaskDetailPanel`: Detailed view with subtasks, editor, and metadata.
 
 ---
 
-## 6. Automation Hub (Scraper & Outreach)
+## 6. Jobs Management
+**Description:** A dedicated module for tracking job applications and career opportunities.
 
-**Sidebar:** Automation | **Path:** `/automation` | **Icon:** Workflow
+**Key Capabilities:**
+- **Application Tracker:** Pipeline stages (Saved, Applied, Interview, Offer, Rejected).
+- **Job Search:** Integrated aggregator fetching listings from multiple sources.
+- **CV Manager:** Manage and select resumes/CVs for applications.
+- **Outreach Composer:** Write cover letters/emails using templates and user profile data.
+- **Interview Scheduler:** Track upcoming interview dates associated with job entries.
+- **Search Prompts:** Save and reuse job search queries.
 
-Two-part system: lead discovery through web scraping, and multi-channel outreach campaigns.
+**API Endpoints:**
+- `GET /api/jobs`: List tracked jobs with filters.
+- `POST /api/jobs`: Create a job entry.
+- `PUT /api/jobs/:id`: Update job details/status.
+- `DELETE /api/jobs/:id`: Remove a job entry.
+- `POST /api/upload/cv`: Upload PDF resumes.
+- `GET /api/resources/cvfiles`: List uploaded CVs.
 
-### Lead Scraper
-
-**How it works:**
-1. User enters search query (e.g., "Electricians in Henderson NV")
-2. Backend scrapes Google Maps / business listings using Cheerio
-3. Extracts: business name, phone, email, website, address
-4. Returns results as selectable list
-5. User imports selected entries as CRM leads
-
-**Route:** `POST /api/scraper/search`
-
-### Outreach Campaigns
-
-**Email Campaigns:**
-- Select template from Templates Studio
-- Choose target leads (filter by industry, status, tags)
-- Set batch size and delay between sends
-- Launch campaign with rate limiting
-- Track: sent, delivered, opened, replied
-
-**AI Calling Campaigns:**
-- Select leads + call script
-- Configure AI agent parameters
-- Launch agent to process queue
-- Automatic DNC (Do Not Call) list filtering
-
-### Automation Rules Engine
-
-The backend automation engine listens to ALL EventBus events and evaluates user-defined rules.
-
-**Supported Triggers (Events):**
-- `call:completed`, `call:failed`, `call:status-changed`
-- `lead:status-changed`
-- `campaign:lead-processed`
-- `email:sent`
-- `task:completed`
-
-**Condition Operators:** `eq`, `neq`, `in`, `contains`, `exists`
-
-**Available Actions:**
-| Action | Description |
-|--------|-------------|
-| `create-task` | Auto-create task in specified board |
-| `send-notification` | Push notification to user |
-| `update-lead-status` | Change lead pipeline stage |
-
-**Default Rules (created automatically):**
-1. Call Failed -> Send notification
-2. Call Booked -> Create follow-up task + notification
-3. Lead Won -> Celebration notification
-4. Campaign Lead Booked -> Success notification
-
-**Custom Rules:** Users can create rules via `POST /api/automation/rules` with custom event triggers, conditions, and action chains.
-
-### API Routes
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/api/scraper/search` | Scrape leads from query |
-| POST | `/api/outreach/campaign` | Create email campaign |
-| GET | `/api/outreach/campaigns` | List campaigns |
-| POST | `/api/campaigns` | Launch calling campaign |
-| GET | `/api/automation/rules` | List automation rules |
-| POST | `/api/automation/rules` | Create custom rule |
+**UI Components:**
+- `JobsView`: Kanban board for applications with drag-and-drop.
+- `JobSearchPanel`: Search interface with saved prompts.
+- `OutreachComposer`: Email editor for applications.
+- `CVManager`: Resume management modal.
 
 ---
 
 ## 7. Content Studio
+**Description:** A specialized pipeline for video and content creators to manage production workflows.
 
-**Sidebar:** Content | **Path:** `/content` | **Icon:** Film
+**Key Capabilities:**
+- **Production Pipeline:** Kanban stages: Idea, Script, Recording, Editing, Thumbnail, Published.
+- **Content Types:** Distinguish between Long-form videos and Shorts.
+- **Pipeline Analytics:** Track publishing velocity, bottlenecks, and "stuck" items.
+- **Scripting:** Rich text area for writing hooks and scripts.
+- **Resource Linking:** Attach research URLs (YouTube, Docs, GitHub) to content cards.
+- **Scheduling:** Set scheduled and published dates for content calendar.
 
-Video production pipeline management for content creators.
+**API Endpoints:**
+- `GET /api/contents`: Retrieve content items with filters.
+- `POST /api/contents`: Create a content item.
+- `PATCH /api/contents/:id`: Move content between stages or update details.
+- `DELETE /api/contents/:id`: Remove a content item.
 
-### Content Lifecycle
-
-```
-Idea -> Script -> Recording -> Editing -> Thumbnail -> Published
-```
-
-### Content Types
-
-| Type | ID Pattern | Weekly Goal |
-|------|-----------|-------------|
-| Long-form video | `pub-N` | 2 per week |
-| Short-form clip | `short-N` | 5 per week |
-
-### Content Record Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| title | string | Video title |
-| type | enum | long / short |
-| status | enum | idea / script / recording / editing / thumbnail / published |
-| topic | enum | React Hooks, React 19, Performance, Interview Prep, JavaScript, React Basics, Other |
-| hook | string | First 3-second hook text (critical for shorts) |
-| scheduledDate | date | Planned publish date |
-| publishedDate | date | Actual publish date |
-| sourceVideoId | string | Parent video ID (for shorts clipped from longs) |
-| presentationReady | boolean | Has presentation been built |
-| slideDetails | JSON | `{ folderName, bulletPoints[], slides[] }` |
-| notes | text | Internal notes, performance stats |
-| urls | JSON | YouTube links, docs, resources |
-| comments | JSON | Internal comments |
-
-### Frontend Views
-
-1. **Pipeline** - Kanban board with production stages
-2. **List** - Card-based filtered view
-3. **Table** - Dense data table for bulk management
-
-### Stats Tracked
-
-- Weekly goal progress (long + short)
-- Publishing streak
-- Studio analytics (total published, in-progress)
+**UI Components:**
+- `ContentStudioView`: Main container with pipeline board and stats.
+- `PipelineBoard`: Visual workflow columns.
+- `ContentStats`: Weekly goals and streak tracking.
+- `ContentCard`: Individual content item with status badges.
 
 ---
 
-## 8. Templates Studio
+## 8. Templates System
+**Description:** A reusable repository for text content, used across emails, LinkedIn posts, proposals, and documents.
 
-**Sidebar:** Templates | **Path:** `/templates` | **Icon:** FileText
+**Key Capabilities:**
+- **Block-Based Editor:** Rich content creation with headings, lists, callouts, and code blocks.
+- **Variables:** Define placeholders like `{{company}}` or `{{name}}` for dynamic replacement.
+- **Categories:** Organize templates by type (Email, Proposal, LinkedIn, Custom).
+- **Version History:** Track changes and restore previous versions of templates.
+- **Folder Structure:** Nested organization for managing large libraries of templates.
+- **Comments:** Collaborative annotation on templates.
 
-Centralized template library with Notion-style block editor for all business communications.
+**API Endpoints:**
+- `GET /api/resources/templates`: List templates with folder/category filters.
+- `POST /api/resources/templates`: Create a template.
+- `PUT /api/resources/templates/:id`: Update template content.
+- `DELETE /api/resources/templates/:id`: Remove a template.
+- `GET /api/resources/templatefolders`: List folders.
+- `POST /api/resources/templatefolders`: Create a folder.
+- `GET /api/resources/templatehistory`: Retrieve version history.
+- `GET /api/resources/templatecomments`: List comments on a template.
 
-### Template Categories
-
-| Category | Use Case |
-|----------|----------|
-| linkedin | LinkedIn outreach messages |
-| email | Email campaigns and follow-ups |
-| proposal | Proposal document templates |
-
-### Block Editor
-
-Supports content blocks:
-- **Heading** (H1, H2, H3)
-- **Paragraph** - Rich text
-- **Bullet List** - Unordered lists
-- **Numbered List** - Ordered lists
-- **Code** - Code snippets
-- **Callout** - Highlighted info boxes
-
-Features:
-- Drag-and-drop block reordering
-- Keyboard shortcuts (/, Ctrl+B, etc.)
-- Raw markdown export
-
-### Variable System
-
-Templates support variables like `{{company}}`, `{{firstName}}`, `{{industry}}`:
-- Define variables per template
-- Preview with real data substitution
-- Auto-filled when used in outreach
-
-### Template Management
-
-| Feature | Description |
-|---------|-------------|
-| Folders | Organize templates in named folders with icons |
-| Search | Full-text search across templates |
-| Favorites | Star frequently used templates |
-| Pinning | Pin templates to top |
-| Locking | Prevent accidental edits |
-| Version History | Track changes with restore capability |
-| Comments | Collaborative feedback |
-| Permissions | Visibility and edit access control |
-
-### Template Record Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| name | string | Template name |
-| category | enum | linkedin / email / proposal |
-| content | JSON | Block-based content |
-| rawMarkdown | text | Markdown export |
-| subject | string | Email subject line |
-| status | enum | draft / published / archived |
-| tags | JSON | Searchable tags |
-| variables | JSON | `{{variable}}` definitions |
-| isFavorite / isPinned / isLocked | boolean | Management flags |
-| version | int | Auto-incrementing version |
-| usageCount | int | Times used in campaigns |
-
-### API Routes
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/resources/templates` | List templates |
-| POST | `/api/resources/templates` | Create template |
-| GET | `/api/resources/templates/:id` | Get template |
-| PUT | `/api/resources/templates/:id` | Update template |
-| DELETE | `/api/resources/templates/:id` | Delete template |
-| GET | `/api/resources/templatefolders` | List folders |
-| GET | `/api/resources/templatehistory` | Version history |
-| POST | `/api/resources/templatecomments` | Add comment |
+**UI Components:**
+- `TemplatesView`: Explorer interface with folder tree and template list.
+- `BlockEditor`: The WYSIWYG editor core.
+- `FolderTree`: Sidebar navigation for folders.
+- `VersionHistory`: Timeline of template changes.
 
 ---
 
-## 9. Task Boards
+## 9. Skill Mastery
+**Description:** A gamified personal growth tracker based on the "Skill Garden" concept.
 
-**Sidebar:** Task Boards | **Path:** `/taskboards` | **Icon:** SquareKanban
+**Key Capabilities:**
+- **Skill Trees:** Visual node-based graph (React Flow) mapping milestones, knowledge, and resources.
+- **Gamification:** Earn XP, track streaks, and level up skills from "Seed" to "Mastered".
+- **Daily Routine:** Track habits associated with specific skills.
+- **Journaling:** Daily reflection logs tied to skill progress.
+- **Visual Growth:** Plant icons evolve (Seed, Sprout, Tree) based on progress percentage.
+- **Multiple Paths:** Create separate learning paths for different skill domains.
 
-General-purpose project management with customizable Kanban boards.
+**API Endpoints:**
+- `GET /api/skillmastery`: Retrieve full skill tree data.
+- `PUT /api/skillmastery`: Sync progress updates.
 
-### Board Structure
-
-Each board has:
-- **Name** - Board title
-- **Columns** - Custom columns with names and colors (e.g., "To Do" #blue, "In Progress" #yellow, "Done" #green)
-- **Lead Link** (optional) - Can be linked to a CRM lead
-
-### Task Record Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| title | string | Task title |
-| description | text | Detailed description |
-| priority | enum | high / medium / low |
-| columnId | string | Current column position |
-| position | int | Order within column |
-| assignee | string | Assigned person |
-| dueDate | date | Deadline |
-| tags | JSON | Custom labels |
-| subtasks | JSON | `[{ id, text, done }]` checklist items |
-| leadId | string | Optional linked lead |
-
-### Frontend Features
-
-- **Kanban Board** - Drag-and-drop between columns with position tracking
-- **Task Detail Panel:**
-  - Full task editing
-  - Subtask checklist with completion tracking
-  - Comments thread
-  - File attachments (paste screenshots)
-  - Markdown notes editor
-  - Due date picker
-  - Priority selector
-- **Document Linking** - Link and open local Markdown files
-
-### API Routes
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/extra/taskboards` | List boards |
-| POST | `/api/extra/taskboards` | Create board |
-| PUT | `/api/extra/taskboards/:id` | Update board |
-| DELETE | `/api/extra/taskboards/:id` | Delete board |
-| GET | `/api/extra/tasks` | List tasks (?boardId) |
-| POST | `/api/extra/tasks` | Create task |
-| PUT | `/api/extra/tasks/:id` | Update task |
-| DELETE | `/api/extra/tasks/:id` | Delete task |
-
-### Integration
-
-- **Leads** - Can spawn a dedicated board per lead (linked via `linkedBoardId`)
-- **Automation** - Rules can auto-create tasks (e.g., "Call Booked" -> create follow-up task)
-- **Calendar** - Task due dates appear on unified calendar
+**UI Components:**
+- `SkillMasteryView`: Main dashboard with path selector.
+- `GardenView`: Grid view of all active skills with visual indicators.
+- `PathTreeView`: Interactive node graph of a specific skill path.
 
 ---
 
-## 10. Jobs Module
+## 10. Automation Engine
+**Description:** An event-driven system to automate workflows based on configurable triggers and actions.
 
-**Sidebar:** Jobs | **Path:** `/jobs` | **Icon:** Briefcase
+**Key Capabilities:**
+- **Rules Engine:** Define "If [Trigger] Then [Action]" logic (e.g., "If Call Booked, Create Task").
+- **Triggers:** Supports events like `call:completed`, `lead:status-changed`, `call:failed`.
+- **Actions:** Create tasks, send notifications, update lead status, trigger AI analysis.
+- **Auto-Analysis:** Automatically triggers AI intelligence analysis when calls complete.
+- **Default Rules:** Pre-seeded rules for common workflows.
+- **Enable/Disable:** Toggle individual rules on/off without deleting them.
 
-Job search tracking and application pipeline management.
+**API Endpoints:**
+- `GET /api/automation/rules`: List active automation rules.
+- `POST /api/automation/rules`: Create a new rule.
+- `PUT /api/automation/rules/:id`: Update rule configuration.
+- `DELETE /api/automation/rules/:id`: Remove a rule.
+- `POST /api/agent/execute`: Manually trigger agent actions.
 
-### Job Lifecycle
-
-```
-Saved -> Applied -> Interview -> Offer -> Accepted
-                                      \-> Rejected
-```
-
-### Job Record Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| title | string | Job posting title |
-| role | string | Target role |
-| company | string | Company name |
-| location | string | City/region |
-| locationType | enum | remote / onsite / hybrid |
-| status | enum | saved / applied / interview / offer / rejected / accepted |
-| description | text | Full job description |
-| contactPerson | string | Recruiter/hiring manager |
-| contactEmail | string | Contact email |
-| experienceLevel | string | Junior / Mid / Senior |
-| priority | enum | Priority level |
-| requirements | JSON | Job requirements list |
-| skills | JSON | Required skills list |
-| salaryCurrency | string | Currency code |
-| salaryMin / salaryMax | float | Salary range |
-| appliedAt | date | Application date |
-| interviewDates | JSON | Scheduled interview dates |
-| source | string | Where found (LinkedIn, Indeed, etc.) |
-| sourceUrl | string | Job posting URL |
-
-### Frontend Features
-
-- **JobBoard** - Kanban with status columns
-- **JobDetailPanel** - Full job profile with all fields
-- **JobSearchPanel** - External job search integration
-- **OutreachComposer** - Email templates for applications/follow-ups
+**UI Components:**
+- `AutomationView`: Interface to manage rules, view execution history, and monitor events.
+- `RuleEditor`: Configuration form for trigger/action pairs.
 
 ---
 
-## 11. Skill Mastery (The Garden)
+## 11. Neural Brain (AI Intelligence)
+**Description:** The analytical core that processes unstructured data (call transcripts, emails, notes) into actionable business intelligence.
 
-**Sidebar:** The Garden | **Path:** `/skills` | **Icon:** Sprout
+**Key Capabilities:**
+- **Lead Intelligence:** Analyzes all interactions to score "Deal Heat" (0-100) and "Buying Intent" (low/medium/high/critical).
+- **Fact Extraction:** Auto-extracts Budget, Timeline, Decision Maker, and Pain Points from conversations.
+- **Strategic Insights:** Identifies stalled deals and suggests "Next Best Actions".
+- **Leaderboard:** Ranks leads by probability of closing.
+- **Executive Summaries:** Auto-generated 2-3 sentence overviews of each lead's status.
+- **Risk Assessment:** Identifies potential deal risks and blockers.
+- **EventBus Integration:** Auto-triggers re-analysis when calls complete or lead status changes.
 
-Gamified personal development system with a garden growth metaphor.
+**API Endpoints:**
+- `GET /api/intelligence/lead/:leadId`: Get intelligence for a specific lead.
+- `POST /api/intelligence/analyze/:leadId`: Force re-analysis of a lead.
+- `GET /api/intelligence/insights`: Aggregated strategic advice across all leads.
+- `GET /api/intelligence/leaderboard`: Top leads ranked by deal heat.
 
-### Concept
-
-Each skill you're developing is represented as a plant in your garden. As you practice and complete routines, plants grow through stages:
-
-```
-Seed -> Sprouting -> Growing -> Mastered
-```
-
-### Components
-
-| Component | Description |
-|-----------|-------------|
-| GardenView | Visual cluster of skill plants at various growth stages |
-| RoutineSection | Daily habit tracker with streak counting |
-| PathTreeView | React Flow milestone map showing knowledge prerequisites |
-
-### Data Structure
-
-```json
-{
-  "xp": 1250,
-  "level": 5,
-  "totalCompletions": 47,
-  "skills": [
-    { "id": "sk-1", "name": "React Hooks", "level": 3, "xp": 450, "status": "growing" }
-  ],
-  "routines": [
-    { "id": "rt-1", "name": "Practice coding", "streak": 12, "lastCompleted": "2026-02-14" }
-  ],
-  "pathTree": [
-    { "id": "pt-1", "name": "React Fundamentals", "unlocked": true, "completed": true }
-  ]
-}
-```
-
-### Gamification Loop
-
-1. Complete daily routine -> Gain XP
-2. XP accumulates -> Skill levels up
-3. Level up -> Plant grows to next stage
-4. Unlock path milestones -> Access advanced topics
+**UI Components:**
+- `NeuralBrainView`: Intelligence dashboard with leaderboard and strategy insights.
+- `LeadIntelligence`: Component embedded in Lead Detail Panel showing deal heat, extracted facts, and next actions.
 
 ---
 
-## 12. Notifications System
+## 12. Deal Desk (Proposals)
+**Description:** A module for managing the bottom-of-funnel sales process with AI-assisted proposal generation.
 
-Real-time notification system integrated across all modules.
+**Key Capabilities:**
+- **Pipeline Tracking:** Monitor deals grouped by buying intent (Critical, High, Medium, Low).
+- **Proposal Generator:** AI-assisted drafting of proposals based on Lead Intelligence data.
+- **Pricing Tables:** Structured itemized pricing with totals and currency.
+- **Status Tracking:** Track proposals through lifecycle: Draft, Sent, Accepted, Rejected.
+- **Validity Period:** Set expiration dates on proposals.
 
-### How Notifications Work
+**API Endpoints:**
+- `GET /api/proposals`: List proposals with status/lead filters.
+- `POST /api/proposals`: Create a proposal.
+- `GET /api/proposals/:id`: Get proposal details.
+- `PUT /api/proposals/:id`: Update proposal content/status.
+- `DELETE /api/proposals/:id`: Remove a proposal.
+- `POST /api/proposals/generate/:leadId`: Auto-generate proposal draft from lead intelligence.
 
-1. **Sources:** Automation rules, system events, call outcomes
-2. **Delivery:** WebSocket push for instant display + database persistence
-3. **UI:** Bell icon in header with unread badge count
-4. **Actions:** Mark as read (individual or bulk)
-
-### API Routes
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/notifications` | List notifications (filter: unread) |
-| GET | `/api/notifications/count` | Unread count |
-| PATCH | `/api/notifications/:id/read` | Mark single as read |
-| POST | `/api/notifications/read-all` | Mark all as read |
-
-### Notification Record
-
-| Field | Type | Description |
-|-------|------|-------------|
-| type | string | info / success / warning / error |
-| title | string | Notification headline |
-| message | string | Detail text |
-| read | boolean | Read status |
-| metadata | JSON | Contextual data (leadId, callId, etc.) |
+**UI Components:**
+- `DealDeskView`: Pipeline view and proposal management.
+- `ProposalEditor`: Document editor for proposal content and pricing.
 
 ---
 
-## 13. Core Infrastructure
+## 13. Notifications
+**Description:** Centralized notification system for user alerts and system updates.
 
-### Event Bus (`server/services/eventBus.js`)
+**Key Capabilities:**
+- **Real-time Alerts:** Delivered via WebSocket (e.g., "Call Completed", "Lead Won").
+- **Type Classification:** Categorized by Call, Lead, Task, Campaign, or System.
+- **Actionable:** Notifications link directly to relevant resources.
+- **Read/Unread Tracking:** Mark individual or bulk notifications as read.
+- **Persistent Storage:** All notifications saved to database for history.
 
-Central nervous system connecting all modules. Every significant action publishes an event.
+**API Endpoints:**
+- `GET /api/notifications`: Retrieve notification history with filters.
+- `PATCH /api/notifications/:id/read`: Mark as read.
+- `PATCH /api/notifications/read-all`: Mark all as read.
 
-**Events:**
-| Event | Emitted By | Consumed By |
-|-------|-----------|-------------|
-| `call:initiated` | Call Service | Automation |
-| `call:completed` | Call Service | Automation, Intelligence |
-| `call:failed` | Call Service | Automation |
-| `call:status-changed` | Call Service | Automation |
-| `lead:status-changed` | Lead Service | Automation, Intelligence |
-| `campaign:lead-processed` | Campaign Service | Automation |
-| `email:sent` | Email Service | Automation |
-| `task:completed` | Task Service | Automation |
-| `notification:created` | Notification Service | WebSocket |
-
-### WebSocket Hub (`server/services/callWebSocket.js`)
-
-Real-time bidirectional communication using Socket.io.
-
-**Emitted Events:**
-| Event | Purpose |
-|-------|---------|
-| `agent:status` | Agent state changes (idle/dialing/speaking) |
-| `agent:step` | React Flow node transitions |
-| `agent:log` | Activity feed messages |
-| `call:update` | Call record updates |
-| `notification` | Push notifications to client |
-
-### API Key Adapter System (`server/services/apiKeyService.js`)
-
-Per-user isolated adapter instances prevent API key bleeding between users.
-
-**Adapters:**
-| Adapter | Providers | Purpose |
-|---------|-----------|---------|
-| telephony | Vapi, Twilio | Making calls |
-| voice | ElevenLabs | Text-to-speech |
-| llm | OpenAI, Anthropic | AI completions |
-| stt | Deepgram | Speech-to-text |
-
-### Redis Caching (`server/config/redisClient.js`)
-
-| Cache Key | TTL | Purpose |
-|-----------|-----|---------|
-| `dashboard:{userId}` | 2 min | Dashboard stats |
-| `intel:{leadId}` | 1 hour | Lead intelligence |
-| `insights:{userId}` | 5 min | Strategy insights |
-
-### Rate Limiting (`server/middleware/rateLimiter.js`)
-
-Redis-backed per-route rate limiting to prevent API abuse.
-
-### Database (Prisma + PostgreSQL)
-
-All models defined in `server/prisma/schema.prisma`. Key models:
-
-| Model | Count | Description |
-|-------|-------|-------------|
-| User | core | Authentication + settings |
-| Lead | CRM | Business contacts |
-| Call | calling | Call records |
-| CallScript | calling | Reusable scripts |
-| MeetingNote | calling | Post-call notes |
-| AgentInstance | calling | AI agent state |
-| CallLog | calling | Event audit trail |
-| LeadIntelligence | brain | AI analysis records |
-| Proposal | dealdesk | Deal proposals |
-| Task | boards | Kanban tasks |
-| TaskBoard | boards | Board definitions |
-| Template | templates | Communication templates |
-| Content | studio | Video content records |
-| Job | jobs | Job applications |
-| SkillMastery | garden | Gamification data |
-| Notification | system | Alert records |
-| AutomationRule | system | Custom rules |
-| Settings | system | User config + API keys |
+**UI Components:**
+- `AppHeader`: Contains the notification bell with unread count badge.
+- `NotificationDropdown`: List of recent notifications with action links.
 
 ---
 
-## 14. Data Flow Example
+## 14. Outreach / Campaigns
+**Description:** Mass communication tools for scaling lead engagement through email and calling campaigns.
 
-### Scenario: Booking a Lead End-to-End
+**Key Capabilities:**
+- **Email Campaigns:** Bulk send emails to selected leads using templates with variable substitution.
+- **Batch Calling:** Queue multiple leads for sequential AI agent dialing with configurable delays.
+- **DNC Management:** "Do Not Call" list enforcement.
+- **Campaign History:** Logs of all executions and per-lead results.
+- **Target Filtering:** Select leads by status, tags, or custom criteria.
 
-```
-1. SCRAPER: User scrapes "Electricians in Henderson" -> 50 leads imported
+**API Endpoints:**
+- `POST /api/outreach/campaign`: Execute email campaign.
+- `GET /api/campaigns`: List calling campaigns.
+- `POST /api/campaigns`: Create a calling campaign.
+- `GET /api/campaigns/:id`: Get campaign details with progress.
 
-2. CALLING: User spawns AI agent with those 50 leads + call script
-   -> Agent calls Lead #1 via Vapi
-   -> Vapi webhook updates call to "in-progress"
-   -> Call completes with outcome: "booked"
-
-3. EVENT BUS: call:completed published
-
-4. AUTOMATION ENGINE (listening to all events):
-   -> Rule matches: "call booked"
-   -> Action 1: Creates task "Follow up with Lead #1" in board
-   -> Action 2: Sends notification "Meeting Booked!"
-
-5. INTELLIGENCE SERVICE (listening to call:completed):
-   -> Gathers: Lead profile + all calls + messages
-   -> Sends to LLM for analysis
-   -> Returns: dealHeat=85, buyingIntent="high", budget="$5k-$10k"
-   -> Upserts LeadIntelligence record
-
-6. DEAL DESK: Lead #1 now appears in "High Intent" pipeline
-   -> User clicks "Generate Proposal"
-   -> LLM generates proposal with sections + pricing
-   -> User edits and sends via email
-
-7. LEAD STATUS: User marks lead as "Won"
-   -> lead:status-changed event
-   -> Automation: Celebration notification
-   -> Intelligence: Re-analyzes (dealHeat -> 100)
-
-8. DASHBOARD: Stats update on next load
-   -> Conversion rate increases
-   -> Call booking rate updated
-   -> Recent activity shows the journey
-```
+**UI Components:**
+- `CampaignBuilder`: Configuration interface for target selection and messaging.
+- `CampaignHistory`: Results and analytics per campaign.
 
 ---
 
-## Technology Stack
+## 15. Email System
+**Description:** Service layer for handling email delivery with multi-provider support.
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, TypeScript, Tailwind CSS, Framer Motion |
-| Routing | React Router v6 |
-| Visualization | React Flow (agent graphs, skill trees) |
-| Toasts | Sonner |
-| Backend | Node.js, Express.js |
-| ORM | Prisma |
-| Database | PostgreSQL |
-| Cache | Redis |
-| WebSocket | Socket.io |
-| Telephony | Vapi, Twilio |
-| AI/LLM | OpenAI GPT-4o, Anthropic Claude |
-| Voice | ElevenLabs |
-| Speech-to-Text | Deepgram |
-| Web Scraping | Cheerio |
-| Auth | JWT-based with per-user settings |
+**Key Capabilities:**
+- **Provider Agnostic:** Supports Gmail, SendGrid, Amazon SES, Resend, and Custom SMTP.
+- **Templating:** Variable injection into subject/body before sending.
+- **Throttling:** Daily limits and delay enforcement to prevent spam flagging.
+- **Lead Tracking:** Auto-links sent emails to lead records and updates `lastContactedAt`.
+
+**API Endpoints:**
+- `POST /api/email/send`: Send individual email.
+- `GET /api/resources/emailsettings`: Retrieve SMTP/provider config.
+- `PUT /api/resources/emailsettings`: Update email provider configuration.
+
+---
+
+## 16. Settings & API Keys
+**Description:** Global configuration management for the user's workspace and third-party integrations.
+
+**Key Capabilities:**
+- **Provider Config:** Secure per-user storage for API keys (OpenAI, Twilio, Vapi, ElevenLabs, Deepgram).
+- **User Preferences:** Theme (Light/Dark), notification preferences.
+- **Email Settings:** SMTP provider selection and configuration.
+- **Adapter Isolation:** Each user's API keys are loaded into isolated adapter instances with no cross-user leakage.
+
+**API Endpoints:**
+- `GET /api/resources/settings`: Retrieve user settings.
+- `PATCH /api/resources/settings`: Update general settings (includes encrypted API keys).
+- `GET /api/resources/emailsettings`: Retrieve email provider config.
+- `PATCH /api/resources/emailsettings`: Update email provider config.
+
+**UI Components:**
+- `SettingsModal`: Central settings dialog with multiple tabs.
+- `ApiKeysTab`: Secure input fields for third-party provider keys.
+- `ThemeToggle`: Light/Dark mode switcher.
+
+---
+
+## 17. WebSocket Real-time Updates
+**Description:** The real-time communication layer pushing live updates to the frontend without polling.
+
+**Key Capabilities:**
+- **Call Status:** Pushes "Ringing", "Connected", "Completed" states instantly.
+- **Agent Visualization:** Streams AI agent decision steps (Thinking, Speaking, Waiting).
+- **Notifications:** Pushes new alerts without page refresh.
+- **Heartbeat:** Ensures connection health and auto-reconnects.
+- **User Isolation:** Broadcasts are filtered by userId so users only see their own data.
+- **Auth Verification:** WebSocket connections verify userId against database.
+
+**Architecture:**
+- **Server:** `ws` library on shared HTTP server, path `/ws/calls`.
+- **Client:** Custom `useWebSocket` hook with exponential backoff reconnection.
+- **Events:** `call:update`, `agent:update`, `notification:new`, `heartbeat`.
+
+---
+
+## 18. Calendar Views
+**Description:** Temporal visualization layer for all time-based entities across the platform.
+
+**Key Capabilities:**
+- **Unified View:** Displays Content, Tasks, Interviews, and Milestones on one grid.
+- **Drag-and-Drop:** Reschedule items by dragging them to new dates.
+- **View Modes:** Toggle between Month, Week, Day, and List views.
+- **Filtering:** Toggle visibility of different item types.
+- **Sidebar:** Quick task creation and daily agenda view.
+
+**UI Components:**
+- `WeekView`: 7-day grid with time slots.
+- `MonthGrid`: Traditional calendar grid.
+- `CalendarSidebar`: Mini calendar, quick add, and daily agenda.
+
+---
+
+## Technical Architecture
+
+### Frontend Stack
+- **Framework:** React 18 with TypeScript
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS with custom design system
+- **State Management:** React hooks + context
+- **Routing:** React Router v6
+- **Real-time:** Custom WebSocket hook
+- **Icons:** Lucide React
+- **Notifications:** Sonner (toast notifications)
+
+### Backend Stack
+- **Runtime:** Node.js 20
+- **Framework:** Express.js
+- **Database:** PostgreSQL with Prisma ORM (driver adapter pattern)
+- **Cache:** Redis
+- **Auth:** Header-based (x-user-id) with middleware verification
+- **Logging:** Winston with structured JSON logging
+- **API Docs:** Swagger UI (OpenAPI spec)
+- **Security:** Helmet, CORS, rate limiting, input sanitization
+
+### Deployment
+- **Containerization:** Docker Compose (3 services: db, backend, frontend)
+- **SSL:** LiteSpeed/CyberPanel managed certificates
+- **Database:** PostgreSQL 15 in Docker volume

@@ -1,4 +1,4 @@
-import { memo, useState, useRef, useEffect } from 'react'
+import { memo, useState, useRef, useEffect, useCallback } from 'react'
 import { Sun, Moon, Settings, LogOut, Bell, Check, Search, Command, ChevronDown } from 'lucide-react'
 import { SidebarToggleButton } from '../shared/components/Sidebar'
 import { useAuth } from '../hooks/useAuth'
@@ -6,6 +6,7 @@ import { GlobalCallIndicator } from './GlobalCallIndicator'
 import { useNotifications } from '../hooks/useNotifications'
 import { useNavigate } from 'react-router-dom'
 import { formatDistanceToNow } from 'date-fns'
+import { API_SERVER } from '../config/api'
 
 interface AppHeaderProps {
     theme: 'light' | 'dark'
@@ -29,6 +30,30 @@ export const AppHeader = memo(function AppHeader({
     const dropdownRef = useRef<HTMLDivElement>(null)
     const userMenuRef = useRef<HTMLDivElement>(null)
     const navigate = useNavigate()
+
+    // Real system health check
+    const [systemStatus, setSystemStatus] = useState<'checking' | 'online' | 'offline'>('checking')
+
+    const checkHealth = useCallback(async () => {
+        try {
+            const controller = new AbortController()
+            const timeout = setTimeout(() => controller.abort(), 5000)
+            const res = await fetch(`${API_SERVER}/api/auth/profile`, {
+                method: 'HEAD',
+                signal: controller.signal
+            })
+            clearTimeout(timeout)
+            setSystemStatus(res.ok || res.status === 401 ? 'online' : 'offline')
+        } catch {
+            setSystemStatus('offline')
+        }
+    }, [])
+
+    useEffect(() => {
+        checkHealth()
+        const interval = setInterval(checkHealth, 30000)
+        return () => clearInterval(interval)
+    }, [checkHealth])
 
     // Close dropdowns on outside click
     useEffect(() => {
@@ -71,9 +96,14 @@ export const AppHeader = memo(function AppHeader({
                 </div>
                 <h1 className="text-lg font-semibold tracking-wide text-text-primary uppercase opacity-90 hidden md:block">Command Center</h1>
                 <div className="h-4 w-px bg-white/10 hidden md:block" />
-                <div className="hidden md:flex items-center text-xs text-text-muted">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                    System Operational
+                <div className="hidden md:flex items-center text-xs text-text-muted cursor-pointer" onClick={checkHealth} title="Click to recheck">
+                    <span className={`w-2 h-2 rounded-full mr-2 ${systemStatus === 'online'
+                            ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                            : systemStatus === 'offline'
+                                ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'
+                                : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)] animate-pulse'
+                        }`} />
+                    {systemStatus === 'online' ? 'System Operational' : systemStatus === 'offline' ? 'System Offline' : 'Checking...'}
                 </div>
             </div>
 

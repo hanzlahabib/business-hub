@@ -4,8 +4,12 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
+# Copy package files first for layer caching
 COPY package.json pnpm-lock.yaml* ./
-RUN npm install -g pnpm && pnpm install
+
+# Install pnpm and dependencies with extended network timeout
+RUN npm install -g pnpm && \
+    pnpm install --shamefully-hoist --config.fetch-timeout=300000
 
 COPY . .
 RUN pnpm run build

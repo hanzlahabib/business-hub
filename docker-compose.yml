@@ -1,7 +1,6 @@
 # Docker Compose for Business Hub (Schedule Manager)
 # Orchestrates PostgreSQL, Express Backend, and Vite Frontend
 
-version: '3.8'
 
 services:
   # Database Service

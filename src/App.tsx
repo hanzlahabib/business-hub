@@ -311,7 +311,19 @@ function App() {
                 {activeModule === 'calling' && (
                     <div className="flex-1 overflow-hidden">
                         <Suspense fallback={<ModuleLoader />}>
-                            <CallingView activeCalls={activeCalls} />
+                            <CallingView
+                                activeCalls={activeCalls}
+                                contents={contents}
+                                calendarItems={calendarItems}
+                                calendarFilters={calendarFilters}
+                                onAddContent={handleAddContent}
+                                onEditContent={handleEditContent}
+                                onDeleteContent={handleDeleteContent}
+                                onDateChange={scheduleContent}
+                                onItemDateChange={handleItemDateChange}
+                                onOpenDetail={handleOpenDetail}
+                                onItemClick={handleCalendarItemClick}
+                            />
                         </Suspense>
                     </div>
                 )}

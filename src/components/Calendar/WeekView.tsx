@@ -8,7 +8,7 @@ import { CalendarFilters as CalendarFiltersType, CalendarItem } from '../../hook
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const HOURS = Array.from({ length: 13 }, (_, i) => i + 8) // 08:00–20:00
-const SLOT_H = 80 // Fixed slot height matching Stitch design
+const SLOT_H = 80 // Fixed 80px per hour – matches Stitch
 
 interface WeekViewProps {
     contents: any[]
@@ -23,14 +23,15 @@ interface WeekViewProps {
     onItemClick?: (item: CalendarItem) => void
 }
 
-// Color palette for event cards
-const COLOR_MAP: Record<string, { border: string; bg: string; title: string; sub: string }> = {
-    purple: { border: 'border-purple-500', bg: 'bg-purple-500/20', title: 'text-purple-200', sub: 'text-purple-300' },
-    emerald: { border: 'border-emerald-500', bg: 'bg-emerald-500/20', title: 'text-emerald-100', sub: 'text-emerald-300' },
-    cyan: { border: 'border-cyan-500', bg: 'bg-cyan-500/20', title: 'text-cyan-100', sub: 'text-cyan-300' },
-    amber: { border: 'border-amber-500', bg: 'bg-amber-500/20', title: 'text-amber-100', sub: 'text-amber-300' },
-    indigo: { border: 'border-indigo-500', bg: 'bg-indigo-500/20', title: 'text-indigo-100', sub: 'text-indigo-300' },
-    pink: { border: 'border-pink-500', bg: 'bg-pink-500/20', title: 'text-pink-100', sub: 'text-pink-300' },
+// Color palette for event cards — matches Stitch exactly
+const COLOR_MAP: Record<string, { border: string; bg: string; title: string; sub: string; shadow: string }> = {
+    purple: { border: 'border-purple-500', bg: 'bg-purple-500/20', title: 'text-purple-200', sub: 'text-purple-300', shadow: 'shadow-purple-900/10' },
+    emerald: { border: 'border-emerald-500', bg: 'bg-emerald-500/20', title: 'text-emerald-100', sub: 'text-emerald-300', shadow: 'shadow-emerald-900/10' },
+    cyan: { border: 'border-cyan-500', bg: 'bg-cyan-500/20', title: 'text-cyan-100', sub: 'text-cyan-300', shadow: 'shadow-cyan-900/10' },
+    amber: { border: 'border-amber-500', bg: 'bg-amber-500/20', title: 'text-amber-100', sub: 'text-amber-300', shadow: 'shadow-amber-900/10' },
+    indigo: { border: 'border-indigo-500', bg: 'bg-indigo-500/20', title: 'text-indigo-100', sub: 'text-indigo-300', shadow: 'shadow-indigo-900/10' },
+    slate: { border: 'border-slate-500', bg: 'bg-slate-600/20', title: 'text-slate-200', sub: 'text-slate-400', shadow: '' },
+    pink: { border: 'border-pink-500', bg: 'bg-pink-500/20', title: 'text-pink-100', sub: 'text-pink-300', shadow: 'shadow-pink-900/10' },
 }
 const PALETTE = ['purple', 'emerald', 'cyan', 'amber', 'indigo', 'pink']
 
@@ -48,7 +49,6 @@ export const WeekView = memo(function WeekView({
 }: WeekViewProps) {
     const [currentDate, setCurrentDate] = useState(new Date())
     const [viewMode, setViewMode] = useState<'month' | 'week' | 'day'>('week')
-    const slotH = SLOT_H
     const gridRef = useRef<HTMLDivElement>(null)
     const hasScrolled = useRef(false)
 
@@ -91,11 +91,11 @@ export const WeekView = memo(function WeekView({
         const now = new Date()
         const h = now.getHours(), m = now.getMinutes()
         if (h < 8 || h > 20) return null
-        return ((h - 8) * slotH) + ((m / 60) * slotH)
-    }, [slotH])
+        return ((h - 8) * SLOT_H) + ((m / 60) * SLOT_H)
+    }, [])
     const currentTimeLabel = useMemo(() => format(new Date(), 'HH:mm'), [])
 
-    // Auto-scroll to morning area on mount (show 8-9am at top)
+    // Auto-scroll to morning area on mount (show 8am at top)
     useEffect(() => {
         if (gridRef.current && !hasScrolled.current) {
             gridRef.current.scrollTop = 0
@@ -109,11 +109,11 @@ export const WeekView = memo(function WeekView({
 
     return (
         <div className="flex h-full overflow-hidden">
-            {/* ── Left: Calendar Grid ── */}
-            <div className="flex-1 flex flex-col min-w-0">
+            {/* ── Left: Calendar Grid (flex-1 = ~70%) ── */}
+            <div className="flex-1 flex flex-col border-r border-border bg-[#0F1419] min-w-0">
 
-                {/* Toolbar */}
-                <div className="px-6 py-4 flex items-center justify-between border-b border-border shrink-0">
+                {/* Toolbar — matches Stitch exactly */}
+                <div className="px-6 py-4 flex items-center justify-between border-b border-border">
                     <div className="flex items-center gap-6">
                         {/* View Switcher */}
                         <div className="flex items-center bg-bg-secondary rounded-lg p-1 border border-border">
@@ -135,15 +135,15 @@ export const WeekView = memo(function WeekView({
                         <div className="flex items-center gap-3">
                             <button
                                 onClick={goToToday}
-                                className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-bg-secondary transition-colors font-medium text-text-secondary"
+                                className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-white/5 transition-colors font-medium text-text-secondary"
                             >
                                 Today
                             </button>
-                            <button onClick={goToPrev} className="p-1 rounded hover:bg-bg-secondary text-text-muted hover:text-text-primary transition-colors">
-                                <ChevronLeft size={16} />
+                            <button onClick={goToPrev} className="p-1 rounded hover:bg-white/5 text-text-muted hover:text-text-primary transition-colors">
+                                <ChevronLeft size={18} />
                             </button>
-                            <button onClick={goToNext} className="p-1 rounded hover:bg-bg-secondary text-text-muted hover:text-text-primary transition-colors">
-                                <ChevronRight size={16} />
+                            <button onClick={goToNext} className="p-1 rounded hover:bg-white/5 text-text-muted hover:text-text-primary transition-colors">
+                                <ChevronRight size={18} />
                             </button>
                             <h2 className="text-lg font-bold text-text-primary ml-2">
                                 {viewMode === 'month' ? format(startOfMonth(currentDate), 'MMMM yyyy')
@@ -151,15 +151,13 @@ export const WeekView = memo(function WeekView({
                                         : format(weekStart, 'MMMM yyyy')}
                             </h2>
                         </div>
-
-
                     </div>
 
                     <button
                         onClick={handleAddEvent}
                         className="flex items-center gap-2 bg-accent-primary hover:bg-accent-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-lg shadow-accent-primary/20"
                     >
-                        <Plus size={16} />
+                        <Plus size={18} />
                         Add Event
                     </button>
                 </div>
@@ -187,16 +185,16 @@ export const WeekView = memo(function WeekView({
                     />
                 ) : (
                     /* Week Grid */
-                    <div ref={gridRef} className="flex-1 overflow-auto relative">
+                    <div ref={gridRef} className="flex-1 overflow-auto custom-scrollbar relative bg-[#0F1419]">
                         {/* Sticky Day Headers */}
-                        <div className="grid sticky top-0 z-30 bg-bg-primary border-b border-border" style={{ gridTemplateColumns: '60px 1fr' }}>
+                        <div className="grid sticky top-0 z-30 bg-[#0F1419] border-b border-border" style={{ gridTemplateColumns: '60px 1fr' }}>
                             <div className="p-2 border-r border-border bg-bg-secondary/50" />
                             <div className="grid grid-cols-7 divide-x divide-border">
                                 {weekDays.map((day, idx) => {
                                     const isDayToday = isSameDay(day, today)
                                     const isWeekend = idx >= 5
                                     return (
-                                        <div key={idx} className={`p-3 text-center ${isDayToday ? 'bg-accent-primary/5' : ''} ${isWeekend ? 'bg-black/10' : ''}`}>
+                                        <div key={idx} className={`p-3 text-center ${isDayToday ? 'bg-accent-primary/5' : ''} ${isWeekend ? 'bg-black/20' : ''}`}>
                                             <span className={`block text-xs font-medium uppercase tracking-wide ${isDayToday ? 'text-accent-primary' : 'text-text-muted'}`}>
                                                 {DAY_NAMES[idx]}
                                             </span>
@@ -215,22 +213,22 @@ export const WeekView = memo(function WeekView({
                             </div>
                         </div>
 
-                        {/* Time Grid */}
-                        <div className="grid relative" style={{ gridTemplateColumns: '60px 1fr', minHeight: `${HOURS.length * slotH}px` }}>
+                        {/* Time Grid Body */}
+                        <div className="grid relative" style={{ gridTemplateColumns: '60px 1fr', minHeight: `${HOURS.length * SLOT_H}px` }}>
                             {/* Time Axis */}
                             <div className="border-r border-border bg-bg-secondary/30 text-xs text-text-muted font-medium text-right select-none">
                                 {HOURS.map(hour => (
-                                    <div key={hour} style={{ height: `${slotH}px` }} className="-mt-2.5 pr-2">
+                                    <div key={hour} style={{ height: `${SLOT_H}px` }} className="-mt-2.5 pr-2">
                                         {String(hour).padStart(2, '0')}:00
                                     </div>
                                 ))}
                             </div>
 
-                            {/* Events Grid */}
+                            {/* Grid Lines & Events Layer */}
                             <div className="relative grid grid-cols-7 divide-x divide-border">
                                 {/* Hour lines */}
                                 {HOURS.map((hour, idx) => (
-                                    <div key={hour} className="absolute w-full border-t border-border/40 pointer-events-none" style={{ top: `${idx * slotH}px` }} />
+                                    <div key={hour} className="absolute w-full border-t border-white/[0.03] pointer-events-none" style={{ top: `${idx * SLOT_H}px` }} />
                                 ))}
 
                                 {/* Current time red line */}
@@ -253,18 +251,20 @@ export const WeekView = memo(function WeekView({
                                             id: c.id,
                                             title: c.title || 'Untitled',
                                             hour: 9 + i,
-                                            minutes: 60,
+                                            duration: 60,
                                             color: PALETTE[i % PALETTE.length],
                                             sub: c.status || '',
+                                            tags: [] as string[],
                                             onClick: () => onOpenDetail?.(c)
                                         })),
                                         ...dayItems.map((item, i) => ({
                                             id: item.id,
                                             title: item.title || 'Untitled',
                                             hour: 10 + dayContents.length + i,
-                                            minutes: 60,
+                                            duration: 60,
                                             color: PALETTE[(dayContents.length + i) % PALETTE.length],
                                             sub: item.type || '',
+                                            tags: [] as string[],
                                             onClick: () => onItemClick?.(item)
                                         }))
                                     ]
@@ -272,48 +272,50 @@ export const WeekView = memo(function WeekView({
                                     return (
                                         <div
                                             key={idx}
-                                            className={`relative ${isCurrentDay ? 'bg-white/[0.02]' : ''} ${isWeekend ? 'bg-black/10' : ''}`}
-                                            style={{ minHeight: `${HOURS.length * slotH}px` }}
+                                            className={`relative h-full ${isCurrentDay ? 'bg-white/[0.01]' : ''} ${isWeekend ? 'bg-black/20' : ''}`}
+                                            style={{ minHeight: `${HOURS.length * SLOT_H}px` }}
                                             onClick={() => onAddContent?.(format(day, 'yyyy-MM-dd'))}
                                         >
                                             {events.map(ev => {
-                                                const top = (ev.hour - 8) * slotH
-                                                const height = Math.max((ev.minutes / 60) * slotH, 24)
+                                                const top = (ev.hour - 8) * SLOT_H
+                                                const height = Math.max((ev.duration / 60) * SLOT_H, 40)
                                                 const c = COLOR_MAP[ev.color] || COLOR_MAP.purple
                                                 return (
                                                     <div
                                                         key={ev.id}
                                                         onClick={e => { e.stopPropagation(); ev.onClick?.() }}
-                                                        className={`absolute left-1 right-2 rounded-md border-l-4 ${c.border} ${c.bg} backdrop-blur-sm cursor-pointer hover:scale-[1.02] transition-transform z-10 overflow-hidden shadow-lg`}
-                                                        style={{ top: `${top}px`, height: `${height}px`, padding: height < 36 ? '2px 6px' : '8px' }}
+                                                        className={`absolute left-1 right-2 rounded-md border-l-4 ${c.border} ${c.bg} backdrop-blur-sm cursor-pointer hover:scale-[1.02] transition-transform z-10 overflow-hidden shadow-lg ${c.shadow}`}
+                                                        style={{ top: `${top}px`, height: `${height}px`, padding: height < 50 ? '6px' : '8px' }}
                                                     >
                                                         <div className="flex items-center justify-between mb-0.5">
-                                                            <div className={`text-[11px] font-bold ${c.title} truncate leading-tight`}>{ev.title}</div>
+                                                            <div className={`text-xs font-bold ${c.title} truncate leading-tight`}>{ev.title}</div>
                                                         </div>
-                                                        {height >= 36 && (
-                                                            <div className={`text-[10px] ${c.sub} mt-px`}>
+                                                        {height >= 50 && (
+                                                            <div className={`text-[10px] ${c.sub} mb-1`}>
                                                                 {String(ev.hour).padStart(2, '0')}:00 - {String(ev.hour + 1).padStart(2, '0')}:00
                                                             </div>
                                                         )}
-                                                        {height >= 50 && ev.sub && (
-                                                            <div className={`text-[10px] ${c.sub} opacity-70 truncate mt-0.5`}>{ev.sub}</div>
+                                                        {height >= 60 && ev.sub && (
+                                                            <div className={`text-[10px] ${c.sub} opacity-70 truncate`}>{ev.sub}</div>
                                                         )}
-                                                        {height >= 70 && (
-                                                            <div className="mt-1.5 flex gap-1 flex-wrap">
-                                                                <span className={`text-[9px] px-1.5 py-0.5 ${c.bg} rounded ${c.title} font-medium`}>Event</span>
+                                                        {height >= 90 && ev.tags.length > 0 && (
+                                                            <div className="mt-2 flex gap-1 flex-wrap">
+                                                                {ev.tags.map((tag, ti) => (
+                                                                    <span key={ti} className={`text-[9px] px-1 py-0.5 ${c.bg} rounded ${c.title}`}>{tag}</span>
+                                                                ))}
                                                             </div>
                                                         )}
                                                     </div>
                                                 )
                                             })}
 
-                                            {/* Ghost add slot */}
+                                            {/* Ghost "Suggest Time" slot */}
                                             {events.length === 0 && !isWeekend && (
                                                 <div
-                                                    className="absolute left-1 right-2 rounded-md border border-dashed border-border/60 opacity-0 hover:opacity-100 cursor-pointer flex items-center justify-center transition-opacity group"
-                                                    style={{ top: `${4 * slotH}px`, height: `${slotH * 0.75}px` }}
+                                                    className="absolute left-1 right-2 rounded-md border border-dashed border-border/60 bg-transparent opacity-50 hover:opacity-100 cursor-pointer flex items-center justify-center transition-opacity group"
+                                                    style={{ top: `${4 * SLOT_H}px`, height: `${SLOT_H * 0.75}px` }}
                                                 >
-                                                    <span className="text-[10px] text-text-muted group-hover:text-text-secondary">+ Suggest Time</span>
+                                                    <span className="text-xs text-text-muted group-hover:text-text-secondary">+ Suggest Time</span>
                                                 </div>
                                             )}
                                         </div>
@@ -325,7 +327,7 @@ export const WeekView = memo(function WeekView({
                 )}
             </div>
 
-            {/* ── Right: Sidebar ── */}
+            {/* ── Right: Sidebar (380px) ── */}
             <div className="hidden xl:flex">
                 <CalendarSidebar contents={contents} items={items} onAddContent={onAddContent} />
             </div>
