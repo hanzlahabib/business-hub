@@ -73,6 +73,7 @@ pipeline {
                 sh '''#!/bin/bash
                     set -e
                     cd "${APP_DIR}"
+                    pnpm install --ignore-workspace 2>/dev/null || npm install 2>/dev/null || echo "Deps install skipped"
                     docker compose build --no-cache
                     docker compose up -d
                     echo "Waiting for containers to start..."

@@ -12,6 +12,11 @@ SSH_OPTS := -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p $(VPS_PORT
 SSH_CMD := sshpass -p '$(VPS_PASSWORD)' ssh $(SSH_OPTS) $(VPS_USER)@$(VPS_HOST)
 RSYNC_CMD := sshpass -p '$(VPS_PASSWORD)' rsync -avz -e "ssh $(SSH_OPTS)"
 
+# Jenkins
+JENKINS_URL := http://$(VPS_HOST):8091
+JENKINS_USER := admin
+JENKINS_PASS := admin123
+
 .PHONY: backup backup-binary ssh server client deploy deploy-restart vps-status vps-logs
 
 # ============================================
@@ -85,7 +90,7 @@ deploy-deps:
 # Local Dev — Full Workflow
 # ============================================
 
-.PHONY: dev start stop install db-start db-stop db-push db-studio prisma clean reset help-dev docker-up docker-down test test-all test-leads test-boards test-api test-ui deploy-prod rollback deploy-status
+.PHONY: dev start stop install db-start db-stop db-push db-studio prisma clean reset help-dev docker-up docker-down test test-all test-leads test-boards test-api test-ui deploy-prod rollback deploy-status jenkins-deploy jenkins-rollback jenkins-status jenkins-logs jenkins-open
 
 help-dev: ## Show dev commands
 	@echo ""
@@ -103,10 +108,17 @@ help-dev: ## Show dev commands
 	@echo "  \033[36mmake reset\033[0m       — Full reset (clean + install + prisma)"
 	@echo "  \033[36mmake docker-up\033[0m   — Start via Docker Compose"
 	@echo ""
-	@echo "\033[1m🚀 Production Deploy:\033[0m"
-	@echo "  \033[36mmake deploy-prod\033[0m   — Deploy latest master to VPS"
-	@echo "  \033[36mmake rollback\033[0m      — Rollback to latest backup on VPS"
-	@echo "  \033[36mmake deploy-status\033[0m — Check VPS container status"
+	@echo "\033[1m🚀 Production Deploy (Direct):\033[0m"
+	@echo "  \033[36mmake deploy-prod\033[0m     — Deploy latest master to VPS via SSH"
+	@echo "  \033[36mmake rollback\033[0m        — Rollback to latest backup via SSH"
+	@echo "  \033[36mmake deploy-status\033[0m   — Check VPS container status"
+	@echo ""
+	@echo "\033[1m🔧 Jenkins (CI/CD):\033[0m"
+	@echo "  \033[36mmake jenkins-deploy\033[0m  — Trigger Jenkins deploy pipeline"
+	@echo "  \033[36mmake jenkins-rollback\033[0m— Trigger Jenkins rollback pipeline"
+	@echo "  \033[36mmake jenkins-status\033[0m  — Show last build status"
+	@echo "  \033[36mmake jenkins-logs\033[0m    — Show last build console output"
+	@echo "  \033[36mmake jenkins-open\033[0m    — Open Jenkins dashboard in browser"
 	@echo ""
 	@echo "\033[1m🧪 E2E Testing:\033[0m"
 	@echo "  \033[36mmake test\033[0m        — Run all API E2E tests"
@@ -226,6 +238,44 @@ rollback: ## Rollback to latest backup on VPS
 
 deploy-status: ## Check running containers and last deploy on VPS
 	@$(SSH_CMD) "echo '--- Containers ---' && docker ps --filter 'label=app=business-hub' --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' && echo '' && echo '--- Last Deploy Commit ---' && cd /opt/business-hub && git log --oneline -1 && echo '' && echo '--- Available Backups ---' && ls -1t /opt/business-hub-backups/ 2>/dev/null || echo 'No backups'"
+
+# ============================================
+# Jenkins (CI/CD Pipeline)
+# ============================================
+
+jenkins-deploy: ## Trigger Jenkins deploy pipeline
+	@echo "Triggering Jenkins deploy (branch: master)..."
+	@CRUMB=$$(curl -s -c /tmp/jenkins-cookies -u "$(JENKINS_USER):$(JENKINS_PASS)" "$(JENKINS_URL)/crumbIssuer/api/json" | python3 -c "import sys,json;print(json.load(sys.stdin)['crumb'])" 2>/dev/null); \
+	HTTP=$$(curl -s -o /dev/null -w "%{http_code}" -b /tmp/jenkins-cookies -u "$(JENKINS_USER):$(JENKINS_PASS)" \
+		-H "Jenkins-Crumb: $$CRUMB" \
+		-X POST "$(JENKINS_URL)/job/business-hub-deploy/buildWithParameters?DEPLOY_ACTION=deploy&BRANCH=master"); \
+	if [ "$$HTTP" = "201" ]; then echo "Build triggered — $(JENKINS_URL)/job/business-hub-deploy/"; \
+	else echo "Failed (HTTP $$HTTP). Check Jenkins."; fi
+
+jenkins-rollback: ## Trigger Jenkins rollback pipeline
+	@echo "Triggering Jenkins rollback (latest backup)..."
+	@CRUMB=$$(curl -s -c /tmp/jenkins-cookies -u "$(JENKINS_USER):$(JENKINS_PASS)" "$(JENKINS_URL)/crumbIssuer/api/json" | python3 -c "import sys,json;print(json.load(sys.stdin)['crumb'])" 2>/dev/null); \
+	HTTP=$$(curl -s -o /dev/null -w "%{http_code}" -b /tmp/jenkins-cookies -u "$(JENKINS_USER):$(JENKINS_PASS)" \
+		-H "Jenkins-Crumb: $$CRUMB" \
+		-X POST "$(JENKINS_URL)/job/business-hub-deploy/buildWithParameters?DEPLOY_ACTION=rollback&ROLLBACK_TAG="); \
+	if [ "$$HTTP" = "201" ]; then echo "Rollback triggered — $(JENKINS_URL)/job/business-hub-deploy/"; \
+	else echo "Failed (HTTP $$HTTP). Check Jenkins."; fi
+
+jenkins-status: ## Show last Jenkins build status
+	@curl -s -u "$(JENKINS_USER):$(JENKINS_PASS)" \
+		"$(JENKINS_URL)/job/business-hub-deploy/lastBuild/api/json" 2>/dev/null | \
+		python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Build #{d[\"number\"]} — {d[\"result\"] or \"IN PROGRESS\"}\nStarted: {d[\"timestamp\"]}\nDuration: {d[\"duration\"]//1000}s\nURL: {d[\"url\"]}')" 2>/dev/null || \
+		echo "No builds yet. Run 'make jenkins-deploy' to trigger the first build."
+
+jenkins-logs: ## Show last Jenkins build console output
+	@curl -s -u "$(JENKINS_USER):$(JENKINS_PASS)" \
+		"$(JENKINS_URL)/job/business-hub-deploy/lastBuild/consoleText" 2>/dev/null | tail -40 || \
+		echo "No builds yet."
+
+jenkins-open: ## Open Jenkins dashboard in browser
+	@xdg-open "$(JENKINS_URL)/job/business-hub-deploy/" 2>/dev/null || \
+		open "$(JENKINS_URL)/job/business-hub-deploy/" 2>/dev/null || \
+		echo "Open in browser: $(JENKINS_URL)/job/business-hub-deploy/"
 
 # ============================================
 # Cleanup
