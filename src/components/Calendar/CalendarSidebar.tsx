@@ -135,12 +135,9 @@ export const CalendarSidebar = memo(function CalendarSidebar({
             <div className="p-6 border-b border-border">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-text-muted">Today's Agenda</h3>
-                    <button
-                        onClick={() => toast.info('Agenda options coming soon')}
-                        className="text-text-muted hover:text-text-primary transition-colors"
-                    >
+                    <span className="text-text-muted">
                         <MoreHorizontal size={16} />
-                    </button>
+                    </span>
                 </div>
 
                 {agendaEvents.length > 0 ? (
@@ -186,12 +183,9 @@ export const CalendarSidebar = memo(function CalendarSidebar({
                 <div className="p-6 pb-2">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-sm font-bold uppercase tracking-wider text-text-muted">Upcoming Tasks</h3>
-                        <button
-                            onClick={() => toast.info('Full task view coming soon')}
-                            className="text-accent-primary text-xs font-medium hover:underline"
-                        >
-                            View All
-                        </button>
+                        <span className="text-accent-primary text-xs font-medium">
+                            Upcoming
+                        </span>
                     </div>
                 </div>
 

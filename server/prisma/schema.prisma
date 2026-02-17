@@ -353,18 +353,32 @@ model TemplateHistory {
   templateId    String
   action        String
   details       String?
+  version       Int?
+  content       Json?
+  rawMarkdown   String?
+  changeSummary String?
+  changeType    String?
+  changedBy     String?
   createdAt     DateTime  @default(now())
   userId        String
   user          User      @relation(fields: [userId], references: [id])
+
+  @@index([templateId])
 }
 
 model TemplateComment {
   id            String    @id @default(cuid())
   templateId    String
   content       String
+  parentId      String?
+  reactions     Json?
+  mentions      String[]  @default([])
   createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   userId        String
   user          User      @relation(fields: [userId], references: [id])
+
+  @@index([templateId])
 }
 
 // ============================================
@@ -542,6 +556,24 @@ model Notification {
 
   @@index([userId, read])
   @@index([userId, createdAt])
+}
+
+// ============================================
+// SCHEDULED ACTIONS (persistent delayed tasks)
+// ============================================
+model ScheduledAction {
+  id          String    @id @default(cuid())
+  type        String    // 'initiate-call', etc.
+  payload     Json      // { leadId, config, ... }
+  scheduledAt DateTime
+  executed    Boolean   @default(false)
+  executedAt  DateTime?
+  error       String?
+  createdAt   DateTime  @default(now())
+  userId      String
+
+  @@index([executed, scheduledAt])
+  @@index([userId])
 }
 
 // ============================================

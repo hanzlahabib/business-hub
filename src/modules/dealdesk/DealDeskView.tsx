@@ -68,8 +68,10 @@ export function DealDeskView() {
                     setDealSettings(prev => ({ ...prev, ...savedSettings.dealdesk }))
                 }
             }
-        } catch { /* ignore */ }
-        finally { setLoading(false) }
+        } catch (e) {
+            console.warn('[DealDesk] Failed to load data:', e)
+            toast.error('Failed to load deal desk data')
+        } finally { setLoading(false) }
     }, [user?.id, headers])
 
     useEffect(() => { fetchData() }, [fetchData])
@@ -274,7 +276,7 @@ export function DealDeskView() {
                                             <div
                                                 key={item.id}
                                                 className={`group bg-bg-secondary border-l-4 ${config.borderColor} border-y border-r border-border rounded-lg p-4 shadow-sm hover:shadow-md hover:border-border-hover transition-all cursor-pointer`}
-                                                onClick={() => navigate(`/leads`)}
+                                                onClick={() => navigate(`/leads/${item.lead?.id || ''}`)}
                                             >
                                                 <div className="flex justify-between items-start mb-3">
                                                     <div className="flex items-center gap-3">

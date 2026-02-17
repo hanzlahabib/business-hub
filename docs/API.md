@@ -83,4 +83,66 @@ Authentication is handled client-side via the `AuthContext`:
 2. **Register**: Creates user via `POST /users`
 3. **Token**: Base64-encoded user data stored in `localStorage`
 
-> **Note**: This is a development-grade auth system. Not suitable for production.
+> **Note**: Authentication now uses `x-user-id` header verified against PostgreSQL.
+
+---
+
+## New Endpoints (2026-02-17 Release)
+
+### Dashboard Trends
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/dashboard/trends` | 7-day trend data for sparklines |
+
+**Response:**
+```json
+{
+  "leads": [3, 5, 2, 8, 4, 6, 7],
+  "calls": [1, 2, 0, 3, 1, 4, 2],
+  "conversions": [0, 1, 0, 2, 1, 1, 3]
+}
+```
+
+### Bulk Email
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/email/send-bulk` | Send emails to multiple leads |
+
+**Request Body:**
+```json
+{
+  "leadIds": ["lead-1", "lead-2"],
+  "templateId": "template-1",
+  "subject": "Follow up on {{company}}",
+  "body": "Hi {{contactPerson}}, ..."
+}
+```
+
+### Email Templates CRUD
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/resources/emailtemplates` | List email templates |
+| POST | `/api/resources/emailtemplates` | Create email template |
+| PATCH | `/api/resources/emailtemplates/:id` | Update email template |
+| DELETE | `/api/resources/emailtemplates/:id` | Delete email template |
+
+### Template History CRUD
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/resources/templatehistory?templateId=X` | List history entries |
+| GET | `/api/resources/templatehistory/:id` | Get specific entry |
+| POST | `/api/resources/templatehistory` | Create history entry |
+| DELETE | `/api/resources/templatehistory/:id` | Delete history entry |
+
+### Template Comments CRUD
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/resources/templatecomments?templateId=X` | List comments |
+| POST | `/api/resources/templatecomments` | Create comment |
+| PATCH | `/api/resources/templatecomments/:id` | Edit comment |
+| DELETE | `/api/resources/templatecomments/:id` | Delete comment |

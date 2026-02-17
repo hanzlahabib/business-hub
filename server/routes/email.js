@@ -1,7 +1,7 @@
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { sendEmail, testConnection } from '../services/emailService.js'
+import { sendEmail, sendBulkEmails, testConnection } from '../services/emailService.js'
 import authMiddleware from '../middleware/auth.js'
 import prisma from '../config/prisma.js'
 import { emailSettingsRepository } from '../repositories/extraRepositories.js'
@@ -219,6 +219,113 @@ router.post('/send-template', async (req, res) => {
 
     res.json(result)
   } catch (error) {
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
+// Send bulk emails to multiple leads
+router.post('/send-bulk', async (req, res) => {
+  const { leadIds, templateId, subject, body } = req.body
+
+  if (!leadIds || !Array.isArray(leadIds) || leadIds.length === 0) {
+    return res.status(400).json({ success: false, error: 'leadIds array is required' })
+  }
+
+  if (!subject && !templateId) {
+    return res.status(400).json({ success: false, error: 'subject or templateId is required' })
+  }
+
+  try {
+    const settings = await getUserEmailSettings(req.user.id)
+    if (!settings || !settings.provider) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email not configured. Please set up email provider in settings.'
+      })
+    }
+
+    // Fetch leads
+    const leads = await prisma.lead.findMany({
+      where: { id: { in: leadIds }, userId: req.user.id }
+    })
+
+    if (leads.length === 0) {
+      return res.status(404).json({ success: false, error: 'No leads found' })
+    }
+
+    // If templateId provided, fetch template for variable replacement
+    let template = null
+    if (templateId) {
+      template = await prisma.template.findFirst({
+        where: { id: templateId, userId: req.user.id }
+      })
+    }
+
+    // Build email list
+    const emails = leads
+      .filter(lead => lead.email)
+      .map(lead => {
+        let emailSubject = template?.subject || subject || ''
+        let emailBody = template?.body || template?.content || body || ''
+
+        // Replace variables
+        const vars = {
+          company: lead.name || '',
+          contactPerson: lead.contactPerson || '',
+          email: lead.email || '',
+          industry: lead.industry || '',
+          website: lead.website || ''
+        }
+        for (const [key, val] of Object.entries(vars)) {
+          const regex = new RegExp(`{{${key}}}`, 'g')
+          emailSubject = emailSubject.replace(regex, val)
+          emailBody = emailBody.replace(regex, val)
+        }
+
+        return { to: lead.email, subject: emailSubject, body: emailBody, leadId: lead.id }
+      })
+
+    if (emails.length === 0) {
+      return res.status(400).json({ success: false, error: 'No leads have email addresses' })
+    }
+
+    // Send bulk
+    const results = await sendBulkEmails(settings, emails)
+
+    // Log messages for successful sends
+    for (const result of results) {
+      if (result.success) {
+        const emailData = emails.find(e => e.to === result.to)
+        if (emailData?.leadId) {
+          try {
+            await prisma.message.create({
+              data: {
+                leadId: emailData.leadId,
+                type: 'sent',
+                channel: 'email',
+                subject: emailData.subject,
+                body: emailData.body,
+                status: 'sent',
+                userId: req.user.id
+              }
+            })
+            await prisma.lead.update({
+              where: { id: emailData.leadId, userId: req.user.id },
+              data: { lastContactedAt: new Date(), status: 'contacted' }
+            })
+          } catch (logErr) {
+            console.error('Failed to log bulk email message:', logErr)
+          }
+        }
+      }
+    }
+
+    const sent = results.filter(r => r.success).length
+    const failed = results.filter(r => !r.success).length
+
+    res.json({ success: true, sent, failed, total: results.length, results })
+  } catch (error) {
+    console.error('Bulk email send error:', error)
     res.status(500).json({ success: false, error: error.message })
   }
 })

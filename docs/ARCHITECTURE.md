@@ -77,7 +77,7 @@ Request → Helmet → CORS → JSON Parser → Sanitize → Request Logger → 
 | `/api/intelligence` | `routes/intelligence.js` | ✅ | Lead analysis, insights, leaderboard |
 | `/api/proposals` | `routes/proposals.js` | ✅ | Proposal CRUD + AI generation |
 | `/api/notifications` | `routes/notifications.js` | ✅ | Notification system |
-| `/api/dashboard` | `routes/dashboard.js` | ✅ | Dashboard aggregation + stats |
+| `/api/dashboard` | `routes/dashboard.js` | ✅ | Dashboard aggregation, stats, 7-day trends |
 | `/api/automation` | `routes/automation.js` | ✅ | Automation engine triggers |
 | `/api/scraper` | `routes/scraper.js` | ✅ | Web scraping for lead discovery |
 | `/api/outreach` | `routes/outreach.js` | ✅ | Automated outreach campaigns |
@@ -154,6 +154,53 @@ Lead (/leads)
                                             ▼
                                   POST /proposals/generate/:leadId
                                   → Proposal: Draft → Sent → Accepted/Rejected
+```
+
+## EventBus → Automation → WebSocket Pipeline
+
+```
+Application Event (lead created, call completed, status changed)
+  │
+  ▼
+EventBus.emit(event)
+  │
+  ▼
+AutomationService.evaluateRules(event)
+  │
+  ├── For each matching rule:
+  │   ├── create-task ──► prisma.task.create (with valid columnId)
+  │   ├── send-notification ──► prisma.notification.create ──► emitNotification(userId, notification)
+  │   │                                                          │
+  │   │                                                          ▼
+  │   │                                                   WebSocket: { type: "notification:new" }
+  │   │                                                          │
+  │   │                                                          ▼
+  │   │                                                   useNotifications hook (frontend)
+  │   │                                                   → setNotifications(prev => [new, ...prev])
+  │   │                                                   → setUnreadCount(prev => prev + 1)
+  │   ├── update-lead-status ──► prisma.lead.updateMany
+  │   └── initiate-call ──► prisma.scheduledAction.create ──► setTimeout(executeScheduledAction, delay)
+  │
+  └── Update rule runCount + lastRunAt
+```
+
+### Persistent Scheduled Actions
+
+Auto-call delays are stored in the `ScheduledAction` table. On server restart, `recoverScheduledActions()` loads all unexecuted actions and re-queues them with in-memory timers.
+
+```
+Server Start
+  │
+  ▼
+automationService.init()
+  ├── eventBus.on('*', evaluateRules)
+  └── recoverScheduledActions()
+        │
+        ▼
+      prisma.scheduledAction.findMany({ where: { executed: false } })
+        │
+        ▼
+      For each: setTimeout(executeScheduledAction, remainingDelay)
 ```
 
 ## Background Services

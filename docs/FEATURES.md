@@ -39,6 +39,7 @@ Business Hub is an all-in-one enterprise operating system designed to consolidat
 
 **API Endpoints:**
 - `GET /api/dashboard`: Aggregated statistics and recent activity feed.
+- `GET /api/dashboard/trends`: 7-day trend data for sparklines (leads, calls, conversions per day).
 
 **UI Components:**
 - `DashboardView`: Main container.
@@ -217,8 +218,14 @@ Business Hub is an all-in-one enterprise operating system designed to consolidat
 - `DELETE /api/resources/templates/:id`: Remove a template.
 - `GET /api/resources/templatefolders`: List folders.
 - `POST /api/resources/templatefolders`: Create a folder.
-- `GET /api/resources/templatehistory`: Retrieve version history.
-- `GET /api/resources/templatecomments`: List comments on a template.
+- `GET /api/resources/templatehistory?templateId=X`: Retrieve version history entries.
+- `GET /api/resources/templatehistory/:id`: Get a specific history entry.
+- `POST /api/resources/templatehistory`: Create a history entry (version, content snapshot, change summary).
+- `DELETE /api/resources/templatehistory/:id`: Delete a history entry.
+- `GET /api/resources/templatecomments?templateId=X`: List comments on a template (with user info).
+- `POST /api/resources/templatecomments`: Create a comment (supports parentId for threads, reactions, mentions).
+- `PATCH /api/resources/templatecomments/:id`: Edit a comment.
+- `DELETE /api/resources/templatecomments/:id`: Delete a comment.
 
 **UI Components:**
 - `TemplatesView`: Explorer interface with folder tree and template list.
@@ -256,10 +263,12 @@ Business Hub is an all-in-one enterprise operating system designed to consolidat
 **Key Capabilities:**
 - **Rules Engine:** Define "If [Trigger] Then [Action]" logic (e.g., "If Call Booked, Create Task").
 - **Triggers:** Supports events like `call:completed`, `lead:status-changed`, `call:failed`.
-- **Actions:** Create tasks, send notifications, update lead status, trigger AI analysis.
+- **Actions:** Create tasks, send notifications, update lead status, trigger AI analysis, initiate auto-calls.
 - **Auto-Analysis:** Automatically triggers AI intelligence analysis when calls complete.
 - **Default Rules:** Pre-seeded rules for common workflows.
 - **Enable/Disable:** Toggle individual rules on/off without deleting them.
+- **Persistent Scheduling:** Delayed actions (e.g., auto-call 30s after lead creation) are persisted to database and recovered on server restart.
+- **Fail-Safe Conditions:** Unknown operators in rule conditions fail safely (no false positives).
 
 **API Endpoints:**
 - `GET /api/automation/rules`: List active automation rules.
@@ -444,11 +453,19 @@ The CRM, Neural Brain, and Deal Desk modules form a connected sales pipeline. A 
 - **Templating:** Variable injection into subject/body before sending.
 - **Throttling:** Daily limits and delay enforcement to prevent spam flagging.
 - **Lead Tracking:** Auto-links sent emails to lead records and updates `lastContactedAt`.
+- **Bulk Send:** Send templated emails to multiple leads with per-lead variable substitution and throttling.
+- **Email Templates CRUD:** Full create/read/update/delete for reusable email templates.
 
 **API Endpoints:**
 - `POST /api/email/send`: Send individual email.
+- `POST /api/email/send-bulk`: Send emails to multiple leads with template variable substitution.
+- `POST /api/email/send-template`: Send email using a saved template with auto variable replacement.
 - `GET /api/resources/emailsettings`: Retrieve SMTP/provider config.
 - `PUT /api/resources/emailsettings`: Update email provider configuration.
+- `GET /api/resources/emailtemplates`: List email templates.
+- `POST /api/resources/emailtemplates`: Create an email template.
+- `PATCH /api/resources/emailtemplates/:id`: Update an email template.
+- `DELETE /api/resources/emailtemplates/:id`: Delete an email template.
 
 ---
 

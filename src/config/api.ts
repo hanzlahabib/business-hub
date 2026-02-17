@@ -33,6 +33,7 @@ export const ENDPOINTS = {
   // Email
   EMAIL_SEND: `${API_SERVER}/api/email/send`,
   EMAIL_TEST: `${API_SERVER}/api/email/test`,
+  EMAIL_SEND_BULK: `${API_SERVER}/api/email/send-bulk`,
 
   // CVs
   CV_LIST: `${API_SERVER}/api/cvs`,

@@ -269,41 +269,154 @@ router.delete('/templatefolders/:id', async (req, res) => {
 
 router.get('/templatehistory', async (req, res) => {
     try {
-        // Template history is stored in JSON - for now return empty array
-        // TODO: implement templateHistory model
-        res.json([])
+        const where = { userId: req.user.id }
+        if (req.query.templateId) where.templateId = req.query.templateId
+        const data = await prisma.templateHistory.findMany({
+            where,
+            orderBy: { createdAt: 'desc' }
+        })
+        res.json(data)
+    } catch (e) {
+        res.status(500).json({ error: e.message })
+    }
+})
+
+router.get('/templatehistory/:id', async (req, res) => {
+    try {
+        const data = await prisma.templateHistory.findFirst({
+            where: { id: req.params.id, userId: req.user.id }
+        })
+        if (!data) return res.status(404).json({ error: 'History entry not found' })
+        res.json(data)
     } catch (e) {
         res.status(500).json({ error: e.message })
     }
 })
 
 router.post('/templatehistory', async (req, res) => {
-    // TODO: implement
-    res.status(201).json(req.body)
+    try {
+        const entry = await prisma.templateHistory.create({
+            data: { ...req.body, userId: req.user.id }
+        })
+        res.status(201).json(entry)
+    } catch (e) {
+        res.status(400).json({ error: e.message })
+    }
+})
+
+router.delete('/templatehistory/:id', async (req, res) => {
+    try {
+        const existing = await prisma.templateHistory.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'History entry not found' })
+        await prisma.templateHistory.delete({ where: { id: req.params.id } })
+        res.status(204).send()
+    } catch (e) {
+        res.status(400).json({ error: e.message })
+    }
 })
 
 // ============ TEMPLATE COMMENTS ============
 
 router.get('/templatecomments', async (req, res) => {
     try {
-        res.json([])
+        const where = { userId: req.user.id }
+        if (req.query.templateId) where.templateId = req.query.templateId
+        const data = await prisma.templateComment.findMany({
+            where,
+            orderBy: { createdAt: 'desc' },
+            include: { user: { select: { id: true, name: true, email: true } } }
+        })
+        res.json(data)
     } catch (e) {
         res.status(500).json({ error: e.message })
     }
 })
 
 router.post('/templatecomments', async (req, res) => {
-    res.status(201).json(req.body)
+    try {
+        const comment = await prisma.templateComment.create({
+            data: { ...req.body, userId: req.user.id },
+            include: { user: { select: { id: true, name: true, email: true } } }
+        })
+        res.status(201).json(comment)
+    } catch (e) {
+        res.status(400).json({ error: e.message })
+    }
+})
+
+router.patch('/templatecomments/:id', async (req, res) => {
+    try {
+        const existing = await prisma.templateComment.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Comment not found' })
+        const comment = await prisma.templateComment.update({
+            where: { id: req.params.id },
+            data: req.body,
+            include: { user: { select: { id: true, name: true, email: true } } }
+        })
+        res.json(comment)
+    } catch (e) {
+        res.status(400).json({ error: e.message })
+    }
+})
+
+router.delete('/templatecomments/:id', async (req, res) => {
+    try {
+        const existing = await prisma.templateComment.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Comment not found' })
+        await prisma.templateComment.delete({ where: { id: req.params.id } })
+        res.status(204).send()
+    } catch (e) {
+        res.status(400).json({ error: e.message })
+    }
 })
 
 // ============ EMAIL TEMPLATES ============
 
 router.get('/emailtemplates', async (req, res) => {
     try {
-        // Email templates are separate from the template module
-        res.json([])
+        const data = await prisma.emailTemplate.findMany({
+            where: { userId: req.user.id },
+            orderBy: { createdAt: 'desc' }
+        })
+        res.json(data)
     } catch (e) {
         res.status(500).json({ error: e.message })
+    }
+})
+
+router.post('/emailtemplates', async (req, res) => {
+    try {
+        const template = await prisma.emailTemplate.create({
+            data: { ...req.body, userId: req.user.id }
+        })
+        res.status(201).json(template)
+    } catch (e) {
+        res.status(400).json({ error: e.message })
+    }
+})
+
+router.patch('/emailtemplates/:id', async (req, res) => {
+    try {
+        const existing = await prisma.emailTemplate.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Email template not found' })
+        const template = await prisma.emailTemplate.update({
+            where: { id: req.params.id },
+            data: req.body
+        })
+        res.json(template)
+    } catch (e) {
+        res.status(400).json({ error: e.message })
+    }
+})
+
+router.delete('/emailtemplates/:id', async (req, res) => {
+    try {
+        const existing = await prisma.emailTemplate.findFirst({ where: { id: req.params.id, userId: req.user.id } })
+        if (!existing) return res.status(404).json({ error: 'Email template not found' })
+        await prisma.emailTemplate.delete({ where: { id: req.params.id } })
+        res.status(204).send()
+    } catch (e) {
+        res.status(400).json({ error: e.message })
     }
 })
 

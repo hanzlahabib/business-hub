@@ -35,7 +35,7 @@ export function useNotifications() {
                 const data = await res.json()
                 setNotifications(data)
             }
-        } catch { /* ignore */ }
+        } catch (e) { console.warn('[Notifications] Fetch failed:', e) }
         finally { setLoading(false) }
     }, [user?.id, headers])
 
@@ -47,7 +47,7 @@ export function useNotifications() {
                 const data = await res.json()
                 setUnreadCount(data.unread)
             }
-        } catch { /* ignore */ }
+        } catch (e) { console.warn('[Notifications] Count fetch failed:', e) }
     }, [user?.id, headers])
 
     const markAsRead = useCallback(async (id: string) => {
@@ -58,7 +58,7 @@ export function useNotifications() {
             })
             setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
             setUnreadCount(prev => Math.max(0, prev - 1))
-        } catch { /* ignore */ }
+        } catch (e) { console.warn('[Notifications] Mark read failed:', e) }
     }, [headers])
 
     const markAllRead = useCallback(async () => {
@@ -69,7 +69,7 @@ export function useNotifications() {
             })
             setNotifications(prev => prev.map(n => ({ ...n, read: true })))
             setUnreadCount(0)
-        } catch { /* ignore */ }
+        } catch (e) { console.warn('[Notifications] Mark all read failed:', e) }
     }, [headers])
 
     // Listen for real-time notifications via WebSocket
@@ -90,7 +90,7 @@ export function useNotifications() {
                     setNotifications(prev => [msg.notification, ...prev].slice(0, 30))
                     setUnreadCount(prev => prev + 1)
                 }
-            } catch { /* ignore */ }
+            } catch (e) { console.warn('[Notifications] WS message parse failed:', e) }
         }
 
         return () => {

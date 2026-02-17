@@ -309,13 +309,14 @@ export const WeekView = memo(function WeekView({
                                                 )
                                             })}
 
-                                            {/* Ghost "Suggest Time" slot */}
+                                            {/* Ghost "Add Event" slot — opens add content modal */}
                                             {events.length === 0 && !isWeekend && (
                                                 <div
                                                     className="absolute left-1 right-2 rounded-md border border-dashed border-border/60 bg-transparent opacity-50 hover:opacity-100 cursor-pointer flex items-center justify-center transition-opacity group"
                                                     style={{ top: `${4 * SLOT_H}px`, height: `${SLOT_H * 0.75}px` }}
+                                                    onClick={e => { e.stopPropagation(); onAddContent?.(format(day, 'yyyy-MM-dd')) }}
                                                 >
-                                                    <span className="text-xs text-text-muted group-hover:text-text-secondary">+ Suggest Time</span>
+                                                    <span className="text-xs text-text-muted group-hover:text-accent-primary">+ Add Event</span>
                                                 </div>
                                             )}
                                         </div>

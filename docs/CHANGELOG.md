@@ -4,6 +4,47 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [2026-02-17] — Polish Release: Real Data, Error Handling & Reliability
+
+### Bug Fixes
+
+- **Dashboard sparklines hardcoded** — KPI cards used static SVG paths. Now fetches real 7-day trend data from `GET /api/dashboard/trends` and generates sparklines dynamically.
+- **Dashboard avatar initials hardcoded** — Hot Leads table displayed static initials (`RJ`, `AL`...). Now derives initials from the actual lead stage label.
+- **Deal Desk navigation broken** — Clicking a deal card navigated to generic `/leads` instead of the specific lead. Fixed to navigate to `/leads/{leadId}`.
+- **Deal Desk silent error swallowing** — `fetchData()` had empty `catch {}` block. Now shows toast error and logs to console.
+- **Template History/Comments stub endpoints** — `GET/POST /api/resources/templatehistory` and `templatecomments` returned `[]`. Replaced with real Prisma CRUD operations.
+- **Email Templates endpoint stub** — `GET /api/resources/emailtemplates` returned `[]`. Now queries actual `EmailTemplate` records with full CRUD.
+- **Notification WS push silently dropped** — `emitNotification` in automationService used empty `catch {}`. Now logs warning.
+- **useNotifications empty catches** — All `catch {}` blocks replaced with `console.warn()` for debugging.
+- **Automation unknown operator passes all** — `evaluateConditions` returned `true` for unknown operators. Changed to `false` (fail-safe).
+- **Task creation invalid columnId** — Automation task creation used `'default'` for boards with empty columns. Now creates a real default column.
+- **Calendar ghost slot non-functional** — "+ Suggest Time" slot did nothing. Now opens the add content modal for that date.
+- **Calendar sidebar "coming soon" toasts** — Removed non-functional "Agenda Options" and "Full Task View" buttons that showed "coming soon" toasts.
+
+### New Features
+
+- **Dashboard trends endpoint** — `GET /api/dashboard/trends` returns 7-day bucketed counts for leads, calls, and conversions.
+- **Bulk email send route** — `POST /api/email/send-bulk` accepts `{ leadIds, templateId, subject, body }`, sends templated emails with per-lead variable substitution, logs messages, and updates lead status.
+- **Email templates CRUD** — Full `GET/POST/PATCH/DELETE` for `/api/resources/emailtemplates`.
+- **Template history CRUD** — Full `GET/POST/DELETE` with `templateId` filtering, version tracking, and content snapshots.
+- **Template comments CRUD** — Full `GET/POST/PATCH/DELETE` with user info, thread support (parentId), reactions, and mentions.
+- **Persistent scheduled actions** — Auto-call delays now stored in `ScheduledAction` table. Pending actions recovered on server restart.
+- **Dynamic AI suggestions** — Dashboard AI panel now suggests based on actual data (uncontacted leads count, conversion rate, pending tasks).
+
+### Schema Changes
+
+- **TemplateHistory** — Added: `version`, `content` (Json), `rawMarkdown`, `changeSummary`, `changeType`, `changedBy`. Added index on `templateId`.
+- **TemplateComment** — Added: `parentId`, `reactions` (Json), `mentions` (String[]), `updatedAt`. Added index on `templateId`.
+- **ScheduledAction** — New model for persistent delayed action scheduling.
+
+### Documentation
+
+- Updated `docs/FEATURES.md` with bulk email, template history/comments CRUD, dashboard trends, persistent scheduling.
+- Updated `docs/CHANGELOG.md` (this file).
+- Created `docs/ROADMAP.md` with 7 future feature epics.
+
+---
+
 ## [2026-02-10] — Server Fix, Automation Features & Regression Testing
 
 ### Bug Fixes

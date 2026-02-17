@@ -15,16 +15,26 @@ async function executeCreateTask(userId, event, config) {
         ?.replace('{outcome}', event.data?.outcome || '')
         || ''
 
-    // Find user's first board or create one
+    // Find user's first board or create one with a default column
     let board = await prisma.taskBoard.findFirst({ where: { userId } })
     if (!board) {
+        const defaultCol = { id: `col-${Date.now()}`, name: 'To Do', color: '#3b82f6' }
         board = await prisma.taskBoard.create({
-            data: { name: 'Automation Tasks', userId, columns: [] }
+            data: { name: 'Automation Tasks', userId, columns: [defaultCol] }
         })
     }
 
-    const columns = (board.columns || [])
-    const firstColId = columns[0]?.id || 'default'
+    // Ensure board has at least one column
+    let columns = Array.isArray(board.columns) ? board.columns : []
+    if (columns.length === 0) {
+        const defaultCol = { id: `col-${Date.now()}`, name: 'To Do', color: '#3b82f6' }
+        columns = [defaultCol]
+        await prisma.taskBoard.update({
+            where: { id: board.id },
+            data: { columns }
+        })
+    }
+    const firstColId = columns[0].id
 
     await prisma.task.create({
         data: {
@@ -67,7 +77,7 @@ async function executeSendNotification(userId, event, config) {
     try {
         const { emitNotification } = await import('./callWebSocket.js')
         emitNotification(userId, notification)
-    } catch { /* WebSocket not available */ }
+    } catch (e) { console.warn('[AutomationService] WS notification push failed:', e.message) }
 }
 
 async function executeUpdateLeadStatus(userId, event, config) {
@@ -102,24 +112,81 @@ async function executeInitiateCall(userId, event, config) {
 
     console.log(`[AutomationService] Scheduling auto-call to ${lead.name} in ${delayMs / 1000}s${leadType ? ` (type: ${leadType.name})` : ''}`)
 
-    setTimeout(async () => {
-        try {
-            // Lazy import to avoid circular dependencies
+    const scheduledAt = new Date(Date.now() + delayMs)
+
+    // Persist the scheduled action so it survives server restarts
+    try {
+        const action = await prisma.scheduledAction.create({
+            data: {
+                type: 'initiate-call',
+                payload: {
+                    leadId: lead.id,
+                    leadName: lead.name,
+                    assistantConfig: {
+                        agentName: typeConfig.agentName || config.agentName || 'Alex',
+                        businessName: typeConfig.businessName || config.businessName || undefined,
+                        businessWebsite: typeConfig.businessWebsite || undefined,
+                        industry: typeConfig.industry || undefined,
+                    }
+                },
+                scheduledAt,
+                userId
+            }
+        })
+
+        // Also set an in-memory timer for immediate execution
+        setTimeout(() => executeScheduledAction(action.id), delayMs)
+    } catch (err) {
+        console.error(`[AutomationService] Failed to schedule auto-call for ${lead.name}:`, err.message)
+    }
+}
+
+async function executeScheduledAction(actionId) {
+    try {
+        const action = await prisma.scheduledAction.findUnique({ where: { id: actionId } })
+        if (!action || action.executed) return
+
+        if (action.type === 'initiate-call') {
             const { callService } = await import('./callService.js')
-            await callService.initiateCall(userId, {
-                leadId: lead.id,
-                assistantConfig: {
-                    agentName: typeConfig.agentName || config.agentName || 'Alex',
-                    businessName: typeConfig.businessName || config.businessName || undefined,
-                    businessWebsite: typeConfig.businessWebsite || undefined,
-                    industry: typeConfig.industry || undefined,
-                }
+            const payload = action.payload
+            await callService.initiateCall(action.userId, {
+                leadId: payload.leadId,
+                assistantConfig: payload.assistantConfig
             })
-            console.log(`[AutomationService] Auto-call initiated for lead ${lead.name}`)
-        } catch (err) {
-            console.error(`[AutomationService] Auto-call failed for lead ${lead.name}:`, err.message)
+            console.log(`[AutomationService] Auto-call initiated for lead ${payload.leadName}`)
         }
-    }, delayMs)
+
+        await prisma.scheduledAction.update({
+            where: { id: actionId },
+            data: { executed: true, executedAt: new Date() }
+        })
+    } catch (err) {
+        console.error(`[AutomationService] Scheduled action ${actionId} failed:`, err.message)
+        await prisma.scheduledAction.update({
+            where: { id: actionId },
+            data: { executed: true, executedAt: new Date(), error: err.message }
+        }).catch(() => {})
+    }
+}
+
+// Recover pending scheduled actions on server startup
+async function recoverScheduledActions() {
+    try {
+        const pending = await prisma.scheduledAction.findMany({
+            where: { executed: false }
+        })
+
+        if (pending.length === 0) return
+        console.log(`[AutomationService] Recovering ${pending.length} pending scheduled action(s)`)
+
+        const now = Date.now()
+        for (const action of pending) {
+            const delay = Math.max(action.scheduledAt.getTime() - now, 1000) // at least 1s delay
+            setTimeout(() => executeScheduledAction(action.id), delay)
+        }
+    } catch (err) {
+        console.error('[AutomationService] Failed to recover scheduled actions:', err.message)
+    }
 }
 
 // ── Condition Evaluator ───────────────────────────────
@@ -135,7 +202,9 @@ function evaluateConditions(conditions, eventData) {
             case 'in': return Array.isArray(cond.value) && cond.value.includes(value)
             case 'contains': return typeof value === 'string' && value.includes(cond.value)
             case 'exists': return value !== undefined && value !== null
-            default: return true
+            default:
+                console.warn(`[AutomationService] Unknown operator "${cond.op}", failing safe`)
+                return false
         }
     })
 }
@@ -312,6 +381,10 @@ function init() {
             console.error('[AutomationService] Unhandled error:', err.message)
         )
     })
+
+    // Recover any pending scheduled actions from before restart
+    recoverScheduledActions()
+
     console.log('[AutomationService] Listening for events')
 }
 

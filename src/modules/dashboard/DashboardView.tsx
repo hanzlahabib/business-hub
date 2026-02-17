@@ -374,7 +374,7 @@ export default function DashboardView() {
                                             <tr
                                                 key={lead.status}
                                                 className="group hover:bg-bg-tertiary/50 transition-colors cursor-pointer"
-                                                onClick={() => navigate('/leads')}
+                                                onClick={() => navigate(`/leads?status=${lead.status}`)}
                                             >
                                                 <td className="px-6 py-4 text-text-primary font-medium flex items-center gap-3">
                                                     <div className={`w-8 h-8 rounded-full ${leadColors[idx] || 'bg-slate-500'} flex items-center justify-center text-xs text-white font-bold`}>
@@ -423,15 +423,18 @@ export default function DashboardView() {
                         </div>
 
                         <div className="space-y-4">
-                            {/* Suggestion 1 — dynamic based on data */}
+                            {/* Suggestion 1 — new leads today */}
                             {stats.leads.today > 0 && (
-                                <div className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer">
+                                <div
+                                    className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer"
+                                    onClick={() => navigate('/leads')}
+                                >
                                     <div className="flex justify-between items-start mb-1">
                                         <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wide">High Priority</span>
                                         <ChevronRight size={14} className="text-text-muted group-hover:text-text-primary" />
                                     </div>
                                     <p className="text-sm text-text-secondary mb-2">
-                                        {stats.leads.today} new leads today. Review and assign to agents before end of day.
+                                        {stats.leads.today} new lead{stats.leads.today > 1 ? 's' : ''} today. Review and assign to agents before end of day.
                                     </p>
                                     <button className="text-[10px] bg-accent-primary/20 hover:bg-accent-primary/40 text-accent-primary px-2 py-1 rounded border border-accent-primary/20 transition">
                                         Review Leads
@@ -439,7 +442,29 @@ export default function DashboardView() {
                                 </div>
                             )}
 
-                            {/* Suggestion 2 — conversion insight */}
+                            {/* Suggestion 2 — uncontacted leads */}
+                            {(() => {
+                                const newCount = stats.leads.byStatus.find(s => s.status === 'new')?._count || 0
+                                return newCount > 0 ? (
+                                    <div
+                                        className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer"
+                                        onClick={() => navigate('/leads')}
+                                    >
+                                        <div className="flex justify-between items-start mb-1">
+                                            <span className="text-xs font-semibold text-amber-400 uppercase tracking-wide">Follow Up</span>
+                                            <ChevronRight size={14} className="text-text-muted group-hover:text-text-primary" />
+                                        </div>
+                                        <p className="text-sm text-text-secondary mb-2">
+                                            {newCount} uncontacted lead{newCount > 1 ? 's' : ''} waiting for outreach. Reach out to increase conversion.
+                                        </p>
+                                        <button className="text-[10px] bg-amber-500/20 hover:bg-amber-500/40 text-amber-400 px-2 py-1 rounded border border-amber-500/20 transition">
+                                            Contact Now
+                                        </button>
+                                    </div>
+                                ) : null
+                            })()}
+
+                            {/* Suggestion 3 — conversion insight */}
                             <div className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer">
                                 <div className="flex justify-between items-start mb-1">
                                     <span className="text-xs font-semibold text-blue-400 uppercase tracking-wide">Insight</span>
@@ -447,27 +472,26 @@ export default function DashboardView() {
                                 </div>
                                 <p className="text-sm text-text-secondary mb-2">
                                     Conversion rate is at {stats.leads.conversionRate}%. {stats.leads.conversionRate < 20
-                                        ? 'Consider refining qualification criteria.'
+                                        ? 'Consider refining qualification criteria or increasing follow-up cadence.'
                                         : 'Strong performance. Maintain current outreach cadence.'}
                                 </p>
-                                <button className="text-[10px] bg-bg-tertiary hover:bg-bg-elevated text-text-secondary px-2 py-1 rounded border border-border transition">
-                                    Analyze
-                                </button>
                             </div>
 
-                            {/* Suggestion 3 — tasks */}
-                            <div className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer">
-                                <div className="flex justify-between items-start mb-1">
-                                    <span className="text-xs font-semibold text-text-muted uppercase tracking-wide">Routine</span>
-                                    <ChevronRight size={14} className="text-text-muted group-hover:text-text-primary" />
+                            {/* Suggestion 4 — pending tasks */}
+                            {stats.tasks.total - stats.tasks.completed > 0 && (
+                                <div className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer">
+                                    <div className="flex justify-between items-start mb-1">
+                                        <span className="text-xs font-semibold text-text-muted uppercase tracking-wide">Routine</span>
+                                        <ChevronRight size={14} className="text-text-muted group-hover:text-text-primary" />
+                                    </div>
+                                    <p className="text-sm text-text-secondary mb-2">
+                                        {stats.tasks.total - stats.tasks.completed} task{stats.tasks.total - stats.tasks.completed > 1 ? 's' : ''} pending completion.
+                                        {stats.agents.active > 0 ? ` ${stats.agents.active} agent${stats.agents.active > 1 ? 's' : ''} active.` : ''}
+                                    </p>
                                 </div>
-                                <p className="text-sm text-text-secondary mb-2">
-                                    {stats.tasks.total - stats.tasks.completed} tasks pending completion.
-                                    {stats.agents.active > 0 ? ` ${stats.agents.active} agents available.` : ''}
-                                </p>
-                            </div>
+                            )}
 
-                            {/* Suggestion 4 — notifications */}
+                            {/* Suggestion 5 — unread notifications */}
                             {unreadNotifications > 0 && (
                                 <div className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer">
                                     <div className="flex justify-between items-start mb-1">
