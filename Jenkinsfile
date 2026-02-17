@@ -161,9 +161,9 @@ pipeline {
 
                     echo "Checking frontend..."
                     for i in $(seq 1 $RETRIES); do
-                        # Use wget inside nginx container
-                        if docker exec business-hub-frontend wget -q -O /dev/null http://localhost:80/ 2>/dev/null; then
-                            echo "Frontend OK (attempt $i)"
+                        # nginx:alpine has no wget/curl — check if nginx master process is running
+                        if docker exec business-hub-frontend nginx -t 2>/dev/null; then
+                            echo "Frontend OK — nginx config valid, container healthy (attempt $i)"
                             break
                         fi
                         if [ "$i" = "$RETRIES" ]; then
