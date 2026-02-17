@@ -94,7 +94,10 @@ router.post('/gather', async (req, res) => {
     <Say voice="Google.en-US-Neural2-D">Great! That's wonderful to hear. We will send you a text message with more details about our lead generation service. You can also visit henderson e v charger dot com to see the website that generates these leads. One of our team members, Mike, will reach out to you shortly to discuss the details. Thank you for your interest, and we look forward to working with you!</Say>
 </Response>`
             await updateCallOutcome(callSid, leadId, 'booked', 'interested')
-            await sendFollowUpSms(leadId, 'interested')
+            await sendFollowUpEmail(leadId)
+            if (process.env.FOLLOW_UP_SMS_ENABLED === 'true') {
+                await sendFollowUpSms(leadId, 'interested')
+            }
             break
 
         case '2':
@@ -167,8 +170,10 @@ router.post('/status', async (req, res) => {
                 if (call && !call.outcome) {
                     if (CallStatus === 'no-answer') {
                         updateData.outcome = 'voicemail'
-                        // Send follow-up SMS for no-answer
-                        await sendFollowUpSms(call.leadId, 'no-answer')
+                        // Send follow-up SMS for no-answer (gated)
+                        if (process.env.FOLLOW_UP_SMS_ENABLED === 'true') {
+                            await sendFollowUpSms(call.leadId, 'no-answer')
+                        }
                     } else {
                         updateData.outcome = CallStatus
                     }
@@ -287,8 +292,10 @@ router.post('/amd', async (req, res) => {
                         where: { providerCallId: CallSid },
                         data: { outcome: 'voicemail', sentiment: 'neutral' }
                     })
-                    // Send follow-up SMS
-                    await sendFollowUpSms(call.leadId, 'no-answer')
+                    // Send follow-up SMS (gated)
+                    if (process.env.FOLLOW_UP_SMS_ENABLED === 'true') {
+                        await sendFollowUpSms(call.leadId, 'no-answer')
+                    }
                 }
             }
 
@@ -390,6 +397,39 @@ async function updateCallOutcome(callSid, leadId, outcome, sentiment) {
     }
 }
 
+/**
+ * Send follow-up email to interested leads (free — uses configured email provider)
+ */
+async function sendFollowUpEmail(leadId) {
+    try {
+        if (!leadId) return
+        const lead = await prisma.lead.findFirst({ where: { id: leadId } })
+        if (!lead?.email) return
+
+        const { emailSettingsRepository } = await import('../repositories/extraRepositories.js')
+        const settingsRecord = await emailSettingsRepository.findByUserId(lead.userId)
+        const settings = settingsRecord?.config
+        if (!settings?.provider) return
+
+        const name = lead.contactPerson || lead.name?.split(' ')[0] || 'there'
+        const { sendEmail } = await import('../services/emailService.js')
+
+        await sendEmail(settings, {
+            to: lead.email,
+            subject: `Thanks for your interest, ${name}!`,
+            body: `Hi ${name},\n\nThanks for speaking with us! We appreciate your interest.\n\nAs discussed, we'd love to help you out. Here's what happens next:\n\n- A team member will follow up with you shortly to discuss the details\n- Feel free to reply to this email with any questions\n\nLooking forward to working with you!\n\nBest regards,\n${settings.fromName || 'The Team'}`
+        })
+
+        console.log(`Follow-up email sent to ${lead.email}`)
+    } catch (err) {
+        console.error('Follow-up email error:', err.message)
+    }
+}
+
+/**
+ * Send follow-up SMS (premium feature — gated by FOLLOW_UP_SMS_ENABLED)
+ * Future: Replace with WAHA (WhatsApp) or direct SMPP for lower cost
+ */
 async function sendFollowUpSms(leadId, type) {
     try {
         if (!leadId) return
@@ -400,11 +440,14 @@ async function sendFollowUpSms(leadId, type) {
         const { telephony } = getAdaptersForUser(lead.userId)
         if (!telephony.sendSms) return
 
+        // Keep under 160 chars (1 SMS segment) — GSM-7 only, no emojis
+        // Future: consider WhatsApp Business API for cheaper messaging
+        const name = lead.contactPerson || 'there'
         let message = ''
         if (type === 'interested') {
-            message = `Hi ${lead.contactPerson || 'there'}! Thanks for your interest in receiving EV charger installation leads. Visit hendersonevcharger.com to see our site. Mike will reach out shortly to discuss the details. - Henderson EV Charger Pros`
+            message = `Hi ${name}, thanks for your interest! Visit hendersonevcharger.com for details. Mike will call you shortly. - Henderson EV Charger Pros`
         } else if (type === 'no-answer') {
-            message = `Hi ${lead.contactPerson || 'there'}, this is Mike from Henderson EV Charger Pros. We tried calling about exclusive EV charger installation leads in your area. Reply YES if interested or visit hendersonevcharger.com. - Henderson EV Charger Pros`
+            message = `Hi ${name}, we tried calling about EV charger leads in your area. Reply YES or visit hendersonevcharger.com - Henderson EV Charger Pros`
         }
 
         if (message) {

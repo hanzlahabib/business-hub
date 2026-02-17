@@ -298,6 +298,77 @@ Business Hub is an all-in-one enterprise operating system designed to consolidat
 
 ---
 
+## Cross-Module Flow: Lead → Intelligence → Deal Desk Pipeline
+
+The CRM, Neural Brain, and Deal Desk modules form a connected sales pipeline. A lead does **not** appear in Deal Desk until it has been analyzed by the Intelligence Service.
+
+```
+                         ┌─────────────────────────────┐
+                         │  Lead Created in CRM (/leads) │
+                         └──────────────┬──────────────┘
+                                        │
+                        ┌───────────────┼───────────────┐
+                        ▼               ▼               ▼
+                  ┌──────────┐  ┌──────────────┐  ┌──────────────┐
+                  │  Manual   │  │ Status Change │  │Call Completed │
+                  │  Analyze  │  │  (EventBus)   │  │  (EventBus)  │
+                  │  Button   │  │lead:status-   │  │call:completed│
+                  └─────┬─────┘  │  changed      │  └──────┬───────┘
+                        │        └──────┬────────┘         │
+                        ▼               ▼                  ▼
+              ┌──────────────────────────────────────────────────┐
+              │      intelligenceService.analyzeLead()            │
+              │  POST /api/intelligence/analyze/:leadId           │
+              └──────────────────────┬───────────────────────────┘
+                        ┌────────────┴────────────┐
+                        ▼                         ▼
+              ┌─────────────────┐      ┌──────────────────┐
+              │  LLM Available   │      │  No LLM Key      │
+              │  AI extracts:    │      │  Heuristic:       │
+              │  dealHeat,       │      │  callCount × 15   │
+              │  buyingIntent,   │      │  + sentiment      │
+              │  budget, etc.    │      │  bonus             │
+              └────────┬─────────┘      └────────┬──────────┘
+                       └────────────┬────────────┘
+                                    ▼
+              ┌──────────────────────────────────────────────────┐
+              │         Upsert LeadIntelligence record            │
+              │         (dealHeat, buyingIntent, risks, etc.)     │
+              └──────────────────────┬───────────────────────────┘
+                                     ▼
+              ┌──────────────────────────────────────────────────┐
+              │   Lead appears in Deal Desk Pipeline (/dealdesk)  │
+              │   GET /intelligence/leaderboard                   │
+              │   → Kanban: Critical | High | Medium | Low        │
+              └──────────────────────┬───────────────────────────┘
+                                     ▼
+              ┌──────────────────────────────────────────────────┐
+              │   "Proposal →" button                             │
+              │   POST /api/proposals/generate/:leadId            │
+              │   → AI-generated Proposal (draft)                 │
+              │   → Lifecycle: Draft → Sent → Accepted/Rejected   │
+              └──────────────────────────────────────────────────┘
+```
+
+### Analysis Triggers
+
+| Trigger | Source | Event | Automatic? |
+|---------|--------|-------|------------|
+| Manual analyze | LeadDetailPanel → "Analyze Lead" button | `POST /intelligence/analyze/:leadId` | No — user clicks |
+| Status change | Lead dragged to new column or status updated via API | `lead:status-changed` EventBus | Yes |
+| Call completed | Vapi/Twilio webhook fires after call ends | `call:completed` EventBus | Yes |
+
+### Key Data Flow
+
+1. **Leads Board** (`/leads`) — CRUD for contacts, no intelligence yet
+2. **Intelligence Service** — analyzes lead context (calls, messages, notes) → creates `LeadIntelligence` with `dealHeat` (0-100) and `buyingIntent` (low/medium/high/critical)
+3. **Deal Desk Pipeline** (`/dealdesk`) — queries `GET /intelligence/leaderboard` which returns all leads with intelligence, sorted by `dealHeat`, grouped into kanban columns by `buyingIntent`
+4. **Proposals** — generated from lead intelligence, tracked through Draft → Sent → Accepted/Rejected lifecycle
+
+> **Note:** Without an OpenAI API key, analysis uses a heuristic fallback (based on call count and sentiment). Leads still appear in Deal Desk but with less detailed intelligence.
+
+---
+
 ## 12. Deal Desk (Proposals)
 **Description:** A module for managing the bottom-of-funnel sales process with AI-assisted proposal generation.
 
@@ -464,3 +535,82 @@ Business Hub is an all-in-one enterprise operating system designed to consolidat
 - **Containerization:** Docker Compose (3 services: db, backend, frontend)
 - **SSL:** LiteSpeed/CyberPanel managed certificates
 - **Database:** PostgreSQL 15 in Docker volume
+
+---
+
+## Messaging Roadmap
+
+### Current State
+Follow-up messaging after AI calls uses **email** (free, via user's configured SMTP provider).
+SMS via Twilio is available but **disabled by default** (`FOLLOW_UP_SMS_ENABLED=false`) due to high per-message cost (~$0.90/segment).
+
+### Channel Priority
+
+| Channel | Status | Cost | Toggle |
+|---------|--------|------|--------|
+| **Email** | Active | Free | Always on |
+| **WhatsApp (WAHA)** | Planned | Free (self-hosted) | `WHATSAPP_ENABLED` |
+| **SMPP (Direct SMS)** | Planned | ~$0.005/msg | `SMPP_ENABLED` |
+| **Twilio SMS** | Disabled | ~$0.90/msg | `FOLLOW_UP_SMS_ENABLED` |
+
+### Phase 1: WAHA — WhatsApp Integration (Self-Hosted, Free)
+
+**What:** WAHA (WhatsApp HTTP API) is an open-source REST API for WhatsApp. Self-hosted via Docker, zero per-message cost.
+
+**Deployment:**
+```bash
+docker run -d --name waha -p 3003:3000 devlikeapro/waha
+```
+
+**Integration plan:**
+1. Deploy WAHA container on Contabo VPS alongside existing services
+2. Create `server/adapters/messaging/wahaAdapter.js` implementing `sendMessage(phone, text)`
+3. Add WhatsApp as a messaging channel in AutomationService actions
+4. QR code scan via WAHA Dashboard to link WhatsApp Business number
+5. Gate behind `WHATSAPP_ENABLED=true` env var
+
+**API example:**
+```
+POST http://localhost:3003/api/sendText
+{ "chatId": "923001234567@c.us", "text": "Thanks for your interest!" }
+```
+
+**Resources:**
+- GitHub: https://github.com/devlikeapro/waha
+- Docs: https://waha.devlike.pro/
+- Engines: WEBJS (browser), NOWEB (websocket/Node.js), GOWS (websocket/Go)
+
+### Phase 2: SMPP — Direct Carrier SMS (Low-Cost)
+
+**What:** SMPP (Short Message Peer-to-Peer) is the raw telecom protocol for SMS. Bypasses Twilio middleman for 10-50x cheaper messages.
+
+**How it works:**
+```
+Current:  App → Twilio HTTP → Twilio SMPP → Carrier → Phone ($0.90/msg)
+SMPP:     App → Jasmin SMPP → Carrier → Phone ($0.005-0.02/msg)
+```
+
+**Integration plan:**
+1. Deploy Jasmin SMS Gateway via Docker on Contabo VPS
+2. Get SMPP account from local aggregator (Jazz Business, Telenor Business, or international: BulkSMS, ClickSend)
+3. Create `server/adapters/messaging/smppAdapter.js`
+4. Add as premium messaging channel for clients who need SMS
+5. Gate behind `SMPP_ENABLED=true` env var
+
+**Open-source SMPP gateways:**
+- Jasmin: https://github.com/jookies/jasmin (Python, Docker-ready, Apache 2.0)
+- Kannel: https://www.kannel.org/ (C-based, battle-tested)
+
+**Cost comparison:**
+
+| Provider | Cost/SMS (US) | Cost/SMS (PK) |
+|----------|--------------|---------------|
+| Twilio | $0.0079 + carrier | $0.05-0.10 |
+| Direct SMPP | $0.001-0.003 | $0.005-0.02 |
+| WAHA (WhatsApp) | Free | Free |
+| Email | Free | Free |
+
+### SMS Optimization Notes (Applied)
+- All SMS messages kept under 160 chars (1 segment) to avoid double-charging
+- GSM-7 encoding only (no emojis, no Unicode) to stay in single segment
+- SMS disabled by default; offered as premium add-on via env toggle

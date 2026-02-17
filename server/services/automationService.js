@@ -80,6 +80,35 @@ async function executeUpdateLeadStatus(userId, event, config) {
     })
 }
 
+async function executeInitiateCall(userId, event, config) {
+    const lead = event.data?.lead
+    if (!lead?.id || !lead?.phone) {
+        console.log('[AutomationService] Skipping initiate-call: lead missing id or phone')
+        return
+    }
+
+    const delayMs = config.delayMs ?? 30000 // default 30s delay
+
+    console.log(`[AutomationService] Scheduling auto-call to ${lead.name} in ${delayMs / 1000}s`)
+
+    setTimeout(async () => {
+        try {
+            // Lazy import to avoid circular dependencies
+            const { callService } = await import('./callService.js')
+            await callService.initiateCall(userId, {
+                leadId: lead.id,
+                assistantConfig: {
+                    agentName: config.agentName || 'Alex',
+                    businessName: config.businessName || undefined,
+                }
+            })
+            console.log(`[AutomationService] Auto-call initiated for lead ${lead.name}`)
+        } catch (err) {
+            console.error(`[AutomationService] Auto-call failed for lead ${lead.name}:`, err.message)
+        }
+    }, delayMs)
+}
+
 // ── Condition Evaluator ───────────────────────────────
 
 function evaluateConditions(conditions, eventData) {
@@ -104,6 +133,7 @@ const actionExecutors = {
     'create-task': executeCreateTask,
     'send-notification': executeSendNotification,
     'update-lead-status': executeUpdateLeadStatus,
+    'initiate-call': executeInitiateCall,
 }
 
 async function evaluateRules(event) {
@@ -201,6 +231,30 @@ const DEFAULT_RULES = [
                     title: '🏆 Lead Won: {leadName}',
                     message: '{leadName} has been marked as won!',
                     actionUrl: '/leads'
+                }
+            }
+        ]
+    },
+    {
+        name: 'New Lead → Auto-Call (30s delay)',
+        description: 'Automatically initiate an AI call to new leads within 30 seconds',
+        trigger: 'lead:created',
+        conditions: [],
+        actions: [
+            {
+                type: 'send-notification',
+                config: {
+                    type: 'lead',
+                    title: 'New Lead: {leadName}',
+                    message: 'New lead from {leadName}. Auto-call scheduled in 30s.',
+                    actionUrl: '/leads'
+                }
+            },
+            {
+                type: 'initiate-call',
+                config: {
+                    delayMs: 30000,
+                    agentName: 'Alex'
                 }
             }
         ]

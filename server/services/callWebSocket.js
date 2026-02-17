@@ -225,6 +225,66 @@ export function emitAgentLog(agentId, message, level = 'info') {
 }
 
 /**
+ * Emit lead created event to a specific user
+ */
+export function emitLeadCreated(userId, lead) {
+    if (!wss) return
+
+    const payload = JSON.stringify({
+        type: 'lead:created',
+        lead,
+        timestamp: Date.now()
+    })
+
+    for (const [ws, client] of clients) {
+        if (ws.readyState !== ws.OPEN) continue
+        if (client.userId === userId) {
+            ws.send(payload)
+        }
+    }
+}
+
+/**
+ * Emit lead updated event to a specific user
+ */
+export function emitLeadUpdated(userId, lead) {
+    if (!wss) return
+
+    const payload = JSON.stringify({
+        type: 'lead:updated',
+        lead,
+        timestamp: Date.now()
+    })
+
+    for (const [ws, client] of clients) {
+        if (ws.readyState !== ws.OPEN) continue
+        if (client.userId === userId) {
+            ws.send(payload)
+        }
+    }
+}
+
+/**
+ * Emit lead status changed event to a specific user
+ */
+export function emitLeadStatusChanged(userId, data) {
+    if (!wss) return
+
+    const payload = JSON.stringify({
+        type: 'lead:status-changed',
+        ...data,
+        timestamp: Date.now()
+    })
+
+    for (const [ws, client] of clients) {
+        if (ws.readyState !== ws.OPEN) continue
+        if (client.userId === userId) {
+            ws.send(payload)
+        }
+    }
+}
+
+/**
  * Emit notification to a specific user via WebSocket
  */
 export function emitNotification(userId, notification) {
@@ -259,5 +319,8 @@ export default {
     emitCallUpdate,
     emitAgentLog,
     emitNotification,
+    emitLeadCreated,
+    emitLeadUpdated,
+    emitLeadStatusChanged,
     getClientCount
 }

@@ -122,10 +122,14 @@ function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop, selected
 
       {/* Cards */}
       <div className="flex-1 p-3 space-y-3 overflow-y-auto max-h-[calc(100vh-350px)]">
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {leads.map(lead => (
-            <div
+            <motion.div
               key={lead.id}
+              initial={{ opacity: 0, x: -20, height: 0 }}
+              animate={{ opacity: 1, x: 0, height: 'auto' }}
+              exit={{ opacity: 0, x: 20, height: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
               draggable
               onDragStart={(e) => {
                 e.dataTransfer.setData('leadId', lead.id)
@@ -137,7 +141,7 @@ function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop, selected
                 selected={selectedLeads.includes(lead.id)}
                 onSelect={(l, checked) => onSelectLead(l.id, checked)}
               />
-            </div>
+            </motion.div>
           ))}
         </AnimatePresence>
 

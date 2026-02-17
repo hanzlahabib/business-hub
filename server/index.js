@@ -26,12 +26,13 @@ import agentRoutes from './routes/agents.js'
 import twilioWebhookRoutes from './routes/twilioWebhooks.js'
 import vapiWebhookRoutes from './routes/vapiWebhooks.js'
 import campaignRoutes from './routes/campaignRoutes.js'
+import webhookRoutes from './routes/webhooks.js'
 import notificationRoutes from './routes/notifications.js'
 import dashboardRoutes from './routes/dashboard.js'
 import authMiddleware from './middleware/auth.js'
 import { validateTwilioRequest } from './middleware/twilioValidation.js'
 import prisma from './config/prisma.js'
-import { initWebSocket, getClientCount } from './services/callWebSocket.js'
+import { initWebSocket, getClientCount, emitLeadCreated, emitLeadUpdated, emitLeadStatusChanged, emitNotification } from './services/callWebSocket.js'
 import { initMediaStreamWebSocket } from './services/twilioMediaStream.js'
 import agentCallingService from './services/agentCallingService.js'
 import callService from './services/callService.js'
@@ -118,6 +119,7 @@ app.use('/api/scraper', scraperRoutes)
 app.use('/api/outreach', outreachRoutes)
 app.use('/api/calls/twilio', validateTwilioRequest(), twilioWebhookRoutes)  // Twilio webhooks (validation optional via env)
 app.use('/api/calls/vapi', vapiWebhookRoutes)  // Vapi webhooks (no auth — Vapi can't send our headers)
+app.use('/api/webhooks', webhookRoutes)  // External webhooks (no auth — server-to-server)
 app.use('/api/calls', authMiddleware, callRoutes)
 app.use('/api/agents', authMiddleware, agentRoutes)
 app.use('/api/campaigns', authMiddleware, campaignRoutes)
@@ -352,6 +354,30 @@ loadAllUserKeys().catch(err => logger.error('API key loading failed', { error: e
 // Initialize automation engine — listens on event bus
 automationService.init()
 intelligenceService.init()
+
+// Wire EventBus → WebSocket for real-time lead updates
+import eventBus from './services/eventBus.js'
+
+eventBus.on('lead:created', (event) => {
+    const { userId, data } = event
+    if (userId && data?.lead) {
+        emitLeadCreated(userId, data.lead)
+    }
+})
+
+eventBus.on('lead:updated', (event) => {
+    const { userId, data } = event
+    if (userId && data?.lead) {
+        emitLeadUpdated(userId, data.lead)
+    }
+})
+
+eventBus.on('lead:status-changed', (event) => {
+    const { userId, data } = event
+    if (userId) {
+        emitLeadStatusChanged(userId, data)
+    }
+})
 
 // Reset zombie agents from previous server run
 agentCallingService.init().catch(err => logger.error('Agent init failed', { error: err.message }))

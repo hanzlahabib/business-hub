@@ -70,7 +70,7 @@ export const campaignService = {
                     totalLeads: leads.length,
                     delayBetweenCalls: 15000,
                     enableAMD: true,
-                    enableFollowUpSms: true,
+                    enableFollowUpSms: process.env.FOLLOW_UP_SMS_ENABLED === 'true',
                 },
                 stats: {
                     totalCalls: 0,

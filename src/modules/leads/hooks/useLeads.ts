@@ -1,6 +1,8 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { useWebSocket } from '../../../hooks/useWebSocket'
+import { toast } from 'sonner'
 
 const LEAD_STATUSES = ['new', 'contacted', 'replied', 'meeting', 'won', 'lost']
 
@@ -192,9 +194,9 @@ export function useLeads() {
   const getStats = useCallback(() => {
     const stats = {
       total: leads.length,
-      byStatus: {},
-      byIndustry: {},
-      bySource: {}
+      byStatus: {} as Record<string, number>,
+      byIndustry: {} as Record<string, number>,
+      bySource: {} as Record<string, number>
     }
 
     LEAD_STATUSES.forEach(status => {
@@ -212,6 +214,39 @@ export function useLeads() {
 
     return stats
   }, [leads])
+
+  // WebSocket: real-time lead updates
+  const leadsRef = useRef(leads)
+  leadsRef.current = leads
+
+  const handleWsMessage = useCallback((data: any) => {
+    if (data.type === 'lead:created' && data.lead) {
+      // Add new lead to state if not already present
+      setLeads(prev => {
+        if (prev.some(l => l.id === data.lead.id)) return prev
+        return [data.lead, ...prev]
+      })
+      toast.success(`New lead: ${data.lead.name || 'Unknown'}`, {
+        description: data.lead.source ? `Source: ${data.lead.source}` : undefined,
+      })
+    }
+
+    if (data.type === 'lead:updated' && data.lead) {
+      setLeads(prev => prev.map(l => l.id === data.lead.id ? { ...l, ...data.lead } : l))
+    }
+
+    if (data.type === 'lead:status-changed' && data.leadId) {
+      setLeads(prev => prev.map(l =>
+        l.id === data.leadId ? { ...l, status: data.status || l.status } : l
+      ))
+    }
+  }, [])
+
+  useWebSocket('/ws/calls', {
+    onMessage: handleWsMessage,
+    autoConnect: true,
+    maxRetries: 5,
+  })
 
   useEffect(() => {
     fetchLeads()

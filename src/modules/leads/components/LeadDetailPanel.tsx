@@ -1,11 +1,11 @@
 // @ts-nocheck
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   X, Mail, Phone, PhoneCall, Globe, Building2, Calendar,
   Edit, Trash2, Send, ExternalLink, MessageSquare, LayoutGrid,
   Eye, Clock, User, Mic, ChevronDown, ChevronRight, Play, Pause,
   Volume2, FileText, Brain, MoreHorizontal, TrendingUp, Flame,
-  Sparkles
+  Sparkles, PhoneIncoming, Check
 } from 'lucide-react'
 import { format, formatDistanceToNow } from 'date-fns'
 import { MessageThread } from '../../../shared/components/MessageThread'
@@ -54,6 +54,8 @@ export function LeadDetailPanel({
   const [callsLoading, setCallsLoading] = useState(false)
   const [callingLead, setCallingLead] = useState(false)
   const [expandedCallId, setExpandedCallId] = useState<string | null>(null)
+  const [liveCallStatus, setLiveCallStatus] = useState<any>(null)
+  const activityRefreshRef = useRef<(() => void) | null>(null)
 
   const fetchLeadCalls = useCallback(async (leadId) => {
     if (!user) return
@@ -78,7 +80,14 @@ export function LeadDetailPanel({
         body: JSON.stringify({ leadId: lead.id })
       })
       if (res.ok) {
+        const data = await res.json()
         toast.success(`📞 Call initiated to ${lead.name}`)
+        setLiveCallStatus({
+          id: data.call?.id || 'pending',
+          status: 'queued',
+          leadName: lead.name,
+          startedAt: new Date().toISOString(),
+        })
         fetchLeadCalls(lead.id)
       } else {
         toast.error('Failed to initiate call')
@@ -86,6 +95,33 @@ export function LeadDetailPanel({
     } catch { toast.error('Failed to initiate call') }
     finally { setCallingLead(false) }
   }, [user, lead, fetchLeadCalls])
+
+  // Listen for real-time call status changes via global event
+  useEffect(() => {
+    if (!lead?.id) return
+    const handler = (e: CustomEvent) => {
+      const detail = e.detail
+      if (detail?.leadId === lead.id) {
+        setLiveCallStatus(detail)
+        // Auto-refresh activity + calls when call finishes
+        if (['completed', 'failed'].includes(detail.status)) {
+          fetchLeadCalls(lead.id)
+          activityRefreshRef.current?.()
+          // Auto-clear the live status after 10s
+          setTimeout(() => {
+            setLiveCallStatus(prev => prev?.id === detail.id ? null : prev)
+          }, 10_000)
+        }
+      }
+    }
+    window.addEventListener('call:status-changed', handler as EventListener)
+    return () => window.removeEventListener('call:status-changed', handler as EventListener)
+  }, [lead?.id, fetchLeadCalls])
+
+  // Clear live status when switching leads
+  useEffect(() => {
+    setLiveCallStatus(null)
+  }, [lead?.id])
 
   useEffect(() => {
     if (lead?.id && isOpen) {
@@ -172,12 +208,18 @@ export function LeadDetailPanel({
             </button>
           </div>
         </div>
+
+        {/* Live Call Status Card */}
+        {liveCallStatus && (
+          <LiveCallStatusCard callStatus={liveCallStatus} />
+        )}
       </div>
 
       {/* Tabs */}
       <div className="flex border-b border-border bg-bg-secondary">
         {[
           { key: 'intelligence', label: 'Intelligence' },
+          { key: 'calls', label: 'Calls' },
           { key: 'activity', label: 'Activity' },
           { key: 'notes', label: 'Notes' }
         ].map(tab => (
@@ -200,6 +242,33 @@ export function LeadDetailPanel({
           <IntelligenceTab lead={lead} heat={heat} circumference={circumference} dashOffset={dashOffset} />
         )}
 
+        {activeTab === 'calls' && (
+          <div className="space-y-4">
+            {/* Call Now button */}
+            {lead.phone && (
+              <button
+                onClick={handleCallLead}
+                disabled={callingLead}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-all disabled:opacity-50"
+              >
+                <PhoneCall className={`w-4 h-4 ${callingLead ? 'animate-pulse' : ''}`} />
+                {callingLead ? 'Calling...' : 'Call Now'}
+              </button>
+            )}
+
+            {/* Call History */}
+            <CallsList
+              calls={leadCalls}
+              loading={callsLoading}
+              expandedCallId={expandedCallId}
+              onToggleExpand={setExpandedCallId}
+              lead={lead}
+              onCallLead={handleCallLead}
+              callingLead={callingLead}
+            />
+          </div>
+        )}
+
         {activeTab === 'activity' && (
           <div className="space-y-4">
             <LeadActivityTimeline leadId={lead.id} />
@@ -215,22 +284,6 @@ export function LeadDetailPanel({
                 />
               </div>
             )}
-
-            {/* Calls section */}
-            {leadCalls.length > 0 && (
-              <div className="mt-4">
-                <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Calls</h4>
-                <CallsList
-                  calls={leadCalls}
-                  loading={callsLoading}
-                  expandedCallId={expandedCallId}
-                  onToggleExpand={setExpandedCallId}
-                  lead={lead}
-                  onCallLead={handleCallLead}
-                  callingLead={callingLead}
-                />
-              </div>
-            )}
           </div>
         )}
 
@@ -239,6 +292,81 @@ export function LeadDetailPanel({
         )}
       </div>
     </aside>
+  )
+}
+
+/* =====================================================
+   Live Call Status Card — shows in panel during active call
+   ===================================================== */
+function LiveCallStatusCard({ callStatus }: { callStatus: any }) {
+  const [elapsed, setElapsed] = useState(0)
+  const isActive = ['queued', 'ringing', 'in-progress'].includes(callStatus.status)
+
+  useEffect(() => {
+    if (!isActive) return
+    const start = new Date(callStatus.startedAt).getTime()
+    const tick = () => setElapsed(Math.floor((Date.now() - start) / 1000))
+    tick()
+    const interval = setInterval(tick, 1000)
+    return () => clearInterval(interval)
+  }, [callStatus.startedAt, isActive])
+
+  const m = Math.floor(elapsed / 60)
+  const s = elapsed % 60
+
+  const statusMap: Record<string, { bg: string; border: string; text: string; dot: string; label: string }> = {
+    queued: { bg: 'bg-blue-500/10', border: 'border-blue-500/20', text: 'text-blue-400', dot: 'bg-blue-400', label: 'Call Queued' },
+    ringing: { bg: 'bg-amber-500/10', border: 'border-amber-500/20', text: 'text-amber-400', dot: 'bg-amber-400', label: 'Ringing...' },
+    'in-progress': { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400', dot: 'bg-emerald-400', label: 'Call In Progress' },
+    completed: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400', dot: 'bg-emerald-500', label: 'Call Completed' },
+    failed: { bg: 'bg-red-500/10', border: 'border-red-500/20', text: 'text-red-400', dot: 'bg-red-500', label: 'Call Failed' },
+  }
+  const config = statusMap[callStatus.status] || statusMap.queued
+
+  const outcomeLabels: Record<string, string> = {
+    booked: '✅ Meeting Booked',
+    'follow-up': '📅 Follow-up Scheduled',
+    'not-interested': '❌ Not Interested',
+    'no-answer': '📵 No Answer',
+    voicemail: '📩 Left Voicemail',
+  }
+
+  return (
+    <div className={`mx-6 mt-2 px-4 py-3 rounded-xl ${config.bg} border ${config.border} transition-all`}>
+      <div className="flex items-center gap-3">
+        {/* Pulsing dot */}
+        <span className="relative flex h-2.5 w-2.5 shrink-0">
+          {isActive && (
+            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${config.dot} opacity-75`} />
+          )}
+          <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${config.dot}`} />
+        </span>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className={`text-xs font-semibold ${config.text}`}>
+              {config.label}
+            </span>
+            {isActive && (
+              <span className={`text-xs font-mono ${config.text} opacity-75`}>
+                {m}:{String(s).padStart(2, '0')}
+              </span>
+            )}
+          </div>
+          {callStatus.outcome && (
+            <span className="text-xs text-text-secondary mt-0.5 block">
+              {outcomeLabels[callStatus.outcome] || callStatus.outcome}
+            </span>
+          )}
+        </div>
+
+        {isActive && (
+          <Phone className={`w-4 h-4 ${config.text} ${callStatus.status === 'ringing' ? 'animate-bounce' : 'animate-pulse'}`} />
+        )}
+        {callStatus.status === 'completed' && <Check className={`w-4 h-4 ${config.text}`} />}
+        {callStatus.status === 'failed' && <X className={`w-4 h-4 ${config.text}`} />}
+      </div>
+    </div>
   )
 }
 
@@ -297,7 +425,7 @@ function IntelligenceTab({ lead, heat, circumference, dashOffset }) {
         </p>
       </div>
 
-      {/* Key Fields Grid */}
+      {/* Qualifying Data Grid */}
       <div className="grid grid-cols-2 gap-4">
         <div className="p-3 rounded-lg bg-bg-tertiary border border-border">
           <div className="text-xs text-text-muted mb-1">Budget Range</div>
@@ -306,6 +434,14 @@ function IntelligenceTab({ lead, heat, circumference, dashOffset }) {
         <div className="p-3 rounded-lg bg-bg-tertiary border border-border">
           <div className="text-xs text-text-muted mb-1">Timeline</div>
           <div className="text-sm font-semibold text-text-primary">{lead.timeline || 'Not set'}</div>
+        </div>
+        <div className="p-3 rounded-lg bg-bg-tertiary border border-border">
+          <div className="text-xs text-text-muted mb-1">Service Needed</div>
+          <div className="text-sm font-semibold text-text-primary">{lead.serviceNeeded || 'Not set'}</div>
+        </div>
+        <div className="p-3 rounded-lg bg-bg-tertiary border border-border">
+          <div className="text-xs text-text-muted mb-1">Location</div>
+          <div className="text-sm font-semibold text-text-primary">{lead.location || 'Not set'}</div>
         </div>
       </div>
 

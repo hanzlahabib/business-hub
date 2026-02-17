@@ -208,7 +208,7 @@ async function handleEndOfCallReport(providerCallId, callData, message, metadata
         data: updateData
     })
 
-    // Update Lead status
+    // Update Lead status + qualifying data from transcript
     const leadId = metadata.leadId
     if (leadId) {
         const leadStatusMap = {
@@ -221,13 +221,47 @@ async function handleEndOfCallReport(providerCallId, callData, message, metadata
             'no-answer': 'contacted',
         }
 
+        // Extract qualifying data from transcript
+        const qualifying = extractQualifyingData(transcript, summary)
+        const leadUpdateData = {
+            status: leadStatusMap[analysis.outcome] || 'contacted',
+            lastContactedAt: new Date()
+        }
+        if (qualifying.budget) leadUpdateData.budget = qualifying.budget
+        if (qualifying.timeline) leadUpdateData.timeline = qualifying.timeline
+        if (qualifying.serviceNeeded) leadUpdateData.notes = prisma.$executeRaw ? undefined : undefined // handled below
+        if (qualifying.location) leadUpdateData.location = qualifying.location
+
         await prisma.lead.update({
             where: { id: leadId },
-            data: {
-                status: leadStatusMap[analysis.outcome] || 'contacted',
-                lastContactedAt: new Date()
-            }
+            data: leadUpdateData
         }).catch(() => { })
+
+        // Append qualifying notes to existing notes
+        if (qualifying.serviceNeeded || qualifying.budget || qualifying.timeline || qualifying.location) {
+            const lead = await prisma.lead.findFirst({ where: { id: leadId }, select: { notes: true, userId: true } })
+            if (lead) {
+                const qualNotes = [
+                    qualifying.serviceNeeded ? `Service needed: ${qualifying.serviceNeeded}` : null,
+                    qualifying.budget ? `Budget: ${qualifying.budget}` : null,
+                    qualifying.timeline ? `Timeline: ${qualifying.timeline}` : null,
+                    qualifying.location ? `Location: ${qualifying.location}` : null,
+                ].filter(Boolean).join('\n')
+                const updatedNotes = lead.notes ? `${lead.notes}\n\n--- AI Call Qualifying Data ---\n${qualNotes}` : `--- AI Call Qualifying Data ---\n${qualNotes}`
+                await prisma.lead.update({
+                    where: { id: leadId },
+                    data: { notes: updatedNotes }
+                }).catch(() => { })
+
+                // Emit lead:updated event
+                eventBus.publish('lead:updated', {
+                    userId: lead.userId,
+                    entityId: leadId,
+                    entityType: 'lead',
+                    data: { leadId, qualifying }
+                })
+            }
+        }
 
         // Handle opt-outs
         if (analysis.optedOut) {
@@ -237,9 +271,14 @@ async function handleEndOfCallReport(providerCallId, callData, message, metadata
             }
         }
 
-        // Send follow-up SMS for interested leads
+        // Send follow-up after call
         if (analysis.outcome === 'interested' || analysis.outcome === 'booked') {
-            await sendFollowUpSms(leadId)
+            // Email follow-up (free, always enabled)
+            await sendFollowUpEmail(leadId)
+            // SMS follow-up (paid, disabled by default — enable via FOLLOW_UP_SMS_ENABLED=true)
+            if (process.env.FOLLOW_UP_SMS_ENABLED === 'true') {
+                await sendFollowUpSms(leadId)
+            }
         }
     }
 
@@ -298,6 +337,59 @@ async function handleTranscript(providerCallId, message) {
             transcript: { role, text }
         })
     }
+}
+
+/**
+ * Extract qualifying data from transcript/summary
+ * Looks for budget, timeline, service needed, location mentions
+ */
+function extractQualifyingData(transcript, summary) {
+    const text = (transcript + ' ' + summary).toLowerCase()
+    const result = {}
+
+    // Budget extraction
+    const budgetMatch = text.match(/(?:budget|spend|afford|cost|price|pay)\s*(?:is|of|around|about|roughly)?\s*\$?([\d,]+(?:\.\d{2})?)\s*(?:k|thousand|hundred)?/i)
+        || text.match(/\$([\d,]+(?:\.\d{2})?)\s*(?:k|thousand)?/i)
+        || text.match(/([\d,]+)\s*(?:dollars|usd|per month|monthly|per year|annually)/i)
+    if (budgetMatch) {
+        let amount = budgetMatch[1].replace(/,/g, '')
+        if (text.includes(amount + 'k') || text.includes(amount + ' thousand')) {
+            amount = String(Number(amount) * 1000)
+        }
+        result.budget = `$${Number(amount).toLocaleString()}`
+    }
+
+    // Timeline extraction
+    const timelinePatterns = [
+        /(?:timeline|timeframe|start|begin|need it|looking to)\s*(?:is|in|by|within|around)?\s*((?:next\s+)?(?:\d+\s+)?(?:week|month|day|year)s?|asap|immediately|this\s+(?:week|month)|q[1-4]|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*)/i,
+        /(?:within|in about|around)\s+(\d+\s+(?:week|month|day)s?)/i,
+    ]
+    for (const pattern of timelinePatterns) {
+        const match = text.match(pattern)
+        if (match) { result.timeline = match[1].trim(); break }
+    }
+
+    // Service needed extraction
+    const servicePatterns = [
+        /(?:looking for|need|want|interested in|require)\s+(?:a\s+|an\s+|some\s+)?([\w\s]{3,40}?)(?:\.|,|\?|!|$)/i,
+        /(?:service|help with|work on)\s+(?:for\s+|with\s+)?([\w\s]{3,40}?)(?:\.|,|\?|!|$)/i,
+    ]
+    for (const pattern of servicePatterns) {
+        const match = text.match(pattern)
+        if (match) {
+            const service = match[1].trim()
+            if (service.length > 3 && service.length < 60) { result.serviceNeeded = service; break }
+        }
+    }
+
+    // Location extraction
+    const locationMatch = text.match(/(?:located|based|from|in|area|city|region)\s+(?:in\s+|at\s+)?([\w\s]{2,30}?)(?:\.|,|\?|!|$)/i)
+    if (locationMatch) {
+        const loc = locationMatch[1].trim()
+        if (loc.length > 1 && loc.length < 40) result.location = loc
+    }
+
+    return result
 }
 
 /**
@@ -370,18 +462,55 @@ function analyzeConversation(transcript, summary, endedReason) {
 }
 
 /**
- * Send follow-up SMS to interested leads via Twilio
+ * Send follow-up email to interested leads (free — uses configured email provider)
+ */
+async function sendFollowUpEmail(leadId) {
+    try {
+        const lead = await prisma.lead.findFirst({ where: { id: leadId } })
+        if (!lead?.email) {
+            logger.info('Follow-up email skipped — no email on lead', { leadId })
+            return
+        }
+
+        // Get user's email settings
+        const { emailSettingsRepository } = await import('../repositories/extraRepositories.js')
+        const settingsRecord = await emailSettingsRepository.findByUserId(lead.userId)
+        const settings = settingsRecord?.config
+        if (!settings?.provider) {
+            logger.warn('Follow-up email skipped — email not configured', { leadId, userId: lead.userId })
+            return
+        }
+
+        const name = lead.contactPerson || lead.name?.split(' ')[0] || 'there'
+        const { sendEmail } = await import('../services/emailService.js')
+
+        await sendEmail(settings, {
+            to: lead.email,
+            subject: `Thanks for your interest, ${name}!`,
+            body: `Hi ${name},\n\nThanks for speaking with us! We appreciate your interest.\n\nAs discussed, we'd love to help you out. Here's what happens next:\n\n- A team member will follow up with you shortly to discuss the details\n- Feel free to reply to this email with any questions\n\nLooking forward to working with you!\n\nBest regards,\n${settings.fromName || 'The Team'}`
+        })
+
+        logger.info('Follow-up email sent', { email: lead.email, leadId })
+    } catch (err) {
+        logger.error('Follow-up email error', { error: err.message, leadId })
+    }
+}
+
+/**
+ * Send follow-up SMS to interested leads via Twilio (premium feature — gated by FOLLOW_UP_SMS_ENABLED)
+ * Future: Replace with WAHA (WhatsApp) or direct SMPP for lower cost
  */
 async function sendFollowUpSms(leadId) {
     try {
         const lead = await prisma.lead.findFirst({ where: { id: leadId } })
         if (!lead?.phone) return
 
-        // Use Twilio directly for SMS (Vapi doesn't do SMS)
         const { TwilioAdapter } = await import('../adapters/telephony/twilioAdapter.js')
         const twilio = new TwilioAdapter()
 
-        const message = `Hi ${lead.contactPerson || 'there'}! Thanks for your interest in receiving EV charger installation leads. Visit hendersonevcharger.com to see our site. Mike will reach out shortly to discuss the details. - Henderson EV Charger Pros`
+        // Keep under 160 chars (1 SMS segment) — GSM-7 only, no emojis
+        const name = lead.contactPerson || 'there'
+        const message = `Hi ${name}, thanks for your interest! Visit hendersonevcharger.com for details. Mike will call you shortly. - Henderson EV Charger Pros`
 
         await twilio.sendSms(lead.phone, message)
         logger.info('Follow-up SMS sent', { phone: lead.phone, leadId })
