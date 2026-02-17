@@ -78,7 +78,10 @@ pipeline {
                     docker compose up -d
                     echo "Waiting for containers to start..."
                     sleep 10
-                    docker exec business-hub-backend npx prisma db push --schema=server/prisma/schema.prisma --accept-data-loss 2>/dev/null || echo "Prisma push skipped"
+                    # Try normal push first, fall back to accept-data-loss if schema conflicts
+                    docker exec business-hub-backend npx prisma db push --schema=server/prisma/schema.prisma 2>/dev/null || \
+                    docker exec business-hub-backend npx prisma db push --schema=server/prisma/schema.prisma --accept-data-loss 2>/dev/null || \
+                    echo "WARNING: Prisma push failed — may need manual migration"
                     echo "Deploy complete"
                 '''
             }
