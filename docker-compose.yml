@@ -29,7 +29,10 @@ services:
       dockerfile: server/Dockerfile
       network: host
     container_name: business-hub-backend
-    restart: always
+    restart: unless-stopped
+    labels:
+      - "app=business-hub"
+      - "service=backend"
     env_file:
       - .env
     environment:
@@ -49,7 +52,10 @@ services:
       dockerfile: Dockerfile
       network: host
     container_name: business-hub-frontend
-    restart: always
+    restart: unless-stopped
+    labels:
+      - "app=business-hub"
+      - "service=frontend"
     ports:
       - "5175:80"
     depends_on:

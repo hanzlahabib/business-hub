@@ -1,10 +1,10 @@
-name: E2E Tests
+name: CI
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [master]
   push:
-    branches: [main]
+    branches: [master]
 
 env:
   DATABASE_URL: postgresql://postgres:postgres_ci@localhost:5433/business_hub_test?schema=public
@@ -12,8 +12,29 @@ env:
   NODE_ENV: test
 
 jobs:
-  e2e:
-    name: E2E Test Suite
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: npx tsc --noEmit --skipLibCheck
+
+  test:
+    name: E2E Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -33,16 +54,13 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2
         with:
           version: 9
 
@@ -53,20 +71,15 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       - name: Generate Prisma client
-        run: npx prisma generate
-        working-directory: server
+        run: npx prisma generate --schema=server/prisma/schema.prisma
 
-      - name: Run database migrations
-        run: npx prisma db push --force-reset
-        working-directory: server
+      - name: Push database schema
+        run: npx prisma db push --force-reset --schema=server/prisma/schema.prisma
 
       - name: Start backend server
         run: |
           node server/index.js &
           sleep 3
-        env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
-          PORT: 3002
 
       - name: Build frontend
         run: pnpm run build
@@ -82,7 +95,7 @@ jobs:
       - name: Run UI E2E tests
         run: npx playwright test --project=ui
 
-      - name: Upload test results
+      - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -97,3 +110,31 @@ jobs:
           name: test-screenshots
           path: test-results/
           retention-days: 7
+
+  build:
+    name: Build Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        run: pnpm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: dist/
+          retention-days: 3

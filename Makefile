@@ -85,7 +85,7 @@ deploy-deps:
 # Local Dev — Full Workflow
 # ============================================
 
-.PHONY: dev start stop install db-start db-stop db-push db-studio prisma clean reset help-dev docker-up docker-down test test-all test-leads test-boards test-api test-ui
+.PHONY: dev start stop install db-start db-stop db-push db-studio prisma clean reset help-dev docker-up docker-down test test-all test-leads test-boards test-api test-ui deploy-prod rollback deploy-status
 
 help-dev: ## Show dev commands
 	@echo ""
@@ -102,6 +102,11 @@ help-dev: ## Show dev commands
 	@echo "  \033[36mmake clean\033[0m       — Stop services + remove node_modules"
 	@echo "  \033[36mmake reset\033[0m       — Full reset (clean + install + prisma)"
 	@echo "  \033[36mmake docker-up\033[0m   — Start via Docker Compose"
+	@echo ""
+	@echo "\033[1m🚀 Production Deploy:\033[0m"
+	@echo "  \033[36mmake deploy-prod\033[0m   — Deploy latest master to VPS"
+	@echo "  \033[36mmake rollback\033[0m      — Rollback to latest backup on VPS"
+	@echo "  \033[36mmake deploy-status\033[0m — Check VPS container status"
 	@echo ""
 	@echo "\033[1m🧪 E2E Testing:\033[0m"
 	@echo "  \033[36mmake test\033[0m        — Run all API E2E tests"
@@ -206,6 +211,21 @@ test-ui: ## Run UI browser tests
 
 test-report: ## Open last Playwright HTML report
 	npx playwright show-report
+
+# ============================================
+# Production Deploy / Rollback (VPS)
+# ============================================
+
+deploy-prod: ## Deploy latest master to VPS
+	@echo "=== Deploying Business Hub to VPS ==="
+	./scripts/deploy.sh master
+
+rollback: ## Rollback to latest backup on VPS
+	@echo "=== Rolling back Business Hub ==="
+	./scripts/rollback.sh
+
+deploy-status: ## Check running containers and last deploy on VPS
+	@$(SSH_CMD) "echo '--- Containers ---' && docker ps --filter 'label=app=business-hub' --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' && echo '' && echo '--- Last Deploy Commit ---' && cd /opt/business-hub && git log --oneline -1 && echo '' && echo '--- Available Backups ---' && ls -1t /opt/business-hub-backups/ 2>/dev/null || echo 'No backups'"
 
 # ============================================
 # Cleanup
