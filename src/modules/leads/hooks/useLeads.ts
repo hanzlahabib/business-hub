@@ -20,6 +20,8 @@ export interface Lead {
   createdAt: string
   lastContactedAt?: string | null
   linkedBoardId?: string | null
+  typeId?: string | null
+  leadType?: { id: string; name: string; slug: string } | null
 }
 
 export function useLeads() {
@@ -70,8 +72,9 @@ export function useLeads() {
         },
         body: JSON.stringify(newLead)
       })
+      if (!res.ok) throw new Error((await res.json()).error || 'Failed to create lead')
       const data = await res.json()
-      setLeads(prev => [...prev, data])
+      setLeads(prev => [data, ...prev])
       return data
     } catch (err: any) {
       setError(err.message)
@@ -134,6 +137,46 @@ export function useLeads() {
       lastContactedAt: new Date().toISOString()
     })
   }, [updateLead])
+
+  const bulkUpdate = useCallback(async (ids: string[], updates: Record<string, any>) => {
+    if (!user) return []
+    try {
+      const res = await fetch(ENDPOINTS.LEADS_BULK, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
+        body: JSON.stringify({ ids, updates })
+      })
+      if (!res.ok) throw new Error('Bulk update failed')
+      const updated = await res.json()
+      setLeads(prev => prev.map(l => {
+        const match = updated.find((u: Lead) => u.id === l.id)
+        return match ? match : l
+      }))
+      toast.success(`${updated.length} leads updated`)
+      return updated
+    } catch (err: any) {
+      toast.error(err.message || 'Bulk update failed')
+      return []
+    }
+  }, [user])
+
+  const bulkDelete = useCallback(async (ids: string[]) => {
+    if (!user) return false
+    try {
+      const res = await fetch(ENDPOINTS.LEADS_BULK, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
+        body: JSON.stringify({ ids })
+      })
+      if (!res.ok) throw new Error('Bulk delete failed')
+      setLeads(prev => prev.filter(l => !ids.includes(l.id)))
+      toast.success(`${ids.length} leads deleted`)
+      return true
+    } catch (err: any) {
+      toast.error(err.message || 'Bulk delete failed')
+      return false
+    }
+  }, [user])
 
   const importLeads = useCallback(async (leadsArray) => {
     if (!user) return []
@@ -218,8 +261,15 @@ export function useLeads() {
   // WebSocket: real-time lead updates
   const leadsRef = useRef(leads)
   leadsRef.current = leads
+  const wsSendRef = useRef<(data: any) => void>(() => {})
 
   const handleWsMessage = useCallback((data: any) => {
+    // Authenticate on initial connection so server routes events to us
+    if (data.type === 'connected' && user) {
+      wsSendRef.current({ type: 'auth', userId: user.id })
+      return
+    }
+
     if (data.type === 'lead:created' && data.lead) {
       // Add new lead to state if not already present
       setLeads(prev => {
@@ -240,13 +290,16 @@ export function useLeads() {
         l.id === data.leadId ? { ...l, status: data.status || l.status } : l
       ))
     }
-  }, [])
+  }, [user])
 
-  useWebSocket('/ws/calls', {
+  const { send: wsSend } = useWebSocket('/ws/calls', {
     onMessage: handleWsMessage,
     autoConnect: true,
     maxRetries: 5,
   })
+
+  // Keep send ref in sync
+  wsSendRef.current = wsSend
 
   useEffect(() => {
     fetchLeads()
@@ -263,6 +316,8 @@ export function useLeads() {
     deleteLead,
     changeStatus,
     markContacted,
+    bulkUpdate,
+    bulkDelete,
     importLeads,
     getLeadsByStatus,
     getLeadsByIndustry,

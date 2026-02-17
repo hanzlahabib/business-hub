@@ -13,7 +13,7 @@ interface AppHeaderProps {
     onToggleTheme: () => void
     onToggleSidebar: () => void
     onOpenSettings: () => void
-    activeCalls?: Array<{ id: string; leadId: string; leadName: string; status: string; startedAt: string }>
+    activeCalls?: Array<{ id: string; leadId: string; leadName: string; status: string; startedAt: string; outcome?: string; completedAt?: string }>
 }
 
 export const AppHeader = memo(function AppHeader({
@@ -40,14 +40,16 @@ export const AppHeader = memo(function AppHeader({
             const timeout = setTimeout(() => controller.abort(), 5000)
             const res = await fetch(`${API_SERVER}/api/auth/profile`, {
                 method: 'HEAD',
+                headers: user ? { 'x-user-id': user.id } : {},
                 signal: controller.signal
             })
             clearTimeout(timeout)
-            setSystemStatus(res.ok || res.status === 401 ? 'online' : 'offline')
+            // Any HTTP response means the server is alive (even 401/403/429)
+            setSystemStatus('online')
         } catch {
             setSystemStatus('offline')
         }
-    }, [])
+    }, [user])
 
     useEffect(() => {
         checkHealth()
@@ -95,13 +97,13 @@ export const AppHeader = memo(function AppHeader({
                     <SidebarToggleButton onClick={onToggleSidebar} />
                 </div>
                 <h1 className="text-lg font-semibold tracking-wide text-text-primary uppercase opacity-90 hidden md:block">Command Center</h1>
-                <div className="h-4 w-px bg-white/10 hidden md:block" />
+                <div className="h-4 w-px bg-border hidden md:block" />
                 <div className="hidden md:flex items-center text-xs text-text-muted cursor-pointer" onClick={checkHealth} title="Click to recheck">
                     <span className={`w-2 h-2 rounded-full mr-2 ${systemStatus === 'online'
-                            ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
-                            : systemStatus === 'offline'
-                                ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'
-                                : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)] animate-pulse'
+                        ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                        : systemStatus === 'offline'
+                            ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'
+                            : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)] animate-pulse'
                         }`} />
                     {systemStatus === 'online' ? 'System Operational' : systemStatus === 'offline' ? 'System Offline' : 'Checking...'}
                 </div>
@@ -113,13 +115,13 @@ export const AppHeader = memo(function AppHeader({
                     <Search size={16} className="text-text-muted group-focus-within:text-accent-primary transition-colors" />
                 </div>
                 <input
-                    className="block w-full pl-10 pr-12 py-2 bg-black/20 border border-white/10 rounded-lg text-sm text-text-primary placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-accent-primary/50 focus:border-accent-primary/50 transition-all hover:bg-black/30"
+                    className="block w-full pl-10 pr-12 py-2 bg-bg-secondary/50 border border-border rounded-lg text-sm text-text-primary placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-accent-primary/50 focus:border-accent-primary/50 transition-all hover:bg-bg-tertiary/50"
                     placeholder="Search leads, deals, or commands..."
                     type="text"
                     readOnly
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <span className="text-[10px] font-mono bg-white/10 text-text-muted px-1.5 py-0.5 rounded border border-white/5">
+                    <span className="text-[10px] font-mono bg-bg-tertiary text-text-muted px-1.5 py-0.5 rounded border border-border">
                         <Command size={10} className="inline" />K
                     </span>
                 </div>
@@ -202,12 +204,12 @@ export const AppHeader = memo(function AppHeader({
                 </div>
 
                 {/* Divider */}
-                <div className="h-8 w-px bg-white/10" />
+                <div className="h-8 w-px bg-border" />
 
                 {/* Theme Toggle */}
                 <button
                     onClick={onToggleTheme}
-                    className="relative p-2 text-text-muted hover:text-text-primary transition-colors rounded-lg hover:bg-white/5"
+                    className="relative p-2 text-text-muted hover:text-text-primary transition-colors rounded-lg hover:bg-bg-tertiary/50"
                     title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
                 >
                     {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
@@ -217,13 +219,13 @@ export const AppHeader = memo(function AppHeader({
                 <div className="relative" ref={userMenuRef}>
                     <button
                         onClick={() => setShowUserMenu(!showUserMenu)}
-                        className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full hover:bg-white/5 border border-transparent hover:border-white/5 transition-all"
+                        className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full hover:bg-bg-tertiary/50 border border-transparent hover:border-border transition-all"
                     >
                         <div className="text-right hidden sm:block">
                             <p className="text-xs font-medium text-text-primary">{user?.name || 'User'}</p>
                             <p className="text-[10px] text-text-muted">{user?.role || 'Member'}</p>
                         </div>
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-white text-xs font-bold border border-white/10">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-white text-xs font-bold border border-border">
                             {userInitial}
                         </div>
                     </button>

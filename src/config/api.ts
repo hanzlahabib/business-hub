@@ -51,6 +51,7 @@ export const ENDPOINTS = {
   EMAIL_SETTINGS: `${API_SERVER}/api/resources/emailsettings`,
   SETTINGS: `${API_SERVER}/api/resources/settings`,
   LEADS: `${API_SERVER}/api/leads`,
+  LEADS_BULK: `${API_SERVER}/api/leads/bulk`,
   CONTENTS: `${API_SERVER}/api/contents`,
   MESSAGES: `${API_SERVER}/api/messages`,
   EMAIL_TEMPLATES: `${API_SERVER}/api/resources/emailtemplates`,
@@ -69,8 +70,12 @@ export const ENDPOINTS = {
   NOTIFICATIONS_COUNT: `${API_SERVER}/api/notifications/count`,
   NOTIFICATIONS_READ_ALL: `${API_SERVER}/api/notifications/read-all`,
   DASHBOARD: `${API_SERVER}/api/dashboard`,
+  DASHBOARD_TRENDS: `${API_SERVER}/api/dashboard/trends`,
   LEAD_ACTIVITY: (leadId: string) => `${API_SERVER}/api/leads/${leadId}/activity`,
   AUTOMATION_RULES: `${API_SERVER}/api/automation/rules`,
+
+  // Lead Types
+  LEAD_TYPES: `${API_SERVER}/api/lead-types`,
 
   // AI Calling System
   CALLS: `${API_SERVER}/api/calls`,

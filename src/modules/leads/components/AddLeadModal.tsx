@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Building2, User, Mail, Phone, Globe, Tag, FileText, Briefcase, MapPin } from 'lucide-react'
 import { Select } from '../../../components/ui/select'
@@ -55,6 +55,23 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
 
   const [tagInput, setTagInput] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Sync form data when editLead prop changes (fixes stale state on reopen)
+  useEffect(() => {
+    if (editLead) {
+      setFormData({
+        ...editLead,
+        websiteIssues: editLead.websiteIssues || [],
+        tags: editLead.tags || [],
+      })
+    } else {
+      setFormData({
+        name: '', contactPerson: '', email: '', phone: '',
+        website: '', industry: '', source: 'manual', notes: '',
+        websiteIssues: [], tags: []
+      })
+    }
+  }, [editLead])
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))

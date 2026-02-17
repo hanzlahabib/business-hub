@@ -53,7 +53,7 @@ export class VapiAdapter extends TelephonyAdapter {
         const webhookUrl = process.env.WEBHOOK_BASE_URL || 'http://localhost:3002'
 
         // Resolve voice ID — could be a preset name ("adam") or raw ElevenLabs ID
-        const rawVoice = assistantConfig.voiceId || process.env.ELEVENLABS_VOICE_ID || 'adam'
+        const rawVoice = assistantConfig.voiceId || process.env.ELEVENLABS_VOICE_ID || 'josh'
         const voiceId = VOICE_PRESETS[rawVoice] || rawVoice
 
         // Build first message — use openingLine from script, or generic greeting
@@ -89,8 +89,9 @@ export class VapiAdapter extends TelephonyAdapter {
                 voice: {
                     provider: '11labs',
                     voiceId,
-                    stability: assistantConfig.voiceStability ?? 0.5,
-                    similarityBoost: assistantConfig.voiceSimilarity ?? 0.75,
+                    stability: assistantConfig.voiceStability ?? 0.85,
+                    similarityBoost: assistantConfig.voiceSimilarity ?? 0.6,
+                    speed: assistantConfig.voiceSpeed ?? 0.9,
                 },
                 transcriber: {
                     provider: 'deepgram',

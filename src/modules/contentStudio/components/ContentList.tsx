@@ -23,12 +23,12 @@ import {
 import { Content } from '@/components/Calendar/ContentCard'
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-    idea: { label: 'Idea', color: 'bg-slate-500/20 text-slate-400' },
-    script: { label: 'Script', color: 'bg-blue-500/20 text-blue-400' },
-    recording: { label: 'Recording', color: 'bg-amber-500/20 text-amber-400' },
-    editing: { label: 'Editing', color: 'bg-purple-500/20 text-purple-400' },
-    thumbnail: { label: 'Thumbnail', color: 'bg-orange-500/20 text-orange-400' },
-    published: { label: 'Published', color: 'bg-green-500/20 text-green-400' }
+    idea: { label: 'Idea', color: 'bg-slate-500/20 text-slate-700 dark:text-slate-400' },
+    script: { label: 'Script', color: 'bg-blue-500/20 text-blue-700 dark:text-blue-400' },
+    recording: { label: 'Recording', color: 'bg-amber-500/20 text-amber-700 dark:text-amber-400' },
+    editing: { label: 'Editing', color: 'bg-purple-500/20 text-purple-700 dark:text-purple-400' },
+    thumbnail: { label: 'Thumbnail', color: 'bg-orange-500/20 text-orange-700 dark:text-orange-400' },
+    published: { label: 'Published', color: 'bg-green-500/20 text-green-700 dark:text-green-400' }
 }
 
 interface ContentListProps {

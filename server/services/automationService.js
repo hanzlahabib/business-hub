@@ -87,9 +87,20 @@ async function executeInitiateCall(userId, event, config) {
         return
     }
 
-    const delayMs = config.delayMs ?? 30000 // default 30s delay
+    // If lead has a type, use type-specific config
+    const leadType = event.data?.leadType
+    const typeConfig = leadType?.agentConfig || {}
 
-    console.log(`[AutomationService] Scheduling auto-call to ${lead.name} in ${delayMs / 1000}s`)
+    // Skip if auto-call disabled on this type
+    if (leadType && leadType.autoCallEnabled === false) {
+        console.log(`[AutomationService] Auto-call disabled for type "${leadType.name}", skipping`)
+        return
+    }
+
+    // Type delay > rule config > default 30s
+    const delayMs = leadType?.autoCallDelay ?? config.delayMs ?? 30000
+
+    console.log(`[AutomationService] Scheduling auto-call to ${lead.name} in ${delayMs / 1000}s${leadType ? ` (type: ${leadType.name})` : ''}`)
 
     setTimeout(async () => {
         try {
@@ -98,8 +109,10 @@ async function executeInitiateCall(userId, event, config) {
             await callService.initiateCall(userId, {
                 leadId: lead.id,
                 assistantConfig: {
-                    agentName: config.agentName || 'Alex',
-                    businessName: config.businessName || undefined,
+                    agentName: typeConfig.agentName || config.agentName || 'Alex',
+                    businessName: typeConfig.businessName || config.businessName || undefined,
+                    businessWebsite: typeConfig.businessWebsite || undefined,
+                    industry: typeConfig.industry || undefined,
                 }
             })
             console.log(`[AutomationService] Auto-call initiated for lead ${lead.name}`)

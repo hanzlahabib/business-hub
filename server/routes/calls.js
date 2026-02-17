@@ -145,6 +145,40 @@ router.post('/webhook', async (req, res) => {
     }
 })
 
+// POST /api/calls/schedule — Schedule a call for a future date/time
+router.post('/schedule', async (req, res) => {
+    try {
+        const { leadId, scriptId, scheduledAt, assistantConfig } = req.body
+        if (!leadId || !scheduledAt) {
+            return res.status(400).json({ error: 'leadId and scheduledAt are required' })
+        }
+        const call = await callService.scheduleCall(req.user.id, { leadId, scriptId, scheduledAt, assistantConfig })
+        res.status(201).json(call)
+    } catch (err) {
+        res.status(400).json({ error: err.message })
+    }
+})
+
+// POST /api/calls/:id/cancel — Cancel a queued/ringing/scheduled call
+router.post('/:id/cancel', async (req, res) => {
+    try {
+        const result = await callService.cancelCall(req.params.id, req.user.id)
+        res.json(result)
+    } catch (err) {
+        res.status(400).json({ error: err.message })
+    }
+})
+
+// POST /api/calls/:id/hangup — Force-terminate a live call
+router.post('/:id/hangup', async (req, res) => {
+    try {
+        const result = await callService.hangupCall(req.params.id, req.user.id)
+        res.json(result)
+    } catch (err) {
+        res.status(400).json({ error: err.message })
+    }
+})
+
 // ============================================
 // MEETING NOTES
 // ============================================

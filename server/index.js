@@ -27,6 +27,7 @@ import twilioWebhookRoutes from './routes/twilioWebhooks.js'
 import vapiWebhookRoutes from './routes/vapiWebhooks.js'
 import campaignRoutes from './routes/campaignRoutes.js'
 import webhookRoutes from './routes/webhooks.js'
+import leadTypeRoutes from './routes/leadTypes.js'
 import notificationRoutes from './routes/notifications.js'
 import dashboardRoutes from './routes/dashboard.js'
 import authMiddleware from './middleware/auth.js'
@@ -36,6 +37,7 @@ import { initWebSocket, getClientCount, emitLeadCreated, emitLeadUpdated, emitLe
 import { initMediaStreamWebSocket } from './services/twilioMediaStream.js'
 import agentCallingService from './services/agentCallingService.js'
 import callService from './services/callService.js'
+import callSchedulerService from './services/callSchedulerService.js'
 import { loadAllUserKeys } from './services/apiKeyService.js'
 import { globalErrorHandler } from './middleware/errorHandler.js'
 import { rateLimiter, authLimiter } from './middleware/rateLimiter.js'
@@ -120,6 +122,7 @@ app.use('/api/outreach', outreachRoutes)
 app.use('/api/calls/twilio', validateTwilioRequest(), twilioWebhookRoutes)  // Twilio webhooks (validation optional via env)
 app.use('/api/calls/vapi', vapiWebhookRoutes)  // Vapi webhooks (no auth — Vapi can't send our headers)
 app.use('/api/webhooks', webhookRoutes)  // External webhooks (no auth — server-to-server)
+app.use('/api/lead-types', authMiddleware, leadTypeRoutes)
 app.use('/api/calls', authMiddleware, callRoutes)
 app.use('/api/agents', authMiddleware, agentRoutes)
 app.use('/api/campaigns', authMiddleware, campaignRoutes)
@@ -359,28 +362,29 @@ intelligenceService.init()
 import eventBus from './services/eventBus.js'
 
 eventBus.on('lead:created', (event) => {
-    const { userId, data } = event
-    if (userId && data?.lead) {
-        emitLeadCreated(userId, data.lead)
-    }
+  const { userId, data } = event
+  if (userId && data?.lead) {
+    emitLeadCreated(userId, data.lead)
+  }
 })
 
 eventBus.on('lead:updated', (event) => {
-    const { userId, data } = event
-    if (userId && data?.lead) {
-        emitLeadUpdated(userId, data.lead)
-    }
+  const { userId, data } = event
+  if (userId && data?.lead) {
+    emitLeadUpdated(userId, data.lead)
+  }
 })
 
 eventBus.on('lead:status-changed', (event) => {
-    const { userId, data } = event
-    if (userId) {
-        emitLeadStatusChanged(userId, data)
-    }
+  const { userId, data } = event
+  if (userId) {
+    emitLeadStatusChanged(userId, data)
+  }
 })
 
 // Reset zombie agents from previous server run
 agentCallingService.init().catch(err => logger.error('Agent init failed', { error: err.message }))
+callSchedulerService.init()
 
 // Global error handler — catches all unhandled errors from routes
 app.use(globalErrorHandler)

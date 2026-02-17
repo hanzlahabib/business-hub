@@ -160,14 +160,14 @@ export const CalendarSidebar = memo(function CalendarSidebar({
                                                 ...(event.isNow ? { boxShadow: `0 0 8px ${event.color}` } : {})
                                             }}
                                         />
-                                        <h4 className={`text-sm font-semibold leading-tight ${event.isNow ? 'text-white' : 'text-text-secondary'}`}>
+                                        <h4 className={`text-sm font-semibold leading-tight ${event.isNow ? 'text-text-primary' : 'text-text-secondary'}`}>
                                             {event.title}
                                         </h4>
                                         {event.subtitle && (
                                             <p className="text-xs text-text-muted mt-0.5">{event.subtitle}</p>
                                         )}
                                         {event.isNow && (
-                                            <span className="inline-block mt-2 text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+                                            <span className="inline-block mt-2 text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 dark:border-emerald-500/20 font-medium">
                                                 Now Happening
                                             </span>
                                         )}
@@ -182,7 +182,7 @@ export const CalendarSidebar = memo(function CalendarSidebar({
             </div>
 
             {/* ── Upcoming Tasks Widget ── */}
-            <div className="flex-1 flex flex-col min-h-0 bg-black/20">
+            <div className="flex-1 flex flex-col min-h-0 bg-bg-secondary/30">
                 <div className="p-6 pb-2">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-sm font-bold uppercase tracking-wider text-text-muted">Upcoming Tasks</h3>
@@ -199,7 +199,7 @@ export const CalendarSidebar = memo(function CalendarSidebar({
                     {upcomingTasks.length > 0 ? upcomingTasks.map(task => {
                         const isDone = completedTasks.has(task.id)
                         return (
-                            <div key={task.id} className={`bg-[#0F1419] border border-border rounded-lg p-3 hover:border-text-muted/30 transition-colors group ${isDone ? 'opacity-50' : ''}`}>
+                            <div key={task.id} className={`bg-bg-primary border border-border rounded-lg p-3 hover:border-text-muted/30 transition-colors group ${isDone ? 'opacity-50' : ''}`}>
                                 <div className="flex items-start gap-3">
                                     <div className="pt-0.5">
                                         <input
@@ -247,7 +247,7 @@ export const CalendarSidebar = memo(function CalendarSidebar({
                         onChange={e => setQuickTask(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && handleQuickAdd()}
                         placeholder="Add a task quickly..."
-                        className="w-full bg-[#0F1419] border border-border focus:border-accent-primary rounded-lg py-2.5 pl-3 pr-10 text-sm text-text-primary placeholder-text-muted focus:ring-1 focus:ring-accent-primary focus:bg-[#0F1419] transition-all shadow-inner"
+                        className="w-full bg-bg-primary border border-border focus:border-accent-primary rounded-lg py-2.5 pl-3 pr-10 text-sm text-text-primary placeholder-text-muted focus:ring-1 focus:ring-accent-primary focus:bg-bg-primary transition-all shadow-inner"
                     />
                     <button
                         onClick={handleQuickAdd}

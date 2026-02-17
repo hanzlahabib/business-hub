@@ -175,7 +175,7 @@ export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollaps
           className={`group relative w-full aspect-square flex items-center justify-center rounded-lg transition-colors
             ${isActive
               ? 'text-blue-400 bg-blue-500/10 shadow-[0_0_10px_rgba(60,131,246,0.2)] border border-blue-500/20'
-              : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+              : 'text-text-muted hover:text-text-primary hover:bg-bg-tertiary/50 border border-transparent'
             }`}
           title={module.name}
         >
@@ -185,7 +185,7 @@ export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollaps
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-500 rounded-r-full shadow-[0_0_15px_rgba(60,131,246,0.5)]" />
           )}
           {/* Tooltip */}
-          <span className="absolute left-14 bg-gray-800 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-white/10 z-50">
+          <span className="absolute left-14 bg-bg-secondary text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-border z-50">
             {module.name}
           </span>
           {/* Calling pulse dot */}
@@ -262,11 +262,11 @@ export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollaps
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 bottom-0 ${sidebarWidth} bg-[#0b0e11] border-r border-white/5 z-50 flex flex-col transition-all duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        className={`fixed left-0 top-0 bottom-0 ${sidebarWidth} bg-bg-primary border-r border-border z-50 flex flex-col transition-all duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
           }`}
       >
         {/* Header / Logo */}
-        <div className={`flex items-center justify-between ${isCollapsed ? 'py-6 px-2 justify-center' : 'h-14 px-3 border-b border-white/5'}`}>
+        <div className={`flex items-center justify-between ${isCollapsed ? 'py-6 px-2 justify-center' : 'h-14 px-3 border-b border-border'}`}>
           {isCollapsed ? (
             /* Stitch-style logo: gradient square with icon */
             <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-[0_0_15px_rgba(60,131,246,0.5)] cursor-pointer" onClick={onCollapse}>
@@ -284,7 +284,7 @@ export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollaps
               </div>
               <button
                 onClick={onCollapse}
-                className="hidden lg:flex p-1.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
+                className="hidden lg:flex p-1.5 rounded-lg hover:bg-bg-tertiary/50 text-text-muted hover:text-text-primary transition-colors"
                 title="Collapse sidebar"
               >
                 <ChevronLeft size={16} />
@@ -296,7 +296,7 @@ export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollaps
           {!isCollapsed && (
             <button
               onClick={onToggle}
-              className="lg:hidden p-1.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
+              className="lg:hidden p-1.5 rounded-lg hover:bg-bg-tertiary/50 text-text-muted hover:text-text-primary transition-colors"
             >
               <X size={18} />
             </button>
@@ -311,9 +311,9 @@ export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollaps
           </div>
 
           {/* Separator */}
-          <div className={`my-2 border-t border-white/5 ${isCollapsed ? 'mx-1' : 'mx-1'}`}>
+          <div className={`my-2 border-t border-border ${isCollapsed ? 'mx-1' : 'mx-1'}`}>
             {!isCollapsed && (
-              <p className="text-[9px] uppercase tracking-wider text-slate-500 font-semibold mt-2 mb-1 px-2">
+              <p className="text-[9px] uppercase tracking-wider text-text-muted font-semibold mt-2 mb-1 px-2">
                 AI & Sales
               </p>
             )}
@@ -330,15 +330,15 @@ export function Sidebar({ activeModule, isOpen, onToggle, isCollapsed, onCollaps
           <div className="mt-auto px-2 pb-6">
             <button
               onClick={onCollapse}
-              className="w-full aspect-square flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+              className="w-full aspect-square flex items-center justify-center rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-tertiary/50 transition-colors"
               title="Expand sidebar"
             >
               <ChevronRight size={20} />
             </button>
           </div>
         ) : (
-          <div className="p-2 border-t border-white/5">
-            <div className="text-[10px] text-slate-500 text-center">
+          <div className="p-2 border-t border-border">
+            <div className="text-[10px] text-text-muted text-center">
               <p>v1.0</p>
             </div>
           </div>

@@ -1,17 +1,22 @@
 import { useState, useCallback, useEffect } from 'react'
 
 import { ENDPOINTS } from '../../config/api'
+import { useAuth } from '../../hooks/useAuth'
 
 export function useEmailTemplates() {
+  const { user } = useAuth()
   const [templates, setTemplates] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const fetchTemplates = useCallback(async () => {
+    if (!user) return []
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(ENDPOINTS.EMAIL_TEMPLATES)
+      const res = await fetch(ENDPOINTS.EMAIL_TEMPLATES, {
+        headers: { 'x-user-id': user.id }
+      })
       const data = await res.json()
       setTemplates(data)
       return data
@@ -21,9 +26,10 @@ export function useEmailTemplates() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   const createTemplate = useCallback(async (template) => {
+    if (!user) return null
     setLoading(true)
     setError(null)
     try {
@@ -35,7 +41,7 @@ export function useEmailTemplates() {
 
       const res = await fetch(ENDPOINTS.EMAIL_TEMPLATES, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
         body: JSON.stringify(newTemplate)
       })
       const data = await res.json()
@@ -47,15 +53,16 @@ export function useEmailTemplates() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   const updateTemplate = useCallback(async (id, updates) => {
+    if (!user) return null
     setLoading(true)
     setError(null)
     try {
       const res = await fetch(`${ENDPOINTS.EMAIL_TEMPLATES}/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
         body: JSON.stringify(updates)
       })
       const data = await res.json()
@@ -67,14 +74,16 @@ export function useEmailTemplates() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   const deleteTemplate = useCallback(async (id) => {
+    if (!user) return false
     setLoading(true)
     setError(null)
     try {
       await fetch(`${ENDPOINTS.EMAIL_TEMPLATES}/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: { 'x-user-id': user.id }
       })
       setTemplates(prev => prev.filter(t => t.id !== id))
       return true
@@ -84,7 +93,7 @@ export function useEmailTemplates() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   // Process template with lead data
   const processTemplate = useCallback((template, lead) => {

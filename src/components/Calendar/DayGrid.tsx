@@ -3,12 +3,12 @@ import { format, isSameDay } from 'date-fns'
 
 const HOURS = Array.from({ length: 13 }, (_, i) => i + 8) // 08:00–20:00
 const COLOR_MAP: Record<string, { border: string; bg: string; title: string; sub: string }> = {
-    purple: { border: 'border-purple-500', bg: 'bg-purple-500/20', title: 'text-purple-200', sub: 'text-purple-300' },
-    emerald: { border: 'border-emerald-500', bg: 'bg-emerald-500/20', title: 'text-emerald-100', sub: 'text-emerald-300' },
-    cyan: { border: 'border-cyan-500', bg: 'bg-cyan-500/20', title: 'text-cyan-100', sub: 'text-cyan-300' },
-    amber: { border: 'border-amber-500', bg: 'bg-amber-500/20', title: 'text-amber-100', sub: 'text-amber-300' },
-    indigo: { border: 'border-indigo-500', bg: 'bg-indigo-500/20', title: 'text-indigo-100', sub: 'text-indigo-300' },
-    pink: { border: 'border-pink-500', bg: 'bg-pink-500/20', title: 'text-pink-100', sub: 'text-pink-300' },
+    purple: { border: 'border-purple-500', bg: 'bg-purple-500/20', title: 'text-purple-800 dark:text-purple-200', sub: 'text-purple-700 dark:text-purple-300' },
+    emerald: { border: 'border-emerald-500', bg: 'bg-emerald-500/20', title: 'text-emerald-800 dark:text-emerald-100', sub: 'text-emerald-700 dark:text-emerald-300' },
+    cyan: { border: 'border-cyan-500', bg: 'bg-cyan-500/20', title: 'text-cyan-800 dark:text-cyan-100', sub: 'text-cyan-700 dark:text-cyan-300' },
+    amber: { border: 'border-amber-500', bg: 'bg-amber-500/20', title: 'text-amber-800 dark:text-amber-100', sub: 'text-amber-700 dark:text-amber-300' },
+    indigo: { border: 'border-indigo-500', bg: 'bg-indigo-500/20', title: 'text-indigo-800 dark:text-indigo-100', sub: 'text-indigo-700 dark:text-indigo-300' },
+    pink: { border: 'border-pink-500', bg: 'bg-pink-500/20', title: 'text-pink-800 dark:text-pink-100', sub: 'text-pink-700 dark:text-pink-300' },
 }
 const PALETTE = ['purple', 'emerald', 'cyan', 'amber', 'indigo', 'pink']
 

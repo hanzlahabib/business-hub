@@ -138,160 +138,170 @@ export function LeadDetailPanel({
   const dashOffset = circumference - (heat / 100) * circumference
 
   return (
-    <aside className="w-[400px] border-l border-border bg-bg-secondary flex flex-col shadow-2xl z-20 overflow-y-auto shrink-0 relative">
-      {/* Panel Header */}
-      <div className="p-6 border-b border-border relative overflow-hidden">
-        {/* Close button */}
-        <div className="absolute top-0 right-0 p-4 z-10">
-          <button
-            onClick={onClose}
-            className="text-text-muted hover:text-text-primary transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <>
+      {/* Backdrop — click to close */}
+      <div
+        className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px]"
+        onClick={onClose}
+      />
 
-        {/* Top Gradient Accent */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent-primary to-purple-500" />
+      {/* Drawer */}
+      <aside className="fixed top-0 right-0 h-full w-[420px] z-50 border-l border-border bg-bg-secondary flex flex-col shadow-2xl">
+        {/* Panel Header */}
+        <div className="p-6 border-b border-border relative overflow-hidden shrink-0">
+          {/* Close button */}
+          <div className="absolute top-0 right-0 p-4 z-10">
+            <button
+              onClick={onClose}
+              className="text-text-muted hover:text-text-primary transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
-        <div className="flex flex-col items-center text-center mt-2">
-          {/* Avatar */}
-          <div className="w-20 h-20 rounded-full border-2 border-accent-primary/50 p-1 mb-3 relative">
-            <div className="w-full h-full rounded-full bg-bg-tertiary flex items-center justify-center text-xl font-bold text-text-muted">
-              {getInitials(lead.name)}
+          {/* Top Gradient Accent */}
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent-primary to-purple-500" />
+
+          <div className="flex flex-col items-center text-center mt-2">
+            {/* Avatar */}
+            <div className="w-20 h-20 rounded-full border-2 border-accent-primary/50 p-1 mb-3 relative">
+              <div className="w-full h-full rounded-full bg-bg-tertiary flex items-center justify-center text-xl font-bold text-text-muted">
+                {getInitials(lead.name)}
+              </div>
+              {lead.source && (
+                <div className="absolute bottom-0 right-0 w-6 h-6 bg-bg-primary rounded-full flex items-center justify-center border border-border">
+                  <span className="text-[10px]">
+                    {lead.source === 'linkedin' ? '💼' : lead.source === 'google' ? '🔍' : lead.source === 'instagram' ? '📸' : '📌'}
+                  </span>
+                </div>
+              )}
             </div>
-            {lead.source && (
-              <div className="absolute bottom-0 right-0 w-6 h-6 bg-bg-primary rounded-full flex items-center justify-center border border-border">
-                <span className="text-[10px]">
-                  {lead.source === 'linkedin' ? '💼' : lead.source === 'google' ? '🔍' : lead.source === 'instagram' ? '📸' : '📌'}
-                </span>
-              </div>
+
+            <h2 className="text-lg font-bold text-text-primary">{lead.name}</h2>
+            <p className="text-sm text-text-muted">
+              {lead.title || lead.role || lead.contactPerson || ''}{lead.company ? ` at ${lead.company}` : ''}
+            </p>
+            {lead.leadType && (
+              <span className="mt-1 px-2 py-0.5 bg-indigo-500/20 text-indigo-400 rounded-full text-xs">
+                {lead.leadType.name}
+              </span>
             )}
-          </div>
 
-          <h2 className="text-lg font-bold text-text-primary">{lead.name}</h2>
-          <p className="text-sm text-text-muted">
-            {lead.title || lead.role || lead.contactPerson || ''}{lead.company ? ` at ${lead.company}` : ''}
-          </p>
-
-          {/* Quick Action Buttons */}
-          <div className="flex gap-2 mt-4">
-            <button
-              onClick={() => onSendEmail?.(lead)}
-              className="p-2 rounded-lg bg-bg-tertiary border border-border text-text-muted hover:text-text-primary hover:border-border-hover transition-all"
-              title="Email"
-            >
-              <Mail className="w-4 h-4" />
-            </button>
-            {lead.phone && (
+            {/* Quick Action Buttons */}
+            <div className="flex gap-2 mt-4">
               <button
-                onClick={handleCallLead}
-                disabled={callingLead}
-                className="p-2 rounded-lg bg-bg-tertiary border border-border text-text-muted hover:text-text-primary hover:border-border-hover transition-all disabled:opacity-50"
-                title="Call"
+                onClick={() => onSendEmail?.(lead)}
+                className="p-2 rounded-lg bg-bg-tertiary border border-border text-text-muted hover:text-text-primary hover:border-border-hover transition-all"
+                title="Email"
               >
-                <Phone className={`w-4 h-4 ${callingLead ? 'animate-pulse' : ''}`} />
+                <Mail className="w-4 h-4" />
               </button>
-            )}
-            <button
-              className="p-2 rounded-lg bg-bg-tertiary border border-border text-text-muted hover:text-text-primary hover:border-border-hover transition-all"
-              title="Schedule"
-            >
-              <Calendar className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onEdit?.(lead)}
-              className="p-2 rounded-lg bg-bg-tertiary border border-border text-text-muted hover:text-text-primary hover:border-border-hover transition-all"
-              title="More"
-            >
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
+              {lead.phone && (
+                <button
+                  onClick={handleCallLead}
+                  disabled={callingLead}
+                  className="p-2 rounded-lg bg-bg-tertiary border border-border text-text-muted hover:text-text-primary hover:border-border-hover transition-all disabled:opacity-50"
+                  title="Call"
+                >
+                  <Phone className={`w-4 h-4 ${callingLead ? 'animate-pulse' : ''}`} />
+                </button>
+              )}
+              <button
+                className="p-2 rounded-lg bg-bg-tertiary border border-border text-text-muted hover:text-text-primary hover:border-border-hover transition-all"
+                title="Schedule"
+              >
+                <Calendar className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => onEdit?.(lead)}
+                className="p-2 rounded-lg bg-bg-tertiary border border-border text-text-muted hover:text-text-primary hover:border-border-hover transition-all"
+                title="More"
+              >
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
+            </div>
           </div>
+
+          {/* Live Call Status Card */}
+          {liveCallStatus && (
+            <LiveCallStatusCard callStatus={liveCallStatus} />
+          )}
         </div>
 
-        {/* Live Call Status Card */}
-        {liveCallStatus && (
-          <LiveCallStatusCard callStatus={liveCallStatus} />
-        )}
-      </div>
+        {/* Tabs */}
+        <div className="flex border-b border-border bg-bg-secondary">
+          {[
+            { key: 'intelligence', label: 'Intelligence' },
+            { key: 'activity', label: 'Activity' },
+            { key: 'details', label: 'Details' }
+          ].map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === tab.key
+                ? 'text-accent-primary border-b-2 border-accent-primary bg-accent-primary/5'
+                : 'text-text-muted hover:text-text-primary'
+                }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-border bg-bg-secondary">
-        {[
-          { key: 'intelligence', label: 'Intelligence' },
-          { key: 'calls', label: 'Calls' },
-          { key: 'activity', label: 'Activity' },
-          { key: 'notes', label: 'Notes' }
-        ].map(tab => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`flex-1 py-3 text-sm font-medium transition-colors ${activeTab === tab.key
-              ? 'text-accent-primary border-b-2 border-accent-primary bg-accent-primary/5'
-              : 'text-text-muted hover:text-text-primary'
-              }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+        {/* Content */}
+        <div className="p-6 flex flex-col gap-6 flex-1 overflow-y-auto">
+          {activeTab === 'intelligence' && (
+            <IntelligenceTab lead={lead} heat={heat} circumference={circumference} dashOffset={dashOffset} />
+          )}
 
-      {/* Content */}
-      <div className="p-6 flex flex-col gap-6 flex-1">
-        {activeTab === 'intelligence' && (
-          <IntelligenceTab lead={lead} heat={heat} circumference={circumference} dashOffset={dashOffset} />
-        )}
+          {activeTab === 'activity' && (
+            <div className="space-y-4">
+              {/* Call Now button */}
+              {lead.phone && (
+                <button
+                  onClick={handleCallLead}
+                  disabled={callingLead}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-all disabled:opacity-50"
+                >
+                  <PhoneCall className={`w-4 h-4 ${callingLead ? 'animate-pulse' : ''}`} />
+                  {callingLead ? 'Calling...' : 'Call Now'}
+                </button>
+              )}
 
-        {activeTab === 'calls' && (
-          <div className="space-y-4">
-            {/* Call Now button */}
-            {lead.phone && (
-              <button
-                onClick={handleCallLead}
-                disabled={callingLead}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-all disabled:opacity-50"
-              >
-                <PhoneCall className={`w-4 h-4 ${callingLead ? 'animate-pulse' : ''}`} />
-                {callingLead ? 'Calling...' : 'Call Now'}
-              </button>
-            )}
+              {/* Call History */}
+              <CallsList
+                calls={leadCalls}
+                loading={callsLoading}
+                expandedCallId={expandedCallId}
+                onToggleExpand={setExpandedCallId}
+                lead={lead}
+                onCallLead={handleCallLead}
+                callingLead={callingLead}
+              />
 
-            {/* Call History */}
-            <CallsList
-              calls={leadCalls}
-              loading={callsLoading}
-              expandedCallId={expandedCallId}
-              onToggleExpand={setExpandedCallId}
-              lead={lead}
-              onCallLead={handleCallLead}
-              callingLead={callingLead}
-            />
-          </div>
-        )}
+              {/* Activity Timeline */}
+              <LeadActivityTimeline leadId={lead.id} />
 
-        {activeTab === 'activity' && (
-          <div className="space-y-4">
-            <LeadActivityTimeline leadId={lead.id} />
+              {/* Messages section */}
+              {messages.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Messages</h4>
+                  <MessageThread
+                    messages={messages}
+                    loading={messagesLoading}
+                    emptyMessage="No messages sent to this lead yet"
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
-            {/* Messages section */}
-            {messages.length > 0 && (
-              <div className="mt-4">
-                <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Messages</h4>
-                <MessageThread
-                  messages={messages}
-                  loading={messagesLoading}
-                  emptyMessage="No messages sent to this lead yet"
-                />
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'notes' && (
-          <NotesTab lead={lead} onStatusChange={onStatusChange} linkedBoard={linkedBoard} onViewBoard={onViewBoard} onCreateBoard={onCreateBoard} onDelete={onDelete} />
-        )}
-      </div>
-    </aside>
+          {activeTab === 'details' && (
+            <NotesTab lead={lead} onStatusChange={onStatusChange} linkedBoard={linkedBoard} onViewBoard={onViewBoard} onCreateBoard={onCreateBoard} onDelete={onDelete} />
+          )}
+        </div>
+      </aside>
+    </>
   )
 }
 

@@ -247,6 +247,38 @@ export const agentCallingService = {
             stats: agent.stats
         }
     },
+    /**
+     * Remove a specific lead from an agent's pending queue
+     */
+    async removeFromQueue(agentId, userId, leadId) {
+        const agent = await prisma.agentInstance.findFirst({
+            where: { id: agentId, userId }
+        })
+        if (!agent) throw new Error('Agent not found')
+
+        const queue = agent.leadQueue || []
+        if (!queue.includes(leadId)) {
+            throw new Error('Lead not found in agent queue')
+        }
+
+        // Don't allow removing the currently active lead
+        if (agent.currentLeadId === leadId) {
+            throw new Error('Cannot remove lead that is currently being processed — use pause/stop instead')
+        }
+
+        const newQueue = queue.filter(id => id !== leadId)
+
+        await prisma.agentInstance.update({
+            where: { id: agentId },
+            data: { leadQueue: newQueue }
+        })
+
+        emitAgentLog(agentId, `Lead removed from queue (${queue.length} → ${newQueue.length} remaining)`)
+        emitAgentStatus(agentId, agent.status, agent.stats)
+
+        logger.info('Lead removed from agent queue', { agentId, leadId, remainingQueue: newQueue.length })
+        return { agentId, leadId, remainingQueue: newQueue.length }
+    },
 
     // ============================================
     // INTERNAL: Queue Processing

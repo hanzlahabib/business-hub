@@ -29,6 +29,46 @@ router.post('/', async (req, res) => {
     }
 })
 
+// Bulk update — PATCH /api/leads/bulk
+router.patch('/bulk', async (req, res) => {
+    try {
+        const { ids, updates } = req.body
+        if (!Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({ error: 'ids array is required' })
+        }
+        const prisma = (await import('../config/prisma.js')).default
+        await prisma.lead.updateMany({
+            where: { id: { in: ids }, userId: req.user.id },
+            data: updates
+        })
+        // Return the updated leads
+        const updated = await prisma.lead.findMany({
+            where: { id: { in: ids }, userId: req.user.id },
+            include: { leadType: true }
+        })
+        res.json(updated)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+})
+
+// Bulk delete — DELETE /api/leads/bulk
+router.delete('/bulk', async (req, res) => {
+    try {
+        const { ids } = req.body
+        if (!Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({ error: 'ids array is required' })
+        }
+        const prisma = (await import('../config/prisma.js')).default
+        await prisma.lead.deleteMany({
+            where: { id: { in: ids }, userId: req.user.id }
+        })
+        res.status(204).send()
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+})
+
 router.get('/:id', async (req, res) => {
     try {
         const lead = await leadService.getById(req.params.id, req.user.id)

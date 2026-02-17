@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
     X, Phone, Clock, User, Building2, FileText, MessageSquare,
     Info, Play, Pause, Volume2, Mic, Calendar, Hash, Bot,
-    ChevronRight, Loader2, Sparkles, AlertTriangle
+    ChevronRight, Loader2, Sparkles, AlertTriangle, PhoneOff, Ban
 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { useCalls } from '../hooks/useCalls'
@@ -23,6 +23,8 @@ const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
     ringing: { bg: 'bg-blue-500/10', text: 'text-blue-400' },
     queued: { bg: 'bg-gray-500/10', text: 'text-gray-400' },
     failed: { bg: 'bg-red-500/10', text: 'text-red-400' },
+    scheduled: { bg: 'bg-purple-500/10', text: 'text-purple-400' },
+    cancelled: { bg: 'bg-orange-500/10', text: 'text-orange-400' },
 }
 
 const OUTCOME_STYLES: Record<string, { bg: string; text: string; label: string }> = {
@@ -81,10 +83,12 @@ const TABS = [
 type TabId = typeof TABS[number]['id']
 
 export function CallDetailPanel({ callId, isOpen, onClose }: Props) {
-    const { fetchCallById, transcribeCall } = useCalls()
+    const { fetchCallById, transcribeCall, cancelCall, hangupCall } = useCalls()
     const [call, setCall] = useState<Call | null>(null)
     const [loading, setLoading] = useState(false)
     const [transcribing, setTranscribing] = useState(false)
+    const [cancelling, setCancelling] = useState(false)
+    const [hangingUp, setHangingUp] = useState(false)
     const [activeTab, setActiveTab] = useState<TabId>('transcript')
 
     const loadCall = useCallback(async (id: string) => {
@@ -218,6 +222,52 @@ export function CallDetailPanel({ callId, isOpen, onClose }: Props) {
                                 </div>
                             </div>
                         )}
+
+                        {/* Action Buttons — Cancel / Hangup */}
+                        {call && !loading && (
+                            <div className="mt-3 flex items-center gap-2">
+                                {(call.status === 'queued' || call.status === 'ringing' || call.status === 'scheduled') && (
+                                    <button
+                                        onClick={async () => {
+                                            setCancelling(true)
+                                            const result = await cancelCall(call.id)
+                                            if (result && !('error' in result)) {
+                                                toast.success('Call cancelled')
+                                                setCall(prev => prev ? { ...prev, status: 'cancelled' } : prev)
+                                            } else {
+                                                toast.error(result?.error || 'Failed to cancel')
+                                            }
+                                            setCancelling(false)
+                                        }}
+                                        disabled={cancelling}
+                                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-medium hover:bg-orange-500/20 transition-colors disabled:opacity-50"
+                                    >
+                                        {cancelling ? <Loader2 size={13} className="animate-spin" /> : <Ban size={13} />}
+                                        {cancelling ? 'Cancelling...' : 'Cancel Call'}
+                                    </button>
+                                )}
+                                {call.status === 'in-progress' && (
+                                    <button
+                                        onClick={async () => {
+                                            setHangingUp(true)
+                                            const result = await hangupCall(call.id)
+                                            if (result && !('error' in result)) {
+                                                toast.success('Call terminated')
+                                                setCall(prev => prev ? { ...prev, status: 'failed', errorReason: 'Manually terminated' } : prev)
+                                            } else {
+                                                toast.error(result?.error || 'Failed to hangup')
+                                            }
+                                            setHangingUp(false)
+                                        }}
+                                        disabled={hangingUp}
+                                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/20 transition-colors disabled:opacity-50"
+                                    >
+                                        {hangingUp ? <Loader2 size={13} className="animate-spin" /> : <PhoneOff size={13} />}
+                                        {hangingUp ? 'Terminating...' : 'Emergency Hangup'}
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Tabs */}
@@ -229,11 +279,10 @@ export function CallDetailPanel({ callId, isOpen, onClose }: Props) {
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors border-b-2 -mb-[1px] ${
-                                        isActive
+                                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors border-b-2 -mb-[1px] ${isActive
                                             ? 'text-cyan-400 border-cyan-400'
                                             : 'text-text-muted border-transparent hover:text-text-primary'
-                                    }`}
+                                        }`}
                                 >
                                     <Icon size={13} />
                                     {tab.label}
@@ -318,11 +367,10 @@ export function CallDetailPanel({ callId, isOpen, onClose }: Props) {
                                                             <ChevronRight size={12} className="text-text-muted mt-0.5 flex-shrink-0" />
                                                             <div className="text-xs text-text-secondary">
                                                                 {note.type && (
-                                                                    <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium mr-1.5 ${
-                                                                        note.type === 'action' ? 'bg-amber-500/10 text-amber-400' :
-                                                                        note.type === 'decision' ? 'bg-emerald-500/10 text-emerald-400' :
-                                                                        'bg-gray-500/10 text-gray-400'
-                                                                    }`}>
+                                                                    <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium mr-1.5 ${note.type === 'action' ? 'bg-amber-500/10 text-amber-400' :
+                                                                            note.type === 'decision' ? 'bg-emerald-500/10 text-emerald-400' :
+                                                                                'bg-gray-500/10 text-gray-400'
+                                                                        }`}>
                                                                         {note.type}
                                                                     </span>
                                                                 )}
@@ -401,6 +449,13 @@ export function CallDetailPanel({ callId, isOpen, onClose }: Props) {
                                                 value={new Date(call.createdAt).toLocaleString()}
                                                 icon={Calendar}
                                             />
+                                            {call.scheduledAt && (
+                                                <MetaItem
+                                                    label="Scheduled For"
+                                                    value={new Date(call.scheduledAt).toLocaleString()}
+                                                    icon={Calendar}
+                                                />
+                                            )}
                                         </div>
 
                                         {/* Script Details */}

@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, Filter, Upload, X, Building2, MapPin, Globe, Tag, AlertCircle, RefreshCw, Mail, CheckSquare, Square } from 'lucide-react'
+import { Plus, Search, Filter, Upload, X, Building2, MapPin, Globe, Tag, AlertCircle, RefreshCw, Mail, CheckSquare, Square, Layers, Edit, Trash2 } from 'lucide-react'
 import LeadCard from './LeadCard'
-import { useLeads } from '../hooks/useLeads'
+import { useLeadTypes } from '../hooks/useLeadTypes'
 import { SearchableSelect } from '../../../components/ui/searchable-select'
 import { LeadGlobalSearch } from './LeadGlobalSearch'
 import { LoadingSkeleton } from '../../../components/ui/loading-skeleton'
@@ -69,7 +69,7 @@ function extractCity(lead) {
   return 'Unknown'
 }
 
-function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop, selectedLeads, onSelectLead }) {
+function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop, selectedLeads, onSelectLead, onEditLead, onDeleteLead, onChangeStatus }) {
   const config = statusConfig[status]
   const [isDragOver, setIsDragOver] = useState(false)
 
@@ -140,6 +140,9 @@ function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop, selected
                 onClick={onLeadClick}
                 selected={selectedLeads.includes(lead.id)}
                 onSelect={(l, checked) => onSelectLead(l.id, checked)}
+                onEdit={onEditLead}
+                onDelete={onDeleteLead}
+                onChangeStatus={onChangeStatus}
               />
             </motion.div>
           ))}
@@ -164,11 +167,20 @@ function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop, selected
 }
 
 export function LeadBoard({
+  leads,
+  loading,
+  error,
+  fetchLeads,
   onLeadClick,
   onAddClick,
-  onImportClick
+  onImportClick,
+  onEditLead,
+  onDeleteLead,
+  onChangeStatus: onChangeStatusProp,
+  onBulkEdit,
+  onBulkDelete
 }) {
-  const { leads, loading, error, changeStatus, getStats, fetchLeads } = useLeads()
+  const { leadTypes } = useLeadTypes()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState({
@@ -176,7 +188,8 @@ export function LeadBoard({
     priority: '',
     tag: '',
     country: '',
-    city: ''
+    city: '',
+    typeId: ''
   })
 
   // Selection State
@@ -300,11 +313,16 @@ export function LeadBoard({
       result = result.filter(l => l._city === filters.city)
     }
 
+    // Apply lead type filter
+    if (filters.typeId) {
+      result = result.filter(l => l.typeId === filters.typeId)
+    }
+
     return result
   }, [enrichedLeads, filters])
 
   const clearFilters = () => {
-    setFilters({ industry: '', priority: '', tag: '', country: '', city: '' })
+    setFilters({ industry: '', priority: '', tag: '', country: '', city: '', typeId: '' })
   }
 
   const leadsByStatus = useMemo(() => {
@@ -316,7 +334,7 @@ export function LeadBoard({
   }, [filteredLeads])
 
   const handleDrop = async (leadId, newStatus) => {
-    await changeStatus(leadId, newStatus)
+    await onChangeStatusProp?.(leadId, newStatus)
   }
 
   // Selection Logic
@@ -341,7 +359,10 @@ export function LeadBoard({
   }, [leads, selectedLeads])
 
 
-  const stats = getStats()
+  const stats = useMemo(() => ({
+    total: leads.length,
+    byStatus: { won: leads.filter(l => l.status === 'won').length }
+  }), [leads])
 
   // Show loading state
   if (loading && leads.length === 0) {
@@ -459,7 +480,18 @@ export function LeadBoard({
           <div className="bg-bg-secondary rounded-xl p-4 border border-border">
             <div className="flex items-start gap-6">
               {/* Filter Grid */}
-              <div className="flex-1 grid grid-cols-5 gap-3">
+              <div className="flex-1 grid grid-cols-6 gap-3">
+                {/* Lead Type Filter */}
+                <SearchableSelect
+                  value={filters.typeId}
+                  onChange={(v) => setFilters(f => ({ ...f, typeId: v }))}
+                  options={leadTypes.map(t => ({ value: t.id, label: t.name, count: t._count?.leads || 0 }))}
+                  placeholder="All Types"
+                  searchPlaceholder="Search type..."
+                  label="Lead Type"
+                  icon={Layers}
+                />
+
                 {/* Country Filter */}
                 <SearchableSelect
                   value={filters.country}
@@ -532,6 +564,16 @@ export function LeadBoard({
             {activeFilterCount > 0 && (
               <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
                 <span className="text-xs text-text-muted">Active:</span>
+                {filters.typeId && (
+                  <span className="px-2 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-xs flex items-center gap-1">
+                    <Layers className="w-3 h-3" />
+                    {leadTypes.find(t => t.id === filters.typeId)?.name || 'Type'}
+                    <X
+                      className="w-3 h-3 cursor-pointer hover:text-text-primary"
+                      onClick={() => setFilters(f => ({ ...f, typeId: '' }))}
+                    />
+                  </span>
+                )}
                 {filters.country && (
                   <span className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs flex items-center gap-1">
                     <Globe className="w-3 h-3" />
@@ -601,6 +643,9 @@ export function LeadBoard({
               onDrop={handleDrop}
               selectedLeads={selectedLeads}
               onSelectLead={handleSelectLead}
+              onEditLead={onEditLead}
+              onDeleteLead={onDeleteLead}
+              onChangeStatus={onChangeStatusProp}
             />
           ))}
         </div>
@@ -613,7 +658,7 @@ export function LeadBoard({
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 px-6 py-3 bg-bg-primary border border-border shadow-2xl rounded-2xl"
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 px-6 py-3 bg-bg-primary border border-border shadow-2xl rounded-2xl"
           >
             <div className="flex items-center gap-2 text-text-primary font-medium">
               <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs text-white">
@@ -625,11 +670,27 @@ export function LeadBoard({
             <div className="w-px h-6 bg-border mx-2" />
 
             <button
+              onClick={() => onBulkEdit?.(selectedLeads)}
+              className="flex items-center gap-2 px-4 py-2 bg-bg-secondary border border-border text-text-primary rounded-lg hover:bg-bg-tertiary transition-colors"
+            >
+              <Edit className="w-4 h-4" />
+              Bulk Edit
+            </button>
+
+            <button
               onClick={() => setShowBulkComposer(true)}
               className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:opacity-90 transition-opacity"
             >
               <Mail className="w-4 h-4" />
               Send Email
+            </button>
+
+            <button
+              onClick={() => onBulkDelete?.(selectedLeads)}
+              className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete
             </button>
 
             <button

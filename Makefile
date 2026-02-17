@@ -82,11 +82,138 @@ deploy-deps:
 	@echo "Done!"
 
 # ============================================
-# Local Dev
+# Local Dev — Full Workflow
 # ============================================
 
-server:
-	pnpm server
+.PHONY: dev start stop install db-start db-stop db-push db-studio prisma clean reset help-dev docker-up docker-down test test-all test-leads test-boards test-api test-ui
 
-client:
-	pnpm client
+help-dev: ## Show dev commands
+	@echo ""
+	@echo "\033[1m📋 Dev Commands:\033[0m"
+	@echo "  \033[36mmake dev\033[0m         — Full start (db + deps + prisma + server)"
+	@echo "  \033[36mmake start\033[0m       — Quick start (assumes deps installed)"
+	@echo "  \033[36mmake stop\033[0m        — Stop all local services"
+	@echo "  \033[36mmake install\033[0m     — Install pnpm dependencies"
+	@echo "  \033[36mmake db-start\033[0m    — Start PostgreSQL container"
+	@echo "  \033[36mmake db-stop\033[0m     — Stop PostgreSQL container"
+	@echo "  \033[36mmake db-push\033[0m     — Push Prisma schema to database"
+	@echo "  \033[36mmake db-studio\033[0m   — Open Prisma Studio"
+	@echo "  \033[36mmake prisma\033[0m      — Generate Prisma client"
+	@echo "  \033[36mmake clean\033[0m       — Stop services + remove node_modules"
+	@echo "  \033[36mmake reset\033[0m       — Full reset (clean + install + prisma)"
+	@echo "  \033[36mmake docker-up\033[0m   — Start via Docker Compose"
+	@echo ""
+	@echo "\033[1m🧪 E2E Testing:\033[0m"
+	@echo "  \033[36mmake test\033[0m        — Run all API E2E tests"
+	@echo "  \033[36mmake test-all\033[0m    — Run all tests (API + UI)"
+	@echo "  \033[36mmake test-leads\033[0m  — Run Leads CRM deep tests"
+	@echo "  \033[36mmake test-boards\033[0m — Run Task Boards deep tests"
+	@echo "  \033[36mmake test-auth\033[0m   — Run Auth + Health tests"
+	@echo "  \033[36mmake test-ui\033[0m     — Run UI browser tests"
+	@echo "  \033[36mmake test-report\033[0m — Open Playwright HTML report"
+	@echo ""
+
+dev: db-start install prisma ## Full dev setup + start
+	@echo "🚀 Starting dev server..."
+	pnpm run dev
+
+start: db-start ## Quick start (db + dev server)
+	pnpm run dev
+
+stop: ## Stop all local services
+	@echo "🛑 Stopping services..."
+	-lsof -ti :5175,:3002,:3005 2>/dev/null | xargs -r kill -9 2>/dev/null
+	@echo "✅ Services stopped"
+
+install: ## Install dependencies with pnpm
+	@if [ ! -d "node_modules/.pnpm" ]; then \
+		echo "📦 Installing dependencies..."; \
+		pnpm install --ignore-workspace; \
+		pnpm approve-builds 2>/dev/null || true; \
+	else \
+		echo "✅ Dependencies already installed"; \
+	fi
+
+db-start: ## Start PostgreSQL container
+	@if ! docker ps --format '{{.Names}}' | grep -q business-hub-db; then \
+		if docker ps -a --format '{{.Names}}' | grep -q business-hub-db; then \
+			echo "🐘 Starting existing PostgreSQL container..."; \
+			docker start business-hub-db; \
+		else \
+			echo "🐘 Creating PostgreSQL container..."; \
+			docker run -d --name business-hub-db \
+				-e POSTGRES_USER=postgres \
+				-e POSTGRES_PASSWORD=postgres_password \
+				-e POSTGRES_DB=business_hub \
+				-p 5433:5432 \
+				--restart always \
+				postgres:15-alpine; \
+		fi; \
+		echo "⏳ Waiting for PostgreSQL..."; \
+		for i in $$(seq 1 15); do \
+			if docker exec business-hub-db pg_isready -U postgres >/dev/null 2>&1; then \
+				echo "✅ PostgreSQL ready on port 5433"; \
+				break; \
+			fi; \
+			sleep 1; \
+		done; \
+	else \
+		echo "✅ PostgreSQL already running on port 5433"; \
+	fi
+
+db-stop: ## Stop PostgreSQL container
+	@docker stop business-hub-db 2>/dev/null && echo "🐘 PostgreSQL stopped" || echo "⚠️  Not running"
+
+db-push: db-start ## Push Prisma schema to database
+	npx prisma db push --schema=server/prisma/schema.prisma
+
+db-studio: db-start ## Open Prisma Studio
+	npx prisma studio --schema=server/prisma/schema.prisma
+
+prisma: ## Generate Prisma client
+	@echo "🔧 Generating Prisma client..."
+	@npx prisma generate --schema=server/prisma/schema.prisma
+
+docker-up: ## Start via Docker Compose
+	docker compose up --build -d
+
+docker-down: ## Stop Docker Compose
+	docker compose down
+
+# ============================================
+# E2E Testing (Playwright)
+# ============================================
+
+test: test-api ## Run all API E2E tests
+
+test-all: ## Run all E2E tests (API + UI)
+	npx playwright test
+
+test-api: ## Run all API E2E test suites
+	npx playwright test --project=api
+
+test-leads: ## Run Leads CRM deep E2E tests
+	npx playwright test --project=api tests/e2e/api/suite-11-leads-deep.spec.js
+
+test-boards: ## Run Task Boards deep E2E tests
+	npx playwright test --project=api tests/e2e/api/suite-12-boards-deep.spec.js
+
+test-auth: ## Run Auth + Health tests (suites 1-2)
+	npx playwright test --project=api tests/e2e/api/suites-1-6.spec.js
+
+test-ui: ## Run UI browser tests
+	npx playwright test --project=ui
+
+test-report: ## Open last Playwright HTML report
+	npx playwright show-report
+
+# ============================================
+# Cleanup
+# ============================================
+
+clean: stop ## Stop + remove node_modules/dist
+	rm -rf node_modules dist
+	@echo "🧹 Cleaned"
+
+reset: clean install prisma ## Full reset
+	@echo "✅ Reset done. Run 'make dev' to start."

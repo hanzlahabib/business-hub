@@ -49,6 +49,8 @@ model User {
   // Intelligence
   leadIntelligence LeadIntelligence[]
   proposals        Proposal[]
+  // Lead Types
+  leadTypes       LeadType[]
 }
 
 // ============================================
@@ -99,12 +101,40 @@ model Lead {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
+  typeId          String?
+  leadType        LeadType?  @relation(fields: [typeId], references: [id])
+
   userId          String
   user            User      @relation(fields: [userId], references: [id])
   messages        Message[]
   calls           Call[]
   intelligence    LeadIntelligence?
   proposals       Proposal[]
+}
+
+// ============================================
+// LEAD TYPES
+// ============================================
+model LeadType {
+  id                String    @id @default(cuid())
+  name              String
+  slug              String
+  description       String?
+  boardId           String?
+  defaultColumns    Json?
+  agentConfig       Json?
+  webhookSecret     String?
+  autoCallEnabled   Boolean   @default(true)
+  autoCallDelay     Int       @default(30000)
+  emailFollowUp     Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  leads             Lead[]
+
+  @@unique([userId, slug])
 }
 
 // ============================================

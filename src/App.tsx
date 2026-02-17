@@ -111,7 +111,7 @@ function App() {
     const [state, dispatch] = useReducer(appReducer, initialState)
 
     // Global active call tracking (visible across all pages)
-    const { activeCalls } = useCallUpdates({
+    const { activeCalls, allVisibleCalls } = useCallUpdates({
         onCallUpdate: () => {
             // Dispatch custom event so CallingView can refresh its data
             window.dispatchEvent(new CustomEvent('call:updated'))
@@ -277,14 +277,14 @@ function App() {
             />
 
             {/* Main content area - Stitch layout: flex col, header flush, content scrollable */}
-            <div className={`flex-1 ${sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-52'} transition-all duration-300 flex flex-col h-full overflow-hidden relative bg-grid-pattern`}>
+            <div className={`flex-1 ${sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-52'} transition-all duration-300 flex flex-col h-full overflow-hidden relative bg-bg-primary bg-grid-pattern`}>
                 {/* Header - flush, no padding */}
                 <AppHeader
                     theme={theme}
                     onToggleTheme={toggleTheme}
                     onToggleSidebar={toggleSidebar}
                     onOpenSettings={toggleSettings}
-                    activeCalls={activeCalls}
+                    activeCalls={allVisibleCalls}
                 />
 
                 {/* Calendar Module - needs full height, bypass scroll wrapper */}

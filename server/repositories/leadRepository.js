@@ -4,13 +4,15 @@ export const leadRepository = {
     async findAllByUserId(userId) {
         return prisma.lead.findMany({
             where: { userId },
+            include: { leadType: { select: { id: true, name: true, slug: true } } },
             orderBy: { createdAt: 'desc' }
         })
     },
 
     async findById(id, userId) {
         return prisma.lead.findFirst({
-            where: { id, userId }
+            where: { id, userId },
+            include: { leadType: { select: { id: true, name: true, slug: true } } }
         })
     },
 
@@ -31,6 +33,10 @@ export const leadRepository = {
         return prisma.lead.delete({
             where: { id, userId }
         })
+    },
+
+    async findLeadType(typeId) {
+        return prisma.leadType.findUnique({ where: { id: typeId } })
     }
 }
 

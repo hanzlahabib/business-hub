@@ -61,7 +61,7 @@ export const MonthGrid = memo(function MonthGrid({
             {/* Day name headers */}
             <div className="grid grid-cols-7 border-b border-border sticky top-0 z-20 bg-bg-primary">
                 {DAY_NAMES.map((name, idx) => (
-                    <div key={name} className={`py-3 text-center text-xs font-medium uppercase tracking-wide ${idx >= 5 ? 'text-text-muted/50 bg-black/5' : 'text-text-muted'}`}>
+                    <div key={name} className={`py-3 text-center text-xs font-medium uppercase tracking-wide ${idx >= 5 ? 'text-text-muted/50 bg-bg-secondary/20' : 'text-text-muted'}`}>
                         {name}
                     </div>
                 ))}
@@ -84,7 +84,7 @@ export const MonthGrid = memo(function MonthGrid({
                                     onClick={() => onAddContent?.(dateStr)}
                                     className={`min-h-[100px] p-2 border-r border-border/30 cursor-pointer transition-colors hover:bg-accent-primary/5 group
                                         ${!inMonth ? 'opacity-30' : ''}
-                                        ${isWeekend ? 'bg-black/5' : ''}
+                                        ${isWeekend ? 'bg-bg-secondary/20' : ''}
                                         ${isDayToday ? 'bg-accent-primary/5' : ''}`}
                                 >
                                     {/* Day number */}

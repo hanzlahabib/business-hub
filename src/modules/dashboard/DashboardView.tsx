@@ -24,12 +24,27 @@ interface DashboardData {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   Sparkline generator — converts a data array into an SVG path
+   ═══════════════════════════════════════════════════════════════════════════ */
+function generateSparklinePath(data: number[], width = 100, height = 28): string {
+    if (!data || data.length < 2) return `M0,${height} L${width},${height}`
+    const max = Math.max(...data, 1)
+    const stepX = width / (data.length - 1)
+    return data.map((v, i) => {
+        const x = i * stepX
+        const y = height - (v / max) * (height - 2)
+        return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`
+    }).join(' ')
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    KPI Card — Matches Stitch design: uppercase label, shine effect, sparkline
    ═══════════════════════════════════════════════════════════════════════════ */
-function KpiCard({ label, value, delta, deltaType, sparkType, sparkColor, delay }: {
+function KpiCard({ label, value, delta, deltaType, sparkType, sparkColor, delay, trendData }: {
     label: string; value: string | number
     delta?: string; deltaType?: 'up' | 'down' | 'flat'
     sparkType?: 'line' | 'bars'; sparkColor?: string; delay: number
+    trendData?: number[]
 }) {
     return (
         <motion.div
@@ -56,35 +71,38 @@ function KpiCard({ label, value, delta, deltaType, sparkType, sparkColor, delay 
                 )}
             </div>
 
-            {/* Sparkline area — matches Stitch SVG style */}
+            {/* Sparkline area — real data or fallback */}
             <div className="h-10 w-full mt-2 relative">
-                {sparkType === 'line' && (
-                    <svg className="w-full h-full opacity-80" preserveAspectRatio="none" viewBox="0 0 100 30">
-                        <path
-                            d="M0,25 Q10,20 20,22 T40,15 T60,20 T80,5 T100,10"
-                            fill="none" stroke={sparkColor || '#3c83f6'} strokeWidth="2"
-                        />
-                        <path
-                            d="M0,25 Q10,20 20,22 T40,15 T60,20 T80,5 T100,10 V30 H0 Z"
-                            fill={sparkColor || '#3c83f6'} opacity="0.2" stroke="none"
-                        />
-                    </svg>
-                )}
-                {sparkType === 'bars' && (
-                    <div className="flex items-end gap-1 px-1 h-full">
-                        {[40, 60, 30, 80, 50, 45].map((h, i) => (
-                            <div
-                                key={i}
-                                className="w-1/6 rounded-sm"
-                                style={{
-                                    height: `${h}%`,
-                                    background: sparkColor || '#3c83f6',
-                                    opacity: 0.3 + (i / 6) * 0.7
-                                }}
-                            />
-                        ))}
-                    </div>
-                )}
+                {sparkType === 'line' && (() => {
+                    const d = trendData && trendData.length >= 2 ? trendData : [0, 0, 0, 0, 0, 0, 0]
+                    const path = generateSparklinePath(d)
+                    const fillPath = `${path} V30 H0 Z`
+                    return (
+                        <svg className="w-full h-full opacity-80" preserveAspectRatio="none" viewBox="0 0 100 28">
+                            <path d={path} fill="none" stroke={sparkColor || '#3c83f6'} strokeWidth="2" />
+                            <path d={fillPath} fill={sparkColor || '#3c83f6'} opacity="0.2" stroke="none" />
+                        </svg>
+                    )
+                })()}
+                {sparkType === 'bars' && (() => {
+                    const d = trendData && trendData.length >= 2 ? trendData : [0, 0, 0, 0, 0, 0, 0]
+                    const max = Math.max(...d, 1)
+                    return (
+                        <div className="flex items-end gap-1 px-1 h-full">
+                            {d.map((v, i) => (
+                                <div
+                                    key={i}
+                                    className="flex-1 rounded-sm"
+                                    style={{
+                                        height: `${Math.max((v / max) * 100, 4)}%`,
+                                        background: sparkColor || '#3c83f6',
+                                        opacity: 0.3 + (i / d.length) * 0.7
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    )
+                })()}
             </div>
         </motion.div>
     )
@@ -109,6 +127,7 @@ const timelineNodeColors: Record<string, string> = {
    ═══════════════════════════════════════════════════════════════════════════ */
 export default function DashboardView() {
     const [data, setData] = useState<DashboardData | null>(null)
+    const [trends, setTrends] = useState<{ leads: number[]; calls: number[]; conversions: number[] } | null>(null)
     const [loading, setLoading] = useState(true)
     const { user } = useAuth()
     const navigate = useNavigate()
@@ -116,12 +135,13 @@ export default function DashboardView() {
     useEffect(() => {
         if (!user?.id) return
         setLoading(true)
+        const headers = { 'x-user-id': user.id }
 
-        fetch(ENDPOINTS.DASHBOARD, {
-            headers: { 'x-user-id': user.id }
-        })
-            .then(r => r.ok ? r.json() : null)
-            .then(d => setData(d))
+        Promise.all([
+            fetch(ENDPOINTS.DASHBOARD, { headers }).then(r => r.ok ? r.json() : null),
+            fetch(ENDPOINTS.DASHBOARD_TRENDS, { headers }).then(r => r.ok ? r.json() : null).catch(() => null)
+        ])
+            .then(([d, t]) => { setData(d); setTrends(t) })
             .catch(() => setData(null))
             .finally(() => setLoading(false))
     }, [user?.id])
@@ -173,7 +193,6 @@ export default function DashboardView() {
         .sort((a, b) => b._count - a._count)
         .slice(0, 5)
 
-    const leadInitials = ['RJ', 'AL', 'MK', 'SP', 'DW']
     const leadColors = ['bg-indigo-500', 'bg-purple-500', 'bg-teal-600', 'bg-rose-500', 'bg-amber-500']
 
     return (
@@ -187,24 +206,28 @@ export default function DashboardView() {
                         delta={`+${stats.leads.today} today`}
                         deltaType={stats.leads.today > 0 ? 'up' : 'flat'}
                         sparkType="line" sparkColor="#3c83f6" delay={0}
+                        trendData={trends?.leads}
                     />
                     <KpiCard
                         label="Conv. Rate" value={`${stats.leads.conversionRate}%`}
                         delta={stats.leads.conversionRate > 0 ? `${stats.leads.conversionRate}%` : '0%'}
                         deltaType={stats.leads.conversionRate > 0 ? 'up' : 'flat'}
                         sparkType="line" sparkColor="#3c83f6" delay={0.05}
+                        trendData={trends?.conversions}
                     />
                     <KpiCard
                         label="Active Calls" value={stats.calls.total}
                         delta={`+${stats.calls.today} today`}
                         deltaType={stats.calls.today > 0 ? 'up' : 'flat'}
                         sparkType="bars" sparkColor="#3c83f6" delay={0.1}
+                        trendData={trends?.calls}
                     />
                     <KpiCard
                         label="Booking Rate" value={`${stats.calls.bookingRate}%`}
                         delta={stats.calls.bookingRate > 0 ? `${stats.calls.bookingRate}%` : '0%'}
                         deltaType={stats.calls.bookingRate > 0 ? 'up' : 'flat'}
                         sparkType="line" sparkColor="#10b981" delay={0.15}
+                        trendData={trends?.conversions}
                     />
                 </div>
 
@@ -219,7 +242,7 @@ export default function DashboardView() {
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="text-base font-semibold text-text-primary">Pipeline Velocity</h2>
                             <div className="flex gap-2">
-                                <button className="px-3 py-1 text-xs font-medium text-text-primary bg-white/10 rounded hover:bg-white/20 transition">Week</button>
+                                <button className="px-3 py-1 text-xs font-medium text-white bg-accent-primary rounded hover:bg-accent-hover transition">Week</button>
                                 <button className="px-3 py-1 text-xs font-medium text-text-muted hover:text-text-primary transition">Month</button>
                                 <button className="px-3 py-1 text-xs font-medium text-text-muted hover:text-text-primary transition">Quarter</button>
                             </div>
@@ -229,7 +252,7 @@ export default function DashboardView() {
                             {/* Background grid lines */}
                             <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
                                 {[0, 1, 2, 3, 4].map(i => (
-                                    <div key={i} className="w-full h-px bg-white/5" />
+                                    <div key={i} className="w-full h-px bg-border/80" />
                                 ))}
                             </div>
 
@@ -254,7 +277,7 @@ export default function DashboardView() {
                                             }}
                                         >
                                             {/* Tooltip */}
-                                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10 z-10">
+                                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-bg-secondary text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border z-10">
                                                 {statusLabels[s.status] || s.status}: {s._count}
                                             </div>
                                         </motion.div>
@@ -291,7 +314,7 @@ export default function DashboardView() {
                                 {recentActivity.slice(0, 8).map((event, i) => (
                                     <div
                                         key={i}
-                                        className={`flex gap-4 relative ${event.actionUrl ? 'cursor-pointer hover:bg-white/5 rounded-lg p-1 -m-1 transition-colors' : ''}`}
+                                        className={`flex gap-4 relative ${event.actionUrl ? 'cursor-pointer hover:bg-bg-tertiary/50 rounded-lg p-1 -m-1 transition-colors' : ''}`}
                                         onClick={() => event.actionUrl && navigate(event.actionUrl)}
                                     >
                                         <div className={`timeline-node mt-1.5 ${timelineNodeColors[event.type] || timelineNodeColors.system}`} />
@@ -320,7 +343,7 @@ export default function DashboardView() {
                         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
                         className="glass-card rounded-xl p-0 overflow-hidden lg:col-span-2 flex flex-col"
                     >
-                        <div className="p-6 border-b border-white/5 flex justify-between items-center">
+                        <div className="p-6 border-b border-border flex justify-between items-center">
                             <h2 className="text-base font-semibold text-text-primary">Hot Leads</h2>
                             <div className="flex gap-2 text-text-muted">
                                 <Filter size={14} className="cursor-pointer hover:text-text-primary transition" />
@@ -330,7 +353,7 @@ export default function DashboardView() {
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="text-xs text-text-muted uppercase bg-white/5 border-b border-white/5">
+                                    <tr className="text-xs text-text-muted uppercase bg-bg-tertiary/50 border-b border-border">
                                         <th className="px-6 py-3 font-medium">Stage</th>
                                         <th className="px-6 py-3 font-medium">Count</th>
                                         <th className="px-6 py-3 font-medium">% of Pipeline</th>
@@ -338,7 +361,7 @@ export default function DashboardView() {
                                         <th className="px-6 py-3 font-medium">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody className="text-sm divide-y divide-white/5">
+                                <tbody className="text-sm divide-y divide-border">
                                     {hotLeads.map((lead, idx) => {
                                         const pct = pipelineTotal > 0 ? Math.round((lead._count / pipelineTotal) * 100) : 0
                                         const heat = Math.min(Math.round(pct * 3 + 20), 100)
@@ -350,12 +373,12 @@ export default function DashboardView() {
                                         return (
                                             <tr
                                                 key={lead.status}
-                                                className="group hover:bg-white/5 transition-colors cursor-pointer"
+                                                className="group hover:bg-bg-tertiary/50 transition-colors cursor-pointer"
                                                 onClick={() => navigate('/leads')}
                                             >
                                                 <td className="px-6 py-4 text-text-primary font-medium flex items-center gap-3">
                                                     <div className={`w-8 h-8 rounded-full ${leadColors[idx] || 'bg-slate-500'} flex items-center justify-center text-xs text-white font-bold`}>
-                                                        {leadInitials[idx] || '??'}
+                                                        {(statusLabels[lead.status] || lead.status || '??').substring(0, 2).toUpperCase()}
                                                     </div>
                                                     {statusLabels[lead.status] || lead.status}
                                                 </td>
@@ -402,7 +425,7 @@ export default function DashboardView() {
                         <div className="space-y-4">
                             {/* Suggestion 1 — dynamic based on data */}
                             {stats.leads.today > 0 && (
-                                <div className="bg-white/5 hover:bg-white/10 p-3 rounded-lg border border-white/5 transition-colors group cursor-pointer">
+                                <div className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer">
                                     <div className="flex justify-between items-start mb-1">
                                         <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wide">High Priority</span>
                                         <ChevronRight size={14} className="text-text-muted group-hover:text-text-primary" />
@@ -417,7 +440,7 @@ export default function DashboardView() {
                             )}
 
                             {/* Suggestion 2 — conversion insight */}
-                            <div className="bg-white/5 hover:bg-white/10 p-3 rounded-lg border border-white/5 transition-colors group cursor-pointer">
+                            <div className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer">
                                 <div className="flex justify-between items-start mb-1">
                                     <span className="text-xs font-semibold text-blue-400 uppercase tracking-wide">Insight</span>
                                     <ChevronRight size={14} className="text-text-muted group-hover:text-text-primary" />
@@ -427,13 +450,13 @@ export default function DashboardView() {
                                         ? 'Consider refining qualification criteria.'
                                         : 'Strong performance. Maintain current outreach cadence.'}
                                 </p>
-                                <button className="text-[10px] bg-white/10 hover:bg-white/20 text-text-secondary px-2 py-1 rounded border border-white/10 transition">
+                                <button className="text-[10px] bg-bg-tertiary hover:bg-bg-elevated text-text-secondary px-2 py-1 rounded border border-border transition">
                                     Analyze
                                 </button>
                             </div>
 
                             {/* Suggestion 3 — tasks */}
-                            <div className="bg-white/5 hover:bg-white/10 p-3 rounded-lg border border-white/5 transition-colors group cursor-pointer">
+                            <div className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer">
                                 <div className="flex justify-between items-start mb-1">
                                     <span className="text-xs font-semibold text-text-muted uppercase tracking-wide">Routine</span>
                                     <ChevronRight size={14} className="text-text-muted group-hover:text-text-primary" />
@@ -446,7 +469,7 @@ export default function DashboardView() {
 
                             {/* Suggestion 4 — notifications */}
                             {unreadNotifications > 0 && (
-                                <div className="bg-white/5 hover:bg-white/10 p-3 rounded-lg border border-white/5 transition-colors group cursor-pointer">
+                                <div className="bg-bg-tertiary/50 hover:bg-bg-tertiary p-3 rounded-lg border border-border transition-colors group cursor-pointer">
                                     <div className="flex justify-between items-start mb-1">
                                         <span className="text-xs font-semibold text-amber-400 uppercase tracking-wide">Attention</span>
                                         <ChevronRight size={14} className="text-text-muted group-hover:text-text-primary" />

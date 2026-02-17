@@ -113,6 +113,19 @@ export function NeuralBrainView() {
             {/* ─── Dashboard Content ─── */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
+                {/* ── Neural Brain Branded Header (Stitch match) ── */}
+                <div className="flex items-center gap-4">
+                    <div className="p-2 bg-accent-primary/10 rounded-lg">
+                        <Search size={22} className="text-accent-primary" />
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-2xl font-bold text-text-primary tracking-tight">Neural Brain</h1>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-accent-primary/20 text-accent-primary border border-accent-primary/20 uppercase tracking-wider">
+                            Enterprise
+                        </span>
+                    </div>
+                </div>
+
                 {/* ── Page Title Area (Stitch match) ── */}
                 <div className="flex items-end justify-between">
                     <div>
@@ -256,7 +269,7 @@ export function NeuralBrainView() {
                                             transition={{ duration: 0.8, delay: 0.3 }}
                                             className={`h-full bg-gradient-to-r ${bar.gradient} rounded-r-lg relative group`}
                                         >
-                                            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <div className="absolute inset-0 bg-bg-tertiary/30 opacity-0 group-hover:opacity-100 transition-opacity" />
                                         </motion.div>
                                         {/* Scale grid lines */}
                                         <div className="absolute inset-0 grid grid-cols-12 pointer-events-none">

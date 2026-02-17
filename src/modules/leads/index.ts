@@ -1,5 +1,6 @@
 // Hooks
 export { useLeads } from './hooks/useLeads'
+export { useLeadTypes } from './hooks/useLeadTypes'
 
 // Components
 export { LeadBoard } from './components/LeadBoard'
@@ -10,5 +11,7 @@ export { AddLeadModal } from './components/AddLeadModal'
 export { ImportLeadsModal } from './components/ImportLeadsModal'
 export { EmailComposer } from './components/EmailComposer'
 export { TemplateManager } from './components/TemplateManager'
+export { LeadTypeManager } from './components/LeadTypeManager'
+export { BulkEditModal } from './components/BulkEditModal'
 
 

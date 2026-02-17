@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Phone } from 'lucide-react'
+import { Phone, PhoneOff, PhoneIncoming, Check, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 interface ActiveCall {
@@ -8,6 +8,7 @@ interface ActiveCall {
     leadName: string
     status: string
     startedAt: string
+    outcome?: string
 }
 
 interface Props {
@@ -31,6 +32,43 @@ function LiveTimer({ startedAt }: { startedAt: string }) {
     return <span className="font-mono">{m}:{String(s).padStart(2, '0')}</span>
 }
 
+const STATUS_CONFIG: Record<string, {
+    bg: string; border: string; text: string; dot: string; icon: typeof Phone; label: string
+}> = {
+    queued: {
+        bg: 'bg-blue-500/10', border: 'border-blue-500/20', text: 'text-blue-400',
+        dot: 'bg-blue-400', icon: Phone, label: 'Queued',
+    },
+    ringing: {
+        bg: 'bg-amber-500/10', border: 'border-amber-500/20', text: 'text-amber-400',
+        dot: 'bg-amber-400', icon: PhoneIncoming, label: 'Ringing',
+    },
+    'in-progress': {
+        bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400',
+        dot: 'bg-emerald-400', icon: Phone, label: 'In Progress',
+    },
+    completed: {
+        bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400',
+        dot: 'bg-emerald-500', icon: Check, label: 'Completed',
+    },
+    failed: {
+        bg: 'bg-red-500/10', border: 'border-red-500/20', text: 'text-red-400',
+        dot: 'bg-red-500', icon: X, label: 'Failed',
+    },
+}
+
+const OUTCOME_LABELS: Record<string, string> = {
+    booked: '✅ Booked',
+    'follow-up': '📅 Follow-up',
+    'not-interested': '❌ Not Interested',
+    'no-answer': '📵 No Answer',
+    voicemail: '📩 Voicemail',
+}
+
+function getConfig(status: string) {
+    return STATUS_CONFIG[status] || STATUS_CONFIG.queued
+}
+
 export function GlobalCallIndicator({ activeCalls, onViewCall }: Props) {
     const navigate = useNavigate()
 
@@ -38,6 +76,10 @@ export function GlobalCallIndicator({ activeCalls, onViewCall }: Props) {
 
     const primaryCall = activeCalls[0]
     const extraCount = activeCalls.length - 1
+    const config = getConfig(primaryCall.status)
+    const Icon = config.icon
+    const isActive = ['queued', 'ringing', 'in-progress'].includes(primaryCall.status)
+    const isFinished = ['completed', 'failed'].includes(primaryCall.status)
 
     const handleClick = () => {
         navigate('/calling')
@@ -47,26 +89,39 @@ export function GlobalCallIndicator({ activeCalls, onViewCall }: Props) {
     return (
         <button
             onClick={handleClick}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/15 transition-colors animate-in fade-in"
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl ${config.bg} border ${config.border} hover:brightness-110 transition-all animate-in fade-in ${isFinished ? 'opacity-90' : ''}`}
         >
-            {/* Pulsing dot */}
+            {/* Pulsing dot for active, solid for finished */}
             <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                {isActive && (
+                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${config.dot} opacity-75`} />
+                )}
+                <span className={`relative inline-flex rounded-full h-2 w-2 ${config.dot}`} />
             </span>
 
-            <Phone size={12} className="text-emerald-400" />
+            <Icon size={12} className={config.text} />
 
-            <span className="text-[11px] font-medium text-emerald-400 hidden sm:inline max-w-[120px] truncate">
+            <span className={`text-[11px] font-medium ${config.text} hidden sm:inline max-w-[120px] truncate`}>
                 {primaryCall.leadName}
             </span>
 
-            <span className="text-[11px] text-emerald-300">
-                <LiveTimer startedAt={primaryCall.startedAt} />
+            {/* Status badge */}
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${config.bg} ${config.text}`}>
+                {isFinished && primaryCall.outcome
+                    ? (OUTCOME_LABELS[primaryCall.outcome] || config.label)
+                    : config.label
+                }
             </span>
 
+            {/* Live timer for active calls */}
+            {isActive && (
+                <span className={`text-[11px] ${config.text}`}>
+                    <LiveTimer startedAt={primaryCall.startedAt} />
+                </span>
+            )}
+
             {extraCount > 0 && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-medium">
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${config.bg} ${config.text} font-medium`}>
                     +{extraCount}
                 </span>
             )}

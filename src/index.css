@@ -4,32 +4,24 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme {
-  /* Backgrounds - Modern Neutral (no purple tint) */
-  --color-bg-primary: #09090b;
-  --color-bg-secondary: #18181b;
-  --color-bg-tertiary: #27272a;
-  --color-bg-elevated: #3f3f46;
-
-  /* Accent - Blue Primary */
-  --color-accent-primary: #3b82f6;
-  --color-accent-secondary: #60a5fa;
-  --color-accent-hover: #2563eb;
-
-  /* Semantic Colors */
-  --color-accent-success: #22c55e;
-  --color-accent-warning: #f59e0b;
-  --color-accent-danger: #ef4444;
-  --color-accent-info: #06b6d4;
-
-  /* Text */
-  --color-text-primary: #fafafa;
-  --color-text-secondary: #a1a1aa;
-  --color-text-muted: #71717a;
-
-  /* Border */
-  --color-border: #27272a;
-  --color-border-hover: #3f3f46;
+@theme inline {
+  /* Map Tailwind utilities to CSS custom properties — values come from :root / .light / .dark */
+  --color-bg-primary: var(--color-bg-primary);
+  --color-bg-secondary: var(--color-bg-secondary);
+  --color-bg-tertiary: var(--color-bg-tertiary);
+  --color-bg-elevated: var(--color-bg-elevated);
+  --color-accent-primary: var(--color-accent-primary);
+  --color-accent-secondary: var(--color-accent-secondary);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-success: var(--color-accent-success);
+  --color-accent-warning: var(--color-accent-warning);
+  --color-accent-danger: var(--color-accent-danger);
+  --color-accent-info: var(--color-accent-info);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-border: var(--color-border);
+  --color-border-hover: var(--color-border-hover);
 }
 
 * {
@@ -535,6 +527,31 @@ select optgroup {
   --sidebar-accent-foreground: #fafafa;
   --sidebar-border: #27272a;
   --sidebar-ring: #3b82f6;
+
+  /* Custom theme variables — default dark */
+  --color-bg-primary: #09090b;
+  --color-bg-secondary: #18181b;
+  --color-bg-tertiary: #27272a;
+  --color-bg-elevated: #3f3f46;
+  --color-accent-primary: #3b82f6;
+  --color-accent-secondary: #60a5fa;
+  --color-accent-hover: #2563eb;
+  --color-accent-success: #22c55e;
+  --color-accent-warning: #f59e0b;
+  --color-accent-danger: #ef4444;
+  --color-accent-info: #06b6d4;
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+  --color-border: #27272a;
+  --color-border-hover: #3f3f46;
+
+  /* Calendar item colors — default dark */
+  --color-calendar-content: #3b82f6;
+  --color-calendar-task: #f97316;
+  --color-calendar-interview: #a855f7;
+  --color-calendar-lead: #22c55e;
+  --color-calendar-milestone: #f59e0b;
 }
 
 .dark {
@@ -746,18 +763,30 @@ select optgroup {
 }
 
 .light .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(228, 228, 231, 0.8);
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .light .glass-card:hover {
   border-color: rgba(37, 99, 235, 0.3);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .light .glass-panel {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(228, 228, 231, 0.6);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* Kanban Column Background (from Stitch) */
+.kanban-col {
+  background: rgba(15, 20, 25, 0.4);
+  min-height: calc(100vh - 450px);
+}
+
+.light .kanban-col {
+  background: rgba(0, 0, 0, 0.02);
 }
 
 /* Grid Background Pattern (from Stitch) */
@@ -830,6 +859,24 @@ select optgroup {
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   gap: 4px;
+}
+
+.light .stat-delta-up {
+  color: #059669;
+  background: rgba(5, 150, 105, 0.08);
+  border-color: rgba(5, 150, 105, 0.2);
+}
+
+.light .stat-delta-down {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.2);
+}
+
+.light .stat-delta-flat {
+  color: #64748b;
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 /* Module-specific sidebar glow */

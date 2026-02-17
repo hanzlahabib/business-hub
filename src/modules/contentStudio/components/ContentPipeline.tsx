@@ -2,7 +2,6 @@
 import { memo, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { SlidersHorizontal, Video, Film, X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
     Select,
@@ -126,23 +125,23 @@ export const ContentPipeline = memo(function ContentPipeline({
             />
 
             {/* Filters Bar */}
-            <div className="flex items-center justify-between bg-bg-secondary/50 rounded-xl p-3 border border-border">
-                <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex gap-2">
                     {/* Type Filter */}
                     <Select value={typeFilter} onValueChange={setTypeFilter}>
-                        <SelectTrigger className="w-[140px] h-9 bg-bg-tertiary border-border">
-                            <SelectValue placeholder="Content Type" />
+                        <SelectTrigger className="w-[140px] h-8 bg-bg-tertiary/50 border-border/50 text-xs font-bold">
+                            <SelectValue placeholder="All Types" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Types</SelectItem>
                             <SelectItem value="long">
                                 <span className="flex items-center gap-2">
-                                    <Film className="w-4 h-4" /> Long Videos
+                                    <Film className="w-3.5 h-3.5" /> Long Videos
                                 </span>
                             </SelectItem>
                             <SelectItem value="short">
                                 <span className="flex items-center gap-2">
-                                    <Video className="w-4 h-4" /> Shorts
+                                    <Video className="w-3.5 h-3.5" /> Shorts
                                 </span>
                             </SelectItem>
                         </SelectContent>
@@ -150,8 +149,8 @@ export const ContentPipeline = memo(function ContentPipeline({
 
                     {/* Sort */}
                     <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-[140px] h-9 bg-bg-tertiary border-border">
-                            <SelectValue placeholder="Sort by" />
+                        <SelectTrigger className="w-[140px] h-8 bg-bg-tertiary/50 border-border/50 text-xs font-bold">
+                            <SelectValue placeholder="Most Recent" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="recent">Most Recent</SelectItem>
@@ -164,15 +163,15 @@ export const ContentPipeline = memo(function ContentPipeline({
                     {/* More Filters */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="sm" className="h-9 bg-bg-tertiary border-border">
-                                <SlidersHorizontal className="w-4 h-4 mr-2" />
+                            <button className="bg-bg-tertiary/50 border border-border/50 rounded-lg px-3 py-1.5 text-xs font-bold text-text-secondary flex items-center gap-2 hover:bg-bg-tertiary transition-colors">
+                                <SlidersHorizontal className="w-3.5 h-3.5" />
                                 Filters
                                 {activeFiltersCount > 0 && (
-                                    <Badge variant="secondary" className="ml-2 px-1.5 text-xs">
+                                    <Badge variant="secondary" className="ml-1 px-1.5 text-[10px]">
                                         {activeFiltersCount}
                                     </Badge>
                                 )}
-                            </Button>
+                            </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start" className="w-48">
                             <DropdownMenuLabel>Quick Filters</DropdownMenuLabel>
@@ -204,26 +203,20 @@ export const ContentPipeline = memo(function ContentPipeline({
 
                     {/* Clear Filters */}
                     {activeFiltersCount > 0 && (
-                        <motion.div
+                        <motion.button
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
+                            className="px-3 py-1.5 text-xs font-bold text-text-muted hover:text-text-primary flex items-center gap-1 transition-colors"
+                            onClick={clearFilters}
                         >
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-9 text-text-muted hover:text-text-primary"
-                                onClick={clearFilters}
-                            >
-                                <X className="w-4 h-4 mr-1" />
-                                Clear
-                            </Button>
-                        </motion.div>
+                            <X className="w-3.5 h-3.5" /> Clear
+                        </motion.button>
                     )}
                 </div>
 
                 {/* Content Count */}
-                <div className="text-sm text-text-muted">
-                    <span className="font-medium text-text-primary">{filteredContents.length}</span>
+                <div className="text-[10px] font-black text-text-muted uppercase tracking-widest">
+                    <b className="text-text-primary text-xs">{filteredContents.length}</b>
                     {filteredContents.length !== contents.length && (
                         <span> of {contents.length}</span>
                     )}

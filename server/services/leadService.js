@@ -15,11 +15,17 @@ const leadService = {
     async create(userId, data) {
         const lead = await leadRepository.create({ ...data, userId })
 
+        // If lead has a type, fetch it for the event payload
+        let leadType = null
+        if (lead.typeId) {
+            leadType = await leadRepository.findLeadType(lead.typeId)
+        }
+
         eventBus.publish('lead:created', {
             userId,
             entityId: lead.id,
             entityType: 'lead',
-            data: { lead, leadName: lead.name, source: lead.source }
+            data: { lead, leadName: lead.name, source: lead.source, leadType }
         })
 
         return lead

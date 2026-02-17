@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowUpDown, Filter, Phone, Clock, User, ChevronLeft, ChevronRight, ExternalLink, ChevronRight as ChevronRightIcon, AlertTriangle } from 'lucide-react'
+import { ArrowUpDown, Filter, Phone, Clock, User, ChevronLeft, ChevronRight, ExternalLink, ChevronRight as ChevronRightIcon, AlertTriangle, Ban, Calendar } from 'lucide-react'
 import type { Call } from '../hooks/useCalls'
 
 interface Props {
@@ -8,6 +8,7 @@ interface Props {
     total: number
     onRefresh: (filters?: any) => void
     onCallSelect?: (callId: string) => void
+    onCancelCall?: (callId: string) => void
 }
 
 const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
@@ -16,6 +17,8 @@ const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
     ringing: { bg: 'bg-blue-500/10', text: 'text-blue-400' },
     queued: { bg: 'bg-gray-500/10', text: 'text-gray-400' },
     failed: { bg: 'bg-red-500/10', text: 'text-red-400' },
+    scheduled: { bg: 'bg-purple-500/10', text: 'text-purple-400' },
+    cancelled: { bg: 'bg-orange-500/10', text: 'text-orange-400' },
 }
 
 const OUTCOME_STYLES: Record<string, { bg: string; text: string }> = {
@@ -32,7 +35,7 @@ function formatDuration(seconds?: number): string {
     return `${m}:${String(s).padStart(2, '0')}`
 }
 
-export function CallLogTable({ calls, loading, total, onRefresh, onCallSelect }: Props) {
+export function CallLogTable({ calls, loading, total, onRefresh, onCallSelect, onCancelCall }: Props) {
     const [statusFilter, setStatusFilter] = useState('')
     const [outcomeFilter, setOutcomeFilter] = useState('')
     const [sortBy, setSortBy] = useState<'createdAt' | 'duration'>('createdAt')
@@ -85,6 +88,8 @@ export function CallLogTable({ calls, loading, total, onRefresh, onCallSelect }:
                     <option value="in-progress">In Progress</option>
                     <option value="failed">Failed</option>
                     <option value="queued">Queued</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="cancelled">Cancelled</option>
                 </select>
                 <select
                     value={outcomeFilter}
@@ -178,8 +183,23 @@ export function CallLogTable({ calls, loading, total, onRefresh, onCallSelect }:
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-[10px] text-text-muted">
-                                                    {new Date(call.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                                    {call.status === 'scheduled' && call.scheduledAt
+                                                        ? new Date(call.scheduledAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                                                        : new Date(call.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                                                    }
                                                 </span>
+                                                {call.status === 'scheduled' && (
+                                                    <Calendar size={10} className="text-purple-400" />
+                                                )}
+                                                {onCancelCall && (call.status === 'queued' || call.status === 'ringing' || call.status === 'scheduled') && (
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); onCancelCall(call.id) }}
+                                                        className="p-1 rounded hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                                                        title="Cancel call"
+                                                    >
+                                                        <Ban size={12} />
+                                                    </button>
+                                                )}
                                                 <ChevronRightIcon size={12} className="text-text-muted/0 group-hover:text-text-muted transition-colors ml-auto" />
                                             </div>
                                         </td>

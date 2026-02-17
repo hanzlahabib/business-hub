@@ -9,17 +9,20 @@ import {
     ImportLeadsModal,
     EmailComposer,
     TemplateManager,
+    LeadTypeManager,
+    BulkEditModal,
     useLeads
 } from '../../modules/leads'
 import { useTaskBoards } from '../../modules/taskboards'
-import { LayoutGrid, List } from 'lucide-react'
+import { LayoutGrid, List, Layers } from 'lucide-react'
 import { AutomationQuickWidget } from '../../modules/automation'
 import { toast } from 'sonner'
+import { AlertDialog } from '../ui/alert-dialog'
 
 export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId: string) => void }) {
     const { leadId } = useParams()
     const navigate = useNavigate()
-    const { leads, createLead, updateLead, deleteLead, changeStatus, importLeads } = useLeads()
+    const { leads, loading, error, fetchLeads, createLead, updateLead, deleteLead, changeStatus, bulkUpdate, bulkDelete, importLeads } = useLeads()
     const { boards, createBoardFromLead, getBoardByLeadId } = useTaskBoards()
 
     // View mode: table (Stitch default) or kanban
@@ -35,7 +38,12 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
     const [showImportModal, setShowImportModal] = useState(false)
     const [showEmailComposer, setShowEmailComposer] = useState(false)
     const [showTemplateManager, setShowTemplateManager] = useState(false)
+    const [showLeadTypes, setShowLeadTypes] = useState(false)
     const [editingLead, setEditingLead] = useState<any>(null)
+    const [showBulkEdit, setShowBulkEdit] = useState(false)
+    const [bulkSelectedIds, setBulkSelectedIds] = useState<string[]>([])
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+    const [deleteTarget, setDeleteTarget] = useState<{ type: 'single'; lead: any } | { type: 'bulk'; ids: string[] } | null>(null)
 
     const handleLeadClick = (lead: any) => {
         navigate(`/leads/${lead.id}`)
@@ -58,11 +66,47 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
         } else {
             await createLead(data)
         }
+        // Force refresh to ensure UI is in sync
+        await fetchLeads()
     }
 
-    const handleDeleteLead = async (lead: any) => {
-        await deleteLead(lead.id)
-        navigate('/leads')
+    const handleDeleteLead = (lead: any) => {
+        setDeleteTarget({ type: 'single', lead })
+        setShowDeleteConfirm(true)
+    }
+
+    const handleBulkEdit = (ids: string[]) => {
+        setBulkSelectedIds(ids)
+        setShowBulkEdit(true)
+    }
+
+    const handleBulkSave = async (updates: Record<string, any>) => {
+        await bulkUpdate(bulkSelectedIds, updates)
+        setShowBulkEdit(false)
+        setBulkSelectedIds([])
+        await fetchLeads()
+    }
+
+    const handleBulkDelete = (ids: string[]) => {
+        setDeleteTarget({ type: 'bulk', ids })
+        setShowDeleteConfirm(true)
+    }
+
+    const handleConfirmDelete = async () => {
+        if (!deleteTarget) return
+        if (deleteTarget.type === 'single') {
+            await deleteLead(deleteTarget.lead.id)
+            navigate('/leads')
+        } else {
+            await bulkDelete(deleteTarget.ids)
+        }
+        setShowDeleteConfirm(false)
+        setDeleteTarget(null)
+        await fetchLeads()
+    }
+
+    const handleChangeStatus = async (leadId: string, newStatus: string) => {
+        await changeStatus(leadId, newStatus)
     }
 
     const handleSendEmail = (lead: any) => {
@@ -102,10 +146,6 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
         return getBoardByLeadId(selectedLead.id) || null
     }, [selectedLead, boards, getBoardByLeadId])
 
-    const handleStatusChange = async (leadId: string, newStatus: string) => {
-        await changeStatus(leadId, newStatus)
-    }
-
     const handleImport = async (leadsData: any[]) => {
         return await importLeads(leadsData)
     }
@@ -138,6 +178,17 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
                             <LayoutGrid className="w-4 h-4" />
                         </button>
                     </div>
+                    <button
+                        onClick={() => setShowLeadTypes(!showLeadTypes)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${showLeadTypes
+                            ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
+                            : 'text-text-muted hover:text-text-primary hover:bg-bg-tertiary'
+                        }`}
+                        title="Manage Lead Types"
+                    >
+                        <Layers className="w-4 h-4" />
+                        Types
+                    </button>
                     <div className="h-8 w-px bg-border" />
                     <div className="flex items-center gap-2 text-sm text-text-muted">
                         <span>Sort by:</span>
@@ -148,41 +199,64 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
                 </div>
             </header>
 
-            {/* Content: Table or Kanban + Inline Detail Panel */}
+            {/* Lead Type Manager Panel */}
+            {showLeadTypes && (
+                <div className="border-b border-border bg-bg-secondary p-6 overflow-y-auto max-h-[50vh]">
+                    <LeadTypeManager />
+                </div>
+            )}
+
+            {/* Content: Table or Kanban */}
             <div className="flex-1 overflow-hidden flex flex-row">
                 {viewMode === 'table' ? (
                     <LeadTableView
+                        leads={leads}
+                        loading={loading}
                         onLeadClick={handleLeadClick}
                         onAddClick={handleAddLead}
                         onImportClick={() => setShowImportModal(true)}
                         selectedLeadId={leadId}
+                        onEditLead={handleEditLead}
+                        onDeleteLead={handleDeleteLead}
+                        onChangeStatus={handleChangeStatus}
+                        onBulkEdit={handleBulkEdit}
+                        onBulkDelete={handleBulkDelete}
                     />
                 ) : (
                     <div className="flex-1 overflow-hidden">
                         <LeadBoard
+                            leads={leads}
+                            loading={loading}
+                            error={error}
+                            fetchLeads={fetchLeads}
                             onLeadClick={handleLeadClick}
                             onAddClick={handleAddLead}
                             onImportClick={() => setShowImportModal(true)}
+                            onEditLead={handleEditLead}
+                            onDeleteLead={handleDeleteLead}
+                            onChangeStatus={handleChangeStatus}
+                            onBulkEdit={handleBulkEdit}
+                            onBulkDelete={handleBulkDelete}
                         />
                     </div>
                 )}
-
-                {/* Inline Detail Panel — Stitch-style aside sidebar */}
-                {selectedLead && (
-                    <LeadDetailPanel
-                        lead={selectedLead}
-                        isOpen={!!selectedLead}
-                        onClose={() => navigate('/leads')}
-                        onEdit={handleEditLead}
-                        onDelete={handleDeleteLead}
-                        onSendEmail={handleSendEmail}
-                        onCreateBoard={handleCreateBoard}
-                        onViewBoard={handleViewBoard}
-                        onStatusChange={handleStatusChange}
-                        linkedBoard={linkedBoard}
-                    />
-                )}
             </div>
+
+            {/* Overlay Drawer — fixed position, renders above everything */}
+            {selectedLead && (
+                <LeadDetailPanel
+                    lead={selectedLead}
+                    isOpen={!!selectedLead}
+                    onClose={() => navigate('/leads')}
+                    onEdit={handleEditLead}
+                    onDelete={handleDeleteLead}
+                    onSendEmail={handleSendEmail}
+                    onCreateBoard={handleCreateBoard}
+                    onViewBoard={handleViewBoard}
+                    onStatusChange={handleChangeStatus}
+                    linkedBoard={linkedBoard}
+                />
+            )}
 
             {/* Add/Edit Lead Modal */}
             <AddLeadModal
@@ -214,6 +288,33 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
             <TemplateManager
                 isOpen={showTemplateManager}
                 onClose={() => setShowTemplateManager(false)}
+            />
+
+            {/* Bulk Edit Modal */}
+            <BulkEditModal
+                isOpen={showBulkEdit}
+                onClose={() => setShowBulkEdit(false)}
+                selectedCount={bulkSelectedIds.length}
+                onSave={handleBulkSave}
+            />
+
+            {/* Delete Confirmation */}
+            <AlertDialog
+                isOpen={showDeleteConfirm}
+                onClose={() => { setShowDeleteConfirm(false); setDeleteTarget(null) }}
+                onConfirm={handleConfirmDelete}
+                variant="danger"
+                title={
+                    deleteTarget?.type === 'bulk'
+                        ? `Delete ${deleteTarget.ids.length} leads?`
+                        : `Delete "${deleteTarget?.type === 'single' ? deleteTarget.lead?.name : ''}"?`
+                }
+                message={
+                    deleteTarget?.type === 'bulk'
+                        ? `This action cannot be undone. ${deleteTarget.ids.length} leads will be permanently removed.`
+                        : 'This action cannot be undone. This lead will be permanently removed.'
+                }
+                confirmText="Delete"
             />
         </div>
     )

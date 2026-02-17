@@ -1,6 +1,25 @@
 import { motion } from 'framer-motion'
-import { Mail, Phone, Globe, Building2, Calendar, MoreHorizontal, ExternalLink } from 'lucide-react'
+import { Mail, Phone, Globe, Building2, Calendar, MoreHorizontal, ExternalLink, Edit, Trash2, ArrowRight } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent
+} from '@/components/ui/dropdown-menu'
+
+const LEAD_STATUSES = [
+  { id: 'new', label: 'New' },
+  { id: 'contacted', label: 'Contacted' },
+  { id: 'replied', label: 'Replied' },
+  { id: 'meeting', label: 'Meeting' },
+  { id: 'won', label: 'Won' },
+  { id: 'lost', label: 'Lost' },
+]
 
 const industryColors = {
   restaurant: 'from-orange-500/20 to-red-500/20 border-orange-500/30',
@@ -22,7 +41,7 @@ const sourceIcons = {
   'md-import': '📝'
 }
 
-export function LeadCard({ lead, onClick, onMenuClick, isDragging, selected, onSelect }) {
+export function LeadCard({ lead, onClick, isDragging, selected, onSelect, onEdit, onDelete, onChangeStatus }) {
   const colorClass = industryColors[lead.industry] || industryColors.default
 
   return (
@@ -56,15 +75,43 @@ export function LeadCard({ lead, onClick, onMenuClick, isDragging, selected, onS
       </div>
 
       {/* Menu button */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation()
-          onMenuClick?.(lead, e)
-        }}
-        className="absolute top-2 right-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-bg-tertiary transition-all"
-      >
-        <MoreHorizontal className="w-4 h-4 text-text-muted" />
-      </button>
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all" onClick={(e) => e.stopPropagation()}>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-1.5 rounded-lg hover:bg-bg-tertiary transition-all">
+              <MoreHorizontal className="w-4 h-4 text-text-muted" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44">
+            <DropdownMenuItem onClick={() => onEdit?.(lead)} className="text-xs">
+              <Edit className="mr-2 h-3.5 w-3.5" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className="text-xs">
+                <ArrowRight className="mr-2 h-3.5 w-3.5" />
+                Change Status
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {LEAD_STATUSES.filter(s => s.id !== lead.status).map(status => (
+                  <DropdownMenuItem
+                    key={status.id}
+                    onClick={() => onChangeStatus?.(lead.id, status.id)}
+                    className="text-xs"
+                  >
+                    {status.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => onDelete?.(lead)} className="text-xs text-red-500 focus:text-red-500">
+              <Trash2 className="mr-2 h-3.5 w-3.5" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       {/* Header */}
       <div className="mb-3">

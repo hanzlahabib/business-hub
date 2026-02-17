@@ -23,15 +23,15 @@ interface WeekViewProps {
     onItemClick?: (item: CalendarItem) => void
 }
 
-// Color palette for event cards — matches Stitch exactly
+// Color palette for event cards — dark: for dark mode, default for light mode
 const COLOR_MAP: Record<string, { border: string; bg: string; title: string; sub: string; shadow: string }> = {
-    purple: { border: 'border-purple-500', bg: 'bg-purple-500/20', title: 'text-purple-200', sub: 'text-purple-300', shadow: 'shadow-purple-900/10' },
-    emerald: { border: 'border-emerald-500', bg: 'bg-emerald-500/20', title: 'text-emerald-100', sub: 'text-emerald-300', shadow: 'shadow-emerald-900/10' },
-    cyan: { border: 'border-cyan-500', bg: 'bg-cyan-500/20', title: 'text-cyan-100', sub: 'text-cyan-300', shadow: 'shadow-cyan-900/10' },
-    amber: { border: 'border-amber-500', bg: 'bg-amber-500/20', title: 'text-amber-100', sub: 'text-amber-300', shadow: 'shadow-amber-900/10' },
-    indigo: { border: 'border-indigo-500', bg: 'bg-indigo-500/20', title: 'text-indigo-100', sub: 'text-indigo-300', shadow: 'shadow-indigo-900/10' },
-    slate: { border: 'border-slate-500', bg: 'bg-slate-600/20', title: 'text-slate-200', sub: 'text-slate-400', shadow: '' },
-    pink: { border: 'border-pink-500', bg: 'bg-pink-500/20', title: 'text-pink-100', sub: 'text-pink-300', shadow: 'shadow-pink-900/10' },
+    purple: { border: 'border-purple-500', bg: 'bg-purple-500/20', title: 'text-purple-800 dark:text-purple-200', sub: 'text-purple-700 dark:text-purple-300', shadow: 'shadow-purple-900/10' },
+    emerald: { border: 'border-emerald-500', bg: 'bg-emerald-500/20', title: 'text-emerald-800 dark:text-emerald-100', sub: 'text-emerald-700 dark:text-emerald-300', shadow: 'shadow-emerald-900/10' },
+    cyan: { border: 'border-cyan-500', bg: 'bg-cyan-500/20', title: 'text-cyan-800 dark:text-cyan-100', sub: 'text-cyan-700 dark:text-cyan-300', shadow: 'shadow-cyan-900/10' },
+    amber: { border: 'border-amber-500', bg: 'bg-amber-500/20', title: 'text-amber-800 dark:text-amber-100', sub: 'text-amber-700 dark:text-amber-300', shadow: 'shadow-amber-900/10' },
+    indigo: { border: 'border-indigo-500', bg: 'bg-indigo-500/20', title: 'text-indigo-800 dark:text-indigo-100', sub: 'text-indigo-700 dark:text-indigo-300', shadow: 'shadow-indigo-900/10' },
+    slate: { border: 'border-slate-500', bg: 'bg-slate-600/20', title: 'text-slate-800 dark:text-slate-200', sub: 'text-slate-600 dark:text-slate-400', shadow: '' },
+    pink: { border: 'border-pink-500', bg: 'bg-pink-500/20', title: 'text-pink-800 dark:text-pink-100', sub: 'text-pink-700 dark:text-pink-300', shadow: 'shadow-pink-900/10' },
 }
 const PALETTE = ['purple', 'emerald', 'cyan', 'amber', 'indigo', 'pink']
 
@@ -110,7 +110,7 @@ export const WeekView = memo(function WeekView({
     return (
         <div className="flex h-full overflow-hidden">
             {/* ── Left: Calendar Grid (flex-1 = ~70%) ── */}
-            <div className="flex-1 flex flex-col border-r border-border bg-[#0F1419] min-w-0">
+            <div className="flex-1 flex flex-col border-r border-border bg-bg-primary min-w-0">
 
                 {/* Toolbar — matches Stitch exactly */}
                 <div className="px-6 py-4 flex items-center justify-between border-b border-border">
@@ -135,14 +135,14 @@ export const WeekView = memo(function WeekView({
                         <div className="flex items-center gap-3">
                             <button
                                 onClick={goToToday}
-                                className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-white/5 transition-colors font-medium text-text-secondary"
+                                className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-bg-tertiary/50 transition-colors font-medium text-text-secondary"
                             >
                                 Today
                             </button>
-                            <button onClick={goToPrev} className="p-1 rounded hover:bg-white/5 text-text-muted hover:text-text-primary transition-colors">
+                            <button onClick={goToPrev} className="p-1 rounded hover:bg-bg-tertiary/50 text-text-muted hover:text-text-primary transition-colors">
                                 <ChevronLeft size={18} />
                             </button>
-                            <button onClick={goToNext} className="p-1 rounded hover:bg-white/5 text-text-muted hover:text-text-primary transition-colors">
+                            <button onClick={goToNext} className="p-1 rounded hover:bg-bg-tertiary/50 text-text-muted hover:text-text-primary transition-colors">
                                 <ChevronRight size={18} />
                             </button>
                             <h2 className="text-lg font-bold text-text-primary ml-2">
@@ -185,16 +185,16 @@ export const WeekView = memo(function WeekView({
                     />
                 ) : (
                     /* Week Grid */
-                    <div ref={gridRef} className="flex-1 overflow-auto custom-scrollbar relative bg-[#0F1419]">
+                    <div ref={gridRef} className="flex-1 overflow-auto custom-scrollbar relative bg-bg-primary">
                         {/* Sticky Day Headers */}
-                        <div className="grid sticky top-0 z-30 bg-[#0F1419] border-b border-border" style={{ gridTemplateColumns: '60px 1fr' }}>
+                        <div className="grid sticky top-0 z-30 bg-bg-primary border-b border-border" style={{ gridTemplateColumns: '60px 1fr' }}>
                             <div className="p-2 border-r border-border bg-bg-secondary/50" />
                             <div className="grid grid-cols-7 divide-x divide-border">
                                 {weekDays.map((day, idx) => {
                                     const isDayToday = isSameDay(day, today)
                                     const isWeekend = idx >= 5
                                     return (
-                                        <div key={idx} className={`p-3 text-center ${isDayToday ? 'bg-accent-primary/5' : ''} ${isWeekend ? 'bg-black/20' : ''}`}>
+                                        <div key={idx} className={`p-3 text-center ${isDayToday ? 'bg-accent-primary/5' : ''} ${isWeekend ? 'bg-bg-secondary/30' : ''}`}>
                                             <span className={`block text-xs font-medium uppercase tracking-wide ${isDayToday ? 'text-accent-primary' : 'text-text-muted'}`}>
                                                 {DAY_NAMES[idx]}
                                             </span>
@@ -228,7 +228,7 @@ export const WeekView = memo(function WeekView({
                             <div className="relative grid grid-cols-7 divide-x divide-border">
                                 {/* Hour lines */}
                                 {HOURS.map((hour, idx) => (
-                                    <div key={hour} className="absolute w-full border-t border-white/[0.03] pointer-events-none" style={{ top: `${idx * SLOT_H}px` }} />
+                                    <div key={hour} className="absolute w-full border-t border-border/30 pointer-events-none" style={{ top: `${idx * SLOT_H}px` }} />
                                 ))}
 
                                 {/* Current time red line */}
@@ -272,7 +272,7 @@ export const WeekView = memo(function WeekView({
                                     return (
                                         <div
                                             key={idx}
-                                            className={`relative h-full ${isCurrentDay ? 'bg-white/[0.01]' : ''} ${isWeekend ? 'bg-black/20' : ''}`}
+                                            className={`relative h-full ${isCurrentDay ? 'bg-accent-primary/[0.02]' : ''} ${isWeekend ? 'bg-bg-secondary/30' : ''}`}
                                             style={{ minHeight: `${HOURS.length * SLOT_H}px` }}
                                             onClick={() => onAddContent?.(format(day, 'yyyy-MM-dd'))}
                                         >

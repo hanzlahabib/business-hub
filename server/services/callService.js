@@ -15,16 +15,19 @@ export const callService = {
     /**
      * Initiate an outbound call to a lead
      */
-    async initiateCall(userId, { leadId, scriptId, assistantConfig: rawAssistantConfig = {} }) {
+    async initiateCall(userId, { leadId, scriptId, assistantConfig: rawAssistantConfig = {}, existingCallId }) {
         // Whitelist allowed override fields — prevent systemPrompt injection
-        const ALLOWED_OVERRIDES = ['voiceId', 'llmModel', 'openingLine', 'language', 'temperature']
+        const ALLOWED_OVERRIDES = ['voiceId', 'llmModel', 'openingLine', 'language', 'temperature', 'agentName', 'businessName', 'businessWebsite', 'industry']
         const assistantConfig = Object.fromEntries(
             Object.entries(rawAssistantConfig).filter(([key]) => ALLOWED_OVERRIDES.includes(key))
         )
         const { telephony } = getAdaptersForUser(userId)
 
-        // Get lead
-        const lead = await prisma.lead.findFirst({ where: { id: leadId, userId } })
+        // Get lead with type
+        const lead = await prisma.lead.findFirst({
+            where: { id: leadId, userId },
+            include: { leadType: true }
+        })
         if (!lead) throw new Error('Lead not found')
         if (!lead.phone) throw new Error('Lead has no phone number')
 
@@ -58,16 +61,24 @@ export const callService = {
             assistantConfig.openingLine = `Hi ${contactName}, this is ${agentName}${biz ? ' from ' + biz : ''}. How are you doing today?`
         }
 
-        // Create call record
-        const call = await prisma.call.create({
-            data: {
-                leadId,
-                direction: 'outbound',
-                status: 'queued',
-                scriptId: scriptId || undefined,
-                userId
-            }
-        })
+        // Create or reuse call record (existingCallId used by scheduler to avoid duplicates)
+        let call
+        if (existingCallId) {
+            call = await prisma.call.update({
+                where: { id: existingCallId },
+                data: { status: 'queued' }
+            })
+        } else {
+            call = await prisma.call.create({
+                data: {
+                    leadId,
+                    direction: 'outbound',
+                    status: 'queued',
+                    scriptId: scriptId || undefined,
+                    userId
+                }
+            })
+        }
 
         try {
             // Initiate via telephony adapter
@@ -345,6 +356,145 @@ export const callService = {
     },
 
     /**
+     * Cancel a queued/ringing/scheduled call (before it connects)
+     */
+    async cancelCall(callId, userId) {
+        const call = await prisma.call.findFirst({ where: { id: callId, userId } })
+        if (!call) throw new Error('Call not found')
+
+        const cancellableStatuses = ['queued', 'ringing', 'scheduled']
+        if (!cancellableStatuses.includes(call.status)) {
+            throw new Error(`Cannot cancel call with status "${call.status}" — only queued, ringing, or scheduled calls can be cancelled`)
+        }
+
+        // If provider call exists, tell provider to end it
+        if (call.providerCallId) {
+            try {
+                const { telephony } = getAdaptersForUser(userId)
+                await telephony.endCall(call.providerCallId)
+            } catch (err) {
+                logger.warn('Provider endCall failed during cancel', { callId, error: err.message })
+            }
+        }
+
+        await prisma.call.update({
+            where: { id: callId },
+            data: { status: 'cancelled', endedAt: new Date(), errorReason: 'Cancelled by user' }
+        })
+
+        await callLogService.log(callId, userId, 'cancelled',
+            `Call cancelled by user (was ${call.status})`,
+            { previousStatus: call.status }, 'info'
+        )
+
+        eventBus.publish('call:cancelled', {
+            userId, entityId: callId, entityType: 'call',
+            data: { leadId: call.leadId, previousStatus: call.status }
+        })
+
+        logger.info('Call cancelled', { callId, previousStatus: call.status })
+        return { callId, status: 'cancelled' }
+    },
+
+    /**
+     * Force hangup a live in-progress call
+     */
+    async hangupCall(callId, userId) {
+        const call = await prisma.call.findFirst({ where: { id: callId, userId } })
+        if (!call) throw new Error('Call not found')
+
+        if (call.status !== 'in-progress') {
+            throw new Error(`Cannot hangup call with status "${call.status}" — only in-progress calls can be hung up`)
+        }
+
+        if (!call.providerCallId) {
+            throw new Error('Call has no provider ID — cannot send hangup signal')
+        }
+
+        // Send hangup to provider (Vapi DELETE)
+        const { telephony } = getAdaptersForUser(userId)
+        const result = await telephony.endCall(call.providerCallId)
+
+        if (!result.success) {
+            logger.warn('Provider hangup returned failure', { callId, error: result.error })
+        }
+
+        await prisma.call.update({
+            where: { id: callId },
+            data: {
+                status: 'failed',
+                endedAt: new Date(),
+                errorReason: 'Manually terminated by user (emergency hangup)'
+            }
+        })
+
+        await callLogService.log(callId, userId, 'hangup',
+            'Call force-terminated by user (emergency hangup)',
+            { providerCallId: call.providerCallId, providerResult: result }, 'warn'
+        )
+
+        eventBus.publish('call:hangup', {
+            userId, entityId: callId, entityType: 'call',
+            data: { leadId: call.leadId, reason: 'manual-hangup' }
+        })
+
+        logger.info('Call force-terminated', { callId, providerCallId: call.providerCallId })
+        return { callId, status: 'failed', reason: 'manual-hangup' }
+    },
+
+    /**
+     * Schedule a call for a future date/time
+     */
+    async scheduleCall(userId, { leadId, scriptId, scheduledAt, assistantConfig = {} }) {
+        const scheduledDate = new Date(scheduledAt)
+        if (isNaN(scheduledDate.getTime())) {
+            throw new Error('Invalid scheduledAt date')
+        }
+        if (scheduledDate <= new Date()) {
+            throw new Error('scheduledAt must be in the future')
+        }
+
+        // Verify lead exists
+        const lead = await prisma.lead.findFirst({
+            where: { id: leadId, userId },
+            select: { id: true, name: true, phone: true }
+        })
+        if (!lead) throw new Error('Lead not found')
+        if (!lead.phone) throw new Error('Lead has no phone number')
+
+        // Verify script exists if provided
+        if (scriptId) {
+            const script = await prisma.callScript.findFirst({ where: { id: scriptId, userId } })
+            if (!script) throw new Error('Script not found')
+        }
+
+        const call = await prisma.call.create({
+            data: {
+                leadId,
+                direction: 'outbound',
+                status: 'scheduled',
+                scheduledAt: scheduledDate,
+                scriptId: scriptId || undefined,
+                userId
+            },
+            include: { lead: true, script: true }
+        })
+
+        await callLogService.log(call.id, userId, 'scheduled',
+            `Call scheduled for ${scheduledDate.toISOString()} to ${lead.name || lead.phone}`,
+            { leadId, scheduledAt: scheduledDate.toISOString(), scriptId }, 'info'
+        )
+
+        eventBus.publish('call:scheduled', {
+            userId, entityId: call.id, entityType: 'call',
+            data: { leadId, leadName: lead.name, scheduledAt: scheduledDate.toISOString() }
+        })
+
+        logger.info('Call scheduled', { callId: call.id, leadId, scheduledAt: scheduledDate.toISOString() })
+        return call
+    },
+
+    /**
      * Build system prompt from a call script + assistantConfig
      * If customSystemPrompt is set in assistantConfig, use that directly.
      * Otherwise, auto-generate from script fields + business context.
@@ -431,9 +581,13 @@ export const callService = {
      * Ensures the AI agent always knows who it's calling and why.
      */
     _buildLeadContextPrompt(lead, assistantConfig = {}) {
-        const agentName = assistantConfig.agentName || 'Alex'
-        const agentRole = assistantConfig.agentRole || 'business development representative'
-        const businessName = assistantConfig.businessName || 'our company'
+        // Merge type config as base, then override with explicit assistantConfig
+        const typeConfig = lead.leadType?.agentConfig || {}
+        const agentName = assistantConfig.agentName || typeConfig.agentName || 'Alex'
+        const agentRole = assistantConfig.agentRole || typeConfig.agentRole || 'business development representative'
+        const businessName = assistantConfig.businessName || typeConfig.businessName || 'our company'
+        const businessWebsite = assistantConfig.businessWebsite || typeConfig.businessWebsite || ''
+        const industry = assistantConfig.industry || typeConfig.industry || lead.industry || ''
         const contactName = lead.contactPerson || lead.name || 'the contact'
 
         let prompt = `You are ${agentName}, a friendly and professional ${agentRole} for ${businessName}.\n\n`
@@ -441,8 +595,14 @@ export const callService = {
         prompt += `YOU ARE CALLING:\n`
         prompt += `- Name: ${lead.name}\n`
         if (lead.company) prompt += `- Company: ${lead.company}\n`
-        if (lead.industry) prompt += `- Industry: ${lead.industry}\n`
+        if (industry) prompt += `- Industry: ${industry}\n`
         if (lead.email) prompt += `- Email: ${lead.email}\n`
+        if (businessWebsite) prompt += `- Your website: ${businessWebsite}\n`
+
+        // Inject type-specific system prompt context
+        if (typeConfig.systemPromptContext) {
+            prompt += `\nBUSINESS CONTEXT:\n${typeConfig.systemPromptContext}\n`
+        }
 
         if (lead.notes) {
             prompt += `\nCONTEXT / NOTES:\n${lead.notes}\n`
@@ -455,12 +615,22 @@ export const callService = {
         prompt += `\nYOUR GOAL: Have a natural conversation with ${contactName}. `
         prompt += `Understand their needs, build rapport, and explore how you can help their business.\n\n`
 
-        prompt += `QUALIFYING QUESTIONS (weave naturally into the conversation, don't interrogate):\n`
-        prompt += `1. What service or help are they looking for? (e.g. "What kind of work are you looking to get done?")\n`
-        prompt += `2. What's their timeline? (e.g. "When were you hoping to get started?")\n`
-        prompt += `3. Do they have a budget in mind? (e.g. "Do you have a rough budget range for this?")\n`
-        prompt += `4. Where are they located? (e.g. "And what area are you based in?")\n`
-        prompt += `Only ask these if the conversation flows naturally — don't force all four.\n\n`
+        // Use type-specific qualifying questions if available, otherwise defaults
+        const qualifyingQuestions = typeConfig.qualifyingQuestions
+        if (qualifyingQuestions?.length > 0) {
+            prompt += `QUALIFYING QUESTIONS (weave naturally into the conversation, don't interrogate):\n`
+            qualifyingQuestions.forEach((q, i) => {
+                prompt += `${i + 1}. ${q}\n`
+            })
+            prompt += `Only ask these if the conversation flows naturally — don't force all of them.\n\n`
+        } else {
+            prompt += `QUALIFYING QUESTIONS (weave naturally into the conversation, don't interrogate):\n`
+            prompt += `1. What service or help are they looking for? (e.g. "What kind of work are you looking to get done?")\n`
+            prompt += `2. What's their timeline? (e.g. "When were you hoping to get started?")\n`
+            prompt += `3. Do they have a budget in mind? (e.g. "Do you have a rough budget range for this?")\n`
+            prompt += `4. Where are they located? (e.g. "And what area are you based in?")\n`
+            prompt += `Only ask these if the conversation flows naturally — don't force all four.\n\n`
+        }
 
         prompt += `CONVERSATION RULES:\n`
         prompt += `- Address them by name (${contactName.split(' ')[0]})\n`

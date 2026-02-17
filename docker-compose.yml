@@ -27,6 +27,7 @@ services:
     build:
       context: .
       dockerfile: server/Dockerfile
+      network: host
     container_name: business-hub-backend
     restart: always
     env_file:
@@ -46,6 +47,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      network: host
     container_name: business-hub-frontend
     restart: always
     ports:

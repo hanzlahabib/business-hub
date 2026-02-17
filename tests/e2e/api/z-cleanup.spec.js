@@ -11,7 +11,7 @@ const API = `${API_URL}/api`
  * the file is prefixed with 'z-' so it sorts after other test files.
  */
 
-test.describe('Suite 12: Cleanup', () => {
+test.describe('Suite Z: Cleanup', () => {
     let testState = {}
 
     test('12.0 — Setup: login', async ({ request }) => {

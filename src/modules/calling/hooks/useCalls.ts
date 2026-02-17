@@ -20,6 +20,7 @@ export interface Call {
     agentInstanceId?: string
     startedAt?: string
     endedAt?: string
+    scheduledAt?: string
     createdAt: string
     lead?: {
         id: string
@@ -207,6 +208,69 @@ export function useCalls() {
         }
     }, [user, headers])
 
+    // Cancel a queued/ringing/scheduled call
+    const cancelCall = useCallback(async (callId: string) => {
+        if (!user) return null
+        try {
+            const res = await fetch(`${ENDPOINTS.CALLS}/${callId}/cancel`, {
+                method: 'POST',
+                headers: headers()
+            })
+            const result = await res.json()
+            if (!res.ok) return { error: result.error || 'Failed to cancel call' }
+            await fetchCalls({ silent: true })
+            await fetchStats({ silent: true })
+            return result
+        } catch (err: any) {
+            setError(err.message)
+            return { error: err.message }
+        }
+    }, [user, headers, fetchCalls, fetchStats])
+
+    // Force-terminate a live in-progress call
+    const hangupCall = useCallback(async (callId: string) => {
+        if (!user) return null
+        try {
+            const res = await fetch(`${ENDPOINTS.CALLS}/${callId}/hangup`, {
+                method: 'POST',
+                headers: headers()
+            })
+            const result = await res.json()
+            if (!res.ok) return { error: result.error || 'Failed to hangup call' }
+            await fetchCalls({ silent: true })
+            await fetchStats({ silent: true })
+            return result
+        } catch (err: any) {
+            setError(err.message)
+            return { error: err.message }
+        }
+    }, [user, headers, fetchCalls, fetchStats])
+
+    // Schedule a call for a future date/time
+    const scheduleCall = useCallback(async (data: { leadId: string; scriptId?: string; scheduledAt: string; assistantConfig?: any }) => {
+        if (!user) return null
+        setLoading(true)
+        try {
+            const res = await fetch(`${ENDPOINTS.CALLS}/schedule`, {
+                method: 'POST',
+                headers: headers(),
+                body: JSON.stringify(data)
+            })
+            const call = await res.json()
+            if (res.ok) {
+                await fetchCalls()
+                await fetchStats()
+                return call
+            }
+            return { error: call.error || 'Failed to schedule call' }
+        } catch (err: any) {
+            setError(err.message)
+            return { error: err.message }
+        } finally {
+            setLoading(false)
+        }
+    }, [user, headers, fetchCalls, fetchStats])
+
     useEffect(() => {
         fetchCalls()
         fetchStats()
@@ -216,7 +280,7 @@ export function useCalls() {
     const hasActiveCallsRef = useRef(false)
     useEffect(() => {
         hasActiveCallsRef.current = calls.some(c =>
-            c.status === 'queued' || c.status === 'ringing' || c.status === 'in-progress'
+            c.status === 'queued' || c.status === 'ringing' || c.status === 'in-progress' || c.status === 'scheduled'
         )
     }, [calls])
 
@@ -233,7 +297,8 @@ export function useCalls() {
 
     return {
         calls, stats, loading, error, total,
-        fetchCalls, fetchCallById, initiateCall, updateCall, fetchStats, transcribeCall
+        fetchCalls, fetchCallById, initiateCall, updateCall, fetchStats, transcribeCall,
+        cancelCall, hangupCall, scheduleCall
     }
 }
 

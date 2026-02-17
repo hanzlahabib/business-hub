@@ -1,7 +1,27 @@
 // @ts-nocheck
-import { useState, useMemo } from 'react'
-import { Search, Filter, Plus, ChevronDown, MoreHorizontal, X, Building2 } from 'lucide-react'
-import { useLeads } from '../hooks/useLeads'
+import { useState, useMemo, useRef, useEffect } from 'react'
+import { Search, Filter, Plus, ChevronDown, MoreHorizontal, X, Building2, Tag, Edit, Trash2, ArrowRight, Mail } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useLeadTypes } from '../hooks/useLeadTypes'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    DropdownMenuSub,
+    DropdownMenuSubTrigger,
+    DropdownMenuSubContent
+} from '@/components/ui/dropdown-menu'
+
+const LEAD_STATUSES = [
+    { id: 'new', label: 'New' },
+    { id: 'contacted', label: 'Contacted' },
+    { id: 'replied', label: 'Replied' },
+    { id: 'meeting', label: 'Meeting' },
+    { id: 'won', label: 'Won' },
+    { id: 'lost', label: 'Lost' },
+]
 
 const statusStyles = {
     new: { label: 'New', bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/20' },
@@ -37,20 +57,117 @@ function getDealHeat(lead: any): number {
 }
 
 interface LeadTableViewProps {
+    leads: any[]
+    loading: boolean
     onLeadClick: (lead: any) => void
     onAddClick: () => void
     onImportClick: () => void
     selectedLeadId?: string | null
+    onEditLead?: (lead: any) => void
+    onDeleteLead?: (lead: any) => void
+    onChangeStatus?: (leadId: string, status: string) => void
+    onBulkEdit?: (ids: string[]) => void
+    onBulkDelete?: (ids: string[]) => void
 }
 
-export function LeadTableView({ onLeadClick, onAddClick, onImportClick, selectedLeadId }: LeadTableViewProps) {
-    const { leads, loading } = useLeads()
+/* =====================================================
+   Reusable Filter Dropdown
+   ===================================================== */
+function FilterDropdown({ label, icon: Icon, value, options, onChange }: {
+    label: string
+    icon: any
+    value: string
+    options: { value: string; label: string; count?: number }[]
+    onChange: (v: string) => void
+}) {
+    const [open, setOpen] = useState(false)
+    const ref = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+        }
+        document.addEventListener('mousedown', handler)
+        return () => document.removeEventListener('mousedown', handler)
+    }, [])
+
+    return (
+        <div className="relative" ref={ref}>
+            <button
+                onClick={() => setOpen(!open)}
+                className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm transition-all ${value
+                    ? 'bg-accent-primary/10 border-accent-primary/30 text-accent-primary'
+                    : 'bg-bg-secondary border-border text-text-secondary hover:bg-bg-tertiary hover:border-border-hover'
+                    }`}
+            >
+                <Icon className="w-4 h-4" />
+                {value ? options.find(o => o.value === value)?.label || label : label}
+                {value && (
+                    <span
+                        onClick={(e) => { e.stopPropagation(); onChange(''); setOpen(false) }}
+                        className="ml-0.5 hover:text-red-400 transition-colors"
+                    >
+                        <X className="w-3 h-3" />
+                    </span>
+                )}
+                {!value && <ChevronDown className="w-3.5 h-3.5 ml-0.5" />}
+            </button>
+
+            {open && (
+                <div className="absolute top-full left-0 mt-1 w-48 bg-bg-primary border border-border rounded-lg shadow-2xl z-50 py-1 max-h-64 overflow-y-auto">
+                    <button
+                        onClick={() => { onChange(''); setOpen(false) }}
+                        className={`w-full text-left px-3 py-2 text-sm transition-colors ${!value ? 'text-accent-primary bg-accent-primary/5' : 'text-text-secondary hover:bg-bg-secondary'}`}
+                    >
+                        All
+                    </button>
+                    {options.map(opt => (
+                        <button
+                            key={opt.value}
+                            onClick={() => { onChange(opt.value); setOpen(false) }}
+                            className={`w-full text-left px-3 py-2 text-sm flex items-center justify-between transition-colors ${value === opt.value ? 'text-accent-primary bg-accent-primary/5' : 'text-text-secondary hover:bg-bg-secondary'}`}
+                        >
+                            <span className="capitalize">{opt.label}</span>
+                            {opt.count !== undefined && (
+                                <span className="text-xs text-text-muted">{opt.count}</span>
+                            )}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+
+export function LeadTableView({ leads, loading, onLeadClick, onAddClick, onImportClick, selectedLeadId, onEditLead, onDeleteLead, onChangeStatus, onBulkEdit, onBulkDelete }: LeadTableViewProps) {
+    const { leadTypes } = useLeadTypes()
     const [search, setSearch] = useState('')
     const [statusFilter, setStatusFilter] = useState('')
     const [industryFilter, setIndustryFilter] = useState('')
     const [sourceFilter, setSourceFilter] = useState('')
+    const [typeFilter, setTypeFilter] = useState('')
     const [selectedRows, setSelectedRows] = useState<string[]>([])
     const [sortBy, setSortBy] = useState<'lastActive' | 'name'>('lastActive')
+
+    // Derive unique filter options from actual lead data
+    const filterOptions = useMemo(() => {
+        const statuses = new Map<string, number>()
+        const industries = new Map<string, number>()
+        const sources = new Map<string, number>()
+
+        leads.forEach(l => {
+            if (l.status) statuses.set(l.status, (statuses.get(l.status) || 0) + 1)
+            if (l.industry) industries.set(l.industry, (industries.get(l.industry) || 0) + 1)
+            if (l.source) sources.set(l.source, (sources.get(l.source) || 0) + 1)
+        })
+
+        return {
+            statuses: [...statuses.entries()].map(([v, c]) => ({ value: v, label: v, count: c })),
+            industries: [...industries.entries()].map(([v, c]) => ({ value: v, label: v, count: c })),
+            sources: [...sources.entries()].map(([v, c]) => ({ value: v, label: v, count: c })),
+            types: leadTypes.map(t => ({ value: t.id, label: t.name, count: t._count?.leads || 0 })),
+        }
+    }, [leads, leadTypes])
 
     const filteredLeads = useMemo(() => {
         let result = [...leads]
@@ -71,13 +188,16 @@ export function LeadTableView({ onLeadClick, onAddClick, onImportClick, selected
         if (sourceFilter) {
             result = result.filter(l => l.source?.toLowerCase() === sourceFilter.toLowerCase())
         }
+        if (typeFilter) {
+            result = result.filter(l => l.typeId === typeFilter || l.leadType?.id === typeFilter)
+        }
         if (sortBy === 'name') {
             result.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
         } else {
             result.sort((a, b) => new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime())
         }
         return result
-    }, [leads, search, statusFilter, industryFilter, sourceFilter, sortBy])
+    }, [leads, search, statusFilter, industryFilter, sourceFilter, typeFilter, sortBy])
 
     const toggleRow = (id: string) => {
         setSelectedRows(prev => prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id])
@@ -95,17 +215,18 @@ export function LeadTableView({ onLeadClick, onAddClick, onImportClick, selected
         setStatusFilter('')
         setIndustryFilter('')
         setSourceFilter('')
+        setTypeFilter('')
         setSearch('')
     }
 
-    const hasFilters = statusFilter || industryFilter || sourceFilter
+    const hasFilters = statusFilter || industryFilter || sourceFilter || typeFilter
 
     return (
-        <div className="flex-1 flex flex-col min-w-0">
-            {/* Action Toolbar — Stitch grid layout */}
+        <div className="flex-1 flex flex-col min-w-0 relative">
+            {/* Action Toolbar */}
             <div className="p-4 grid grid-cols-12 gap-4 items-center">
                 {/* Search */}
-                <div className="col-span-4 relative group">
+                <div className="col-span-3 relative group">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-accent-primary transition-colors" />
                     <input
                         type="text"
@@ -116,37 +237,36 @@ export function LeadTableView({ onLeadClick, onAddClick, onImportClick, selected
                     />
                 </div>
 
-                {/* Filters — Status, Industry, Source (matching Stitch reference) */}
-                <div className="col-span-6 flex items-center gap-2">
-                    <button
-                        onClick={() => setStatusFilter(statusFilter ? '' : 'new')}
-                        className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm transition-all ${statusFilter ? 'bg-accent-primary/10 border-accent-primary/30 text-accent-primary' : 'bg-bg-secondary border-border text-text-secondary hover:bg-bg-tertiary hover:border-border-hover'
-                            }`}
-                    >
-                        <Filter className="w-4 h-4 text-text-muted" />
-                        Status
-                        <ChevronDown className="w-3.5 h-3.5 ml-1" />
-                    </button>
-
-                    <button
-                        onClick={() => setIndustryFilter(industryFilter ? '' : 'tech')}
-                        className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm transition-all ${industryFilter ? 'bg-accent-primary/10 border-accent-primary/30 text-accent-primary' : 'bg-bg-secondary border-border text-text-secondary hover:bg-bg-tertiary hover:border-border-hover'
-                            }`}
-                    >
-                        <Building2 className="w-4 h-4 text-text-muted" />
-                        Industry
-                        <ChevronDown className="w-3.5 h-3.5 ml-1" />
-                    </button>
-
-                    <button
-                        onClick={() => setSourceFilter(sourceFilter ? '' : 'linkedin')}
-                        className={`flex items-center gap-2 px-3 py-2 border rounded-lg text-sm transition-all ${sourceFilter ? 'bg-accent-primary/10 border-accent-primary/30 text-accent-primary' : 'bg-bg-secondary border-border text-text-secondary hover:bg-bg-tertiary hover:border-border-hover'
-                            }`}
-                    >
-                        <Filter className="w-4 h-4 text-text-muted" />
-                        Source
-                        <ChevronDown className="w-3.5 h-3.5 ml-1" />
-                    </button>
+                {/* Filters — proper dropdowns with dynamic options */}
+                <div className="col-span-7 flex items-center gap-2">
+                    <FilterDropdown
+                        label="Status"
+                        icon={Filter}
+                        value={statusFilter}
+                        options={filterOptions.statuses}
+                        onChange={setStatusFilter}
+                    />
+                    <FilterDropdown
+                        label="Industry"
+                        icon={Building2}
+                        value={industryFilter}
+                        options={filterOptions.industries}
+                        onChange={setIndustryFilter}
+                    />
+                    <FilterDropdown
+                        label="Source"
+                        icon={Filter}
+                        value={sourceFilter}
+                        options={filterOptions.sources}
+                        onChange={setSourceFilter}
+                    />
+                    <FilterDropdown
+                        label="Type"
+                        icon={Tag}
+                        value={typeFilter}
+                        options={filterOptions.types}
+                        onChange={setTypeFilter}
+                    />
 
                     <div className="h-6 w-px bg-border mx-1" />
                     <button
@@ -270,10 +390,42 @@ export function LeadTableView({ onLeadClick, onAddClick, onImportClick, selected
                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-right text-text-muted border-b border-border/50">
                                         {getTimeSince(lead.updatedAt || lead.createdAt)}
                                     </td>
-                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-right border-b border-border/50">
-                                        <button className="text-text-muted hover:text-text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <MoreHorizontal className="w-5 h-5" />
-                                        </button>
+                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-right border-b border-border/50" onClick={e => e.stopPropagation()}>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <button className="text-text-muted hover:text-text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <MoreHorizontal className="w-5 h-5" />
+                                                </button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="w-44">
+                                                <DropdownMenuItem onClick={() => onEditLead?.(lead)} className="text-xs">
+                                                    <Edit className="mr-2 h-3.5 w-3.5" />
+                                                    Edit
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSub>
+                                                    <DropdownMenuSubTrigger className="text-xs">
+                                                        <ArrowRight className="mr-2 h-3.5 w-3.5" />
+                                                        Change Status
+                                                    </DropdownMenuSubTrigger>
+                                                    <DropdownMenuSubContent>
+                                                        {LEAD_STATUSES.filter(s => s.id !== lead.status).map(status => (
+                                                            <DropdownMenuItem
+                                                                key={status.id}
+                                                                onClick={() => onChangeStatus?.(lead.id, status.id)}
+                                                                className="text-xs"
+                                                            >
+                                                                {status.label}
+                                                            </DropdownMenuItem>
+                                                        ))}
+                                                    </DropdownMenuSubContent>
+                                                </DropdownMenuSub>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem onClick={() => onDeleteLead?.(lead)} className="text-xs text-red-500 focus:text-red-500">
+                                                    <Trash2 className="mr-2 h-3.5 w-3.5" />
+                                                    Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </td>
                                 </tr>
                             )
@@ -292,6 +444,50 @@ export function LeadTableView({ onLeadClick, onAddClick, onImportClick, selected
                     </tbody>
                 </table>
             </div>
+
+            {/* Floating Bulk Action Bar */}
+            <AnimatePresence>
+                {selectedRows.length > 0 && (
+                    <motion.div
+                        initial={{ y: 100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 100, opacity: 0 }}
+                        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 px-6 py-3 bg-bg-primary border border-border shadow-2xl rounded-2xl"
+                    >
+                        <div className="flex items-center gap-2 text-text-primary font-medium">
+                            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs text-white">
+                                {selectedRows.length}
+                            </div>
+                            Selected
+                        </div>
+
+                        <div className="w-px h-6 bg-border mx-2" />
+
+                        <button
+                            onClick={() => onBulkEdit?.(selectedRows)}
+                            className="flex items-center gap-2 px-4 py-2 bg-bg-secondary border border-border text-text-primary rounded-lg hover:bg-bg-tertiary transition-colors"
+                        >
+                            <Edit className="w-4 h-4" />
+                            Bulk Edit
+                        </button>
+
+                        <button
+                            onClick={() => onBulkDelete?.(selectedRows)}
+                            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                            Delete
+                        </button>
+
+                        <button
+                            onClick={() => setSelectedRows([])}
+                            className="p-2 hover:bg-bg-tertiary rounded-lg text-text-secondary transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     )
 }

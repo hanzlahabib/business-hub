@@ -46,14 +46,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (token && storedUser) {
                 try {
                     const parsed = JSON.parse(storedUser)
-                    // Verify user still exists via Express API
-                    const res = await fetch(`${API_SERVER}/api/auth/login`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: parsed.email, password: token })
+                    // Verify user still exists via profile endpoint with x-user-id
+                    const res = await fetch(`${API_SERVER}/api/auth/profile`, {
+                        method: 'HEAD',
+                        headers: { 'x-user-id': parsed.id }
                     })
                     if (res.ok) {
-                        // User still exists, keep the stored session
                         setUser(parsed)
                     } else {
                         // Auth failed but keep stored user for offline/dev use

@@ -1,18 +1,23 @@
 # Dockerfile for Vite Frontend
-# Stage 1: Build the frontend
+# Stage 1: Build the frontend using host node_modules
 FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Copy package files first for layer caching
-COPY package.json pnpm-lock.yaml* ./
+# Copy package and host node_modules (flat layout from npm install)
+COPY package.json ./
+COPY node_modules/ ./node_modules/
 
-# Install pnpm and dependencies with extended network timeout
-RUN npm install -g pnpm && \
-    pnpm install --shamefully-hoist --config.fetch-timeout=300000
+# Rebuild all native bindings for Alpine/musl (host has glibc variants)
+RUN npm rebuild 2>/dev/null; \
+    npm install --no-save --force \
+    @rollup/rollup-linux-x64-musl \
+    lightningcss-linux-x64-musl \
+    @tailwindcss/oxide-linux-x64-musl \
+    2>/dev/null || true
 
 COPY . .
-RUN pnpm run build
+RUN npx vite build
 
 # Stage 2: Serve with Nginx
 FROM nginx:alpine

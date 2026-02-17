@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Phone, Eye } from 'lucide-react'
+import { Phone, Eye, PhoneOff } from 'lucide-react'
 
 interface ActiveCall {
     id: string
@@ -12,6 +12,7 @@ interface ActiveCall {
 interface Props {
     activeCalls: ActiveCall[]
     onViewCall: (callId: string) => void
+    onHangup?: (callId: string) => void
 }
 
 function LiveDuration({ startedAt }: { startedAt: string }) {
@@ -30,7 +31,7 @@ function LiveDuration({ startedAt }: { startedAt: string }) {
     return <span className="font-mono text-xs">{m}:{String(s).padStart(2, '0')}</span>
 }
 
-export function LiveCallBanner({ activeCalls, onViewCall }: Props) {
+export function LiveCallBanner({ activeCalls, onViewCall, onHangup }: Props) {
     if (activeCalls.length === 0) return null
 
     return (
@@ -50,11 +51,10 @@ export function LiveCallBanner({ activeCalls, onViewCall }: Props) {
 
                     <span className="text-xs text-text-primary font-medium">{call.leadName}</span>
 
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                        call.status === 'ringing'
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${call.status === 'ringing'
                             ? 'bg-blue-500/10 text-blue-400'
                             : 'bg-amber-500/10 text-amber-400'
-                    }`}>
+                        }`}>
                         {call.status}
                     </span>
 
@@ -69,6 +69,15 @@ export function LiveCallBanner({ activeCalls, onViewCall }: Props) {
                         <Eye size={12} />
                         View Details
                     </button>
+                    {onHangup && (
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onHangup(call.id) }}
+                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/30 transition-colors"
+                        >
+                            <PhoneOff size={12} />
+                            End Call
+                        </button>
+                    )}
                 </div>
             ))}
         </div>

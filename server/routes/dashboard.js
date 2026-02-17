@@ -109,4 +109,58 @@ router.get('/', async (req, res) => {
     }
 })
 
+// GET /api/dashboard/trends — 7-day trend data for sparklines
+router.get('/trends', async (req, res) => {
+    try {
+        const userId = req.user.id
+
+        // Check Redis cache
+        const cached = await cacheGet(`dashboard-trends:${userId}`)
+        if (cached) return res.json(cached)
+
+        const now = new Date()
+        const sevenDaysAgo = new Date(now)
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
+        sevenDaysAgo.setHours(0, 0, 0, 0)
+
+        // Fetch raw data for the last 7 days
+        const [leads, calls, wonLeads] = await Promise.all([
+            prisma.lead.findMany({
+                where: { userId, createdAt: { gte: sevenDaysAgo } },
+                select: { createdAt: true }
+            }),
+            prisma.call.findMany({
+                where: { userId, createdAt: { gte: sevenDaysAgo } },
+                select: { createdAt: true }
+            }),
+            prisma.lead.findMany({
+                where: { userId, status: 'won', updatedAt: { gte: sevenDaysAgo } },
+                select: { updatedAt: true }
+            })
+        ])
+
+        // Bucket into 7 days
+        const bucketCounts = (records, dateField) => {
+            const buckets = Array(7).fill(0)
+            records.forEach(r => {
+                const d = new Date(r[dateField])
+                const dayIndex = Math.floor((d.getTime() - sevenDaysAgo.getTime()) / (1000 * 60 * 60 * 24))
+                if (dayIndex >= 0 && dayIndex < 7) buckets[dayIndex]++
+            })
+            return buckets
+        }
+
+        const response = {
+            leads: bucketCounts(leads, 'createdAt'),
+            calls: bucketCounts(calls, 'createdAt'),
+            conversions: bucketCounts(wonLeads, 'updatedAt')
+        }
+
+        await cacheSet(`dashboard-trends:${userId}`, response, DASHBOARD_CACHE_TTL)
+        res.json(response)
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+})
+
 export default router
