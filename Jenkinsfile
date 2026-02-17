@@ -145,33 +145,33 @@ pipeline {
 
                     echo "Checking backend health..."
                     for i in $(seq 1 $RETRIES); do
-                        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://business-hub-backend:3002/api/health 2>/dev/null || \
-                                    curl -s -o /dev/null -w "%{http_code}" http://172.17.0.1:3003/api/health 2>/dev/null || echo "000")
-                        if [ "$HTTP_CODE" = "200" ]; then
+                        # Use wget (available in alpine) inside the backend container
+                        if docker exec business-hub-backend wget -q -O /dev/null http://localhost:3002/api/health 2>/dev/null; then
                             echo "Backend OK (attempt $i)"
                             break
                         fi
                         if [ "$i" = "$RETRIES" ]; then
                             echo "ERROR: Backend health check failed after $RETRIES attempts"
+                            docker logs business-hub-backend --tail 20
                             exit 1
                         fi
-                        echo "Backend not ready (HTTP $HTTP_CODE), retrying in ${DELAY}s... ($i/$RETRIES)"
+                        echo "Backend not ready, retrying in ${DELAY}s... ($i/$RETRIES)"
                         sleep $DELAY
                     done
 
                     echo "Checking frontend..."
                     for i in $(seq 1 $RETRIES); do
-                        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://business-hub-frontend:80/ 2>/dev/null || \
-                                    curl -s -o /dev/null -w "%{http_code}" http://172.17.0.1:5175/ 2>/dev/null || echo "000")
-                        if [ "$HTTP_CODE" = "200" ]; then
+                        # Use wget inside nginx container
+                        if docker exec business-hub-frontend wget -q -O /dev/null http://localhost:80/ 2>/dev/null; then
                             echo "Frontend OK (attempt $i)"
                             break
                         fi
                         if [ "$i" = "$RETRIES" ]; then
                             echo "ERROR: Frontend health check failed after $RETRIES attempts"
+                            docker logs business-hub-frontend --tail 20
                             exit 1
                         fi
-                        echo "Frontend not ready (HTTP $HTTP_CODE), retrying in ${DELAY}s... ($i/$RETRIES)"
+                        echo "Frontend not ready, retrying in ${DELAY}s... ($i/$RETRIES)"
                         sleep $DELAY
                     done
 
