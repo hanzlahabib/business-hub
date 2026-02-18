@@ -15,10 +15,10 @@ Full audit completed (see `docs/PRODUCTION-READINESS.md`). These must be resolve
 - [x] **CORS lockdown** — restrict to `CORS_ORIGINS` env var
 - [x] **Enable Helmet CSP** — content security policy with known sources
 - [x] **Remove hardcoded secrets/URLs** — Vite env vars, JWT_SECRET from env
-- [ ] **Mass assignment protection** — whitelist fields on all write endpoints
+- [x] **Mass assignment protection** — whitelist fields on all write endpoints
 
 ### Week 2 — Reliability & Performance
-- [ ] **Input validation (zod)** — schemas for all POST/PUT/PATCH routes
+- [x] **Input validation (zod)** — schemas for all POST/PUT/PATCH routes
 - [x] **Database indexes** — added `@@index` on 15+ models
 - [ ] **Error handling** — replace empty catches, add `res.ok` checks in frontend
 - [x] **Replace console.log** — migrated to Winston logger across backend
