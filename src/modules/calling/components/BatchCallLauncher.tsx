@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { ENDPOINTS, WS_SERVER } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 import { toast } from 'sonner'
 
 interface BatchCallLauncherProps {
@@ -46,7 +47,7 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
         setLeadsLoading(true)
         try {
             const res = await fetch(`${ENDPOINTS.LEADS}`, {
-                headers: { 'Content-Type': 'application/json', 'x-user-id': user.id }
+                headers: getJsonAuthHeaders()
             })
             const data = await res.json()
             const allLeads = Array.isArray(data) ? data : data.leads || []
@@ -61,7 +62,7 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
         setScriptsLoading(true)
         try {
             const res = await fetch(ENDPOINTS.CALL_SCRIPTS_LIST, {
-                headers: { 'Content-Type': 'application/json', 'x-user-id': user.id }
+                headers: getJsonAuthHeaders()
             })
             const data = await res.json()
             setScripts(Array.isArray(data) ? data : data.scripts || [])
@@ -106,7 +107,7 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
         try {
             const res = await fetch(ENDPOINTS.AGENTS, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify({
                     name: agentName || `Batch ${new Date().toLocaleDateString()}`,
                     scriptId: selectedScriptId || undefined,
@@ -124,7 +125,7 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
                 // Auto-start the agent
                 await fetch(`${ENDPOINTS.AGENTS}/${agentId}/start`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-user-id': user.id }
+                    headers: getJsonAuthHeaders()
                 })
                 setAgentStatus('running')
                 connectWebSocket(agentId)
@@ -174,7 +175,7 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
         try {
             await fetch(`${ENDPOINTS.AGENTS}/${spawnedAgent.id}/${action}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-user-id': user.id }
+                headers: getJsonAuthHeaders()
             })
             if (action === 'stop') setAgentStatus('completed')
             else if (action === 'pause') setAgentStatus('paused')

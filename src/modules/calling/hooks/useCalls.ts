@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 export interface Call {
     id: string
@@ -95,10 +96,7 @@ export function useCalls() {
     const [error, setError] = useState<string | null>(null)
     const [total, setTotal] = useState(0)
 
-    const headers = useCallback(() => ({
-        'Content-Type': 'application/json',
-        'x-user-id': user?.id || ''
-    }), [user])
+    const headers = useCallback(() => getJsonAuthHeaders(), [])
 
     const fetchCalls = useCallback(async (filters?: { leadId?: string; status?: string; outcome?: string; limit?: number; offset?: number; silent?: boolean }) => {
         if (!user) return

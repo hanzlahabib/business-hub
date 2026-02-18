@@ -8,8 +8,8 @@ const router = express.Router()
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body
-        const user = await authService.login(email, password)
-        res.json({ success: true, user })
+        const { token, user } = await authService.login(email, password)
+        res.json({ success: true, token, user })
     } catch (error) {
         res.status(401).json({ success: false, error: error.message })
     }
@@ -27,8 +27,8 @@ router.post('/register', async (req, res) => {
         if (password.length < 6) {
             return res.status(422).json({ success: false, error: 'Password must be at least 6 characters' })
         }
-        const user = await authService.register(req.body)
-        res.json({ success: true, user })
+        const { token, user } = await authService.register(req.body)
+        res.json({ success: true, token, user })
     } catch (error) {
         res.status(400).json({ success: false, error: error.message })
     }

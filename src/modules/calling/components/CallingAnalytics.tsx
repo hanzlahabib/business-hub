@@ -5,6 +5,7 @@ import {
 } from 'lucide-react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 interface AnalyticsData {
     totalCalls: number
@@ -53,7 +54,7 @@ export function CallingAnalytics() {
         setLoading(true)
         try {
             const res = await fetch(`${ENDPOINTS.CALL_STATS}?range=${dateRange}`, {
-                headers: { 'Content-Type': 'application/json', 'x-user-id': user.id }
+                headers: getJsonAuthHeaders()
             })
             const json = await res.json()
             setData(json)

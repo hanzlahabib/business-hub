@@ -110,10 +110,11 @@ test.describe('Suite 11: Leads CRM Deep', () => {
         const regRes = await request.post(`${API_URL}/api/auth/register`, {
             data: { email: 'e2e-isolation@test.com', password: 'test123', name: 'Isolation User' },
         })
-        let otherUserId
+        let otherUserId, otherToken
         if (regRes.ok()) {
             const body = await regRes.json()
             otherUserId = body.user.id
+            otherToken = body.token
         } else {
             // Already exists — login
             const loginRes = await request.post(`${API_URL}/api/auth/login`, {
@@ -121,13 +122,18 @@ test.describe('Suite 11: Leads CRM Deep', () => {
             })
             const body = await loginRes.json()
             otherUserId = body.user?.id
+            otherToken = body.token
         }
 
         // If we got an otherUserId, check isolation
         if (otherUserId) {
-            const res = await request.get(`${API_URL}/api/leads`, {
-                headers: { 'x-user-id': otherUserId, 'Content-Type': 'application/json' },
-            })
+            const headers = { 'Content-Type': 'application/json' }
+            if (otherToken) {
+                headers['Authorization'] = `Bearer ${otherToken}`
+            } else {
+                headers['x-user-id'] = otherUserId
+            }
+            const res = await request.get(`${API_URL}/api/leads`, { headers })
             expect(res.status()).toBe(200)
             const otherLeads = await res.json()
             const found = otherLeads.filter(l => createdIds.includes(l.id))

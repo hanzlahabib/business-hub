@@ -1,14 +1,6 @@
 import { useState, useCallback } from 'react'
 import { API_SERVER } from '../../../config/api'
-
-function getAuthHeaders(): Record<string, string> {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    try {
-        const stored = localStorage.getItem('auth_user')
-        if (stored) headers['x-user-id'] = JSON.parse(stored).id
-    } catch { }
-    return headers
-}
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 export interface ScrapedLead {
     name: string
@@ -55,7 +47,7 @@ export function useLeadScraper(): UseLeadScraperReturn {
         try {
             const res = await fetch(`${API_SERVER}/api/scraper/search`, {
                 method: 'POST',
-                headers: getAuthHeaders(),
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify({ query: searchQuery, maxResults: 15, enrichContacts })
             })
             const data = await res.json()
@@ -76,7 +68,7 @@ export function useLeadScraper(): UseLeadScraperReturn {
         try {
             const res = await fetch(`${API_SERVER}/api/scraper/import`, {
                 method: 'POST',
-                headers: getAuthHeaders(),
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify({ leads: selected })
             })
             const data = await res.json()

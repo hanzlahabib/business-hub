@@ -7,6 +7,7 @@ import {
 import { motion } from 'framer-motion'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 import { toast } from 'sonner'
 
 interface Intelligence {
@@ -62,23 +63,18 @@ export function LeadIntelligence({ leadId }: { leadId: string }) {
     const [generating, setGenerating] = useState(false)
     const { user } = useAuth()
 
-    const headers = useCallback(() => ({
-        'Content-Type': 'application/json',
-        'x-user-id': user?.id || ''
-    }), [user?.id])
-
     const fetchIntel = useCallback(async () => {
         if (!user?.id) return
         setLoading(true)
         try {
-            const res = await fetch(ENDPOINTS.INTELLIGENCE_LEAD(leadId), { headers: headers() })
+            const res = await fetch(ENDPOINTS.INTELLIGENCE_LEAD(leadId), { headers: getJsonAuthHeaders() })
             if (res.ok) {
                 const data = await res.json()
                 setIntel(data)
             }
         } catch { /* ignore */ }
         finally { setLoading(false) }
-    }, [leadId, user?.id, headers])
+    }, [leadId, user?.id])
 
     useEffect(() => { fetchIntel() }, [fetchIntel])
 
@@ -87,7 +83,7 @@ export function LeadIntelligence({ leadId }: { leadId: string }) {
         try {
             const res = await fetch(ENDPOINTS.INTELLIGENCE_ANALYZE(leadId), {
                 method: 'POST',
-                headers: headers()
+                headers: getJsonAuthHeaders()
             })
             if (res.ok) {
                 const data = await res.json()
@@ -105,7 +101,7 @@ export function LeadIntelligence({ leadId }: { leadId: string }) {
         try {
             const res = await fetch(ENDPOINTS.PROPOSAL_GENERATE(leadId), {
                 method: 'POST',
-                headers: headers()
+                headers: getJsonAuthHeaders()
             })
             if (res.ok) {
                 toast.success('Proposal draft generated')

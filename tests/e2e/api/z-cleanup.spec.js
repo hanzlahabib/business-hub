@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { login, API_URL } from '../helpers.js'
+import { login, authHeaders, testState as sharedState, API_URL } from '../helpers.js'
 
 const API = `${API_URL}/api`
 
@@ -12,44 +12,46 @@ const API = `${API_URL}/api`
  */
 
 test.describe('Suite Z: Cleanup', () => {
-    let testState = {}
+    async function ensureLoggedIn(request) {
+        if (!sharedState.token) {
+            await login(request)
+        }
+    }
 
     test('12.0 — Setup: login', async ({ request }) => {
         const user = await login(request)
-        testState.userId = user.id
-        expect(testState.userId).toBeTruthy()
+        expect(sharedState.userId).toBeTruthy()
+        expect(sharedState.token).toBeTruthy()
     })
 
     test('12.1 — Delete all test leads', async ({ request }) => {
-        if (!testState.userId) { const u = await login(request); testState.userId = u.id }
+        await ensureLoggedIn(request)
 
         const res = await request.get(`${API}/leads`, {
-            headers: { 'x-user-id': testState.userId }
+            headers: authHeaders()
         })
         const leads = await res.json()
 
         if (Array.isArray(leads)) {
             for (const lead of leads) {
-                // Only delete leads created by E2E tests
                 if (lead.name?.startsWith('E2E') || lead.email?.includes('e2e')) {
                     await request.delete(`${API}/leads/${lead.id}`, {
-                        headers: { 'x-user-id': testState.userId }
+                        headers: authHeaders()
                     })
                 }
             }
         }
-        // Verify cleanup
         const after = await request.get(`${API}/leads`, {
-            headers: { 'x-user-id': testState.userId }
+            headers: authHeaders()
         })
         expect(after.ok()).toBeTruthy()
     })
 
     test('12.2 — Delete all test jobs', async ({ request }) => {
-        if (!testState.userId) { const u = await login(request); testState.userId = u.id }
+        await ensureLoggedIn(request)
 
         const res = await request.get(`${API}/jobs`, {
-            headers: { 'x-user-id': testState.userId }
+            headers: authHeaders()
         })
         const jobs = await res.json()
 
@@ -57,22 +59,22 @@ test.describe('Suite Z: Cleanup', () => {
             for (const job of jobs) {
                 if (job.title?.startsWith('E2E') || job.company?.includes('E2E')) {
                     await request.delete(`${API}/jobs/${job.id}`, {
-                        headers: { 'x-user-id': testState.userId }
+                        headers: authHeaders()
                     })
                 }
             }
         }
         const after = await request.get(`${API}/jobs`, {
-            headers: { 'x-user-id': testState.userId }
+            headers: authHeaders()
         })
         expect(after.ok()).toBeTruthy()
     })
 
     test('12.3 — Delete all test taskboards', async ({ request }) => {
-        if (!testState.userId) { const u = await login(request); testState.userId = u.id }
+        await ensureLoggedIn(request)
 
         const res = await request.get(`${API}/resources/taskboards`, {
-            headers: { 'x-user-id': testState.userId }
+            headers: authHeaders()
         })
         const boards = await res.json()
 
@@ -80,7 +82,7 @@ test.describe('Suite Z: Cleanup', () => {
             for (const board of boards) {
                 if (board.name?.startsWith('E2E')) {
                     await request.delete(`${API}/resources/taskboards/${board.id}`, {
-                        headers: { 'x-user-id': testState.userId }
+                        headers: authHeaders()
                     })
                 }
             }
@@ -89,10 +91,10 @@ test.describe('Suite Z: Cleanup', () => {
     })
 
     test('12.4 — Delete all test templates', async ({ request }) => {
-        if (!testState.userId) { const u = await login(request); testState.userId = u.id }
+        await ensureLoggedIn(request)
 
         const res = await request.get(`${API}/resources/templates`, {
-            headers: { 'x-user-id': testState.userId }
+            headers: authHeaders()
         })
         const templates = await res.json()
 
@@ -100,7 +102,7 @@ test.describe('Suite Z: Cleanup', () => {
             for (const tmpl of templates) {
                 if (tmpl.name?.startsWith('E2E')) {
                     await request.delete(`${API}/resources/templates/${tmpl.id}`, {
-                        headers: { 'x-user-id': testState.userId }
+                        headers: authHeaders()
                     })
                 }
             }
@@ -109,12 +111,11 @@ test.describe('Suite Z: Cleanup', () => {
     })
 
     test('12.5 — Verify clean state', async ({ request }) => {
-        if (!testState.userId) { const u = await login(request); testState.userId = u.id }
+        await ensureLoggedIn(request)
 
-        // Verify no E2E data remains
         const [leads, jobs] = await Promise.all([
-            request.get(`${API}/leads`, { headers: { 'x-user-id': testState.userId } }),
-            request.get(`${API}/jobs`, { headers: { 'x-user-id': testState.userId } })
+            request.get(`${API}/leads`, { headers: authHeaders() }),
+            request.get(`${API}/jobs`, { headers: authHeaders() })
         ])
 
         expect(leads.ok()).toBeTruthy()
@@ -123,7 +124,6 @@ test.describe('Suite Z: Cleanup', () => {
         const leadsData = await leads.json()
         const jobsData = await jobs.json()
 
-        // Should have no E2E-prefixed items left
         if (Array.isArray(leadsData)) {
             const e2eLeads = leadsData.filter(l => l.name?.startsWith('E2E'))
             expect(e2eLeads.length).toBe(0)

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
+import { getAuthHeaders, getJsonAuthHeaders } from '../../utils/authHeaders'
 
 export interface Message {
   id: string
@@ -38,7 +39,7 @@ export function useMessages() {
     setError(null)
     try {
       const res = await fetch(`${ENDPOINTS.MESSAGES}/lead/${leadId}`, {
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       const data = await res.json()
       if (data.success) {
@@ -61,10 +62,7 @@ export function useMessages() {
     try {
       const res = await fetch(`${ENDPOINTS.MESSAGES}/received`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({ leadId, channel, subject, body })
       })
       const data = await res.json()
@@ -88,10 +86,7 @@ export function useMessages() {
     try {
       const res = await fetch(`${ENDPOINTS.MESSAGES}/call`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({ leadId, notes, outcome })
       })
       const data = await res.json()
@@ -112,7 +107,7 @@ export function useMessages() {
     if (!user) return null
     try {
       const res = await fetch(`${ENDPOINTS.MESSAGES}/stats/${leadId}`, {
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       const data = await res.json()
       if (data.success) {

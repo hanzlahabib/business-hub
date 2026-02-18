@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 export interface Subtask {
   id: string
@@ -37,7 +38,7 @@ export function useTasks(boardId: string | null = null) {
     try {
       // Updated to hit /api/resources/tasks with boardId filter
       const res = await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}?boardId=${targetBoardId}`, {
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       const data = await res.json()
       const sortedData = (Array.isArray(data) ? data : []).sort((a: any, b: any) => a.position - b.position)
@@ -71,10 +72,7 @@ export function useTasks(boardId: string | null = null) {
 
       const res = await fetch(ENDPOINTS.TEMPLATES.replace('templates', 'tasks'), {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(newTask)
       })
       const data = await res.json()
@@ -95,10 +93,7 @@ export function useTasks(boardId: string | null = null) {
     try {
       const res = await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(updates)
       })
       const data = await res.json()
@@ -119,7 +114,7 @@ export function useTasks(boardId: string | null = null) {
     try {
       await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${id}`, {
         method: 'DELETE',
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       setTasks(prev => prev.filter(t => t.id !== id))
       return true
@@ -165,10 +160,7 @@ export function useTasks(boardId: string | null = null) {
     for (const update of updates) {
       await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${update.id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({ position: update.position })
       })
     }

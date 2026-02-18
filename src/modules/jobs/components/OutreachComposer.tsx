@@ -2,15 +2,7 @@ import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, Send, FileText, User, Building2, Mail, ChevronDown, Check, Loader2, Eye, Paperclip, FileIcon } from 'lucide-react'
 import { ENDPOINTS, API_SERVER } from '../../../config/api'
-
-function getAuthHeaders(): Record<string, string> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  try {
-    const stored = localStorage.getItem('auth_user')
-    if (stored) { headers['x-user-id'] = JSON.parse(stored).id }
-  } catch { }
-  return headers
-}
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 export function OutreachComposer({ isOpen, onClose, job }) {
   const [templates, setTemplates] = useState<any[]>([])
@@ -36,9 +28,9 @@ export function OutreachComposer({ isOpen, onClose, job }) {
     const fetchData = async () => {
       try {
         const [templatesRes, profileRes, cvsRes] = await Promise.all([
-          fetch(ENDPOINTS.JOB_TEMPLATES, { headers: getAuthHeaders() }),
-          fetch(ENDPOINTS.USER_PROFILE, { headers: getAuthHeaders() }),
-          fetch(`${API_SERVER}/api/cvs`, { headers: getAuthHeaders() })
+          fetch(ENDPOINTS.JOB_TEMPLATES, { headers: getJsonAuthHeaders() }),
+          fetch(ENDPOINTS.USER_PROFILE, { headers: getJsonAuthHeaders() }),
+          fetch(`${API_SERVER}/api/cvs`, { headers: getJsonAuthHeaders() })
         ])
         const templatesData = await templatesRes.json()
         const profileData = await profileRes.json()
@@ -161,7 +153,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
         try {
           await fetch(ENDPOINTS.JOB_OUTREACH_HISTORY, {
             method: 'POST',
-            headers: getAuthHeaders(),
+            headers: getJsonAuthHeaders(),
             body: JSON.stringify({
               id: crypto.randomUUID(),
               jobId: job?.id,

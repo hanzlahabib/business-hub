@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Mail, Loader2, TestTube, CheckCircle, AlertCircle, Key, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
+import { getAuthHeaders, getJsonAuthHeaders } from '../../utils/authHeaders'
 
 // Constants
 const providers = [
@@ -86,7 +87,7 @@ export function EmailSettingsTab() {
         const fetchSettings = async () => {
             try {
                 const res = await fetch(ENDPOINTS.EMAIL_SETTINGS, {
-                    headers: { 'x-user-id': user.id }
+                    headers: getAuthHeaders()
                 })
                 const data = await res.json()
                 setSettings(data)
@@ -125,10 +126,7 @@ export function EmailSettingsTab() {
         try {
             await fetch(ENDPOINTS.EMAIL_SETTINGS, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-user-id': user.id
-                },
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify(settings)
             })
             setTestResult({ success: true, message: 'Settings saved!' })
@@ -144,21 +142,17 @@ export function EmailSettingsTab() {
         setTesting(true)
         setTestResult(null)
         try {
-            const headers = {
-                'Content-Type': 'application/json',
-                'x-user-id': user.id
-            }
             // Save first
             await fetch(ENDPOINTS.EMAIL_SETTINGS, {
                 method: 'PUT',
-                headers,
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify(settings)
             })
 
             // Then test
             const res = await fetch(ENDPOINTS.EMAIL_TEST, {
                 method: 'POST',
-                headers
+                headers: getJsonAuthHeaders()
             })
             const data = await res.json()
             setTestResult(data)

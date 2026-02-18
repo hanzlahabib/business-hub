@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ENDPOINTS } from '../config/api'
 import { useAuth } from './useAuth'
+import { getAuthHeaders, getJsonAuthHeaders } from '../utils/authHeaders'
 
 export interface Comment {
     id: string
@@ -69,7 +70,7 @@ export function useSchedule() {
         if (!user) return
         try {
             const res = await fetch(ENDPOINTS.CONTENTS, {
-                headers: { 'x-user-id': user.id }
+                headers: getAuthHeaders()
             })
             const data = await res.json()
             setContents(Array.isArray(data) ? data : [])
@@ -83,7 +84,7 @@ export function useSchedule() {
         if (!user) return
         try {
             const res = await fetch(ENDPOINTS.SETTINGS, {
-                headers: { 'x-user-id': user.id }
+                headers: getAuthHeaders()
             })
             const data = await res.json()
             if (data) setSettings(data)
@@ -120,10 +121,7 @@ export function useSchedule() {
         try {
             const res = await fetch(ENDPOINTS.CONTENTS, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-user-id': user.id
-                },
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify(newContent)
             })
             const data = await res.json()
@@ -139,10 +137,7 @@ export function useSchedule() {
         try {
             const res = await fetch(`${ENDPOINTS.CONTENTS}/${id}`, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-user-id': user.id
-                },
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify(updates)
             })
             const data = await res.json()
@@ -157,7 +152,7 @@ export function useSchedule() {
         try {
             await fetch(`${ENDPOINTS.CONTENTS}/${id}`, {
                 method: 'DELETE',
-                headers: { 'x-user-id': user.id }
+                headers: getAuthHeaders()
             })
             setContents(prev => prev.filter(c => c.id !== id))
         } catch (err: any) {
@@ -311,10 +306,7 @@ export function useSchedule() {
         try {
             const res = await fetch(ENDPOINTS.SETTINGS, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-user-id': user.id
-                },
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify(newSettings)
             })
             const data = await res.json()

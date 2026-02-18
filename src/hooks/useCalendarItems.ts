@@ -3,6 +3,7 @@ import { Video, Smartphone, CheckSquare, Briefcase, Users, Target, type LucideIc
 import type { Content } from './useSchedule'
 import { ENDPOINTS } from '../config/api'
 import { useAuth } from './useAuth'
+import { getAuthHeaders, getJsonAuthHeaders } from '../utils/authHeaders'
 
 export interface CalendarFilters {
     contents: boolean
@@ -96,7 +97,7 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
             const promises: Promise<any>[] = []
             const fetchMap: string[] = []
 
-            const headers = { 'x-user-id': user.id }
+            const headers = getAuthHeaders()
 
             if (filters.contents) {
                 promises.push(fetch(ENDPOINTS.CONTENTS, { headers }).then(r => r.json()))
@@ -269,10 +270,7 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
     const rescheduleItem = useCallback(async (item: CalendarItem, newDate: string | Date) => {
         if (!user) return false
         const dateStr = typeof newDate === 'string' ? newDate : newDate.toISOString().split('T')[0]
-        const headers = {
-            'Content-Type': 'application/json',
-            'x-user-id': user.id
-        }
+        const headers = getJsonAuthHeaders()
 
         try {
             switch (item.type) {

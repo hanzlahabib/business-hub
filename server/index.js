@@ -63,11 +63,27 @@ const app = express()
 const PORT = process.env.PORT || 3002
 
 // Security Middleware
+const ALLOWED_ORIGINS = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map(o => o.trim())
+  : ['http://localhost:5173', 'http://localhost:5175']
+
 app.use(helmet({
-  contentSecurityPolicy: false,  // Disable CSP — frontend is a separate SPA
-  crossOriginEmbedderPolicy: false,  // Allow cross-origin resources
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:', 'https://ui-avatars.com'],
+      connectSrc: ["'self'", ...ALLOWED_ORIGINS],
+    }
+  },
+  crossOriginEmbedderPolicy: false,
 }))
-app.use(cors())
+app.use(cors({
+  origin: ALLOWED_ORIGINS,
+  credentials: true
+}))
 app.use(express.json())
 app.use(sanitizeInput())
 app.use(requestLogger())
@@ -232,20 +248,21 @@ app.post('/api/file/search', async (req, res) => {
 })
 
 // AI Agent endpoint - for automation
+import authService from './services/authService.js'
 
 app.post('/api/agent/execute', authMiddleware, async (req, res) => {
   const { action, params } = req.body
   const userId = req.user.id
+  // Generate internal JWT for server-to-server calls
+  const internalToken = authService.generateToken(userId)
+  const internalHeaders = { 'Content-Type': 'application/json', Authorization: `Bearer ${internalToken}` }
 
   try {
     switch (action) {
       case 'send_email':
         const emailRes = await fetch(`http://localhost:${PORT}/api/email/send`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-user-id': userId
-          },
+          headers: internalHeaders,
           body: JSON.stringify(params)
         })
         const emailData = await emailRes.json()
@@ -279,10 +296,7 @@ app.post('/api/agent/execute', authMiddleware, async (req, res) => {
           try {
             await fetch(`http://localhost:${PORT}/api/email/send`, {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-user-id': userId
-              },
+              headers: internalHeaders,
               body: JSON.stringify({
                 leadId: lead.id,
                 to: lead.email,

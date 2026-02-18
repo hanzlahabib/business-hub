@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Search, ExternalLink, Star, Globe, Briefcase, Rocket, Building2, Filter } from 'lucide-react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getAuthHeaders } from '../../../utils/authHeaders'
 
 const sourceIcons = {
   remoteok: { icon: Globe, color: 'text-green-400', bg: 'bg-green-500/20' },
@@ -26,7 +27,7 @@ export function JobSearchPanel({ isOpen, onClose }) {
       if (!user) return
       try {
         const res = await fetch(ENDPOINTS.JOB_SEARCH_PROMPTS, {
-          headers: { 'x-user-id': user.id }
+          headers: getAuthHeaders()
         })
         const data = await res.json()
         setSearchPrompts(data)

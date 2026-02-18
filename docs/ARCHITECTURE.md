@@ -242,3 +242,50 @@ server/
 ├── repositories/      # Data access layer
 └── index.js           # Server entry point
 ```
+
+## CI/CD Pipeline
+
+```
+Push to master / PR
+       │
+       ▼
+┌──────────────────────────┐
+│   GitHub Actions (CI)     │
+│   typecheck → test →      │
+│   build-validate          │
+│   (.github/workflows/     │
+│    ci.yml)                │
+└──────────┬───────────────┘
+           │ on master push
+           ▼
+┌──────────────────────────┐
+│   Jenkins Pipeline (CD)   │
+│   (Jenkinsfile)           │
+│                           │
+│   backup → pull → build → │
+│   deploy → health-check   │
+│                           │
+│   Rollback: parameterized │
+│   build with backup tag   │
+└──────────────────────────┘
+```
+
+| Component | Location | Description |
+|-----------|----------|-------------|
+| CI Pipeline | `.github/workflows/ci.yml` | Typecheck, E2E tests (Playwright + Postgres), build validation |
+| CD Pipeline | `Jenkinsfile` | Deploy/rollback with backup, health checks, cleanup |
+| Deploy Script | `scripts/deploy.sh` | SSH-based deploy from local terminal |
+| Rollback Script | `scripts/rollback.sh` | SSH-based rollback from local terminal |
+| Health Check | `scripts/health-check.sh` | Verify backend + frontend on VPS |
+| Jenkins Setup | `docs/JENKINS.md` | Full setup guide for Jenkins CD |
+
+### Deploy Commands
+
+```bash
+make deploy-prod       # Direct SSH deploy to VPS
+make rollback          # Rollback to latest backup
+make deploy-status     # Check VPS container status
+make jenkins-deploy    # Trigger Jenkins pipeline
+make jenkins-rollback  # Trigger Jenkins rollback
+make jenkins-status    # Last build status
+```

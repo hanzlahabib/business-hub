@@ -46,19 +46,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (token && storedUser) {
                 try {
                     const parsed = JSON.parse(storedUser)
-                    // Verify user still exists via profile endpoint with x-user-id
                     const res = await fetch(`${API_SERVER}/api/auth/profile`, {
-                        method: 'HEAD',
-                        headers: { 'x-user-id': parsed.id }
+                        headers: { Authorization: `Bearer ${token}` }
                     })
                     if (res.ok) {
                         setUser(parsed)
                     } else {
-                        // Auth failed but keep stored user for offline/dev use
-                        setUser(parsed)
+                        // Token expired/invalid — clear auth
+                        localStorage.removeItem(AUTH_TOKEN_KEY)
+                        localStorage.removeItem(AUTH_USER_KEY)
+                        setUser(null)
                     }
                 } catch {
-                    // Network error, keep stored session for dev use
+                    // Network error, keep stored session
                     const parsed = JSON.parse(storedUser)
                     setUser(parsed)
                 }
@@ -91,9 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 role: 'user'
             }
 
-            const token = btoa(JSON.stringify({ userId: data.user.id, ts: Date.now() }))
-
-            localStorage.setItem(AUTH_TOKEN_KEY, token)
+            localStorage.setItem(AUTH_TOKEN_KEY, data.token)
             localStorage.setItem(AUTH_USER_KEY, JSON.stringify(safeUser))
             setUser(safeUser)
             setLoading(false)
@@ -128,9 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 role: 'user'
             }
 
-            const token = btoa(JSON.stringify({ userId: data.user.id, ts: Date.now() }))
-
-            localStorage.setItem(AUTH_TOKEN_KEY, token)
+            localStorage.setItem(AUTH_TOKEN_KEY, data.token)
             localStorage.setItem(AUTH_USER_KEY, JSON.stringify(safeUser))
             setUser(safeUser)
             setLoading(false)

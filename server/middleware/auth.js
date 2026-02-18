@@ -1,30 +1,44 @@
 import userRepository from '../repositories/userRepository.js'
+import authService from '../services/authService.js'
 
 /**
- * Migration Middleware: Authenticates the user.
- * For now, it expects a 'x-user-id' header or falls back to a mock user
- * to ensure the app stays functional during phase-by-phase migration.
+ * Auth Middleware: Verifies JWT from Authorization header.
+ * Falls back to x-user-id header for backward compatibility (deprecated).
  */
 export const authMiddleware = async (req, res, next) => {
-    const userId = req.headers['x-user-id'] || req.headers['authorization']?.split(' ')[1]
+    try {
+        const authHeader = req.headers['authorization']
 
-    if (!userId) {
-        // If no user provided, use the first user in DB as fallback during migration
-        const users = await userRepository.findByEmail('user@example.com')
-        if (users) {
-            req.user = users
-            return next()
+        // Primary: JWT Bearer token
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            const token = authHeader.slice(7)
+            try {
+                const payload = authService.verifyToken(token)
+                const user = await userRepository.findById(payload.userId)
+                if (!user) {
+                    return res.status(401).json({ error: 'User not found' })
+                }
+                req.user = user
+                return next()
+            } catch {
+                // Token invalid/expired — fall through to x-user-id
+            }
         }
+
+        // Deprecated fallback: x-user-id header (for backward compat during migration)
+        const userId = req.headers['x-user-id']
+        if (userId) {
+            const user = await userRepository.findById(userId)
+            if (user) {
+                req.user = user
+                return next()
+            }
+        }
+
         return res.status(401).json({ error: 'Authentication required' })
+    } catch (error) {
+        return res.status(401).json({ error: 'Authentication failed' })
     }
-
-    const user = await userRepository.findById(userId)
-    if (!user) {
-        return res.status(401).json({ error: 'User not found' })
-    }
-
-    req.user = user
-    next()
 }
 
 export default authMiddleware

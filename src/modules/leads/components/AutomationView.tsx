@@ -6,15 +6,7 @@ import {
     Target, History, AlertCircle
 } from 'lucide-react'
 import { API_SERVER } from '../../../config/api'
-
-function getAuthHeaders(): Record<string, string> {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    try {
-        const stored = localStorage.getItem('auth_user')
-        if (stored) headers['x-user-id'] = JSON.parse(stored).id
-    } catch { }
-    return headers
-}
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 interface ScrapedLead {
     name: string
@@ -78,7 +70,7 @@ export function AutomationView() {
         try {
             const res = await fetch(`${API_SERVER}/api/scraper/search`, {
                 method: 'POST',
-                headers: getAuthHeaders(),
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify({ query: searchQuery, maxResults: 15, enrichContacts })
             })
             const data = await res.json()
@@ -99,7 +91,7 @@ export function AutomationView() {
         try {
             const res = await fetch(`${API_SERVER}/api/scraper/import`, {
                 method: 'POST',
-                headers: getAuthHeaders(),
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify({ leads: selected })
             })
             const data = await res.json()
@@ -117,7 +109,7 @@ export function AutomationView() {
     async function fetchUncontactedLeads() {
         try {
             const res = await fetch(`${API_SERVER}/api/outreach/uncontacted`, {
-                headers: getAuthHeaders()
+                headers: getJsonAuthHeaders()
             })
             const data = await res.json()
             if (data.success) setUncontactedLeads(data.leads)
@@ -127,7 +119,7 @@ export function AutomationView() {
     async function fetchTemplates() {
         try {
             const res = await fetch(`${API_SERVER}/api/resources/emailtemplates`, {
-                headers: getAuthHeaders()
+                headers: getJsonAuthHeaders()
             })
             const data = await res.json()
             if (Array.isArray(data)) setTemplates(data)
@@ -138,7 +130,7 @@ export function AutomationView() {
         setLoadingHistory(true)
         try {
             const res = await fetch(`${API_SERVER}/api/outreach/history`, {
-                headers: getAuthHeaders()
+                headers: getJsonAuthHeaders()
             })
             const data = await res.json()
             if (data.success) setHistory(data)
@@ -153,7 +145,7 @@ export function AutomationView() {
         try {
             const res = await fetch(`${API_SERVER}/api/outreach/campaign`, {
                 method: 'POST',
-                headers: getAuthHeaders(),
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify({
                     leadIds: Array.from(selectedLeadIds),
                     templateId,

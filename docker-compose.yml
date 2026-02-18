@@ -39,6 +39,8 @@ services:
       DATABASE_URL: "postgresql://postgres:postgres_password@db:5432/business_hub?schema=public"
       PORT: 3002
       NODE_ENV: production
+      JWT_SECRET: "${JWT_SECRET:-change-me-in-production}"
+      CORS_ORIGINS: "https://brain.hanzla.com,http://localhost:5175"
     ports:
       - "3003:3002"
     depends_on:
@@ -51,6 +53,9 @@ services:
       context: .
       dockerfile: Dockerfile
       network: host
+      args:
+        VITE_API_SERVER: "https://brain.hanzla.com"
+        VITE_WS_SERVER: "wss://brain.hanzla.com:3004"
     container_name: business-hub-frontend
     restart: unless-stopped
     labels:

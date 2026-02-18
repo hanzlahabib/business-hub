@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 import type { CallScript } from './useCalls'
 
 export function useCallScripts() {
@@ -10,10 +11,7 @@ export function useCallScripts() {
     const [generating, setGenerating] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    const headers = useCallback(() => ({
-        'Content-Type': 'application/json',
-        'x-user-id': user?.id || ''
-    }), [user])
+    const headers = useCallback(() => getJsonAuthHeaders(), [])
 
     const fetchScripts = useCallback(async () => {
         if (!user) return

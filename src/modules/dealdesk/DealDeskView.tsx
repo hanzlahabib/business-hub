@@ -8,6 +8,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../utils/authHeaders'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { ProposalEditor } from './components/ProposalEditor'
@@ -46,19 +47,14 @@ export function DealDeskView() {
     const { user } = useAuth()
     const navigate = useNavigate()
 
-    const headers = useCallback(() => ({
-        'Content-Type': 'application/json',
-        'x-user-id': user?.id || ''
-    }), [user?.id])
-
     const fetchData = useCallback(async () => {
         if (!user?.id) return
         setLoading(true)
         try {
             const [leadersRes, proposalsRes, settingsRes] = await Promise.all([
-                fetch(ENDPOINTS.INTELLIGENCE_LEADERBOARD, { headers: headers() }),
-                fetch(ENDPOINTS.PROPOSALS, { headers: headers() }),
-                fetch(ENDPOINTS.SETTINGS, { headers: headers() })
+                fetch(ENDPOINTS.INTELLIGENCE_LEADERBOARD, { headers: getJsonAuthHeaders() }),
+                fetch(ENDPOINTS.PROPOSALS, { headers: getJsonAuthHeaders() }),
+                fetch(ENDPOINTS.SETTINGS, { headers: getJsonAuthHeaders() })
             ])
             if (leadersRes.ok) setPipeline(await leadersRes.json())
             if (proposalsRes.ok) setProposals(await proposalsRes.json())
@@ -72,13 +68,13 @@ export function DealDeskView() {
             console.warn('[DealDesk] Failed to load data:', e)
             toast.error('Failed to load deal desk data')
         } finally { setLoading(false) }
-    }, [user?.id, headers])
+    }, [user?.id])
 
     useEffect(() => { fetchData() }, [fetchData])
 
     const handleAnalyze = async (leadId) => {
         try {
-            await fetch(ENDPOINTS.INTELLIGENCE_ANALYZE(leadId), { method: 'POST', headers: headers() })
+            await fetch(ENDPOINTS.INTELLIGENCE_ANALYZE(leadId), { method: 'POST', headers: getJsonAuthHeaders() })
             toast.success('Lead re-analyzed')
             fetchData()
         } catch { toast.error('Analysis failed') }
@@ -86,7 +82,7 @@ export function DealDeskView() {
 
     const handleCreateProposal = async (leadId) => {
         try {
-            const res = await fetch(ENDPOINTS.PROPOSAL_GENERATE(leadId), { method: 'POST', headers: headers() })
+            const res = await fetch(ENDPOINTS.PROPOSAL_GENERATE(leadId), { method: 'POST', headers: getJsonAuthHeaders() })
             if (res.ok) { toast.success('Proposal draft generated'); fetchData() }
         } catch { toast.error('Generation failed') }
     }
@@ -94,7 +90,7 @@ export function DealDeskView() {
     const handleDeleteProposal = async (proposalId, e) => {
         e.stopPropagation()
         try {
-            const res = await fetch(`${ENDPOINTS.PROPOSALS}/${proposalId}`, { method: 'DELETE', headers: headers() })
+            const res = await fetch(`${ENDPOINTS.PROPOSALS}/${proposalId}`, { method: 'DELETE', headers: getJsonAuthHeaders() })
             if (res.ok) {
                 setProposals(prev => prev.filter(p => p.id !== proposalId))
                 toast.success('Proposal deleted')
@@ -107,7 +103,7 @@ export function DealDeskView() {
         try {
             await fetch(ENDPOINTS.SETTINGS, {
                 method: 'PATCH',
-                headers: headers(),
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify({ dealdesk: newSettings })
             })
             toast.success('Settings saved')

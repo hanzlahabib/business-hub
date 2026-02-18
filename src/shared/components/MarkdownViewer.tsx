@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
+import { getAuthHeaders } from '../../utils/authHeaders'
 
 export function MarkdownViewer({ isOpen, onClose, filePath, fileName }) {
   const { user } = useAuth()
@@ -17,7 +18,7 @@ export function MarkdownViewer({ isOpen, onClose, filePath, fileName }) {
       setLoading(true)
       setError(null)
       fetch(`${ENDPOINTS.FILE_READ}?path=${encodeURIComponent(filePath)}`, {
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
         .then(res => res.json())
         .then(data => {

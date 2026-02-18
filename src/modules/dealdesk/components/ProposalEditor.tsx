@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 import { toast } from 'sonner'
 
 interface ProposalSection {
@@ -49,18 +50,13 @@ export function ProposalEditor({ proposal, onClose, onUpdate }: {
     const [saving, setSaving] = useState(false)
     const { user } = useAuth()
 
-    const headers = useCallback(() => ({
-        'Content-Type': 'application/json',
-        'x-user-id': user?.id || ''
-    }), [user?.id])
-
     const handleSave = async () => {
         setSaving(true)
         try {
             const totalValue = pricing.reduce((s, p) => s + (p.amount || 0), 0)
             const res = await fetch(`${ENDPOINTS.PROPOSALS}/${proposal.id}`, {
                 method: 'PUT',
-                headers: headers(),
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify({ title, content: { sections, pricing }, totalValue })
             })
             if (res.ok) {
@@ -77,7 +73,7 @@ export function ProposalEditor({ proposal, onClose, onUpdate }: {
         try {
             const res = await fetch(`${ENDPOINTS.PROPOSALS}/${proposal.id}`, {
                 method: 'PUT',
-                headers: headers(),
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify({ status: newStatus })
             })
             if (res.ok) {

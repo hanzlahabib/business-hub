@@ -6,15 +6,7 @@ import {
   Briefcase, Code, Loader2, CheckCircle, AlertCircle, Plus
 } from 'lucide-react'
 import { ENDPOINTS } from '../../../config/api'
-
-function getAuthHeaders(): Record<string, string> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  try {
-    const stored = localStorage.getItem('auth_user')
-    if (stored) { headers['x-user-id'] = JSON.parse(stored).id }
-  } catch { }
-  return headers
-}
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 const EXPERIENCE_LEVELS = [
   { id: 'JUNIOR', label: 'Junior (0-2 years)' },
@@ -51,7 +43,7 @@ export function ProfileEditor({ isOpen, onClose }) {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(ENDPOINTS.USER_PROFILE, { headers: getAuthHeaders() })
+      const res = await fetch(ENDPOINTS.USER_PROFILE, { headers: getJsonAuthHeaders() })
       const data = await res.json()
       setProfile(data)
     } catch {

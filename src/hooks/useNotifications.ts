@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { ENDPOINTS, WS_SERVER } from '../config/api'
 import { useAuth } from './useAuth'
+import { getJsonAuthHeaders } from '../utils/authHeaders'
 
 interface Notification {
     id: string
@@ -21,10 +22,7 @@ export function useNotifications() {
     const { user } = useAuth()
     const wsRef = useRef<WebSocket | null>(null)
 
-    const headers = useCallback(() => ({
-        'Content-Type': 'application/json',
-        'x-user-id': user?.id || ''
-    }), [user?.id])
+    const headers = useCallback(() => getJsonAuthHeaders(), [])
 
     const fetchNotifications = useCallback(async () => {
         if (!user?.id) return

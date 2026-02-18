@@ -8,6 +8,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
+import { getAuthHeaders } from '../../utils/authHeaders'
 import { formatDistanceToNow } from 'date-fns'
 
 interface DashboardData {
@@ -135,11 +136,9 @@ export default function DashboardView() {
     useEffect(() => {
         if (!user?.id) return
         setLoading(true)
-        const headers = { 'x-user-id': user.id }
-
         Promise.all([
-            fetch(ENDPOINTS.DASHBOARD, { headers }).then(r => r.ok ? r.json() : null),
-            fetch(ENDPOINTS.DASHBOARD_TRENDS, { headers }).then(r => r.ok ? r.json() : null).catch(() => null)
+            fetch(ENDPOINTS.DASHBOARD, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+            fetch(ENDPOINTS.DASHBOARD_TRENDS, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null).catch(() => null)
         ])
             .then(([d, t]) => { setData(d); setTrends(t) })
             .catch(() => setData(null))

@@ -6,18 +6,7 @@
  */
 
 import { ENDPOINTS } from '../../../config/api'
-
-// Helper to get auth headers from stored session
-function getAuthHeaders(): Record<string, string> {
-  try {
-    const stored = localStorage.getItem('auth_user')
-    if (stored) {
-      const user = JSON.parse(stored)
-      return { 'x-user-id': user.id }
-    }
-  } catch { }
-  return {}
-}
+import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 // ============================================
 // TEMPLATES
@@ -44,7 +33,7 @@ export const templateApi = {
   async create(data) {
     const response = await fetch(ENDPOINTS.TEMPLATES, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: getJsonAuthHeaders(),
       body: JSON.stringify({
         ...data,
         id: data.id || `template-${Date.now()}`,
@@ -62,7 +51,7 @@ export const templateApi = {
   async update(id, data) {
     const response = await fetch(`${ENDPOINTS.TEMPLATES}/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: getJsonAuthHeaders(),
       body: JSON.stringify({
         ...data,
         updatedAt: new Date().toISOString()
@@ -119,7 +108,7 @@ export const folderApi = {
   async create(data) {
     const response = await fetch(ENDPOINTS.TEMPLATE_FOLDERS, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: getJsonAuthHeaders(),
       body: JSON.stringify({
         ...data,
         id: data.id || `folder-${Date.now()}`,
@@ -133,7 +122,7 @@ export const folderApi = {
   async update(id, data) {
     const response = await fetch(`${ENDPOINTS.TEMPLATE_FOLDERS}/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: getJsonAuthHeaders(),
       body: JSON.stringify(data)
     })
     if (!response.ok) throw new Error('Failed to update folder')
@@ -176,7 +165,7 @@ export const historyApi = {
   async create(data) {
     const response = await fetch(ENDPOINTS.TEMPLATE_HISTORY, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: getJsonAuthHeaders(),
       body: JSON.stringify({
         ...data,
         id: data.id || `history-${Date.now()}`,
@@ -229,7 +218,7 @@ export const commentApi = {
   async create(data) {
     const response = await fetch(ENDPOINTS.TEMPLATE_COMMENTS, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: getJsonAuthHeaders(),
       body: JSON.stringify({
         ...data,
         id: data.id || `comment-${Date.now()}`,
@@ -244,7 +233,7 @@ export const commentApi = {
   async update(id, data) {
     const response = await fetch(`${ENDPOINTS.TEMPLATE_COMMENTS}/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+      headers: getJsonAuthHeaders(),
       body: JSON.stringify(data)
     })
     if (!response.ok) throw new Error('Failed to update comment')

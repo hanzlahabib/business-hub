@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 export interface LeadTypeAgentConfig {
   agentName?: string
@@ -39,7 +40,7 @@ export function useLeadTypes() {
     setLoading(true)
     try {
       const res = await fetch(ENDPOINTS.LEAD_TYPES, {
-        headers: { 'x-user-id': userId }
+        headers: getAuthHeaders()
       })
       if (!res.ok) return
       const data = await res.json()
@@ -56,7 +57,7 @@ export function useLeadTypes() {
     try {
       const res = await fetch(ENDPOINTS.LEAD_TYPES, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': userId },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(data)
       })
       if (!res.ok) {
@@ -76,7 +77,7 @@ export function useLeadTypes() {
     try {
       const res = await fetch(`${ENDPOINTS.LEAD_TYPES}/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': userId },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(data)
       })
       if (!res.ok) {
@@ -96,7 +97,7 @@ export function useLeadTypes() {
     try {
       const res = await fetch(`${ENDPOINTS.LEAD_TYPES}/${id}`, {
         method: 'DELETE',
-        headers: { 'x-user-id': userId }
+        headers: getAuthHeaders()
       })
       if (!res.ok) throw new Error('Failed to delete')
       setLeadTypes(prev => prev.filter(t => t.id !== id))
@@ -110,7 +111,7 @@ export function useLeadTypes() {
     if (!userId) return null
     try {
       const res = await fetch(`${ENDPOINTS.LEAD_TYPES}/${id}/webhook-url`, {
-        headers: { 'x-user-id': userId }
+        headers: getAuthHeaders()
       })
       return await res.json()
     } catch {

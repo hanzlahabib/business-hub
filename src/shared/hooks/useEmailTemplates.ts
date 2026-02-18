@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
+import { getAuthHeaders, getJsonAuthHeaders } from '../../utils/authHeaders'
 
 export function useEmailTemplates() {
   const { user } = useAuth()
@@ -15,7 +16,7 @@ export function useEmailTemplates() {
     setError(null)
     try {
       const res = await fetch(ENDPOINTS.EMAIL_TEMPLATES, {
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       const data = await res.json()
       setTemplates(data)
@@ -41,7 +42,7 @@ export function useEmailTemplates() {
 
       const res = await fetch(ENDPOINTS.EMAIL_TEMPLATES, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(newTemplate)
       })
       const data = await res.json()
@@ -62,7 +63,7 @@ export function useEmailTemplates() {
     try {
       const res = await fetch(`${ENDPOINTS.EMAIL_TEMPLATES}/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(updates)
       })
       const data = await res.json()
@@ -83,7 +84,7 @@ export function useEmailTemplates() {
     try {
       await fetch(`${ENDPOINTS.EMAIL_TEMPLATES}/${id}`, {
         method: 'DELETE',
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       setTemplates(prev => prev.filter(t => t.id !== id))
       return true

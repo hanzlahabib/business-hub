@@ -8,6 +8,7 @@ import {
 import { format } from 'date-fns'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 // Highlight matching text
 function HighlightText({ text, query }) {
@@ -227,10 +228,7 @@ export function GlobalSearch({
       try {
         const response = await fetch(ENDPOINTS.FILE_SEARCH || `${API_SERVER}/api/file/search`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-user-id': user.id
-          },
+          headers: getJsonAuthHeaders(),
           body: JSON.stringify({
             paths: attachmentPaths.map(a => a.path),
             query: searchQuery

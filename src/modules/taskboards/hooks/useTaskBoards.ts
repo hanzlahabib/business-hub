@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 export interface Column {
   id: string
@@ -36,7 +37,7 @@ export function useTaskBoards() {
     setError(null)
     try {
       const res = await fetch(ENDPOINTS.TEMPLATES.replace('templates', 'taskboards'), {
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       const data = await res.json()
       setBoards(Array.isArray(data) ? data : [])
@@ -62,10 +63,7 @@ export function useTaskBoards() {
 
       const res = await fetch(ENDPOINTS.TEMPLATES.replace('templates', 'taskboards'), {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(newBoard)
       })
       const data = await res.json()
@@ -89,10 +87,7 @@ export function useTaskBoards() {
     if (board && user) {
       await fetch(`${ENDPOINTS.LEADS}/${lead.id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({ linkedBoardId: board.id })
       })
     }
@@ -107,10 +102,7 @@ export function useTaskBoards() {
     try {
       const res = await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'taskboards')}/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(updates)
       })
       const data = await res.json()
@@ -131,7 +123,7 @@ export function useTaskBoards() {
     try {
       await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'taskboards')}/${id}`, {
         method: 'DELETE',
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       setBoards(prev => prev.filter(b => b.id !== id))
       return true

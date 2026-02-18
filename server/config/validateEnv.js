@@ -17,6 +17,9 @@ const REQUIRED = [
 
 const OPTIONAL = [
     { key: 'PORT', default: '3002', desc: 'Server port' },
+    { key: 'JWT_SECRET', desc: 'Secret key for signing JWT tokens (REQUIRED in production)' },
+    { key: 'JWT_EXPIRES_IN', default: '7d', desc: 'JWT token expiry duration' },
+    { key: 'CORS_ORIGINS', desc: 'Comma-separated allowed origins (e.g. https://brain.hanzla.com)' },
     { key: 'TWILIO_ACCOUNT_SID', desc: 'Twilio account SID for calling' },
     { key: 'TWILIO_AUTH_TOKEN', desc: 'Twilio auth token' },
     { key: 'TWILIO_PHONE_NUMBER', desc: 'Twilio phone number' },

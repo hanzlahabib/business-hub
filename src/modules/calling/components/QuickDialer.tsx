@@ -3,6 +3,7 @@ import { Phone, User, ScrollText, Loader2, Search, Building2, X } from 'lucide-r
 import { toast } from 'sonner'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getAuthHeaders } from '../../../utils/authHeaders'
 import type { CallScript } from '../hooks/useCalls'
 
 interface Lead {
@@ -38,7 +39,7 @@ export function QuickDialer({ scripts, onInitiateCall, prefilledLeadId, prefille
     useEffect(() => {
         if (!user) return
         fetch(ENDPOINTS.LEADS, {
-            headers: { 'x-user-id': user.id }
+            headers: getAuthHeaders()
         })
             .then(r => r.json())
             .then(data => setLeads(Array.isArray(data) ? data : []))

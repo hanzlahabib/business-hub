@@ -1,14 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { API_SERVER } from '../../../config/api'
-
-function getAuthHeaders(): Record<string, string> {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    try {
-        const stored = localStorage.getItem('auth_user')
-        if (stored) headers['x-user-id'] = JSON.parse(stored).id
-    } catch { }
-    return headers
-}
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 export interface OutreachResult {
     leadId: string
@@ -68,7 +60,7 @@ export function useOutreach(): UseOutreachReturn {
     const fetchUncontactedLeads = useCallback(async () => {
         try {
             const res = await fetch(`${API_SERVER}/api/outreach/uncontacted`, {
-                headers: getAuthHeaders()
+                headers: getJsonAuthHeaders()
             })
             const data = await res.json()
             if (data.success) setUncontactedLeads(data.leads)
@@ -78,7 +70,7 @@ export function useOutreach(): UseOutreachReturn {
     const fetchTemplates = useCallback(async () => {
         try {
             const res = await fetch(`${API_SERVER}/api/resources/emailtemplates`, {
-                headers: getAuthHeaders()
+                headers: getJsonAuthHeaders()
             })
             const data = await res.json()
             if (Array.isArray(data)) setTemplates(data)
@@ -89,7 +81,7 @@ export function useOutreach(): UseOutreachReturn {
         setLoadingHistory(true)
         try {
             const res = await fetch(`${API_SERVER}/api/outreach/history`, {
-                headers: getAuthHeaders()
+                headers: getJsonAuthHeaders()
             })
             const data = await res.json()
             if (data.success) setHistory(data)
@@ -104,7 +96,7 @@ export function useOutreach(): UseOutreachReturn {
         try {
             const res = await fetch(`${API_SERVER}/api/outreach/campaign`, {
                 method: 'POST',
-                headers: getAuthHeaders(),
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify({
                     leadIds: Array.from(selectedLeadIds),
                     templateId,

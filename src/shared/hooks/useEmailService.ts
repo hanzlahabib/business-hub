@@ -1,15 +1,7 @@
 import { useState, useCallback } from 'react'
 
 import { API_SERVER } from '../../config/api'
-
-function getAuthHeaders(): Record<string, string> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-  try {
-    const stored = localStorage.getItem('auth_user')
-    if (stored) { headers['x-user-id'] = JSON.parse(stored).id }
-  } catch { }
-  return headers
-}
+import { getJsonAuthHeaders } from '../../utils/authHeaders'
 
 export function useEmailService() {
   const [sending, setSending] = useState(false)
@@ -22,7 +14,7 @@ export function useEmailService() {
     try {
       const res = await fetch(`${API_SERVER}/api/email/send`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({ to, subject, body, leadId, templateId, cvId })
       })
       const data = await res.json()
@@ -47,7 +39,7 @@ export function useEmailService() {
     try {
       const res = await fetch(`${API_SERVER}/api/email/send-template`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({ leadId, templateId })
       })
       const data = await res.json()
@@ -72,7 +64,7 @@ export function useEmailService() {
     try {
       const res = await fetch(`${API_SERVER}/api/email/test`, {
         method: 'POST',
-        headers: getAuthHeaders()
+        headers: getJsonAuthHeaders()
       })
       const data = await res.json()
       setLastResult(data)
@@ -92,7 +84,7 @@ export function useEmailService() {
     try {
       const res = await fetch(`${API_SERVER}/api/agent/execute`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({ action, params })
       })
       const data = await res.json()

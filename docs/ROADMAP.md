@@ -1,6 +1,35 @@
-# Business Hub — Future Roadmap
+# Business Hub — Roadmap
 
-This document outlines planned feature epics for future development. These are prioritized by market impact and buyer appeal.
+This document outlines the development roadmap. Production hardening comes first, then feature epics.
+
+---
+
+## 0. Production Hardening (P0 — Before All Feature Work)
+
+**Priority:** Critical | **Effort:** 2-3 weeks | **Status:** Planned
+
+Full audit completed (see `docs/PRODUCTION-READINESS.md`). These must be resolved before adding new features.
+
+### Week 1 — Security Foundation
+- [ ] **Real JWT auth** — bcrypt passwords, JWT tokens, remove `x-user-id` header trust
+- [ ] **CORS lockdown** — restrict to `brain.hanzla.com` + localhost
+- [ ] **Enable Helmet CSP** — content security policy with known sources
+- [ ] **Remove hardcoded secrets/URLs** — fail fast on missing env vars
+- [ ] **Mass assignment protection** — whitelist fields on all write endpoints
+
+### Week 2 — Reliability & Performance
+- [ ] **Input validation (zod)** — schemas for all POST/PUT/PATCH routes
+- [ ] **Database indexes** — add `@@index` on 15+ foreign key columns
+- [ ] **Error handling** — replace empty catches, add `res.ok` checks in frontend
+- [ ] **Replace console.log** — use Winston logger (200+ calls to migrate)
+- [ ] **Remove @ts-nocheck** — start with auth, API service, context (52 files total)
+
+### Week 3 — Cleanup & Hardening
+- [ ] **Delete dead code** — TimelineView, ModuleSwitcher, StatsBar, pipeline module
+- [ ] **Fix API URL construction** — replace fragile `.replace()` patterns
+- [ ] **Per-user rate limiting** — key on userId instead of IP (behind proxy)
+- [ ] **Webhook signature verification** — Vapi + Twilio
+- [ ] **Switch to prisma migrate** — committed migration files instead of `db push`
 
 ---
 
@@ -122,6 +151,7 @@ Extensibility layer for connecting Business Hub to external tools.
 
 | Epic | Impact | Effort | Priority |
 |------|--------|--------|----------|
+| **Production Hardening** | **Critical** | **2-3 weeks** | **P0** |
 | Deal Pipeline + Forecasting | High | Medium | P1 |
 | WhatsApp/SMS Inbox | High | High | P1 |
 | AI Lead Scoring | High | Low | P1 |

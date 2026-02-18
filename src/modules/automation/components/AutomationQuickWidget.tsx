@@ -3,15 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Zap, Users, Mail, ArrowRight, Search, Send, TrendingUp } from 'lucide-react'
 import { API_SERVER } from '../../../config/api'
-
-function getAuthHeaders(): Record<string, string> {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    try {
-        const stored = localStorage.getItem('auth_user')
-        if (stored) headers['x-user-id'] = JSON.parse(stored).id
-    } catch { }
-    return headers
-}
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 interface WidgetStats {
     uncontactedCount: number
@@ -28,8 +20,8 @@ export function AutomationQuickWidget() {
         async function fetchStats() {
             try {
                 const [uncontactedRes, historyRes] = await Promise.allSettled([
-                    fetch(`${API_SERVER}/api/outreach/uncontacted`, { headers: getAuthHeaders() }),
-                    fetch(`${API_SERVER}/api/outreach/history`, { headers: getAuthHeaders() })
+                    fetch(`${API_SERVER}/api/outreach/uncontacted`, { headers: getJsonAuthHeaders() }),
+                    fetch(`${API_SERVER}/api/outreach/history`, { headers: getJsonAuthHeaders() })
                 ])
 
                 const newStats: WidgetStats = { uncontactedCount: 0, totalSent: 0, sentToday: 0 }

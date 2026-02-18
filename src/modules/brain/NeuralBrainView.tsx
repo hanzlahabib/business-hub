@@ -7,6 +7,7 @@ import {
 import { motion } from 'framer-motion'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../utils/authHeaders'
 import { formatDistanceToNow } from 'date-fns'
 import { toast } from 'sonner'
 
@@ -26,14 +27,12 @@ export function NeuralBrainView() {
     const [syncing, setSyncing] = useState(false)
     const { user } = useAuth()
 
-    const headers = { 'Content-Type': 'application/json', 'x-user-id': user?.id || '' }
-
     const fetchData = () => {
         if (!user?.id) return
         setLoading(true)
         Promise.all([
-            fetch(ENDPOINTS.INTELLIGENCE_INSIGHTS, { headers }).then(r => r.ok ? r.json() : null),
-            fetch(ENDPOINTS.INTELLIGENCE_LEADERBOARD, { headers }).then(r => r.ok ? r.json() : [])
+            fetch(ENDPOINTS.INTELLIGENCE_INSIGHTS, { headers: getJsonAuthHeaders() }).then(r => r.ok ? r.json() : null),
+            fetch(ENDPOINTS.INTELLIGENCE_LEADERBOARD, { headers: getJsonAuthHeaders() }).then(r => r.ok ? r.json() : [])
         ])
             .then(([ins, lb]) => { setInsights(ins); setLeaderboard(lb) })
             .catch(() => { })

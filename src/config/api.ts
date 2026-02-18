@@ -1,32 +1,13 @@
 // Central API configuration
-// Easy to change for different environments (dev, staging, production)
+// Uses VITE_ env vars for production, falls back to localhost for dev
 
 const env = import.meta.env.MODE || 'development'
 
-// Configuration by environment
-const config = {
-  development: {
-    JSON_SERVER: 'http://localhost:3005',
-    API_SERVER: 'http://localhost:3002',
-    WS_SERVER: 'ws://localhost:3002'
-  },
-  staging: {
-    JSON_SERVER: 'https://staging-api.example.com/db',
-    API_SERVER: 'https://staging-api.example.com',
-    WS_SERVER: 'wss://staging-api.example.com'
-  },
-  production: {
-    JSON_SERVER: 'https://brain.hanzla.com/api/db',
-    API_SERVER: 'https://brain.hanzla.com',
-    WS_SERVER: 'wss://brain.hanzla.com:3004'
-  }
-}
+const isDev = env === 'development'
 
-const currentConfig = config[env] || config.development
-
-export const JSON_SERVER = currentConfig.JSON_SERVER
-export const API_SERVER = currentConfig.API_SERVER
-export const WS_SERVER = currentConfig.WS_SERVER
+export const API_SERVER = import.meta.env.VITE_API_SERVER || (isDev ? 'http://localhost:3002' : '')
+export const JSON_SERVER = import.meta.env.VITE_JSON_SERVER || (isDev ? 'http://localhost:3005' : `${API_SERVER}/api/db`)
+export const WS_SERVER = import.meta.env.VITE_WS_SERVER || (isDev ? 'ws://localhost:3002' : '')
 
 // Common endpoints
 export const ENDPOINTS = {

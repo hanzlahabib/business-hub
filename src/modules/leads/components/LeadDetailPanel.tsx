@@ -12,6 +12,7 @@ import { MessageThread } from '../../../shared/components/MessageThread'
 import { useMessages } from '../../../shared/hooks/useMessages'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 import { toast } from 'sonner'
 import { LeadActivityTimeline } from './LeadActivityTimeline'
 import { LeadIntelligence } from './LeadIntelligence'
@@ -62,7 +63,7 @@ export function LeadDetailPanel({
     setCallsLoading(true)
     try {
       const res = await fetch(`${ENDPOINTS.CALLS}?leadId=${leadId}`, {
-        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id }
+        headers: getJsonAuthHeaders()
       })
       const data = await res.json()
       setLeadCalls(data.calls || [])
@@ -76,7 +77,7 @@ export function LeadDetailPanel({
     try {
       const res = await fetch(`${ENDPOINTS.CALLS}/initiate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({ leadId: lead.id })
       })
       if (res.ok) {

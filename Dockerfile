@@ -17,6 +17,13 @@ RUN npm rebuild 2>/dev/null; \
     2>/dev/null || true
 
 COPY . .
+
+# Vite env vars (passed as build args)
+ARG VITE_API_SERVER=https://brain.hanzla.com
+ARG VITE_WS_SERVER=wss://brain.hanzla.com:3004
+ENV VITE_API_SERVER=$VITE_API_SERVER
+ENV VITE_WS_SERVER=$VITE_WS_SERVER
+
 RUN npx vite build
 
 # Stage 2: Serve with Nginx

@@ -11,6 +11,7 @@ const TEST_NAME = 'E2E Playwright'
 /** State shared across test files via this module */
 export const testState = {
     userId: null,
+    token: null,
     leadId: null,
     jobId: null,
     boardId: null,
@@ -29,6 +30,7 @@ export async function registerOrLogin(request) {
     if (regRes.ok()) {
         const body = await regRes.json()
         testState.userId = body.user.id
+        testState.token = body.token
         return body.user
     }
 
@@ -38,6 +40,7 @@ export async function registerOrLogin(request) {
     })
     const body = await loginRes.json()
     testState.userId = body.user.id
+    testState.token = body.token
     return body.user
 }
 
@@ -50,17 +53,23 @@ export async function login(request) {
     })
     const body = await res.json()
     testState.userId = body.user.id
+    testState.token = body.token
     return body.user
 }
 
 /**
- * Build common headers with user-id
+ * Build common headers with JWT Bearer token
  */
 export function authHeaders(userId) {
-    return {
-        'x-user-id': userId || testState.userId,
-        'Content-Type': 'application/json',
+    const headers = { 'Content-Type': 'application/json' }
+    if (testState.token) {
+        headers['Authorization'] = `Bearer ${testState.token}`
     }
+    // Fallback to x-user-id for backward compat
+    if (!testState.token && (userId || testState.userId)) {
+        headers['x-user-id'] = userId || testState.userId
+    }
+    return headers
 }
 
 /**

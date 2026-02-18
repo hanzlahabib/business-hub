@@ -7,6 +7,7 @@ import { useNotifications } from '../hooks/useNotifications'
 import { useNavigate } from 'react-router-dom'
 import { formatDistanceToNow } from 'date-fns'
 import { API_SERVER } from '../config/api'
+import { getAuthHeaders } from '../utils/authHeaders'
 
 interface AppHeaderProps {
     theme: 'light' | 'dark'
@@ -40,7 +41,7 @@ export const AppHeader = memo(function AppHeader({
             const timeout = setTimeout(() => controller.abort(), 5000)
             const res = await fetch(`${API_SERVER}/api/auth/profile`, {
                 method: 'HEAD',
-                headers: user ? { 'x-user-id': user.id } : {},
+                headers: getAuthHeaders(),
                 signal: controller.signal
             })
             clearTimeout(timeout)

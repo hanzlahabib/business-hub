@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 export interface Agent {
     id: string
@@ -36,10 +37,7 @@ export function useAgents() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    const headers = useCallback(() => ({
-        'Content-Type': 'application/json',
-        'x-user-id': user?.id || ''
-    }), [user])
+    const headers = useCallback(() => getJsonAuthHeaders(), [])
 
     const fetchAgents = useCallback(async () => {
         if (!user) return

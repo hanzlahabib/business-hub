@@ -18,7 +18,7 @@ const router = express.Router()
  */
 router.get('/', async (req, res) => {
     try {
-        const userId = req.headers['x-user-id']
+        const userId = req.user?.id
         if (!userId) return res.status(401).json({ error: 'Unauthorized' })
 
         const campaigns = await campaignService.getAll(userId)
@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
  */
 router.post('/', async (req, res) => {
     try {
-        const userId = req.headers['x-user-id']
+        const userId = req.user?.id
         if (!userId) return res.status(401).json({ error: 'Unauthorized' })
 
         const { name, scriptId, industry, tier, leadIds, boardId } = req.body
@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
  */
 router.get('/analytics', async (req, res) => {
     try {
-        const userId = req.headers['x-user-id']
+        const userId = req.user?.id
         if (!userId) return res.status(401).json({ error: 'Unauthorized' })
 
         const range = req.query.range || '30d'
@@ -68,7 +68,7 @@ router.get('/analytics', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
     try {
-        const userId = req.headers['x-user-id']
+        const userId = req.user?.id
         if (!userId) return res.status(401).json({ error: 'Unauthorized' })
 
         const campaign = await campaignService.getById(req.params.id, userId)
@@ -84,7 +84,7 @@ router.get('/:id', async (req, res) => {
  */
 router.post('/:id/transcribe', async (req, res) => {
     try {
-        const userId = req.headers['x-user-id']
+        const userId = req.user?.id
         if (!userId) return res.status(401).json({ error: 'Unauthorized' })
 
         const results = await transcriptionService.transcribeUntranscribed(userId, 20)
@@ -100,7 +100,7 @@ router.post('/:id/transcribe', async (req, res) => {
  */
 router.get('/dnc/list', async (req, res) => {
     try {
-        const userId = req.headers['x-user-id']
+        const userId = req.user?.id
         if (!userId) return res.status(401).json({ error: 'Unauthorized' })
 
         const list = await dncService.getDNCList(userId)
@@ -144,7 +144,7 @@ router.delete('/dnc/remove', async (req, res) => {
  */
 router.post('/calls/:id/transcribe', async (req, res) => {
     try {
-        const userId = req.headers['x-user-id']
+        const userId = req.user?.id
         if (!userId) return res.status(401).json({ error: 'Unauthorized' })
 
         const result = await transcriptionService.transcribeCall(req.params.id, userId)

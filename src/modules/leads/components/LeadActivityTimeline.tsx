@@ -4,6 +4,7 @@ import { Phone, Mail, Bell, Loader2 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getAuthHeaders } from '../../../utils/authHeaders'
 
 interface ActivityItem {
     id: string
@@ -37,7 +38,7 @@ export function LeadActivityTimeline({ leadId }: { leadId: string }) {
         setLoading(true)
 
         fetch(ENDPOINTS.LEAD_ACTIVITY(leadId), {
-            headers: { 'x-user-id': user.id }
+            headers: getAuthHeaders()
         })
             .then(r => r.ok ? r.json() : [])
             .then(data => setItems(data))

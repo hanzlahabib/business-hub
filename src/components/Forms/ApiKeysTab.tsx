@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
+import { getAuthHeaders, getJsonAuthHeaders } from '../../utils/authHeaders'
 
 // Provider sections config
 const SECTIONS = [
@@ -166,7 +167,7 @@ export function ApiKeysTab() {
         const fetchSettings = async () => {
             try {
                 const res = await fetch(ENDPOINTS.SETTINGS, {
-                    headers: { 'x-user-id': user.id }
+                    headers: getAuthHeaders()
                 })
                 const data = await res.json()
                 setConfig(data || {})
@@ -200,10 +201,7 @@ export function ApiKeysTab() {
         try {
             const res = await fetch(ENDPOINTS.SETTINGS, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-user-id': user.id
-                },
+                headers: getJsonAuthHeaders(),
                 body: JSON.stringify(config)
             })
             if (!res.ok) throw new Error('Failed to save')

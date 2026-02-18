@@ -3,6 +3,7 @@ import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
 import { useWebSocket } from '../../../hooks/useWebSocket'
 import { toast } from 'sonner'
+import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 const LEAD_STATUSES = ['new', 'contacted', 'replied', 'meeting', 'won', 'lost']
 
@@ -36,7 +37,7 @@ export function useLeads() {
     setError(null)
     try {
       const res = await fetch(ENDPOINTS.LEADS, {
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       const data = await res.json()
       setLeads(Array.isArray(data) ? data : [])
@@ -66,10 +67,7 @@ export function useLeads() {
 
       const res = await fetch(ENDPOINTS.LEADS, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(newLead)
       })
       if (!res.ok) throw new Error((await res.json()).error || 'Failed to create lead')
@@ -91,10 +89,7 @@ export function useLeads() {
     try {
       const res = await fetch(`${ENDPOINTS.LEADS}/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(updates)
       })
       const data = await res.json()
@@ -115,7 +110,7 @@ export function useLeads() {
     try {
       await fetch(`${ENDPOINTS.LEADS}/${id}`, {
         method: 'DELETE',
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       setLeads(prev => prev.filter(l => l.id !== id))
       return true
@@ -143,7 +138,7 @@ export function useLeads() {
     try {
       const res = await fetch(ENDPOINTS.LEADS_BULK, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({ ids, updates })
       })
       if (!res.ok) throw new Error('Bulk update failed')
@@ -165,7 +160,7 @@ export function useLeads() {
     try {
       const res = await fetch(ENDPOINTS.LEADS_BULK, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json', 'x-user-id': user.id },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({ ids })
       })
       if (!res.ok) throw new Error('Bulk delete failed')
@@ -197,10 +192,7 @@ export function useLeads() {
 
         const res = await fetch(ENDPOINTS.LEADS, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-user-id': user.id
-          },
+          headers: getJsonAuthHeaders(),
           body: JSON.stringify(newLead)
         })
         const data = await res.json()

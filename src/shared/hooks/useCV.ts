@@ -1,14 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { API_SERVER } from '../../config/api'
-
-function getAuthHeaders(): Record<string, string> {
-    const headers: Record<string, string> = {}
-    try {
-        const stored = localStorage.getItem('auth_user')
-        if (stored) { headers['x-user-id'] = JSON.parse(stored).id }
-    } catch { }
-    return headers
-}
+import { getAuthHeaders } from '../../utils/authHeaders'
 
 export function useCV() {
     const [cvFiles, setCvFiles] = useState<any[]>([])

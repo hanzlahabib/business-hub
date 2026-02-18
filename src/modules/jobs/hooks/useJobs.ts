@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import { JOB_STATUSES } from '../constants/pipelineStages'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
+import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
 
 export interface Job {
   id: string
@@ -34,7 +35,7 @@ export function useJobs() {
     setError(null)
     try {
       const res = await fetch(ENDPOINTS.JOBS, {
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       const data = await res.json()
       setJobs(Array.isArray(data) ? data : [])
@@ -65,10 +66,7 @@ export function useJobs() {
 
       const res = await fetch(ENDPOINTS.JOBS, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify(newJob)
       })
       const data = await res.json()
@@ -89,10 +87,7 @@ export function useJobs() {
     try {
       const res = await fetch(`${ENDPOINTS.JOBS}/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id
-        },
+        headers: getJsonAuthHeaders(),
         body: JSON.stringify({
           ...updates,
           updatedAt: new Date().toISOString()
@@ -116,7 +111,7 @@ export function useJobs() {
     try {
       await fetch(`${ENDPOINTS.JOBS}/${id}`, {
         method: 'DELETE',
-        headers: { 'x-user-id': user.id }
+        headers: getAuthHeaders()
       })
       setJobs(prev => prev.filter(j => j.id !== id))
       return true
