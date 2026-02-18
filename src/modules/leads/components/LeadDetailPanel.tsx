@@ -12,7 +12,7 @@ import { MessageThread } from '../../../shared/components/MessageThread'
 import { useMessages } from '../../../shared/hooks/useMessages'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getJsonAuthHeaders, fetchGet } from '../../../utils/authHeaders'
 import { toast } from 'sonner'
 import { LeadActivityTimeline } from './LeadActivityTimeline'
 import { LeadIntelligence } from './LeadIntelligence'
@@ -62,10 +62,7 @@ export function LeadDetailPanel({
     if (!user) return
     setCallsLoading(true)
     try {
-      const res = await fetch(`${ENDPOINTS.CALLS}?leadId=${leadId}`, {
-        headers: getJsonAuthHeaders()
-      })
-      const data = await res.json()
+      const data = await fetchGet(`${ENDPOINTS.CALLS}?leadId=${leadId}`)
       setLeadCalls(data.calls || [])
     } catch { /* ignore */ }
     finally { setCallsLoading(false) }

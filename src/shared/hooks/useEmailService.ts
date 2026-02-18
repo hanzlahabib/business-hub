@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 
 import { API_SERVER } from '../../config/api'
-import { getJsonAuthHeaders } from '../../utils/authHeaders'
+import { fetchMutation } from '../../utils/authHeaders'
 
 export function useEmailService() {
   const [sending, setSending] = useState(false)
@@ -12,12 +12,7 @@ export function useEmailService() {
     setSending(true)
     setError(null)
     try {
-      const res = await fetch(`${API_SERVER}/api/email/send`, {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify({ to, subject, body, leadId, templateId, cvId })
-      })
-      const data = await res.json()
+      const data = await fetchMutation(`${API_SERVER}/api/email/send`, 'POST', { to, subject, body, leadId, templateId, cvId })
       setLastResult(data)
 
       if (!data.success) {
@@ -37,12 +32,7 @@ export function useEmailService() {
     setSending(true)
     setError(null)
     try {
-      const res = await fetch(`${API_SERVER}/api/email/send-template`, {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify({ leadId, templateId })
-      })
-      const data = await res.json()
+      const data = await fetchMutation(`${API_SERVER}/api/email/send-template`, 'POST', { leadId, templateId })
       setLastResult(data)
 
       if (!data.success) {
@@ -62,11 +52,7 @@ export function useEmailService() {
     setSending(true)
     setError(null)
     try {
-      const res = await fetch(`${API_SERVER}/api/email/test`, {
-        method: 'POST',
-        headers: getJsonAuthHeaders()
-      })
-      const data = await res.json()
+      const data = await fetchMutation(`${API_SERVER}/api/email/test`, 'POST')
       setLastResult(data)
       return data
     } catch (err: any) {
@@ -82,12 +68,7 @@ export function useEmailService() {
     setSending(true)
     setError(null)
     try {
-      const res = await fetch(`${API_SERVER}/api/agent/execute`, {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify({ action, params })
-      })
-      const data = await res.json()
+      const data = await fetchMutation(`${API_SERVER}/api/agent/execute`, 'POST', { action, params })
       setLastResult(data)
       return data
     } catch (err: any) {

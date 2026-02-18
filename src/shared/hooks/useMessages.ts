@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
-import { getAuthHeaders, getJsonAuthHeaders } from '../../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../utils/authHeaders'
 
 export interface Message {
   id: string
@@ -38,10 +38,7 @@ export function useMessages() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${ENDPOINTS.MESSAGES}/lead/${leadId}`, {
-        headers: getAuthHeaders()
-      })
-      const data = await res.json()
+      const data = await fetchGet(`${ENDPOINTS.MESSAGES}/lead/${leadId}`)
       if (data.success) {
         setMessages(data.messages)
         return data.messages
@@ -60,12 +57,7 @@ export function useMessages() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${ENDPOINTS.MESSAGES}/received`, {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify({ leadId, channel, subject, body })
-      })
-      const data = await res.json()
+      const data = await fetchMutation(`${ENDPOINTS.MESSAGES}/received`, 'POST', { leadId, channel, subject, body })
       if (data.success) {
         setMessages(prev => [data.message, ...prev])
         return data.message
@@ -84,12 +76,7 @@ export function useMessages() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${ENDPOINTS.MESSAGES}/call`, {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify({ leadId, notes, outcome })
-      })
-      const data = await res.json()
+      const data = await fetchMutation(`${ENDPOINTS.MESSAGES}/call`, 'POST', { leadId, notes, outcome })
       if (data.success) {
         setMessages(prev => [data.message, ...prev])
         return data.message
@@ -106,10 +93,7 @@ export function useMessages() {
   const getMessageStats = useCallback(async (leadId: string): Promise<MessageStats | null> => {
     if (!user) return null
     try {
-      const res = await fetch(`${ENDPOINTS.MESSAGES}/stats/${leadId}`, {
-        headers: getAuthHeaders()
-      })
-      const data = await res.json()
+      const data = await fetchGet(`${ENDPOINTS.MESSAGES}/stats/${leadId}`)
       if (data.success) {
         return data.stats
       }

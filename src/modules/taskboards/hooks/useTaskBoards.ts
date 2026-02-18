@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 export interface Column {
   id: string
@@ -36,10 +36,7 @@ export function useTaskBoards() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(ENDPOINTS.TEMPLATES.replace('templates', 'taskboards'), {
-        headers: getAuthHeaders()
-      })
-      const data = await res.json()
+      const data = await fetchGet(ENDPOINTS.TEMPLATES.replace('templates', 'taskboards'))
       setBoards(Array.isArray(data) ? data : [])
       return data
     } catch (err: any) {
@@ -61,12 +58,7 @@ export function useTaskBoards() {
         createdAt: new Date().toISOString()
       }
 
-      const res = await fetch(ENDPOINTS.TEMPLATES.replace('templates', 'taskboards'), {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(newBoard)
-      })
-      const data = await res.json()
+      const data = await fetchMutation(ENDPOINTS.TEMPLATES.replace('templates', 'taskboards'), 'POST', newBoard)
       setBoards(prev => [...prev, data])
       return data
     } catch (err: any) {
@@ -85,11 +77,7 @@ export function useTaskBoards() {
     })
 
     if (board && user) {
-      await fetch(`${ENDPOINTS.LEADS}/${lead.id}`, {
-        method: 'PATCH',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify({ linkedBoardId: board.id })
-      })
+      await fetchMutation(`${ENDPOINTS.LEADS}/${lead.id}`, 'PATCH', { linkedBoardId: board.id })
     }
 
     return board
@@ -100,12 +88,7 @@ export function useTaskBoards() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'taskboards')}/${id}`, {
-        method: 'PATCH',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(updates)
-      })
-      const data = await res.json()
+      const data = await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'taskboards')}/${id}`, 'PATCH', updates)
       setBoards(prev => prev.map(b => b.id === id ? data : b))
       return data
     } catch (err: any) {
@@ -121,10 +104,7 @@ export function useTaskBoards() {
     setLoading(true)
     setError(null)
     try {
-      await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'taskboards')}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      })
+      await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'taskboards')}/${id}`, 'DELETE')
       setBoards(prev => prev.filter(b => b.id !== id))
       return true
     } catch (err: any) {

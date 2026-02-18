@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import { ENDPOINTS, WS_SERVER } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { fetchGet, fetchMutation } from '../../../utils/authHeaders'
 import { toast } from 'sonner'
 
 interface BatchCallLauncherProps {
@@ -46,10 +46,7 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
         if (!user) return
         setLeadsLoading(true)
         try {
-            const res = await fetch(`${ENDPOINTS.LEADS}`, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.LEADS)
             const allLeads = Array.isArray(data) ? data : data.leads || []
             setLeads(filterHasPhone ? allLeads.filter((l: any) => l.phone) : allLeads)
         } catch { /* ignore */ }
@@ -61,10 +58,7 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
         if (!user) return
         setScriptsLoading(true)
         try {
-            const res = await fetch(ENDPOINTS.CALL_SCRIPTS_LIST, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.CALL_SCRIPTS_LIST)
             setScripts(Array.isArray(data) ? data : data.scripts || [])
         } catch { /* ignore */ }
         finally { setScriptsLoading(false) }
@@ -105,17 +99,12 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
         if (!user || selectedLeadIds.size === 0) return
         setLaunching(true)
         try {
-            const res = await fetch(ENDPOINTS.AGENTS, {
-                method: 'POST',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify({
+            const data = await fetchMutation(ENDPOINTS.AGENTS, 'POST', {
                     name: agentName || `Batch ${new Date().toLocaleDateString()}`,
                     scriptId: selectedScriptId || undefined,
                     leadIds: Array.from(selectedLeadIds),
                     config: { delayBetweenCalls }
                 })
-            })
-            const data = await res.json()
             if (data.id || data.agent?.id) {
                 const agentId = data.id || data.agent?.id
                 setSpawnedAgent(data.agent || data)
@@ -123,10 +112,7 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
                 onAgentSpawned?.(agentId)
 
                 // Auto-start the agent
-                await fetch(`${ENDPOINTS.AGENTS}/${agentId}/start`, {
-                    method: 'POST',
-                    headers: getJsonAuthHeaders()
-                })
+                await fetchMutation(`${ENDPOINTS.AGENTS}/${agentId}/start`, 'POST')
                 setAgentStatus('running')
                 connectWebSocket(agentId)
             } else {
@@ -173,10 +159,7 @@ export function BatchCallLauncher({ onAgentSpawned }: BatchCallLauncherProps) {
     async function controlAgent(action: string) {
         if (!spawnedAgent?.id || !user) return
         try {
-            await fetch(`${ENDPOINTS.AGENTS}/${spawnedAgent.id}/${action}`, {
-                method: 'POST',
-                headers: getJsonAuthHeaders()
-            })
+            await fetchMutation(`${ENDPOINTS.AGENTS}/${spawnedAgent.id}/${action}`, 'POST')
             if (action === 'stop') setAgentStatus('completed')
             else if (action === 'pause') setAgentStatus('paused')
             else if (action === 'resume') setAgentStatus('running')

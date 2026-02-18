@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Settings, Radio, Mic, Brain, AudioLines, Loader2, CheckCircle, XCircle, Volume2, HeartPulse, AlertTriangle } from 'lucide-react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { fetchGet } from '../../../utils/authHeaders'
 
 interface ProviderInfo {
     telephony: { name: string; configured: boolean }
@@ -44,10 +44,7 @@ export function CallingSettings() {
         if (!user) return
         setLoading(true)
         try {
-            const res = await fetch(ENDPOINTS.CALL_PROVIDERS, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.CALL_PROVIDERS)
             setProviders(data)
         } catch { /* ignore */ }
         finally { setLoading(false) }
@@ -57,10 +54,7 @@ export function CallingSettings() {
         if (!user) return
         setHealthLoading(true)
         try {
-            const res = await fetch(ENDPOINTS.CALL_PROVIDER_HEALTH, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.CALL_PROVIDER_HEALTH)
             setHealth(data)
         } catch { /* ignore */ }
         finally { setHealthLoading(false) }

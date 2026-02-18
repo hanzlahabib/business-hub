@@ -3,7 +3,7 @@ import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
 import { useWebSocket } from '../../../hooks/useWebSocket'
 import { toast } from 'sonner'
-import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 const LEAD_STATUSES = ['new', 'contacted', 'replied', 'meeting', 'won', 'lost']
 
@@ -36,10 +36,7 @@ export function useLeads() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(ENDPOINTS.LEADS, {
-        headers: getAuthHeaders()
-      })
-      const data = await res.json()
+      const data = await fetchGet(ENDPOINTS.LEADS)
       setLeads(Array.isArray(data) ? data : [])
       return data
     } catch (err: any) {
@@ -65,13 +62,7 @@ export function useLeads() {
         linkedBoardId: null
       }
 
-      const res = await fetch(ENDPOINTS.LEADS, {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(newLead)
-      })
-      if (!res.ok) throw new Error((await res.json()).error || 'Failed to create lead')
-      const data = await res.json()
+      const data = await fetchMutation(ENDPOINTS.LEADS, 'POST', newLead)
       setLeads(prev => [data, ...prev])
       return data
     } catch (err: any) {
@@ -87,12 +78,7 @@ export function useLeads() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${ENDPOINTS.LEADS}/${id}`, {
-        method: 'PATCH',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(updates)
-      })
-      const data = await res.json()
+      const data = await fetchMutation(`${ENDPOINTS.LEADS}/${id}`, 'PATCH', updates)
       setLeads(prev => prev.map(l => l.id === id ? data : l))
       return data
     } catch (err: any) {
@@ -108,10 +94,7 @@ export function useLeads() {
     setLoading(true)
     setError(null)
     try {
-      await fetch(`${ENDPOINTS.LEADS}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      })
+      await fetchMutation(`${ENDPOINTS.LEADS}/${id}`, 'DELETE')
       setLeads(prev => prev.filter(l => l.id !== id))
       return true
     } catch (err: any) {
@@ -136,13 +119,7 @@ export function useLeads() {
   const bulkUpdate = useCallback(async (ids: string[], updates: Record<string, any>) => {
     if (!user) return []
     try {
-      const res = await fetch(ENDPOINTS.LEADS_BULK, {
-        method: 'PATCH',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify({ ids, updates })
-      })
-      if (!res.ok) throw new Error('Bulk update failed')
-      const updated = await res.json()
+      const updated = await fetchMutation(ENDPOINTS.LEADS_BULK, 'PATCH', { ids, updates })
       setLeads(prev => prev.map(l => {
         const match = updated.find((u: Lead) => u.id === l.id)
         return match ? match : l
@@ -158,12 +135,7 @@ export function useLeads() {
   const bulkDelete = useCallback(async (ids: string[]) => {
     if (!user) return false
     try {
-      const res = await fetch(ENDPOINTS.LEADS_BULK, {
-        method: 'DELETE',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify({ ids })
-      })
-      if (!res.ok) throw new Error('Bulk delete failed')
+      await fetchMutation(ENDPOINTS.LEADS_BULK, 'DELETE', { ids })
       setLeads(prev => prev.filter(l => !ids.includes(l.id)))
       toast.success(`${ids.length} leads deleted`)
       return true
@@ -190,12 +162,7 @@ export function useLeads() {
           linkedBoardId: null
         }
 
-        const res = await fetch(ENDPOINTS.LEADS, {
-          method: 'POST',
-          headers: getJsonAuthHeaders(),
-          body: JSON.stringify(newLead)
-        })
-        const data = await res.json()
+        const data = await fetchMutation(ENDPOINTS.LEADS, 'POST', newLead)
         imported.push(data)
       }
       setLeads(prev => [...prev, ...imported])

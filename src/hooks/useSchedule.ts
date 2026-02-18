@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ENDPOINTS } from '../config/api'
 import { useAuth } from './useAuth'
-import { getAuthHeaders, getJsonAuthHeaders } from '../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../utils/authHeaders'
 
 export interface Comment {
     id: string
@@ -69,10 +69,7 @@ export function useSchedule() {
     const fetchContents = useCallback(async () => {
         if (!user) return
         try {
-            const res = await fetch(ENDPOINTS.CONTENTS, {
-                headers: getAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.CONTENTS)
             setContents(Array.isArray(data) ? data : [])
         } catch (err: any) {
             console.error('Failed to fetch contents:', err)
@@ -83,10 +80,7 @@ export function useSchedule() {
     const fetchSettings = useCallback(async () => {
         if (!user) return
         try {
-            const res = await fetch(ENDPOINTS.SETTINGS, {
-                headers: getAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.SETTINGS)
             if (data) setSettings(data)
         } catch (err: any) {
             console.error('Failed to fetch settings:', err)
@@ -119,12 +113,7 @@ export function useSchedule() {
         }
 
         try {
-            const res = await fetch(ENDPOINTS.CONTENTS, {
-                method: 'POST',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify(newContent)
-            })
-            const data = await res.json()
+            const data = await fetchMutation(ENDPOINTS.CONTENTS, 'POST', newContent)
             setContents(prev => [...prev, data])
             return data
         } catch (err: any) {
@@ -135,12 +124,7 @@ export function useSchedule() {
     const updateContent = async (id: string, updates: Partial<Content>) => {
         if (!user) return
         try {
-            const res = await fetch(`${ENDPOINTS.CONTENTS}/${id}`, {
-                method: 'PATCH',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify(updates)
-            })
-            const data = await res.json()
+            const data = await fetchMutation(`${ENDPOINTS.CONTENTS}/${id}`, 'PATCH', updates)
             setContents(prev => prev.map(c => c.id === id ? data : c))
         } catch (err: any) {
             console.error('Failed to update content:', err)
@@ -150,10 +134,7 @@ export function useSchedule() {
     const deleteContent = async (id: string) => {
         if (!user) return
         try {
-            await fetch(`${ENDPOINTS.CONTENTS}/${id}`, {
-                method: 'DELETE',
-                headers: getAuthHeaders()
-            })
+            await fetchMutation(`${ENDPOINTS.CONTENTS}/${id}`, 'DELETE')
             setContents(prev => prev.filter(c => c.id !== id))
         } catch (err: any) {
             console.error('Failed to delete content:', err)
@@ -304,12 +285,7 @@ export function useSchedule() {
     const updateSettings = async (newSettings: Partial<Settings>) => {
         if (!user) return
         try {
-            const res = await fetch(ENDPOINTS.SETTINGS, {
-                method: 'PATCH',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify(newSettings)
-            })
-            const data = await res.json()
+            const data = await fetchMutation(ENDPOINTS.SETTINGS, 'PATCH', newSettings)
             setSettings(data)
             return data
         } catch (err: any) {

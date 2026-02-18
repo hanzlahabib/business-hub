@@ -33,10 +33,12 @@ export function rateLimiter(options = {}) {
     }, windowMs)
 
     return async (req, res, next) => {
+        // Prefer userId for authenticated requests, fall back to IP
+        const userId = req.user?.id
         const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
             || req.ip || req.connection?.remoteAddress || 'unknown'
 
-        const key = `${prefix}:${ip}`
+        const key = `${prefix}:${userId || ip}`
 
         // Try Redis first
         if (isRedisConnected()) {

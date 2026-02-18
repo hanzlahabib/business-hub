@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { API_SERVER } from '../../../config/api'
 import { SKILL_TEMPLATES } from '../data/templates'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 const SKILL_MASTERY_URL = `${API_SERVER}/api/skillmastery`
 
@@ -14,8 +14,7 @@ export function useSkillMastery() {
   const fetchData = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch(SKILL_MASTERY_URL, { headers: getJsonAuthHeaders() })
-      const result = await res.json()
+      const result = await fetchGet(SKILL_MASTERY_URL)
       setData(result)
     } catch (err: any) {
       setError(err.message)
@@ -27,11 +26,7 @@ export function useSkillMastery() {
   // Save data
   const saveData = useCallback(async (newData) => {
     try {
-      await fetch(SKILL_MASTERY_URL, {
-        method: 'PUT',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(newData)
-      })
+      await fetchMutation(SKILL_MASTERY_URL, 'PUT', newData)
       setData(newData)
     } catch (err: any) {
       setError(err.message)

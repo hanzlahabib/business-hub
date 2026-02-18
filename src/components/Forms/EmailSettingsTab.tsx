@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Mail, Loader2, TestTube, CheckCircle, AlertCircle, Key, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
-import { getAuthHeaders, getJsonAuthHeaders } from '../../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../utils/authHeaders'
 
 // Constants
 const providers = [
@@ -86,10 +86,7 @@ export function EmailSettingsTab() {
         if (!user) return
         const fetchSettings = async () => {
             try {
-                const res = await fetch(ENDPOINTS.EMAIL_SETTINGS, {
-                    headers: getAuthHeaders()
-                })
-                const data = await res.json()
+                const data = await fetchGet(ENDPOINTS.EMAIL_SETTINGS)
                 setSettings(data)
             } catch (error) {
                 console.error('Failed to fetch email settings:', error)
@@ -124,11 +121,7 @@ export function EmailSettingsTab() {
         if (!settings || !user) return
         setSaving(true)
         try {
-            await fetch(ENDPOINTS.EMAIL_SETTINGS, {
-                method: 'PUT',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify(settings)
-            })
+            await fetchMutation(ENDPOINTS.EMAIL_SETTINGS, 'PUT', settings)
             setTestResult({ success: true, message: 'Settings saved!' })
         } catch (error) {
             setTestResult({ success: false, message: 'Failed to save settings' })
@@ -143,18 +136,10 @@ export function EmailSettingsTab() {
         setTestResult(null)
         try {
             // Save first
-            await fetch(ENDPOINTS.EMAIL_SETTINGS, {
-                method: 'PUT',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify(settings)
-            })
+            await fetchMutation(ENDPOINTS.EMAIL_SETTINGS, 'PUT', settings)
 
             // Then test
-            const res = await fetch(ENDPOINTS.EMAIL_TEST, {
-                method: 'POST',
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchMutation(ENDPOINTS.EMAIL_TEST, 'POST')
             setTestResult(data)
         } catch (error: any) {
             setTestResult({ success: false, message: error.message || 'Test failed' })

@@ -3,7 +3,7 @@ import { Activity, Phone, AlertTriangle, ArrowRight, Webhook, Clock, Loader2, Re
 import { formatDistanceToNow } from 'date-fns'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { fetchGet } from '../../../utils/authHeaders'
 
 interface CallLogEntry {
     id: string
@@ -47,10 +47,7 @@ export function CallActivityLog({ onCallSelect }: Props) {
         if (!user) return
         setLoading(true)
         try {
-            const res = await fetch(ENDPOINTS.CALL_ACTIVITY, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.CALL_ACTIVITY)
             setLogs(Array.isArray(data) ? data : [])
         } catch { /* ignore */ }
         finally { setLoading(false) }

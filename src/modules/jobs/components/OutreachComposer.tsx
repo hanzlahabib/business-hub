@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, Send, FileText, User, Building2, Mail, ChevronDown, Check, Loader2, Eye, Paperclip, FileIcon } from 'lucide-react'
 import { ENDPOINTS, API_SERVER } from '../../../config/api'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getJsonAuthHeaders, fetchMutation } from '../../../utils/authHeaders'
 
 export function OutreachComposer({ isOpen, onClose, job }) {
   const [templates, setTemplates] = useState<any[]>([])
@@ -151,10 +151,7 @@ export function OutreachComposer({ isOpen, onClose, job }) {
 
         // Save to outreach history
         try {
-          await fetch(ENDPOINTS.JOB_OUTREACH_HISTORY, {
-            method: 'POST',
-            headers: getJsonAuthHeaders(),
-            body: JSON.stringify({
+          await fetchMutation(ENDPOINTS.JOB_OUTREACH_HISTORY, 'POST', {
               id: crypto.randomUUID(),
               jobId: job?.id,
               templateId: selectedTemplate?.id,
@@ -165,7 +162,6 @@ export function OutreachComposer({ isOpen, onClose, job }) {
               status: 'sent',
               sentAt: new Date().toISOString()
             })
-          })
         } catch (err: any) {
           console.error('Failed to save outreach history:', err)
         }

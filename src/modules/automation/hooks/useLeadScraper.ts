@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { API_SERVER } from '../../../config/api'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { fetchMutation } from '../../../utils/authHeaders'
 
 export interface ScrapedLead {
     name: string
@@ -45,12 +45,7 @@ export function useLeadScraper(): UseLeadScraperReturn {
         setScrapedLeads([])
         setImportResult(null)
         try {
-            const res = await fetch(`${API_SERVER}/api/scraper/search`, {
-                method: 'POST',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify({ query: searchQuery, maxResults: 15, enrichContacts })
-            })
-            const data = await res.json()
+            const data = await fetchMutation(`${API_SERVER}/api/scraper/search`, 'POST', { query: searchQuery, maxResults: 15, enrichContacts })
             if (data.success) {
                 setScrapedLeads(data.leads.map((l: any) => ({ ...l, selected: true })))
             }
@@ -66,12 +61,7 @@ export function useLeadScraper(): UseLeadScraperReturn {
         if (selected.length === 0) return
         setImporting(true)
         try {
-            const res = await fetch(`${API_SERVER}/api/scraper/import`, {
-                method: 'POST',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify({ leads: selected })
-            })
-            const data = await res.json()
+            const data = await fetchMutation(`${API_SERVER}/api/scraper/import`, 'POST', { leads: selected })
             setImportResult(data)
             if (data.success) {
                 setScrapedLeads([])

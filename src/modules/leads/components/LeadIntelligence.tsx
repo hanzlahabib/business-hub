@@ -7,7 +7,7 @@ import {
 import { motion } from 'framer-motion'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { fetchGet, fetchMutation } from '../../../utils/authHeaders'
 import { toast } from 'sonner'
 
 interface Intelligence {
@@ -67,11 +67,8 @@ export function LeadIntelligence({ leadId }: { leadId: string }) {
         if (!user?.id) return
         setLoading(true)
         try {
-            const res = await fetch(ENDPOINTS.INTELLIGENCE_LEAD(leadId), { headers: getJsonAuthHeaders() })
-            if (res.ok) {
-                const data = await res.json()
-                setIntel(data)
-            }
+            const data = await fetchGet(ENDPOINTS.INTELLIGENCE_LEAD(leadId))
+            setIntel(data)
         } catch { /* ignore */ }
         finally { setLoading(false) }
     }, [leadId, user?.id])
@@ -81,17 +78,9 @@ export function LeadIntelligence({ leadId }: { leadId: string }) {
     const handleAnalyze = async () => {
         setAnalyzing(true)
         try {
-            const res = await fetch(ENDPOINTS.INTELLIGENCE_ANALYZE(leadId), {
-                method: 'POST',
-                headers: getJsonAuthHeaders()
-            })
-            if (res.ok) {
-                const data = await res.json()
-                setIntel(data)
-                toast.success('Lead analyzed successfully')
-            } else {
-                toast.error('Analysis failed')
-            }
+            const data = await fetchMutation(ENDPOINTS.INTELLIGENCE_ANALYZE(leadId), 'POST')
+            setIntel(data)
+            toast.success('Lead analyzed successfully')
         } catch { toast.error('Analysis failed') }
         finally { setAnalyzing(false) }
     }
@@ -99,15 +88,8 @@ export function LeadIntelligence({ leadId }: { leadId: string }) {
     const handleGenerateProposal = async () => {
         setGenerating(true)
         try {
-            const res = await fetch(ENDPOINTS.PROPOSAL_GENERATE(leadId), {
-                method: 'POST',
-                headers: getJsonAuthHeaders()
-            })
-            if (res.ok) {
-                toast.success('Proposal draft generated')
-            } else {
-                toast.error('Proposal generation failed')
-            }
+            await fetchMutation(ENDPOINTS.PROPOSAL_GENERATE(leadId), 'POST')
+            toast.success('Proposal draft generated')
         } catch { toast.error('Proposal generation failed') }
         finally { setGenerating(false) }
     }

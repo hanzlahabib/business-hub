@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
-import { getAuthHeaders, getJsonAuthHeaders } from '../../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../utils/authHeaders'
 
 export function useEmailTemplates() {
   const { user } = useAuth()
@@ -15,10 +15,7 @@ export function useEmailTemplates() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(ENDPOINTS.EMAIL_TEMPLATES, {
-        headers: getAuthHeaders()
-      })
-      const data = await res.json()
+      const data = await fetchGet(ENDPOINTS.EMAIL_TEMPLATES)
       setTemplates(data)
       return data
     } catch (err: any) {
@@ -40,12 +37,7 @@ export function useEmailTemplates() {
         createdAt: new Date().toISOString()
       }
 
-      const res = await fetch(ENDPOINTS.EMAIL_TEMPLATES, {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(newTemplate)
-      })
-      const data = await res.json()
+      const data = await fetchMutation(ENDPOINTS.EMAIL_TEMPLATES, 'POST', newTemplate)
       setTemplates(prev => [...prev, data])
       return data
     } catch (err: any) {
@@ -61,12 +53,7 @@ export function useEmailTemplates() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${ENDPOINTS.EMAIL_TEMPLATES}/${id}`, {
-        method: 'PATCH',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(updates)
-      })
-      const data = await res.json()
+      const data = await fetchMutation(`${ENDPOINTS.EMAIL_TEMPLATES}/${id}`, 'PATCH', updates)
       setTemplates(prev => prev.map(t => t.id === id ? data : t))
       return data
     } catch (err: any) {
@@ -82,10 +69,7 @@ export function useEmailTemplates() {
     setLoading(true)
     setError(null)
     try {
-      await fetch(`${ENDPOINTS.EMAIL_TEMPLATES}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      })
+      await fetchMutation(`${ENDPOINTS.EMAIL_TEMPLATES}/${id}`, 'DELETE')
       setTemplates(prev => prev.filter(t => t.id !== id))
       return true
     } catch (err: any) {

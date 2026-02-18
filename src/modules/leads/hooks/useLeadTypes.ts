@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 export interface LeadTypeAgentConfig {
   agentName?: string
@@ -39,11 +39,7 @@ export function useLeadTypes() {
     if (!userId) return
     setLoading(true)
     try {
-      const res = await fetch(ENDPOINTS.LEAD_TYPES, {
-        headers: getAuthHeaders()
-      })
-      if (!res.ok) return
-      const data = await res.json()
+      const data = await fetchGet(ENDPOINTS.LEAD_TYPES)
       setLeadTypes(Array.isArray(data) ? data : [])
     } catch {
       // silent
@@ -55,16 +51,7 @@ export function useLeadTypes() {
   const createLeadType = useCallback(async (data: Partial<LeadType>) => {
     if (!userId) return null
     try {
-      const res = await fetch(ENDPOINTS.LEAD_TYPES, {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(data)
-      })
-      if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.error || 'Failed to create')
-      }
-      const created = await res.json()
+      const created = await fetchMutation(ENDPOINTS.LEAD_TYPES, 'POST', data)
       setLeadTypes(prev => [created, ...prev])
       return created
     } catch (err: any) {
@@ -75,16 +62,7 @@ export function useLeadTypes() {
   const updateLeadType = useCallback(async (id: string, data: Partial<LeadType>) => {
     if (!userId) return null
     try {
-      const res = await fetch(`${ENDPOINTS.LEAD_TYPES}/${id}`, {
-        method: 'PATCH',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(data)
-      })
-      if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.error || 'Failed to update')
-      }
-      const updated = await res.json()
+      const updated = await fetchMutation(`${ENDPOINTS.LEAD_TYPES}/${id}`, 'PATCH', data)
       setLeadTypes(prev => prev.map(t => t.id === id ? { ...t, ...updated } : t))
       return updated
     } catch (err: any) {
@@ -95,11 +73,7 @@ export function useLeadTypes() {
   const deleteLeadType = useCallback(async (id: string) => {
     if (!userId) return false
     try {
-      const res = await fetch(`${ENDPOINTS.LEAD_TYPES}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      })
-      if (!res.ok) throw new Error('Failed to delete')
+      await fetchMutation(`${ENDPOINTS.LEAD_TYPES}/${id}`, 'DELETE')
       setLeadTypes(prev => prev.filter(t => t.id !== id))
       return true
     } catch {
@@ -110,10 +84,7 @@ export function useLeadTypes() {
   const getWebhookUrl = useCallback(async (id: string) => {
     if (!userId) return null
     try {
-      const res = await fetch(`${ENDPOINTS.LEAD_TYPES}/${id}/webhook-url`, {
-        headers: getAuthHeaders()
-      })
-      return await res.json()
+      return await fetchGet(`${ENDPOINTS.LEAD_TYPES}/${id}/webhook-url`)
     } catch {
       return null
     }

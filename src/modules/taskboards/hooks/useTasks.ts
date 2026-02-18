@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 export interface Subtask {
   id: string
@@ -36,11 +36,7 @@ export function useTasks(boardId: string | null = null) {
     setLoading(true)
     setError(null)
     try {
-      // Updated to hit /api/resources/tasks with boardId filter
-      const res = await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}?boardId=${targetBoardId}`, {
-        headers: getAuthHeaders()
-      })
-      const data = await res.json()
+      const data = await fetchGet(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}?boardId=${targetBoardId}`)
       const sortedData = (Array.isArray(data) ? data : []).sort((a: any, b: any) => a.position - b.position)
       setTasks(sortedData)
       return sortedData
@@ -70,12 +66,7 @@ export function useTasks(boardId: string | null = null) {
         position: maxPosition + 1
       }
 
-      const res = await fetch(ENDPOINTS.TEMPLATES.replace('templates', 'tasks'), {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(newTask)
-      })
-      const data = await res.json()
+      const data = await fetchMutation(ENDPOINTS.TEMPLATES.replace('templates', 'tasks'), 'POST', newTask)
       setTasks(prev => [...prev, data])
       return data
     } catch (err: any) {
@@ -91,12 +82,7 @@ export function useTasks(boardId: string | null = null) {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${id}`, {
-        method: 'PATCH',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(updates)
-      })
-      const data = await res.json()
+      const data = await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${id}`, 'PATCH', updates)
       setTasks(prev => prev.map(t => t.id === id ? data : t))
       return data
     } catch (err: any) {
@@ -112,10 +98,7 @@ export function useTasks(boardId: string | null = null) {
     setLoading(true)
     setError(null)
     try {
-      await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      })
+      await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${id}`, 'DELETE')
       setTasks(prev => prev.filter(t => t.id !== id))
       return true
     } catch (err: any) {
@@ -158,11 +141,7 @@ export function useTasks(boardId: string | null = null) {
     })
 
     for (const update of updates) {
-      await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${update.id}`, {
-        method: 'PATCH',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify({ position: update.position })
-      })
+      await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${update.id}`, 'PATCH', { position: update.position })
     }
   }, [user])
 

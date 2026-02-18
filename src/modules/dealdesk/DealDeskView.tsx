@@ -8,7 +8,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../utils/authHeaders'
+import { getJsonAuthHeaders, fetchMutation } from '../../utils/authHeaders'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { ProposalEditor } from './components/ProposalEditor'
@@ -74,7 +74,7 @@ export function DealDeskView() {
 
     const handleAnalyze = async (leadId) => {
         try {
-            await fetch(ENDPOINTS.INTELLIGENCE_ANALYZE(leadId), { method: 'POST', headers: getJsonAuthHeaders() })
+            await fetchMutation(ENDPOINTS.INTELLIGENCE_ANALYZE(leadId), 'POST')
             toast.success('Lead re-analyzed')
             fetchData()
         } catch { toast.error('Analysis failed') }
@@ -82,30 +82,24 @@ export function DealDeskView() {
 
     const handleCreateProposal = async (leadId) => {
         try {
-            const res = await fetch(ENDPOINTS.PROPOSAL_GENERATE(leadId), { method: 'POST', headers: getJsonAuthHeaders() })
-            if (res.ok) { toast.success('Proposal draft generated'); fetchData() }
+            await fetchMutation(ENDPOINTS.PROPOSAL_GENERATE(leadId), 'POST')
+            toast.success('Proposal draft generated'); fetchData()
         } catch { toast.error('Generation failed') }
     }
 
     const handleDeleteProposal = async (proposalId, e) => {
         e.stopPropagation()
         try {
-            const res = await fetch(`${ENDPOINTS.PROPOSALS}/${proposalId}`, { method: 'DELETE', headers: getJsonAuthHeaders() })
-            if (res.ok) {
-                setProposals(prev => prev.filter(p => p.id !== proposalId))
-                toast.success('Proposal deleted')
-            }
+            await fetchMutation(`${ENDPOINTS.PROPOSALS}/${proposalId}`, 'DELETE')
+            setProposals(prev => prev.filter(p => p.id !== proposalId))
+            toast.success('Proposal deleted')
         } catch { toast.error('Delete failed') }
     }
 
     const handleSaveSettings = async (newSettings) => {
         setSavingSettings(true)
         try {
-            await fetch(ENDPOINTS.SETTINGS, {
-                method: 'PATCH',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify({ dealdesk: newSettings })
-            })
+            await fetchMutation(ENDPOINTS.SETTINGS, 'PATCH', { dealdesk: newSettings })
             toast.success('Settings saved')
         } catch { toast.error('Failed to save settings') }
         finally { setSavingSettings(false) }

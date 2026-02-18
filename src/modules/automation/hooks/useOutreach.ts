@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { API_SERVER } from '../../../config/api'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 export interface OutreachResult {
     leadId: string
@@ -59,20 +59,14 @@ export function useOutreach(): UseOutreachReturn {
 
     const fetchUncontactedLeads = useCallback(async () => {
         try {
-            const res = await fetch(`${API_SERVER}/api/outreach/uncontacted`, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(`${API_SERVER}/api/outreach/uncontacted`)
             if (data.success) setUncontactedLeads(data.leads)
         } catch { }
     }, [])
 
     const fetchTemplates = useCallback(async () => {
         try {
-            const res = await fetch(`${API_SERVER}/api/resources/emailtemplates`, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(`${API_SERVER}/api/resources/emailtemplates`)
             if (Array.isArray(data)) setTemplates(data)
         } catch { }
     }, [])
@@ -80,10 +74,7 @@ export function useOutreach(): UseOutreachReturn {
     const fetchHistory = useCallback(async () => {
         setLoadingHistory(true)
         try {
-            const res = await fetch(`${API_SERVER}/api/outreach/history`, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(`${API_SERVER}/api/outreach/history`)
             if (data.success) setHistory(data)
         } catch { }
         setLoadingHistory(false)
@@ -94,16 +85,11 @@ export function useOutreach(): UseOutreachReturn {
         setExecuting(true)
         setCampaignResult(null)
         try {
-            const res = await fetch(`${API_SERVER}/api/outreach/campaign`, {
-                method: 'POST',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify({
+            const data = await fetchMutation(`${API_SERVER}/api/outreach/campaign`, 'POST', {
                     leadIds: Array.from(selectedLeadIds),
                     templateId,
                     delaySeconds
                 })
-            })
-            const data = await res.json()
             setCampaignResult(data)
             if (data.success) {
                 fetchUncontactedLeads()

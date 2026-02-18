@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getJsonAuthHeaders, fetchGet, fetchMutation } from '../../../utils/authHeaders'
 import type { CallScript } from './useCalls'
 
 export function useCallScripts() {
@@ -18,8 +18,7 @@ export function useCallScripts() {
         setLoading(true)
         setError(null)
         try {
-            const res = await fetch(ENDPOINTS.CALL_SCRIPTS_LIST, { headers: headers() })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.CALL_SCRIPTS_LIST)
             setScripts(Array.isArray(data) ? data : [])
         } catch (err: any) {
             setError(err.message)
@@ -51,12 +50,7 @@ export function useCallScripts() {
     const updateScript = useCallback(async (id: string, data: Partial<CallScript>) => {
         if (!user) return null
         try {
-            const res = await fetch(`${ENDPOINTS.CALL_SCRIPTS}/${id}`, {
-                method: 'PATCH',
-                headers: headers(),
-                body: JSON.stringify(data)
-            })
-            const updated = await res.json()
+            const updated = await fetchMutation(`${ENDPOINTS.CALL_SCRIPTS}/${id}`, 'PATCH', data)
             setScripts(prev => prev.map(s => s.id === id ? updated : s))
             return updated
         } catch (err: any) {
@@ -68,10 +62,7 @@ export function useCallScripts() {
     const deleteScript = useCallback(async (id: string) => {
         if (!user) return false
         try {
-            await fetch(`${ENDPOINTS.CALL_SCRIPTS}/${id}`, {
-                method: 'DELETE',
-                headers: headers()
-            })
+            await fetchMutation(`${ENDPOINTS.CALL_SCRIPTS}/${id}`, 'DELETE')
             setScripts(prev => prev.filter(s => s.id !== id))
             return true
         } catch (err: any) {

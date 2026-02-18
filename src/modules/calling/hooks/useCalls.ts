@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getJsonAuthHeaders, fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 export interface Call {
     id: string
@@ -113,8 +113,7 @@ export function useCalls() {
             if (filters?.offset) params.set('offset', String(filters.offset))
 
             const url = `${ENDPOINTS.CALLS}?${params.toString()}`
-            const res = await fetch(url, { headers: headers() })
-            const data = await res.json()
+            const data = await fetchGet(url)
             setCalls(data.calls || [])
             setTotal(data.total || 0)
             return data
@@ -128,8 +127,7 @@ export function useCalls() {
     const fetchCallById = useCallback(async (id: string) => {
         if (!user) return null
         try {
-            const res = await fetch(`${ENDPOINTS.CALLS}/${id}`, { headers: headers() })
-            return await res.json()
+            return await fetchGet(`${ENDPOINTS.CALLS}/${id}`)
         } catch (err: any) {
             setError(err.message)
             return null
@@ -139,8 +137,7 @@ export function useCalls() {
     const fetchStats = useCallback(async (options?: { silent?: boolean }) => {
         if (!user) return null
         try {
-            const res = await fetch(ENDPOINTS.CALL_STATS, { headers: headers() })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.CALL_STATS)
             setStats(data)
             return data
         } catch (err: any) {
@@ -177,12 +174,7 @@ export function useCalls() {
     const updateCall = useCallback(async (id: string, data: Partial<Call>) => {
         if (!user) return null
         try {
-            const res = await fetch(`${ENDPOINTS.CALLS}/${id}`, {
-                method: 'PATCH',
-                headers: headers(),
-                body: JSON.stringify(data)
-            })
-            const updated = await res.json()
+            const updated = await fetchMutation(`${ENDPOINTS.CALLS}/${id}`, 'PATCH', data)
             setCalls(prev => prev.map(c => c.id === id ? updated : c))
             return updated
         } catch (err: any) {
@@ -195,11 +187,7 @@ export function useCalls() {
     const transcribeCall = useCallback(async (callId: string) => {
         if (!user) return null
         try {
-            const res = await fetch(`${ENDPOINTS.CALLS}/${callId}/transcribe`, {
-                method: 'POST',
-                headers: headers()
-            })
-            return await res.json()
+            return await fetchMutation(`${ENDPOINTS.CALLS}/${callId}/transcribe`, 'POST')
         } catch (err: any) {
             setError(err.message)
             return null

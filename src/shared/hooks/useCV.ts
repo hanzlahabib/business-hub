@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { API_SERVER } from '../../config/api'
-import { getAuthHeaders } from '../../utils/authHeaders'
+import { fetchGet } from '../../utils/authHeaders'
 
 export function useCV() {
     const [cvFiles, setCvFiles] = useState<any[]>([])
@@ -11,10 +11,7 @@ export function useCV() {
         setLoading(true)
         setError(null)
         try {
-            const res = await fetch(`${API_SERVER}/api/cvs`, {
-                headers: getAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(`${API_SERVER}/api/cvs`)
             setCvFiles(data)
             return data
         } catch (err: any) {

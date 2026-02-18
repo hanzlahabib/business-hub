@@ -3,7 +3,7 @@ import { Video, Smartphone, CheckSquare, Briefcase, Users, Target, type LucideIc
 import type { Content } from './useSchedule'
 import { ENDPOINTS } from '../config/api'
 import { useAuth } from './useAuth'
-import { getAuthHeaders, getJsonAuthHeaders } from '../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../utils/authHeaders'
 
 export interface CalendarFilters {
     contents: boolean
@@ -97,26 +97,24 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
             const promises: Promise<any>[] = []
             const fetchMap: string[] = []
 
-            const headers = getAuthHeaders()
-
             if (filters.contents) {
-                promises.push(fetch(ENDPOINTS.CONTENTS, { headers }).then(r => r.json()))
+                promises.push(fetchGet(ENDPOINTS.CONTENTS))
                 fetchMap.push('contents')
             }
             if (filters.tasks) {
-                promises.push(fetch(ENDPOINTS.TEMPLATES.replace('templates', 'tasks'), { headers }).then(r => r.json()))
+                promises.push(fetchGet(ENDPOINTS.TEMPLATES.replace('templates', 'tasks')))
                 fetchMap.push('tasks')
             }
             if (filters.jobs) {
-                promises.push(fetch(ENDPOINTS.JOBS, { headers }).then(r => r.json()))
+                promises.push(fetchGet(ENDPOINTS.JOBS))
                 fetchMap.push('jobs')
             }
             if (filters.leads) {
-                promises.push(fetch(ENDPOINTS.LEADS, { headers }).then(r => r.json()))
+                promises.push(fetchGet(ENDPOINTS.LEADS))
                 fetchMap.push('leads')
             }
             if (filters.milestones) {
-                promises.push(fetch(ENDPOINTS.SETTINGS.replace('resources/settings', 'skillmastery'), { headers }).then(r => r.json()))
+                promises.push(fetchGet(ENDPOINTS.SETTINGS.replace('resources/settings', 'skillmastery')))
                 fetchMap.push('skillMastery')
             }
 
@@ -270,39 +268,25 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
     const rescheduleItem = useCallback(async (item: CalendarItem, newDate: string | Date) => {
         if (!user) return false
         const dateStr = typeof newDate === 'string' ? newDate : newDate.toISOString().split('T')[0]
-        const headers = getJsonAuthHeaders()
 
         try {
             switch (item.type) {
                 case 'content': {
-                    await fetch(`${ENDPOINTS.CONTENTS}/${item.id}`, {
-                        method: 'PATCH',
-                        headers,
-                        body: JSON.stringify({ scheduledDate: dateStr })
-                    })
+                    await fetchMutation(`${ENDPOINTS.CONTENTS}/${item.id}`, 'PATCH', { scheduledDate: dateStr })
                     setContents(prev => prev.map(c => c.id === item.id ? { ...c, scheduledDate: dateStr } : c))
                     break
                 }
                 case 'task': {
-                    await fetch(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${item.id}`, {
-                        method: 'PATCH',
-                        headers,
-                        body: JSON.stringify({ dueDate: dateStr + 'T00:00:00Z' })
-                    })
+                    await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${item.id}`, 'PATCH', { dueDate: dateStr + 'T00:00:00Z' })
                     setTasks(prev => prev.map(t => t.id === item.id ? { ...t, dueDate: dateStr + 'T00:00:00Z' } : t))
                     break
                 }
                 case 'lead': {
-                    await fetch(`${ENDPOINTS.LEADS}/${item.id}`, {
-                        method: 'PATCH',
-                        headers,
-                        body: JSON.stringify({ followUpDate: dateStr })
-                    })
+                    await fetchMutation(`${ENDPOINTS.LEADS}/${item.id}`, 'PATCH', { followUpDate: dateStr })
                     setLeads(prev => prev.map(l => l.id === item.id ? { ...l, followUpDate: dateStr } : l))
                     break
                 }
                 case 'milestone': {
-                    // Milestones are nested in skillMastery paths, need to update the whole structure
                     if (skillMasteryData) {
                         const newData = {
                             ...skillMasteryData,
@@ -315,16 +299,11 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
                                 ) || []
                             }))
                         }
-                        await fetch(ENDPOINTS.SETTINGS.replace('resources/settings', 'skillmastery'), {
-                            method: 'PUT',
-                            headers,
-                            body: JSON.stringify(newData)
-                        })
+                        await fetchMutation(ENDPOINTS.SETTINGS.replace('resources/settings', 'skillmastery'), 'PUT', newData)
                         setSkillMasteryData(newData)
                     }
                     break
                 }
-                // Interviews are not draggable, so no case needed
             }
             return true
         } catch (err: any) {

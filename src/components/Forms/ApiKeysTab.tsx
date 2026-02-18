@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
-import { getAuthHeaders, getJsonAuthHeaders } from '../../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../utils/authHeaders'
 
 // Provider sections config
 const SECTIONS = [
@@ -166,10 +166,7 @@ export function ApiKeysTab() {
         if (!user) return
         const fetchSettings = async () => {
             try {
-                const res = await fetch(ENDPOINTS.SETTINGS, {
-                    headers: getAuthHeaders()
-                })
-                const data = await res.json()
+                const data = await fetchGet(ENDPOINTS.SETTINGS)
                 setConfig(data || {})
             } catch (error) {
                 console.error('Failed to fetch settings:', error)
@@ -199,13 +196,7 @@ export function ApiKeysTab() {
         setSaving(true)
         setSaveResult(null)
         try {
-            const res = await fetch(ENDPOINTS.SETTINGS, {
-                method: 'PATCH',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify(config)
-            })
-            if (!res.ok) throw new Error('Failed to save')
-            const data = await res.json()
+            const data = await fetchMutation(ENDPOINTS.SETTINGS, 'PATCH', config)
             setConfig(data)
             setSaveResult({ success: true, message: 'API keys saved and applied!' })
         } catch (error) {

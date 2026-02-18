@@ -6,7 +6,7 @@ import {
     Target, History, AlertCircle
 } from 'lucide-react'
 import { API_SERVER } from '../../../config/api'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 interface ScrapedLead {
     name: string
@@ -68,12 +68,7 @@ export function AutomationView() {
         setScrapedLeads([])
         setImportResult(null)
         try {
-            const res = await fetch(`${API_SERVER}/api/scraper/search`, {
-                method: 'POST',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify({ query: searchQuery, maxResults: 15, enrichContacts })
-            })
-            const data = await res.json()
+            const data = await fetchMutation(`${API_SERVER}/api/scraper/search`, 'POST', { query: searchQuery, maxResults: 15, enrichContacts })
             if (data.success) {
                 setScrapedLeads(data.leads.map((l: any) => ({ ...l, selected: true })))
             }
@@ -89,12 +84,7 @@ export function AutomationView() {
         if (selected.length === 0) return
         setImporting(true)
         try {
-            const res = await fetch(`${API_SERVER}/api/scraper/import`, {
-                method: 'POST',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify({ leads: selected })
-            })
-            const data = await res.json()
+            const data = await fetchMutation(`${API_SERVER}/api/scraper/import`, 'POST', { leads: selected })
             setImportResult(data)
             if (data.success) {
                 setScrapedLeads([])
@@ -108,20 +98,14 @@ export function AutomationView() {
 
     async function fetchUncontactedLeads() {
         try {
-            const res = await fetch(`${API_SERVER}/api/outreach/uncontacted`, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(`${API_SERVER}/api/outreach/uncontacted`)
             if (data.success) setUncontactedLeads(data.leads)
         } catch { }
     }
 
     async function fetchTemplates() {
         try {
-            const res = await fetch(`${API_SERVER}/api/resources/emailtemplates`, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(`${API_SERVER}/api/resources/emailtemplates`)
             if (Array.isArray(data)) setTemplates(data)
         } catch { }
     }
@@ -129,10 +113,7 @@ export function AutomationView() {
     async function fetchHistory() {
         setLoadingHistory(true)
         try {
-            const res = await fetch(`${API_SERVER}/api/outreach/history`, {
-                headers: getJsonAuthHeaders()
-            })
-            const data = await res.json()
+            const data = await fetchGet(`${API_SERVER}/api/outreach/history`)
             if (data.success) setHistory(data)
         } catch { }
         setLoadingHistory(false)
@@ -143,16 +124,11 @@ export function AutomationView() {
         setExecuting(true)
         setCampaignResult(null)
         try {
-            const res = await fetch(`${API_SERVER}/api/outreach/campaign`, {
-                method: 'POST',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify({
+            const data = await fetchMutation(`${API_SERVER}/api/outreach/campaign`, 'POST', {
                     leadIds: Array.from(selectedLeadIds),
                     templateId,
                     delaySeconds
                 })
-            })
-            const data = await res.json()
             setCampaignResult(data)
             if (data.success) {
                 fetchUncontactedLeads()

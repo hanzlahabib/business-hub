@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import { JOB_STATUSES } from '../constants/pipelineStages'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getAuthHeaders, getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 export interface Job {
   id: string
@@ -34,10 +34,7 @@ export function useJobs() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(ENDPOINTS.JOBS, {
-        headers: getAuthHeaders()
-      })
-      const data = await res.json()
+      const data = await fetchGet(ENDPOINTS.JOBS)
       setJobs(Array.isArray(data) ? data : [])
       return data
     } catch (err: any) {
@@ -64,12 +61,7 @@ export function useJobs() {
         updatedAt: new Date().toISOString()
       }
 
-      const res = await fetch(ENDPOINTS.JOBS, {
-        method: 'POST',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify(newJob)
-      })
-      const data = await res.json()
+      const data = await fetchMutation(ENDPOINTS.JOBS, 'POST', newJob)
       setJobs(prev => [...prev, data])
       return data
     } catch (err: any) {
@@ -85,15 +77,10 @@ export function useJobs() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${ENDPOINTS.JOBS}/${id}`, {
-        method: 'PATCH',
-        headers: getJsonAuthHeaders(),
-        body: JSON.stringify({
+      const data = await fetchMutation(`${ENDPOINTS.JOBS}/${id}`, 'PATCH', {
           ...updates,
           updatedAt: new Date().toISOString()
         })
-      })
-      const data = await res.json()
       setJobs(prev => prev.map(j => j.id === id ? data : j))
       return data
     } catch (err: any) {
@@ -109,10 +96,7 @@ export function useJobs() {
     setLoading(true)
     setError(null)
     try {
-      await fetch(`${ENDPOINTS.JOBS}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      })
+      await fetchMutation(`${ENDPOINTS.JOBS}/${id}`, 'DELETE')
       setJobs(prev => prev.filter(j => j.id !== id))
       return true
     } catch (err: any) {

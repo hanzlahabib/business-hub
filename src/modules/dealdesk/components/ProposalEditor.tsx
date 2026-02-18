@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { fetchMutation } from '../../../utils/authHeaders'
 import { toast } from 'sonner'
 
 interface ProposalSection {
@@ -54,16 +54,9 @@ export function ProposalEditor({ proposal, onClose, onUpdate }: {
         setSaving(true)
         try {
             const totalValue = pricing.reduce((s, p) => s + (p.amount || 0), 0)
-            const res = await fetch(`${ENDPOINTS.PROPOSALS}/${proposal.id}`, {
-                method: 'PUT',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify({ title, content: { sections, pricing }, totalValue })
-            })
-            if (res.ok) {
-                const updated = await res.json()
-                onUpdate(updated)
-                toast.success('Proposal saved')
-            }
+            const updated = await fetchMutation(`${ENDPOINTS.PROPOSALS}/${proposal.id}`, 'PUT', { title, content: { sections, pricing }, totalValue })
+            onUpdate(updated)
+            toast.success('Proposal saved')
         } catch { toast.error('Save failed') }
         finally { setSaving(false) }
     }
@@ -71,16 +64,9 @@ export function ProposalEditor({ proposal, onClose, onUpdate }: {
     const handleStatusChange = async (newStatus: string) => {
         setSaving(true)
         try {
-            const res = await fetch(`${ENDPOINTS.PROPOSALS}/${proposal.id}`, {
-                method: 'PUT',
-                headers: getJsonAuthHeaders(),
-                body: JSON.stringify({ status: newStatus })
-            })
-            if (res.ok) {
-                const updated = await res.json()
-                onUpdate(updated)
-                toast.success(`Proposal marked as ${newStatus}`)
-            }
+            const updated = await fetchMutation(`${ENDPOINTS.PROPOSALS}/${proposal.id}`, 'PUT', { status: newStatus })
+            onUpdate(updated)
+            toast.success(`Proposal marked as ${newStatus}`)
         } catch { toast.error('Status update failed') }
         finally { setSaving(false) }
     }

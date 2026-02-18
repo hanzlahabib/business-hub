@@ -8,7 +8,7 @@ import {
 import { format } from 'date-fns'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getJsonAuthHeaders, fetchMutation } from '../../../utils/authHeaders'
 
 // Highlight matching text
 function HighlightText({ text, query }) {
@@ -226,18 +226,13 @@ export function GlobalSearch({
 
     if (attachmentPaths.length > 0 && user) {
       try {
-        const response = await fetch(ENDPOINTS.FILE_SEARCH || `${API_SERVER}/api/file/search`, {
-          method: 'POST',
-          headers: getJsonAuthHeaders(),
-          body: JSON.stringify({
+        const response = await fetchMutation(ENDPOINTS.FILE_SEARCH || `${API_SERVER}/api/file/search`, 'POST', {
             paths: attachmentPaths.map(a => a.path),
             query: searchQuery
           })
-        })
 
-        if (response.ok) {
-          const data = await response.json()
-          console.log('File search results:', data) // Debug log
+        if (response) {
+          const data = response
 
           for (const fileResult of data.results || []) {
             const attachment = attachmentPaths.find(a => a.path === fileResult.path)

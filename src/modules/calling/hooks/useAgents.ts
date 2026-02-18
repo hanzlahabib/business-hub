@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { getJsonAuthHeaders, fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 export interface Agent {
     id: string
@@ -44,8 +44,7 @@ export function useAgents() {
         setLoading(true)
         setError(null)
         try {
-            const res = await fetch(ENDPOINTS.AGENTS, { headers: headers() })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.AGENTS)
             setAgents(Array.isArray(data) ? data : [])
         } catch (err: any) {
             setError(err.message)
@@ -57,8 +56,7 @@ export function useAgents() {
     const fetchAgent = useCallback(async (id: string) => {
         if (!user) return null
         try {
-            const res = await fetch(`${ENDPOINTS.AGENTS}/${id}`, { headers: headers() })
-            const data = await res.json()
+            const data = await fetchGet(`${ENDPOINTS.AGENTS}/${id}`)
             setSelectedAgent(data)
             return data
         } catch (err: any) {
@@ -70,8 +68,7 @@ export function useAgents() {
     const fetchFlowConfig = useCallback(async () => {
         if (!user) return null
         try {
-            const res = await fetch(ENDPOINTS.AGENTS_FLOW_CONFIG, { headers: headers() })
-            const data = await res.json()
+            const data = await fetchGet(ENDPOINTS.AGENTS_FLOW_CONFIG)
             setFlowConfig(data)
             return data
         } catch (err: any) {
@@ -103,8 +100,7 @@ export function useAgents() {
     const startAgent = useCallback(async (id: string) => {
         if (!user) return null
         try {
-            const res = await fetch(`${ENDPOINTS.AGENTS}/${id}/start`, { method: 'POST', headers: headers() })
-            const result = await res.json()
+            const result = await fetchMutation(`${ENDPOINTS.AGENTS}/${id}/start`, 'POST')
             setAgents(prev => prev.map(a => a.id === id ? { ...a, status: 'running' as const } : a))
             return result
         } catch (err: any) { setError(err.message); return null }
@@ -113,8 +109,7 @@ export function useAgents() {
     const pauseAgent = useCallback(async (id: string) => {
         if (!user) return null
         try {
-            const res = await fetch(`${ENDPOINTS.AGENTS}/${id}/pause`, { method: 'POST', headers: headers() })
-            const result = await res.json()
+            const result = await fetchMutation(`${ENDPOINTS.AGENTS}/${id}/pause`, 'POST')
             setAgents(prev => prev.map(a => a.id === id ? { ...a, status: 'paused' as const } : a))
             return result
         } catch (err: any) { setError(err.message); return null }
@@ -123,8 +118,7 @@ export function useAgents() {
     const resumeAgent = useCallback(async (id: string) => {
         if (!user) return null
         try {
-            const res = await fetch(`${ENDPOINTS.AGENTS}/${id}/resume`, { method: 'POST', headers: headers() })
-            const result = await res.json()
+            const result = await fetchMutation(`${ENDPOINTS.AGENTS}/${id}/resume`, 'POST')
             setAgents(prev => prev.map(a => a.id === id ? { ...a, status: 'running' as const } : a))
             return result
         } catch (err: any) { setError(err.message); return null }
@@ -133,8 +127,7 @@ export function useAgents() {
     const stopAgent = useCallback(async (id: string) => {
         if (!user) return null
         try {
-            const res = await fetch(`${ENDPOINTS.AGENTS}/${id}/stop`, { method: 'POST', headers: headers() })
-            const result = await res.json()
+            const result = await fetchMutation(`${ENDPOINTS.AGENTS}/${id}/stop`, 'POST')
             setAgents(prev => prev.map(a => a.id === id ? { ...a, status: 'completed' as const } : a))
             return result
         } catch (err: any) { setError(err.message); return null }
@@ -143,7 +136,7 @@ export function useAgents() {
     const deleteAgent = useCallback(async (id: string) => {
         if (!user) return false
         try {
-            await fetch(`${ENDPOINTS.AGENTS}/${id}`, { method: 'DELETE', headers: headers() })
+            await fetchMutation(`${ENDPOINTS.AGENTS}/${id}`, 'DELETE')
             setAgents(prev => prev.filter(a => a.id !== id))
             if (selectedAgent?.id === id) setSelectedAgent(null)
             return true

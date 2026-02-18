@@ -6,7 +6,7 @@ import {
   Briefcase, Code, Loader2, CheckCircle, AlertCircle, Plus
 } from 'lucide-react'
 import { ENDPOINTS } from '../../../config/api'
-import { getJsonAuthHeaders } from '../../../utils/authHeaders'
+import { fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 const EXPERIENCE_LEVELS = [
   { id: 'JUNIOR', label: 'Junior (0-2 years)' },
@@ -43,8 +43,7 @@ export function ProfileEditor({ isOpen, onClose }) {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(ENDPOINTS.USER_PROFILE, { headers: getJsonAuthHeaders() })
-      const data = await res.json()
+      const data = await fetchGet(ENDPOINTS.USER_PROFILE)
       setProfile(data)
     } catch {
       setMessage({ type: 'error', text: 'Failed to load profile' })
@@ -58,18 +57,9 @@ export function ProfileEditor({ isOpen, onClose }) {
     setMessage(null)
 
     try {
-      const res = await fetch(ENDPOINTS.USER_PROFILE, {
-        method: 'PUT',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(profile)
-      })
-
-      if (res.ok) {
-        setMessage({ type: 'success', text: 'Profile saved successfully!' })
-        setTimeout(() => onClose(), 1500)
-      } else {
-        setMessage({ type: 'error', text: 'Failed to save profile' })
-      }
+      await fetchMutation(ENDPOINTS.USER_PROFILE, 'PUT', profile)
+      setMessage({ type: 'success', text: 'Profile saved successfully!' })
+      setTimeout(() => onClose(), 1500)
     } catch {
       setMessage({ type: 'error', text: 'Failed to save profile' })
     } finally {
