@@ -20,14 +20,14 @@ Full audit completed (see `docs/PRODUCTION-READINESS.md`). These must be resolve
 ### Week 2 — Reliability & Performance
 - [x] **Input validation (zod)** — schemas for all POST/PUT/PATCH routes
 - [x] **Database indexes** — added `@@index` on 15+ models
-- [ ] **Error handling** — replace empty catches, add `res.ok` checks in frontend
+- [x] **Error handling** — fetchJson/fetchMutation/fetchGet helpers, 112+ calls migrated across 34 files
 - [x] **Replace console.log** — migrated to Winston logger across backend
 - [ ] **Remove @ts-nocheck** — start with auth, API service, context (52 files total)
 
 ### Week 3 — Cleanup & Hardening
 - [ ] **Delete dead code** — TimelineView, ModuleSwitcher, StatsBar, pipeline module
 - [ ] **Fix API URL construction** — replace fragile `.replace()` patterns
-- [ ] **Per-user rate limiting** — key on userId instead of IP (behind proxy)
+- [x] **Per-user rate limiting** — key on userId instead of IP (behind proxy)
 - [ ] **Webhook signature verification** — Vapi + Twilio
 - [ ] **Switch to prisma migrate** — committed migration files instead of `db push`
 
