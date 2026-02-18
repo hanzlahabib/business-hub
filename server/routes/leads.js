@@ -2,6 +2,7 @@ import express from 'express'
 import leadService from '../services/leadService.js'
 import authMiddleware from '../middleware/auth.js'
 import eventBus from '../services/eventBus.js'
+import { validate, createLeadSchema, updateLeadSchema } from '../middleware/validate.js'
 
 const router = express.Router()
 
@@ -16,12 +17,8 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', validate(createLeadSchema), async (req, res) => {
     try {
-        const { name, status } = req.body || {}
-        if (!name || !status) {
-            return res.status(422).json({ error: 'Validation failed', fields: { name: !name ? 'Name is required' : undefined, status: !status ? 'Status is required' : undefined } })
-        }
         const lead = await leadService.create(req.user.id, req.body)
         res.status(201).json(lead)
     } catch (error) {
@@ -36,10 +33,12 @@ router.patch('/bulk', async (req, res) => {
         if (!Array.isArray(ids) || ids.length === 0) {
             return res.status(400).json({ error: 'ids array is required' })
         }
+        const { name, company, contactPerson, email, phone, status, source, industry, website, websiteIssues, tags, linkedBoardId, followUpDate, lastContactedAt, notes, typeId } = updates || {}
+        const allowedUpdates = { name, company, contactPerson, email, phone, status, source, industry, website, websiteIssues, tags, linkedBoardId, followUpDate, lastContactedAt, notes, typeId }
         const prisma = (await import('../config/prisma.js')).default
         await prisma.lead.updateMany({
             where: { id: { in: ids }, userId: req.user.id },
-            data: updates
+            data: allowedUpdates
         })
         // Return the updated leads
         const updated = await prisma.lead.findMany({
@@ -79,7 +78,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', validate(updateLeadSchema), async (req, res) => {
     try {
         const oldLead = await leadService.getById(req.params.id, req.user.id)
         const lead = await leadService.update(req.params.id, req.user.id, req.body)
@@ -98,7 +97,7 @@ router.put('/:id', async (req, res) => {
     }
 })
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', validate(updateLeadSchema), async (req, res) => {
     try {
         const oldLead = await leadService.getById(req.params.id, req.user.id)
         const lead = await leadService.update(req.params.id, req.user.id, req.body)

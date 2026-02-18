@@ -3,6 +3,7 @@ import prisma from '../config/prisma.js'
 import authMiddleware from '../middleware/auth.js'
 import { settingsRepository, emailSettingsRepository, jobSearchPromptRepository } from '../repositories/extraRepositories.js'
 import { loadUserKeys, maskApiKeys } from '../services/apiKeyService.js'
+import { validate, createTaskBoardSchema, updateTaskBoardSchema, createTaskSchema, updateTaskSchema, createTemplateSchema, updateTemplateSchema, createTemplateFolderSchema, createEmailTemplateSchema } from '../middleware/validate.js'
 
 const router = express.Router()
 router.use(authMiddleware)
@@ -27,10 +28,11 @@ router.get('/taskboards/:id', async (req, res) => {
     }
 })
 
-router.post('/taskboards', async (req, res) => {
+router.post('/taskboards', validate(createTaskBoardSchema), async (req, res) => {
     try {
+        const { name, columns, leadId } = req.body
         const board = await prisma.taskBoard.create({
-            data: { ...req.body, userId: req.user.id },
+            data: { name, columns, leadId, userId: req.user.id },
             include: { tasks: true }
         })
         res.status(201).json(board)
@@ -39,13 +41,14 @@ router.post('/taskboards', async (req, res) => {
     }
 })
 
-router.patch('/taskboards/:id', async (req, res) => {
+router.patch('/taskboards/:id', validate(updateTaskBoardSchema), async (req, res) => {
     try {
         const existing = await prisma.taskBoard.findFirst({ where: { id: req.params.id, userId: req.user.id } })
         if (!existing) return res.status(404).json({ error: 'Task board not found' })
+        const { name, columns, leadId } = req.body
         const board = await prisma.taskBoard.update({
             where: { id: req.params.id, userId: req.user.id },
-            data: req.body,
+            data: { name, columns, leadId },
             include: { tasks: true }
         })
         res.json(board)
@@ -54,13 +57,14 @@ router.patch('/taskboards/:id', async (req, res) => {
     }
 })
 
-router.put('/taskboards/:id', async (req, res) => {
+router.put('/taskboards/:id', validate(updateTaskBoardSchema), async (req, res) => {
     try {
         const existing = await prisma.taskBoard.findFirst({ where: { id: req.params.id, userId: req.user.id } })
         if (!existing) return res.status(404).json({ error: 'Task board not found' })
+        const { name, columns, leadId } = req.body
         const board = await prisma.taskBoard.update({
             where: { id: req.params.id, userId: req.user.id },
-            data: req.body,
+            data: { name, columns, leadId },
             include: { tasks: true }
         })
         res.json(board)
@@ -89,10 +93,11 @@ router.get('/tasks', async (req, res) => {
     res.json(data)
 })
 
-router.post('/tasks', async (req, res) => {
+router.post('/tasks', validate(createTaskSchema), async (req, res) => {
     try {
+        const { title, description, status, priority, columnId, position, assignee, leadId, subtasks, tags, dueDate, boardId } = req.body
         const task = await prisma.task.create({
-            data: { ...req.body, userId: req.user.id }
+            data: { title, description, status, priority, columnId, position, assignee, leadId, subtasks, tags, dueDate, boardId, userId: req.user.id }
         })
         res.status(201).json(task)
     } catch (e) {
@@ -100,13 +105,14 @@ router.post('/tasks', async (req, res) => {
     }
 })
 
-router.patch('/tasks/:id', async (req, res) => {
+router.patch('/tasks/:id', validate(updateTaskSchema), async (req, res) => {
     try {
         const existing = await prisma.task.findFirst({ where: { id: req.params.id, userId: req.user.id } })
         if (!existing) return res.status(404).json({ error: 'Task not found' })
+        const { title, description, status, priority, columnId, position, assignee, leadId, subtasks, tags, dueDate, boardId } = req.body
         const task = await prisma.task.update({
             where: { id: req.params.id, userId: req.user.id },
-            data: req.body
+            data: { title, description, status, priority, columnId, position, assignee, leadId, subtasks, tags, dueDate, boardId }
         })
         res.json(task)
     } catch (e) {
@@ -114,13 +120,14 @@ router.patch('/tasks/:id', async (req, res) => {
     }
 })
 
-router.put('/tasks/:id', async (req, res) => {
+router.put('/tasks/:id', validate(updateTaskSchema), async (req, res) => {
     try {
         const existing = await prisma.task.findFirst({ where: { id: req.params.id, userId: req.user.id } })
         if (!existing) return res.status(404).json({ error: 'Task not found' })
+        const { title, description, status, priority, columnId, position, assignee, leadId, subtasks, tags, dueDate, boardId } = req.body
         const task = await prisma.task.update({
             where: { id: req.params.id, userId: req.user.id },
-            data: req.body
+            data: { title, description, status, priority, columnId, position, assignee, leadId, subtasks, tags, dueDate, boardId }
         })
         res.json(task)
     } catch (e) {
@@ -152,10 +159,11 @@ router.get('/templates/:id', async (req, res) => {
     res.json(data)
 })
 
-router.post('/templates', async (req, res) => {
+router.post('/templates', validate(createTemplateSchema), async (req, res) => {
     try {
+        const { name, category, description, icon, coverImage, content, rawMarkdown, subject, status, tags, variables, isFavorite, isPinned, isLocked, folderId } = req.body
         const template = await prisma.template.create({
-            data: { ...req.body, userId: req.user.id }
+            data: { name, category, description, icon, coverImage, content, rawMarkdown, subject, status, tags, variables, isFavorite, isPinned, isLocked, folderId, userId: req.user.id }
         })
         res.status(201).json(template)
     } catch (e) {
@@ -163,13 +171,14 @@ router.post('/templates', async (req, res) => {
     }
 })
 
-router.patch('/templates/:id', async (req, res) => {
+router.patch('/templates/:id', validate(updateTemplateSchema), async (req, res) => {
     try {
         const existing = await prisma.template.findFirst({ where: { id: req.params.id, userId: req.user.id } })
         if (!existing) return res.status(404).json({ error: 'Template not found' })
+        const { name, category, description, icon, coverImage, content, rawMarkdown, subject, status, tags, variables, isFavorite, isPinned, isLocked, folderId } = req.body
         const template = await prisma.template.update({
             where: { id: req.params.id, userId: req.user.id },
-            data: req.body
+            data: { name, category, description, icon, coverImage, content, rawMarkdown, subject, status, tags, variables, isFavorite, isPinned, isLocked, folderId }
         })
         res.json(template)
     } catch (e) {
@@ -177,13 +186,14 @@ router.patch('/templates/:id', async (req, res) => {
     }
 })
 
-router.put('/templates/:id', async (req, res) => {
+router.put('/templates/:id', validate(updateTemplateSchema), async (req, res) => {
     try {
         const existing = await prisma.template.findFirst({ where: { id: req.params.id, userId: req.user.id } })
         if (!existing) return res.status(404).json({ error: 'Template not found' })
+        const { name, category, description, icon, coverImage, content, rawMarkdown, subject, status, tags, variables, isFavorite, isPinned, isLocked, folderId } = req.body
         const template = await prisma.template.update({
             where: { id: req.params.id, userId: req.user.id },
-            data: req.body
+            data: { name, category, description, icon, coverImage, content, rawMarkdown, subject, status, tags, variables, isFavorite, isPinned, isLocked, folderId }
         })
         res.json(template)
     } catch (e) {
@@ -215,10 +225,11 @@ router.get('/templatefolders/:id', async (req, res) => {
     res.json(data)
 })
 
-router.post('/templatefolders', async (req, res) => {
+router.post('/templatefolders', validate(createTemplateFolderSchema), async (req, res) => {
     try {
+        const { name, icon, color } = req.body
         const folder = await prisma.templateFolder.create({
-            data: { ...req.body, userId: req.user.id }
+            data: { name, icon, color, userId: req.user.id }
         })
         res.status(201).json(folder)
     } catch (e) {
@@ -226,13 +237,14 @@ router.post('/templatefolders', async (req, res) => {
     }
 })
 
-router.patch('/templatefolders/:id', async (req, res) => {
+router.patch('/templatefolders/:id', validate(createTemplateFolderSchema), async (req, res) => {
     try {
         const existing = await prisma.templateFolder.findFirst({ where: { id: req.params.id, userId: req.user.id } })
         if (!existing) return res.status(404).json({ error: 'Folder not found' })
+        const { name, icon, color } = req.body
         const folder = await prisma.templateFolder.update({
             where: { id: req.params.id, userId: req.user.id },
-            data: req.body
+            data: { name, icon, color }
         })
         res.json(folder)
     } catch (e) {
@@ -240,13 +252,14 @@ router.patch('/templatefolders/:id', async (req, res) => {
     }
 })
 
-router.put('/templatefolders/:id', async (req, res) => {
+router.put('/templatefolders/:id', validate(createTemplateFolderSchema), async (req, res) => {
     try {
         const existing = await prisma.templateFolder.findFirst({ where: { id: req.params.id, userId: req.user.id } })
         if (!existing) return res.status(404).json({ error: 'Folder not found' })
+        const { name, icon, color } = req.body
         const folder = await prisma.templateFolder.update({
             where: { id: req.params.id, userId: req.user.id },
-            data: req.body
+            data: { name, icon, color }
         })
         res.json(folder)
     } catch (e) {
@@ -295,8 +308,9 @@ router.get('/templatehistory/:id', async (req, res) => {
 
 router.post('/templatehistory', async (req, res) => {
     try {
+        const { templateId, action, details, version, content, rawMarkdown, changeSummary, changeType, changedBy } = req.body
         const entry = await prisma.templateHistory.create({
-            data: { ...req.body, userId: req.user.id }
+            data: { templateId, action, details, version, content, rawMarkdown, changeSummary, changeType, changedBy, userId: req.user.id }
         })
         res.status(201).json(entry)
     } catch (e) {
@@ -334,8 +348,9 @@ router.get('/templatecomments', async (req, res) => {
 
 router.post('/templatecomments', async (req, res) => {
     try {
+        const { templateId, content, parentId, reactions, mentions } = req.body
         const comment = await prisma.templateComment.create({
-            data: { ...req.body, userId: req.user.id },
+            data: { templateId, content, parentId, reactions, mentions, userId: req.user.id },
             include: { user: { select: { id: true, name: true, email: true } } }
         })
         res.status(201).json(comment)
@@ -348,9 +363,10 @@ router.patch('/templatecomments/:id', async (req, res) => {
     try {
         const existing = await prisma.templateComment.findFirst({ where: { id: req.params.id, userId: req.user.id } })
         if (!existing) return res.status(404).json({ error: 'Comment not found' })
+        const { content, parentId, reactions, mentions } = req.body
         const comment = await prisma.templateComment.update({
             where: { id: req.params.id },
-            data: req.body,
+            data: { content, parentId, reactions, mentions },
             include: { user: { select: { id: true, name: true, email: true } } }
         })
         res.json(comment)
@@ -384,10 +400,11 @@ router.get('/emailtemplates', async (req, res) => {
     }
 })
 
-router.post('/emailtemplates', async (req, res) => {
+router.post('/emailtemplates', validate(createEmailTemplateSchema), async (req, res) => {
     try {
+        const { name, subject, body } = req.body
         const template = await prisma.emailTemplate.create({
-            data: { ...req.body, userId: req.user.id }
+            data: { name, subject, body, userId: req.user.id }
         })
         res.status(201).json(template)
     } catch (e) {
@@ -395,13 +412,14 @@ router.post('/emailtemplates', async (req, res) => {
     }
 })
 
-router.patch('/emailtemplates/:id', async (req, res) => {
+router.patch('/emailtemplates/:id', validate(createEmailTemplateSchema), async (req, res) => {
     try {
         const existing = await prisma.emailTemplate.findFirst({ where: { id: req.params.id, userId: req.user.id } })
         if (!existing) return res.status(404).json({ error: 'Email template not found' })
+        const { name, subject, body } = req.body
         const template = await prisma.emailTemplate.update({
             where: { id: req.params.id },
-            data: req.body
+            data: { name, subject, body }
         })
         res.json(template)
     } catch (e) {
@@ -520,9 +538,10 @@ router.get('/userprofile', async (req, res) => {
 
 router.put('/userprofile', async (req, res) => {
     try {
+        const { name } = req.body
         const user = await prisma.user.update({
             where: { id: req.user.id },
-            data: req.body
+            data: { name }
         })
         res.json(user)
     } catch (e) {

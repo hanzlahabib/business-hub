@@ -13,6 +13,7 @@ import { rateNegotiationService } from '../services/rateNegotiationService.js'
 import { callLogService } from '../services/callLogService.js'
 import { getAdapterInfo } from '../adapters/index.js'
 import { getAdaptersForUser } from '../services/apiKeyService.js'
+import { validate, createCallScriptSchema, updateCallScriptSchema } from '../middleware/validate.js'
 
 const router = express.Router()
 
@@ -267,7 +268,7 @@ router.get('/scripts/list', async (req, res) => {
 })
 
 // POST /api/calls/scripts — Create script
-router.post('/scripts', async (req, res) => {
+router.post('/scripts', validate(createCallScriptSchema), async (req, res) => {
     try {
         const script = await callScriptService.create(req.user.id, req.body)
         res.status(201).json(script)
@@ -288,7 +289,7 @@ router.post('/scripts/generate', async (req, res) => {
 })
 
 // PATCH /api/calls/scripts/:id — Update script
-router.patch('/scripts/:id', async (req, res) => {
+router.patch('/scripts/:id', validate(updateCallScriptSchema), async (req, res) => {
     try {
         const script = await callScriptService.update(req.params.id, req.user.id, req.body)
         res.json(script)

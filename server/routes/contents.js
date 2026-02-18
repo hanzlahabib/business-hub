@@ -1,6 +1,7 @@
 import express from 'express'
 import contentService from '../services/contentService.js'
 import authMiddleware from '../middleware/auth.js'
+import { validate, createContentSchema, updateContentSchema } from '../middleware/validate.js'
 
 const router = express.Router()
 
@@ -25,7 +26,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', validate(createContentSchema), async (req, res) => {
     try {
         const content = await contentService.create(req.user.id, req.body)
         res.status(201).json(content)
@@ -34,7 +35,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', validate(updateContentSchema), async (req, res) => {
     try {
         const content = await contentService.update(req.params.id, req.user.id, req.body)
         res.json(content)

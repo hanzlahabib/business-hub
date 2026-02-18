@@ -6,6 +6,7 @@ import express from 'express'
 import authMiddleware from '../middleware/auth.js'
 import proposalService from '../services/proposalService.js'
 import logger from '../config/logger.js'
+import { validate, createProposalSchema, updateProposalSchema } from '../middleware/validate.js'
 
 const router = express.Router()
 router.use(authMiddleware)
@@ -25,7 +26,7 @@ router.get('/', async (req, res) => {
 })
 
 // Create proposal
-router.post('/', async (req, res) => {
+router.post('/', validate(createProposalSchema), async (req, res) => {
     try {
         const proposal = await proposalService.create(req.user.id, req.body)
         res.status(201).json(proposal)
@@ -47,7 +48,7 @@ router.get('/:id', async (req, res) => {
 })
 
 // Update proposal
-router.put('/:id', async (req, res) => {
+router.put('/:id', validate(updateProposalSchema), async (req, res) => {
     try {
         const proposal = await proposalService.update(req.params.id, req.user.id, req.body)
         res.json(proposal)

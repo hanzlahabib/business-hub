@@ -22,15 +22,17 @@ export const callScriptService = {
     },
 
     async create(userId, data) {
+        const { name, purpose, industry, openingLine, talkingPoints, objectionHandlers, closingStrategy, rateRange, assistantConfig, isActive } = data
         return prisma.callScript.create({
-            data: { ...data, userId }
+            data: { name, purpose, industry, openingLine, talkingPoints, objectionHandlers, closingStrategy, rateRange, assistantConfig, isActive, userId }
         })
     },
 
     async update(id, userId, data) {
         const script = await prisma.callScript.findFirst({ where: { id, userId } })
         if (!script) throw new Error('Script not found')
-        return prisma.callScript.update({ where: { id }, data })
+        const { name, purpose, industry, openingLine, talkingPoints, objectionHandlers, closingStrategy, rateRange, assistantConfig, isActive } = data
+        return prisma.callScript.update({ where: { id }, data: { name, purpose, industry, openingLine, talkingPoints, objectionHandlers, closingStrategy, rateRange, assistantConfig, isActive } })
     },
 
     async delete(id, userId) {

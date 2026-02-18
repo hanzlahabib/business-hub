@@ -36,7 +36,8 @@ export const meetingNoteService = {
     async update(id, userId, data) {
         const note = await prisma.meetingNote.findFirst({ where: { id, userId } })
         if (!note) throw new Error('Note not found')
-        return prisma.meetingNote.update({ where: { id }, data })
+        const { content, summary, actionItems, decisions, followUpDate, tags } = data
+        return prisma.meetingNote.update({ where: { id }, data: { content, summary, actionItems, decisions, followUpDate, tags } })
     },
 
     /**

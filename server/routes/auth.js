@@ -2,10 +2,11 @@ import express from 'express'
 import authService from '../services/authService.js'
 import prisma from '../config/prisma.js'
 import authMiddleware from '../middleware/auth.js'
+import { validate, loginSchema, registerSchema } from '../middleware/validate.js'
 
 const router = express.Router()
 
-router.post('/login', async (req, res) => {
+router.post('/login', validate(loginSchema), async (req, res) => {
     try {
         const { email, password } = req.body
         const { token, user } = await authService.login(email, password)
@@ -15,18 +16,8 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.post('/register', async (req, res) => {
+router.post('/register', validate(registerSchema), async (req, res) => {
     try {
-        const { email, password } = req.body || {}
-        if (!email || !password) {
-            return res.status(400).json({ success: false, error: 'Email and password are required' })
-        }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            return res.status(422).json({ success: false, error: 'Invalid email format' })
-        }
-        if (password.length < 6) {
-            return res.status(422).json({ success: false, error: 'Password must be at least 6 characters' })
-        }
         const { token, user } = await authService.register(req.body)
         res.json({ success: true, token, user })
     } catch (error) {
@@ -47,10 +38,10 @@ router.get('/profile', authMiddleware, async (req, res) => {
 
 router.put('/profile', authMiddleware, async (req, res) => {
     try {
-        const { id, email, password, createdAt, updatedAt, ...updateData } = req.body
+        const { name } = req.body
         const user = await prisma.user.update({
             where: { id: req.user.id },
-            data: updateData
+            data: { name }
         })
         res.json(user)
     } catch (error) {

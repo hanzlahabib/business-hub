@@ -1,6 +1,7 @@
 import express from 'express'
 import messageService from '../services/messageService.js'
 import authMiddleware from '../middleware/auth.js'
+import { validate, createMessageSchema } from '../middleware/validate.js'
 
 const router = express.Router()
 
@@ -21,7 +22,7 @@ router.get('/lead/:leadId', async (req, res) => {
 })
 
 // Log a received message (manual entry)
-router.post('/received', async (req, res) => {
+router.post('/received', validate(createMessageSchema), async (req, res) => {
   const { leadId, channel, subject, body } = req.body
   const userId = req.user.id
 
@@ -41,7 +42,7 @@ router.post('/received', async (req, res) => {
 })
 
 // Log a call
-router.post('/call', async (req, res) => {
+router.post('/call', validate(createMessageSchema), async (req, res) => {
   const { leadId, notes, outcome } = req.body
   const userId = req.user.id
 

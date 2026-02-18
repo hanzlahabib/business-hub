@@ -72,7 +72,8 @@ router.patch('/:id', async (req, res) => {
     })
     if (!existing) return res.status(404).json({ error: 'Lead type not found' })
 
-    const data = { ...req.body }
+    const { name, description, boardId, defaultColumns, agentConfig, webhookSecret, autoCallEnabled, autoCallDelay, emailFollowUp } = req.body
+    const data = { name, description, boardId, defaultColumns, agentConfig, webhookSecret, autoCallEnabled, autoCallDelay, emailFollowUp }
 
     // Re-slug if name changed
     if (data.name && data.name !== existing.name) {
@@ -84,11 +85,6 @@ router.patch('/:id', async (req, res) => {
         return res.status(409).json({ error: `Slug "${data.slug}" already in use` })
       }
     }
-
-    // Remove fields that shouldn't be updated directly
-    delete data.id
-    delete data.userId
-    delete data.createdAt
 
     const updated = await prisma.leadType.update({
       where: { id: req.params.id },
