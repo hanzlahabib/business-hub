@@ -76,6 +76,8 @@ model Content {
 
   userId          String
   user            User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 // ============================================
@@ -110,6 +112,10 @@ model Lead {
   calls           Call[]
   intelligence    LeadIntelligence?
   proposals       Proposal[]
+
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@index([typeId])
 }
 
 // ============================================
@@ -168,6 +174,8 @@ model Job {
 
   userId          String
   user            User      @relation(fields: [userId], references: [id])
+
+  @@index([userId, status])
 }
 
 // ============================================
@@ -194,6 +202,9 @@ model Task {
 
   userId        String
   user          User       @relation(fields: [userId], references: [id])
+
+  @@index([boardId, columnId])
+  @@index([userId])
 }
 
 model TaskBoard {
@@ -207,6 +218,8 @@ model TaskBoard {
   tasks         Task[]
   userId        String
   user          User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 // ============================================
@@ -243,6 +256,9 @@ model Template {
 
   userId        String
   user          User      @relation(fields: [userId], references: [id])
+
+  @@index([userId, category])
+  @@index([folderId])
 }
 
 model TemplateFolder {
@@ -256,6 +272,8 @@ model TemplateFolder {
   templates     Template[]
   userId        String
   user          User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 // ============================================
@@ -276,6 +294,9 @@ model Message {
 
   userId        String
   user          User      @relation(fields: [userId], references: [id])
+
+  @@index([leadId])
+  @@index([userId, createdAt])
 }
 
 // ============================================
@@ -424,6 +445,10 @@ model Call {
   meetingNotes    MeetingNote[]
   negotiations    RateNegotiation[]
   callLogs        CallLog[]
+
+  @@index([userId, status])
+  @@index([leadId])
+  @@index([agentInstanceId])
 }
 
 model CallScript {
@@ -445,6 +470,8 @@ model CallScript {
   userId            String
   user              User      @relation(fields: [userId], references: [id])
   calls             Call[]
+
+  @@index([userId])
 }
 
 model MeetingNote {
@@ -516,6 +543,8 @@ model AgentInstance {
   userId          String
   user            User      @relation(fields: [userId], references: [id])
   calls           Call[]
+
+  @@index([userId, status])
 }
 
 // ============================================
@@ -621,4 +650,5 @@ model Proposal {
   updatedAt       DateTime  @updatedAt
 
   @@index([userId, status])
+  @@index([leadId])
 }
