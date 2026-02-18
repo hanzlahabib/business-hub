@@ -370,7 +370,7 @@ cp .env.example .env
 # Optionally set: TWILIO_*, OPENAI_API_KEY, DEEPGRAM_API_KEY, VAPI_API_KEY
 
 # Setup database
-cd server && npx prisma generate && npx prisma db push && cd ..
+cd server && npx prisma generate && npx prisma migrate deploy && cd ..
 
 # Start
 pnpm run dev          # Frontend → http://localhost:5173

@@ -28,8 +28,8 @@ Full audit completed (see `docs/PRODUCTION-READINESS.md`). These must be resolve
 - [x] **Delete dead code** — TimelineView, ModuleSwitcher, StatsBar, PipelineView removed + barrel exports cleaned
 - [x] **Fix API URL construction** — added TASKBOARDS, TASKS, SKILL_MASTERY endpoints, eliminated all `.replace()` hacks
 - [x] **Per-user rate limiting** — key on userId instead of IP (behind proxy)
-- [ ] **Webhook signature verification** — Vapi + Twilio
-- [ ] **Switch to prisma migrate** — committed migration files instead of `db push`
+- [x] **Webhook signature verification** — Twilio HMAC-SHA1 validation wired to all routes, Vapi shared-secret already in place
+- [x] **Switch to prisma migrate** — initial migration baselined, all deploy scripts updated to `migrate deploy`
 
 ---
 

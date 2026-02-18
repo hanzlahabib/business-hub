@@ -15,11 +15,15 @@ import prisma from '../config/prisma.js'
 import { getAdaptersForUser } from '../services/apiKeyService.js'
 import dncService from '../services/dncService.js'
 import logger from '../config/logger.js'
+import { validateTwilioRequest } from '../middleware/twilioValidation.js'
 
 const router = express.Router()
 
-// Twilio sends form-encoded data
+// Twilio sends form-encoded data (must parse BEFORE signature validation)
 router.use(express.urlencoded({ extended: false }))
+
+// Validate Twilio webhook signatures (enable via TWILIO_VALIDATE_REQUESTS=true)
+router.use(validateTwilioRequest())
 
 /**
  * POST /api/calls/twilio/twiml

@@ -18,7 +18,7 @@ cp .env.example .env
 # Edit .env with your DATABASE_URL
 
 # Setup database
-cd server && npx prisma generate && npx prisma db push && cd ..
+cd server && npx prisma generate && npx prisma migrate deploy && cd ..
 
 # Start development
 pnpm run dev          # Frontend (Vite) — http://localhost:5173

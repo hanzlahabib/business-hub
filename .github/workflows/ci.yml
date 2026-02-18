@@ -73,8 +73,8 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate --schema=server/prisma/schema.prisma
 
-      - name: Push database schema
-        run: npx prisma db push --force-reset --schema=server/prisma/schema.prisma
+      - name: Apply database migrations
+        run: npx prisma migrate deploy --schema=server/prisma/schema.prisma
 
       - name: Start backend server
         run: |

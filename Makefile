@@ -181,7 +181,10 @@ db-start: ## Start PostgreSQL container
 db-stop: ## Stop PostgreSQL container
 	@docker stop business-hub-db 2>/dev/null && echo "🐘 PostgreSQL stopped" || echo "⚠️  Not running"
 
-db-push: db-start ## Push Prisma schema to database
+db-migrate: db-start ## Apply Prisma migrations to database
+	npx prisma migrate deploy --schema=server/prisma/schema.prisma
+
+db-push: db-start ## Push Prisma schema to database (dev only — prefer db-migrate)
 	npx prisma db push --schema=server/prisma/schema.prisma
 
 db-studio: db-start ## Open Prisma Studio

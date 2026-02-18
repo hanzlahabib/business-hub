@@ -60,7 +60,7 @@ cd "${APP_DIR}"
 docker compose build --no-cache
 docker compose up -d
 sleep 10
-docker exec business-hub-backend npx prisma db push --schema=server/prisma/schema.prisma --accept-data-loss 2>/dev/null || echo "Prisma push skipped"
+docker exec business-hub-backend npx prisma migrate deploy --schema=server/prisma/schema.prisma 2>/dev/null || echo "Prisma migrate skipped"
 ENDSSH
 
 # Step 4: Health check
