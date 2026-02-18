@@ -8,7 +8,8 @@ RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-# Copy package files and host node_modules
+# Copy package files and host node_modules (pnpm symlinks don't survive COPY,
+# so we dereference them and also install prisma directly for generate step)
 COPY package.json ./
 COPY node_modules/ ./node_modules/
 
@@ -17,6 +18,9 @@ COPY server/ ./server/
 COPY src/config/ ./src/config/
 COPY docs/ ./docs/
 COPY prisma.config.ts ./
+
+# Install prisma CLI directly (pnpm symlinks break in Docker)
+RUN npm install --no-save prisma@7 @prisma/client@7
 
 # Generate Prisma Client
 RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" npx prisma generate --schema=server/prisma/schema.prisma

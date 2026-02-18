@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { login, authHeaders, testState as sharedState, API_URL } from '../helpers.js'
+import { registerOrLogin, authHeaders, testState as sharedState, API_URL } from '../helpers.js'
 
 const API = `${API_URL}/api`
 
@@ -14,12 +14,12 @@ const API = `${API_URL}/api`
 test.describe('Suite Z: Cleanup', () => {
     async function ensureLoggedIn(request) {
         if (!sharedState.token) {
-            await login(request)
+            await registerOrLogin(request)
         }
     }
 
     test('12.0 — Setup: login', async ({ request }) => {
-        const user = await login(request)
+        const user = await registerOrLogin(request)
         expect(sharedState.userId).toBeTruthy()
         expect(sharedState.token).toBeTruthy()
     })

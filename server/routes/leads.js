@@ -20,6 +20,12 @@ router.get('/', async (req, res) => {
 router.post('/', validate(createLeadSchema), async (req, res) => {
     try {
         const lead = await leadService.create(req.user.id, req.body)
+        eventBus.publish('lead:created', {
+            userId: req.user.id,
+            entityId: lead.id,
+            entityType: 'lead',
+            data: { leadName: lead.name, status: lead.status }
+        })
         res.status(201).json(lead)
     } catch (error) {
         res.status(400).json({ error: error.message })

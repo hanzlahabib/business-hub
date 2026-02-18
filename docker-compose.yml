@@ -41,6 +41,7 @@ services:
       NODE_ENV: production
       JWT_SECRET: "${JWT_SECRET:-change-me-in-production}"
       CORS_ORIGINS: "https://brain.hanzla.com,http://localhost:5175"
+      RATE_LIMIT_DISABLED: "${RATE_LIMIT_DISABLED:-false}"
     ports:
       - "3003:3002"
     depends_on:
