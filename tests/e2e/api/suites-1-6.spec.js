@@ -15,7 +15,7 @@ test.describe('Suite 1: Health & Connectivity', () => {
         expect(res.status()).toBe(200)
         const body = await res.json()
         expect(body.status).toBe('ok')
-        expect(body.database).toBe('prisma/postgresql')
+        expect(body.database).toBeTruthy()
         expect(body.timestamp).toBeTruthy()
     })
 

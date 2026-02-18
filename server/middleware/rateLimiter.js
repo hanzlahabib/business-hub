@@ -17,6 +17,11 @@ import { rateLimitIncr, rateLimitTTL, isRedisConnected } from '../config/redisCl
  * Redis-backed with in-memory fallback
  */
 export function rateLimiter(options = {}) {
+    // Skip rate limiting in test/CI environments
+    if (process.env.RATE_LIMIT_DISABLED === 'true') {
+        return (req, res, next) => next()
+    }
+
     const windowMs = options.windowMs || 15 * 60 * 1000  // 15 minutes
     const windowSec = Math.ceil(windowMs / 1000)
     const max = options.max || 500

@@ -78,7 +78,7 @@ jobs:
 
       - name: Start backend server
         run: |
-          node server/index.js &
+          RATE_LIMIT_DISABLED=true node server/index.js &
           sleep 3
 
       - name: Build frontend
