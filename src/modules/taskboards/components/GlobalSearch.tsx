@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -6,12 +6,12 @@ import {
   ArrowRight, Loader2, CheckCircle2, AlertCircle
 } from 'lucide-react'
 import { format } from 'date-fns'
-import { ENDPOINTS } from '../../../config/api'
+import { ENDPOINTS, API_SERVER } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
 import { getJsonAuthHeaders, fetchMutation } from '../../../utils/authHeaders'
 
 // Highlight matching text
-function HighlightText({ text, query }) {
+function HighlightText({ text, query }: any) {
   if (!query || !text) return <span>{text}</span>
 
   const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'))
@@ -32,7 +32,7 @@ function HighlightText({ text, query }) {
 }
 
 // Search Result Item
-function SearchResultItem({ result, query, onSelect }) {
+function SearchResultItem({ result, query, onSelect }: any) {
   const { task, matchType, matchField, fileMatch } = result
 
   return (
@@ -119,7 +119,8 @@ export function GlobalSearch({
   isOpen,
   onClose,
   onSelectTask
-}) {
+}: any) {
+  const { user } = useAuth()
   const [query, setQuery] = useState('')
   const [selectedColumn, setSelectedColumn] = useState('all')
   const [results, setResults] = useState<any[]>([])
@@ -158,7 +159,7 @@ export function GlobalSearch({
 
     setIsSearching(true)
     const searchLower = searchQuery.toLowerCase()
-    const searchResults = []
+    const searchResults: any[] = []
 
     // Filter by column if selected
     const tasksToSearch = selectedColumn === 'all'
@@ -263,7 +264,7 @@ export function GlobalSearch({
         } else {
           console.error('File search failed:', response.status, await response.text())
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('File search error:', error)
       }
     }

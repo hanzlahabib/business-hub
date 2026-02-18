@@ -1,11 +1,11 @@
-// @ts-nocheck
+
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Upload, FileText, Table, CheckCircle, AlertCircle } from 'lucide-react'
 import { parseCSV } from '../../../shared/utils/csvParser'
 import { parseMDTable } from '../../../shared/utils/mdParser'
 
-export function ImportLeadsModal({ isOpen, onClose, onImport }) {
+export function ImportLeadsModal({ isOpen, onClose, onImport }: any) {
   const [step, setStep] = useState('upload') // upload, preview, importing, done
   const [parsedLeads, setParsedLeads] = useState<any[]>([])
   const [selectedLeads, setSelectedLeads] = useState<any[]>([])
@@ -22,7 +22,7 @@ export function ImportLeadsModal({ isOpen, onClose, onImport }) {
       const content = event.target?.result
       if (typeof content !== 'string') return
 
-      let leads = []
+      let leads: any[] = []
       setError(null)
 
       // Try CSV first
@@ -57,7 +57,7 @@ export function ImportLeadsModal({ isOpen, onClose, onImport }) {
   }
 
   const handlePasteContent = (content) => {
-    let leads = []
+    let leads: any[] = []
     setError(null)
 
     // Try MD table first (more specific)

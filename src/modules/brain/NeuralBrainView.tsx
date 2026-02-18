@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useMemo } from 'react'
 import {
     Loader2, RefreshCw, ChevronRight, Send, FileEdit,
@@ -21,8 +21,8 @@ import { toast } from 'sonner'
    5. Bottom 2:1 grid: Hot Leads table | Stalled Deals
    ═══════════════════════════════════════════════════════════════════════════ */
 export function NeuralBrainView() {
-    const [insights, setInsights] = useState(null)
-    const [leaderboard, setLeaderboard] = useState([])
+    const [insights, setInsights] = useState<any>(null)
+    const [leaderboard, setLeaderboard] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [syncing, setSyncing] = useState(false)
     const { user } = useAuth()
@@ -57,7 +57,7 @@ export function NeuralBrainView() {
 
     // Intent distribution bars
     const intentBars = useMemo(() => {
-        const ib = stats.intentBreakdown || {}
+        const ib = (stats.intentBreakdown || {}) as Record<string, number>
         const total = Object.values(ib).reduce((a: number, b: number) => a + b, 0) || 1
         return [
             {

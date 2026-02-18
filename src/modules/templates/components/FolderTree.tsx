@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -31,7 +31,7 @@ export function FolderTree({
   onCreateFolder,
   onEditFolder,
   onDeleteFolder
-}) {
+}: any) {
   const [expandedFolders, setExpandedFolders] = useState(new Set())
   const [editingFolder, setEditingFolder] = useState<any>(null)
   const [newFolderName, setNewFolderName] = useState('')
@@ -213,10 +213,10 @@ export function FolderTree({
                       type="text"
                       defaultValue={folder.name}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleRenameFolder(folder.id, e.target.value)
+                        if (e.key === 'Enter') handleRenameFolder(folder.id, (e.target as HTMLInputElement).value)
                         if (e.key === 'Escape') setEditingFolder(null)
                       }}
-                      onBlur={(e) => handleRenameFolder(folder.id, e.target.value)}
+                      onBlur={(e) => handleRenameFolder(folder.id, (e.target as HTMLInputElement).value)}
                       className="flex-1 bg-bg-tertiary border border-border rounded px-1 text-sm focus:outline-none"
                       autoFocus
                       onClick={(e) => e.stopPropagation()}

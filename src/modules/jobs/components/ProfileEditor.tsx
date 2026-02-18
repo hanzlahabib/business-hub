@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -16,7 +16,7 @@ const EXPERIENCE_LEVELS = [
   { id: 'STAFF', label: 'Staff/Principal (10+ years)' }
 ]
 
-export function ProfileEditor({ isOpen, onClose }) {
+export function ProfileEditor({ isOpen, onClose }: any) {
   const [profile, setProfile] = useState({
     name: '',
     email: '',
@@ -25,7 +25,7 @@ export function ProfileEditor({ isOpen, onClose }) {
     linkedInUrl: '',
     githubUrl: '',
     yearsExperience: 5,
-    primarySkills: [],
+    primarySkills: [] as string[],
     experienceLevel: 'MID_SENIOR',
     defaultCvId: null
   })

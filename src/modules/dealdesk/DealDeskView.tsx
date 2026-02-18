@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import {
     Handshake, Target, FileText, DollarSign, Brain,
@@ -31,8 +31,8 @@ const intentConfig = {
 
 export function DealDeskView() {
     const [tab, setTab] = useState('pipeline')
-    const [pipeline, setPipeline] = useState([])
-    const [proposals, setProposals] = useState([])
+    const [pipeline, setPipeline] = useState<any[]>([])
+    const [proposals, setProposals] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [selectedProposal, setSelectedProposal] = useState(null)
     const [dealSettings, setDealSettings] = useState({

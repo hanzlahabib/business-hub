@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { memo, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { SlidersHorizontal, Video, Film, X } from 'lucide-react'

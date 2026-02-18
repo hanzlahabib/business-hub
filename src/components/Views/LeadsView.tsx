@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
@@ -254,7 +254,7 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
                     onCreateBoard={handleCreateBoard}
                     onViewBoard={handleViewBoard}
                     onStatusChange={handleChangeStatus}
-                    linkedBoard={linkedBoard}
+                    linkedBoard={linkedBoard as any}
                 />
             )}
 

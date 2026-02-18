@@ -44,6 +44,13 @@ export const ENDPOINTS = {
   TEMPLATE_HISTORY: `${API_SERVER}/api/resources/templatehistory`,
   TEMPLATE_COMMENTS: `${API_SERVER}/api/resources/templatecomments`,
 
+  // Task Boards
+  TASKBOARDS: `${API_SERVER}/api/resources/taskboards`,
+  TASKS: `${API_SERVER}/api/resources/tasks`,
+
+  // Skill Mastery
+  SKILL_MASTERY: `${API_SERVER}/api/skillmastery`,
+
   // Outreach Campaigns
   CAMPAIGNS: `${API_SERVER}/api/campaigns`,
 

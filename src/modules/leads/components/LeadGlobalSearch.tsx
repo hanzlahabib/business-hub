@@ -1,10 +1,10 @@
-// @ts-nocheck
+
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, X, Phone, Mail, MapPin, Building2, Tag, ArrowRight, AlertCircle } from 'lucide-react'
 
 // Highlight matching text
-function HighlightText({ text, query }) {
+function HighlightText({ text, query }: any) {
   if (!query || !text) return <span>{text}</span>
 
   const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'))
@@ -25,7 +25,7 @@ function HighlightText({ text, query }) {
 }
 
 // Search Result Item
-function SearchResultItem({ lead, query, matchField, onSelect }) {
+function SearchResultItem({ lead, query, matchField, onSelect }: any) {
   return (
     <motion.div
       initial={{ opacity: 0, y: -5 }}
@@ -109,7 +109,7 @@ export function LeadGlobalSearch({
   isOpen,
   onClose,
   onSelectLead
-}) {
+}: any) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<any[]>([])
   const inputRef = useRef<any>(null)
@@ -144,10 +144,10 @@ export function LeadGlobalSearch({
     }
 
     const searchLower = searchQuery.toLowerCase()
-    const searchResults = []
+    const searchResults: any[] = []
 
     for (const lead of leads) {
-      let matchField = null
+      let matchField: string | null = null
 
       // Search in name
       if (lead.name?.toLowerCase().includes(searchLower)) {

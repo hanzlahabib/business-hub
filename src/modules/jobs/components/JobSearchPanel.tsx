@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Search, ExternalLink, Star, Globe, Briefcase, Rocket, Building2, Filter } from 'lucide-react'
@@ -15,7 +15,7 @@ const sourceIcons = {
   direct: { icon: Building2, color: 'text-pink-400', bg: 'bg-pink-500/20' }
 }
 
-export function JobSearchPanel({ isOpen, onClose }) {
+export function JobSearchPanel({ isOpen, onClose }: any) {
   const { user } = useAuth()
   const [searchPrompts, setSearchPrompts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -133,7 +133,7 @@ export function JobSearchPanel({ isOpen, onClose }) {
               </div>
             ) : (
               <div className="space-y-8">
-                {Object.entries(groupedPrompts).map(([source, prompts]) => {
+                {Object.entries(groupedPrompts).map(([source, prompts]: [string, any]) => {
                   const sourceConfig = sourceIcons[source] || sourceIcons.direct
                   const IconComponent = typeof sourceConfig.icon === 'string' ? null : sourceConfig.icon
 

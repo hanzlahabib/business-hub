@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect } from 'react'
 import { Phone, Mail, Bell, Loader2 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'

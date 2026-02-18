@@ -22,11 +22,11 @@ Full audit completed (see `docs/PRODUCTION-READINESS.md`). These must be resolve
 - [x] **Database indexes** — added `@@index` on 15+ models
 - [x] **Error handling** — fetchJson/fetchMutation/fetchGet helpers, 112+ calls migrated across 34 files
 - [x] **Replace console.log** — migrated to Winston logger across backend
-- [ ] **Remove @ts-nocheck** — start with auth, API service, context (52 files total)
+- [x] **Remove @ts-nocheck** — removed from all 50 files, fixed 482 type errors (prop types, useState generics, event casts)
 
 ### Week 3 — Cleanup & Hardening
-- [ ] **Delete dead code** — TimelineView, ModuleSwitcher, StatsBar, pipeline module
-- [ ] **Fix API URL construction** — replace fragile `.replace()` patterns
+- [x] **Delete dead code** — TimelineView, ModuleSwitcher, StatsBar, PipelineView removed + barrel exports cleaned
+- [x] **Fix API URL construction** — added TASKBOARDS, TASKS, SKILL_MASTERY endpoints, eliminated all `.replace()` hacks
 - [x] **Per-user rate limiting** — key on userId instead of IP (behind proxy)
 - [ ] **Webhook signature verification** — Vapi + Twilio
 - [ ] **Switch to prisma migrate** — committed migration files instead of `db push`

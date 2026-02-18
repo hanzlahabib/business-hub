@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, ArrowLeft, Settings, Search, Filter, X, Tag, AlertCircle, Calendar, CheckSquare } from 'lucide-react'
@@ -7,7 +7,7 @@ import { useTasks } from '../hooks/useTasks'
 import GlobalSearch from './GlobalSearch'
 import { SearchableSelect } from '../../../components/ui/searchable-select'
 
-function TaskColumn({ column, tasks, boardId, onTaskClick, onAddTask, onDrop }) {
+function TaskColumn({ column, tasks, boardId, onTaskClick, onAddTask, onDrop }: any) {
   const [isDragOver, setIsDragOver] = useState(false)
 
   const handleDragOver = (e) => {
@@ -75,6 +75,8 @@ function TaskColumn({ column, tasks, boardId, onTaskClick, onAddTask, onDrop }) 
               <TaskCard
                 task={task}
                 onClick={onTaskClick}
+                onMenuClick={() => {}}
+                isDragging={false}
               />
             </div>
           ))}
@@ -102,7 +104,7 @@ export function TaskBoard({
   onTaskClick,
   onAddTask,
   onSettings
-}) {
+}: any) {
   const { tasks, moveTask, getTasksByColumn } = useTasks(board?.id)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
@@ -123,19 +125,19 @@ export function TaskBoard({
       }
     })
     const priorities = Object.entries(priorityCounts)
-      .map(([value, count]) => ({ value, label: value.charAt(0).toUpperCase() + value.slice(1), count }))
-      .sort((a, b) => b.count - a.count)
+      .map(([value, count]) => ({ value, label: value.charAt(0).toUpperCase() + value.slice(1), count: count as number }))
+      .sort((a, b) => (b.count as number) - (a.count as number))
 
     // Tags
     const tagCounts = {}
     tasks.forEach(t => {
-      (t.tags || []).forEach(tag => {
+      ((t as any).tags || []).forEach((tag: any) => {
         tagCounts[tag] = (tagCounts[tag] || 0) + 1
       })
     })
     const tags = Object.entries(tagCounts)
-      .map(([value, count]) => ({ value, label: value, count }))
-      .sort((a, b) => b.count - a.count)
+      .map(([value, count]) => ({ value, label: value, count: count as number }))
+      .sort((a, b) => (b.count as number) - (a.count as number))
 
     // Due date options
     const withDueDate = tasks.filter(t => t.dueDate).length
@@ -169,7 +171,7 @@ export function TaskBoard({
 
     // Tag
     if (filters.tag) {
-      result = result.filter(t => t.tags?.includes(filters.tag))
+      result = result.filter(t => (t as any).tags?.includes(filters.tag))
     }
 
     // Due date

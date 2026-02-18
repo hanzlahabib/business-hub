@@ -10,4 +10,3 @@ export { parseMDTable, leadsToMDTable, parseLeadsFromText } from './utils/mdPars
 // Components
 export { MessageThread } from './components/MessageThread'
 export { ActivityTimeline, messagesToActivities } from './components/ActivityTimeline'
-export { ModuleSwitcher, ModuleSwitcherCompact, ModuleSwitcherDropdown } from './components/ModuleSwitcher'

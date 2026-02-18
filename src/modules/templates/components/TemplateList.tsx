@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -40,7 +40,7 @@ export function TemplateList({
   onCopy,
   onToggleFavorite,
   searchQuery = ''
-}) {
+}: any) {
   const [localSearch, setLocalSearch] = useState(searchQuery)
   const [sortField, setSortField] = useState('updatedAt')
   const [sortDirection, setSortDirection] = useState('desc')
@@ -93,7 +93,7 @@ export function TemplateList({
     }
   }
 
-  const SortIcon = ({ field }) => {
+  const SortIcon = ({ field }: any) => {
     if (sortField !== field) return <ArrowUpDown className="w-3 h-3 opacity-30" />
     return sortDirection === 'asc'
       ? <ChevronUp className="w-3 h-3" />

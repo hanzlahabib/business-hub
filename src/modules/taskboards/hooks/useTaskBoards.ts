@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../../utils/authHeaders'
+import { fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 export interface Column {
   id: string
@@ -36,7 +36,7 @@ export function useTaskBoards() {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchGet(ENDPOINTS.TEMPLATES.replace('templates', 'taskboards'))
+      const data = await fetchGet(ENDPOINTS.TASKBOARDS)
       setBoards(Array.isArray(data) ? data : [])
       return data
     } catch (err: any) {
@@ -58,7 +58,7 @@ export function useTaskBoards() {
         createdAt: new Date().toISOString()
       }
 
-      const data = await fetchMutation(ENDPOINTS.TEMPLATES.replace('templates', 'taskboards'), 'POST', newBoard)
+      const data = await fetchMutation(ENDPOINTS.TASKBOARDS, 'POST', newBoard)
       setBoards(prev => [...prev, data])
       return data
     } catch (err: any) {
@@ -88,7 +88,7 @@ export function useTaskBoards() {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'taskboards')}/${id}`, 'PATCH', updates)
+      const data = await fetchMutation(`${ENDPOINTS.TASKBOARDS}/${id}`, 'PATCH', updates)
       setBoards(prev => prev.map(b => b.id === id ? data : b))
       return data
     } catch (err: any) {
@@ -104,7 +104,7 @@ export function useTaskBoards() {
     setLoading(true)
     setError(null)
     try {
-      await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'taskboards')}/${id}`, 'DELETE')
+      await fetchMutation(`${ENDPOINTS.TASKBOARDS}/${id}`, 'DELETE')
       setBoards(prev => prev.filter(b => b.id !== id))
       return true
     } catch (err: any) {

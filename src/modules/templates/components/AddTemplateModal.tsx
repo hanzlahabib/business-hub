@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -33,7 +33,7 @@ export function AddTemplateModal({
   onSave,
   editTemplate = null,
   folders = []
-}) {
+}: any) {
   const [formData, setFormData] = useState({
     name: '',
     category: 'linkedin',
@@ -43,7 +43,7 @@ export function AddTemplateModal({
     rawMarkdown: '',
     icon: 'file-text',
     folderId: null,
-    tags: []
+    tags: [] as string[]
   })
 
   const [tagInput, setTagInput] = useState('')
@@ -71,7 +71,7 @@ export function AddTemplateModal({
         rawMarkdown: '',
         icon: 'file-text',
         folderId: null,
-        tags: []
+        tags: [] as string[]
       })
     }
     setTagInput('')
@@ -108,7 +108,7 @@ export function AddTemplateModal({
   // Convert markdown to basic block structure
   const convertToBlocks = (markdown) => {
     const lines = markdown.split('\n')
-    const blocks = []
+    const blocks: any[] = []
 
     lines.forEach((line, index) => {
       const trimmed = line.trim()

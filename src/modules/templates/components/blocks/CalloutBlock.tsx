@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useRef, useEffect, useState } from 'react'
 import { Lightbulb, AlertTriangle, Info, CheckCircle, XCircle } from 'lucide-react'
 
@@ -12,7 +12,7 @@ const calloutStyles = {
 
 const emojiOptions = ['bulb', 'warning', 'info', 'success', 'error']
 
-export function CalloutBlock({ block, onChange, onKeyDown, isActive }) {
+export function CalloutBlock({ block, onChange, onKeyDown, isActive }: any) {
   const inputRef = useRef<any>(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const emoji = block.emoji || 'bulb'
@@ -79,7 +79,7 @@ export function CalloutBlock({ block, onChange, onKeyDown, isActive }) {
         placeholder="Callout text..."
         rows={1}
         className={`flex-1 bg-transparent ${style.text} placeholder:text-text-muted resize-none focus:outline-none leading-relaxed`}
-        onInput={(e) => {
+        onInput={(e: any) => {
           e.target.style.height = 'auto'
           e.target.style.height = e.target.scrollHeight + 'px'
         }}

@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Building2, Briefcase, MapPin, DollarSign, Link2, Plus, Tag } from 'lucide-react'
@@ -12,7 +12,7 @@ const COMMON_SKILLS = [
   'PostgreSQL', 'MongoDB', 'AWS', 'Docker', 'Git'
 ]
 
-export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
+export function AddJobModal({ isOpen, onClose, onSave, editJob = null }: any) {
   const [formData, setFormData] = useState({
     company: '',
     role: '',
@@ -22,8 +22,8 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
     salaryMax: '',
     salaryCurrency: '$',
     description: '',
-    requirements: [],
-    skills: [],
+    requirements: [] as string[],
+    skills: [] as string[],
     experienceLevel: 'mid',
     source: 'linkedin',
     sourceUrl: '',
@@ -70,8 +70,8 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
         salaryMax: '',
         salaryCurrency: '$',
         description: '',
-        requirements: [],
-        skills: [],
+        requirements: [] as string[],
+        skills: [] as string[],
         experienceLevel: 'mid',
         source: 'linkedin',
         sourceUrl: '',
@@ -123,7 +123,7 @@ export function AddJobModal({ isOpen, onClose, onSave, editJob = null }) {
       })
       toast.success(editJob ? 'Job updated successfully' : 'Job created successfully')
       onClose()
-    } catch (error) {
+    } catch (error: any) {
       toast.error(`Failed to ${editJob ? 'update' : 'create'} job: ${error.message}`)
     } finally {
       setIsSubmitting(false)

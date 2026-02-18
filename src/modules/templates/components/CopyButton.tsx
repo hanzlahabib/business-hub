@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Copy, Check, X, ChevronDown } from 'lucide-react'
@@ -11,7 +11,7 @@ export function CopyButton({
   size = 'default', // 'small' | 'default' | 'large'
   showLabel = true,
   className = ''
-}) {
+}: any) {
   const [copied, setCopied] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [variableValues, setVariableValues] = useState<Record<string, any>>({})

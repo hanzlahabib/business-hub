@@ -1,8 +1,9 @@
-// @ts-nocheck
+
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Building2, User, Mail, Phone, Globe, Tag, FileText, Briefcase, MapPin } from 'lucide-react'
-import { Select } from '../../../components/ui/select'
+import { Select as SelectPrimitive } from '../../../components/ui/select'
+const Select = SelectPrimitive as any
 import { LoadingSpinner } from '../../../components/ui/loading-spinner'
 import { toast } from 'sonner'
 
@@ -39,7 +40,7 @@ const websiteIssues = [
   { value: 'no-ssl', label: 'No SSL/HTTPS' }
 ]
 
-export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
+export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }: any) {
   const [formData, setFormData] = useState(editLead || {
     name: '',
     contactPerson: '',
@@ -110,7 +111,7 @@ export function AddLeadModal({ isOpen, onClose, onSave, editLead = null }) {
       await onSave(formData)
       toast.success(editLead ? 'Lead updated successfully' : 'Lead created successfully')
       onClose()
-    } catch (error) {
+    } catch (error: any) {
       toast.error(`Failed to ${editLead ? 'update' : 'create'} lead: ${error.message}`)
     } finally {
       setIsSubmitting(false)

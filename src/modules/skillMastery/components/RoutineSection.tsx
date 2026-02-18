@@ -1,10 +1,10 @@
-// @ts-nocheck
+
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { format, isSameDay, parseISO, subDays } from 'date-fns'
 import { Check, Flame, Calendar as CalendarIcon, Trophy } from 'lucide-react'
 
-export function RoutineSection({ plant, onLog }) {
+export function RoutineSection({ plant, onLog }: any) {
     const [selectedDate, setSelectedDate] = useState(new Date())
 
     // Get logs for selected date
@@ -14,7 +14,7 @@ export function RoutineSection({ plant, onLog }) {
 
     const toggleHabit = (habitId) => {
         const isCompleted = completedHabits.includes(habitId)
-        let newCompleted = []
+        let newCompleted: any[] = []
 
         if (isCompleted) {
             newCompleted = completedHabits.filter(id => id !== habitId)

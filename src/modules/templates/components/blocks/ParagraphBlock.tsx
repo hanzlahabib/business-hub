@@ -1,7 +1,7 @@
-// @ts-nocheck
+
 import { useRef, useEffect } from 'react'
 
-export function ParagraphBlock({ block, onChange, onKeyDown, isActive }) {
+export function ParagraphBlock({ block, onChange, onKeyDown, isActive }: any) {
   const inputRef = useRef<any>(null)
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export function ParagraphBlock({ block, onChange, onKeyDown, isActive }) {
         rows={1}
         className="w-full bg-transparent text-text-primary placeholder:text-text-muted resize-none focus:outline-none leading-relaxed"
         style={{ minHeight: '1.5em', height: 'auto' }}
-        onInput={(e) => {
+        onInput={(e: any) => {
           e.target.style.height = 'auto'
           e.target.style.height = e.target.scrollHeight + 'px'
         }}

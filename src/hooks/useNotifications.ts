@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { ENDPOINTS, WS_SERVER } from '../config/api'
 import { useAuth } from './useAuth'

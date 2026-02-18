@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useCallback } from 'react'
 import {
     Brain, RefreshCw, FileText, TrendingUp, AlertTriangle,

@@ -1,10 +1,10 @@
-// @ts-nocheck
+
 import { memo, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Building2, MapPin, DollarSign, Clock, Star, ExternalLink } from 'lucide-react'
 import { JOB_SOURCES, PRIORITY_LEVELS } from '../constants/pipelineStages'
 
-function JobCardComponent({ job, onClick }) {
+function JobCardComponent({ job, onClick }: any) {
   const source = useMemo(() =>
     JOB_SOURCES.find(s => s.id === job.source) || JOB_SOURCES.find(s => s.id === 'other'),
     [job.source]
@@ -19,14 +19,14 @@ function JobCardComponent({ job, onClick }) {
     if (!job.createdAt) return null
     const created = new Date(job.createdAt)
     const now = new Date()
-    return Math.ceil((now - created) / (1000 * 60 * 60 * 24))
+    return Math.ceil((now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24))
   }, [job.createdAt])
 
   const daysSinceApplied = useMemo(() => {
     if (!job.appliedAt) return null
     const applied = new Date(job.appliedAt)
     const now = new Date()
-    return Math.ceil((now - applied) / (1000 * 60 * 60 * 24))
+    return Math.ceil((now.getTime() - applied.getTime()) / (1000 * 60 * 60 * 24))
   }, [job.appliedAt])
 
   const salaryDisplay = useMemo(() => {

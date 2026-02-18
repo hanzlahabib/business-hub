@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -29,7 +29,7 @@ function CommentItem({
   onResolve,
   onReact,
   depth = 0
-}) {
+}: any) {
   const [isEditing, setIsEditing] = useState(false)
   const [editText, setEditText] = useState(comment.text)
   const [showActions, setShowActions] = useState(false)
@@ -263,7 +263,7 @@ export function CommentThread({
   onResolve,
   onReact,
   onClose
-}) {
+}: any) {
   const { currentUser, getUserById } = useCurrentUser()
   const [newComment, setNewComment] = useState('')
   const [replyingTo, setReplyingTo] = useState<any>(null)
@@ -408,8 +408,8 @@ export function CommentThread({
 }
 
 // Helper to group reactions by emoji
-function groupReactions(reactions) {
-  const grouped = {}
+function groupReactions(reactions: any[]) {
+  const grouped: Record<string, { emoji: string; count: number; users: string[] }> = {}
   reactions.forEach(r => {
     if (!grouped[r.emoji]) {
       grouped[r.emoji] = { emoji: r.emoji, count: 0, users: [] }

@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   X, Mail, Phone, PhoneCall, Globe, Building2, Calendar,

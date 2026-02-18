@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -47,7 +47,7 @@ export function TemplateDetailPanel({
   onToggleFavorite,
   onTogglePinned,
   onUpdate
-}) {
+}: any) {
   const [copied, setCopied] = useState(false)
   const [variableValues, setVariableValues] = useState<Record<string, any>>({})
   const [activeTab, setActiveTab] = useState('preview') // 'preview' | 'edit' | 'history' | 'comments'
@@ -208,6 +208,7 @@ export function TemplateDetailPanel({
               <VersionHistory
                 templateId={template.id}
                 onRestore={handleVersionRestore}
+                onClose={() => setActiveTab('editor')}
               />
             </div>
           ) : activeTab === 'comments' ? (

@@ -1,7 +1,7 @@
-// @ts-nocheck
+
 import { useMemo } from 'react'
 
-export function VariableHighlighter({ text, variables = [], className = '' }) {
+export function VariableHighlighter({ text, variables = [], className = '' }: any) {
   const highlightedContent = useMemo(() => {
     if (!text) return null
 

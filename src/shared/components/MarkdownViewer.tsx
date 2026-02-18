@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect } from 'react'
 import { FileText, X } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
@@ -7,7 +7,7 @@ import { ENDPOINTS } from '../../config/api'
 import { useAuth } from '../../hooks/useAuth'
 import { getAuthHeaders } from '../../utils/authHeaders'
 
-export function MarkdownViewer({ isOpen, onClose, filePath, fileName }) {
+export function MarkdownViewer({ isOpen, onClose, filePath, fileName }: any) {
   const { user } = useAuth()
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(true)
@@ -94,7 +94,7 @@ export function MarkdownViewer({ isOpen, onClose, filePath, fileName }) {
                   li: ({ children }) => <li className="text-text-secondary">{children}</li>,
                   a: ({ href, children }) => <a href={href} className="text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">{children}</a>,
                   blockquote: ({ children }) => <blockquote className="border-l-4 border-blue-500/50 pl-4 my-4 text-text-muted italic bg-bg-secondary py-2 rounded-r-lg">{children}</blockquote>,
-                  code: ({ inline, children }) => inline
+                  code: ({ inline, children }: any) => inline
                     ? <code className="text-blue-400 bg-blue-500/20 px-1.5 py-0.5 rounded text-sm">{children}</code>
                     : <code className="block text-blue-400 text-sm">{children}</code>,
                   pre: ({ children }) => <pre className="bg-bg-primary border border-border rounded-xl p-4 my-4 overflow-x-auto">{children}</pre>,

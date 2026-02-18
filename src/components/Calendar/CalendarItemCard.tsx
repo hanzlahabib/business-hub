@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useCallback, memo } from 'react'
 import { motion } from 'framer-motion'
 import { GripVertical, Video, Smartphone, CheckSquare, Briefcase, Users, Target } from 'lucide-react'
@@ -70,7 +70,7 @@ export const CalendarItemCard = memo(function CalendarItemCard({
     const Icon = item.icon || TYPE_ICONS[item.type] || CheckSquare
     const typeConfig = CALENDAR_ITEM_TYPES[item.type]
 
-    const handleDragStart = useCallback((e: React.DragEvent) => {
+    const handleDragStart = useCallback((e: any) => {
         if (!item.draggable) {
             e.preventDefault()
             return

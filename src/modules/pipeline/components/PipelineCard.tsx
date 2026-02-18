@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { memo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { format, parseISO } from 'date-fns'
@@ -36,7 +36,7 @@ export const PipelineCard = memo(function PipelineCard({
   onEdit,
   onDelete,
   onMoveToStage
-}) {
+}: any) {
   const [isHovered, setIsHovered] = useState(false)
 
   const formattedDate = content.scheduledDate

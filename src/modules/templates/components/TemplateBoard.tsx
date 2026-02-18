@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Search, Linkedin, Mail, ClipboardList, FileText, File } from 'lucide-react'
@@ -42,7 +42,7 @@ function CategoryColumn({
   onAddClick,
   onDrop,
   onCopy
-}) {
+}: any) {
   const config = categoryConfig[category]
   const Icon = config.icon
   const [isDragOver, setIsDragOver] = useState(false)
@@ -107,7 +107,10 @@ function CategoryColumn({
               <TemplateCard
                 template={template}
                 onClick={onTemplateClick}
+                onMenuClick={() => {}}
                 onCopy={onCopy}
+                onToggleFavorite={() => {}}
+                isDragging={false}
               />
             </div>
           ))}
@@ -134,7 +137,7 @@ export function TemplateBoard({
   onTemplateClick,
   onAddClick,
   onCopy
-}) {
+}: any) {
   const { updateTemplate } = useTemplates()
 
   const templatesByCategory = useMemo(() => {

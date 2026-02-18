@@ -1,10 +1,10 @@
-// @ts-nocheck
+
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { format, parseISO } from 'date-fns'
 import { PenTool, Calendar, Save, Trash2 } from 'lucide-react'
 
-export function JournalSection({ plant, onLog }) {
+export function JournalSection({ plant, onLog }: any) {
     const [activeTab, setActiveTab] = useState('write') // 'write' or 'history'
     const [entry, setEntry] = useState('')
     const [isSaving, setIsSaving] = useState(false)
@@ -29,8 +29,8 @@ export function JournalSection({ plant, onLog }) {
 
     // Get all journal entries
     const history = Object.entries(plant.logs || {})
-        .filter(([_, log]) => log.journal)
-        .sort((a, b) => new Date(b[0]) - new Date(a[0]))
+        .filter(([_, log]: [string, any]) => log.journal)
+        .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime())
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -129,7 +129,7 @@ export function JournalSection({ plant, onLog }) {
                                 <p className="text-sm mt-1">Start writing to clear your mind.</p>
                             </div>
                         ) : (
-                            history.map(([date, log]) => (
+                            history.map(([date, log]: [string, any]) => (
                                 <div key={date} className="bg-bg-secondary p-5 rounded-2xl border border-border hover:border-purple-500/30 transition-all group">
                                     <div className="flex items-center gap-2 mb-3 pb-3 border-b border-border/50 group-hover:border-purple-500/10 transition-colors">
                                         <Calendar size={14} className="text-purple-500" />

@@ -1,11 +1,11 @@
-// @ts-nocheck
+
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, X, Briefcase, MapPin, DollarSign, ArrowRight, AlertCircle, Building2 } from 'lucide-react'
 import { JOB_STATUS_MAP } from '../constants/pipelineStages'
 
 // Highlight matching text
-function HighlightText({ text, query }) {
+function HighlightText({ text, query }: any) {
   if (!query || !text) return <span>{text}</span>
 
   const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'))
@@ -26,7 +26,7 @@ function HighlightText({ text, query }) {
 }
 
 // Search Result Item
-function SearchResultItem({ job, query, onSelect }) {
+function SearchResultItem({ job, query, onSelect }: any) {
   const statusConfig = JOB_STATUS_MAP[job.status] || {}
 
   return (
@@ -106,7 +106,7 @@ export function JobGlobalSearch({
   isOpen,
   onClose,
   onSelectJob
-}) {
+}: any) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<any[]>([])
   const inputRef = useRef<any>(null)
@@ -141,10 +141,10 @@ export function JobGlobalSearch({
     }
 
     const searchLower = searchQuery.toLowerCase()
-    const searchResults = []
+    const searchResults: any[] = []
 
     for (const job of jobs) {
-      let matchField = null
+      let matchField: string | null = null
 
       // Search in role
       if (job.role?.toLowerCase().includes(searchLower)) {

@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import {
@@ -53,7 +53,7 @@ export function Block({
   onOpenComments,
   onAddComment,
   showComments = true
-}) {
+}: any) {
   const [showMenu, setShowMenu] = useState(false)
   const blockRef = useRef<any>(null)
 
@@ -79,7 +79,7 @@ export function Block({
       } ${isDragging ? 'opacity-50' : ''}`}
       onClick={() => onFocus?.(block.id)}
       draggable
-      onDragStart={(e) => {
+      onDragStart={(e: any) => {
         e.dataTransfer.setData('blockId', block.id)
         onDragStart?.(block.id)
       }}
@@ -126,10 +126,11 @@ export function Block({
             <CommentBubble
               count={commentCount}
               hasUnresolved={hasUnresolvedComments}
-              onClick={(e) => {
+              onClick={(e: any) => {
                 e?.stopPropagation()
                 onOpenComments?.(block.id)
               }}
+              onAddComment={() => onOpenComments?.(block.id)}
               position="right"
               size="small"
             />

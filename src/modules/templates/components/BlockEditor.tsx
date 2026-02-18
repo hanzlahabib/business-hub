@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { Undo2, Redo2, Save, Loader2 } from 'lucide-react'
@@ -11,7 +11,7 @@ export function BlockEditor({
   onSave = null,
   autoSave = true,
   showToolbar = true
-}) {
+}: any) {
   const {
     blocks,
     activeBlockId,

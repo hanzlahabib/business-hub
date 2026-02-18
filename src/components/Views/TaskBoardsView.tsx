@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Kanban } from 'lucide-react'
@@ -72,7 +72,7 @@ export function TaskBoardsView({ initialBoardId, onBoardViewed }: { initialBoard
     const handleAddTask = async (columnId: string) => {
         // Quick add - create task with default values
         const task = await createTask({
-            boardId: selectedBoard.id,
+            boardId: selectedBoard!.id,
             columnId,
             title: 'New Task',
             description: '',

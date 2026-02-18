@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -29,7 +29,7 @@ function EditableText({
   inputClassName = '',
   multiline = false,
   autoFocus = false
-}) {
+}: any) {
   const [isEditing, setIsEditing] = useState(autoFocus)
   const [localValue, setLocalValue] = useState(value)
   const inputRef = useRef<any>(null)
@@ -106,7 +106,7 @@ function EditableText({
 }
 
 // Property Row Component (Notion-style)
-function PropertyRow({ icon: Icon, label, children }) {
+function PropertyRow({ icon: Icon, label, children }: any) {
   return (
     <div className="flex items-start gap-3 py-2 group">
       <div className="flex items-center gap-2 w-28 shrink-0 text-text-muted text-sm">
@@ -121,7 +121,7 @@ function PropertyRow({ icon: Icon, label, children }) {
 }
 
 // Progress Bar Component
-function ProgressBar({ value, onChange }) {
+function ProgressBar({ value, onChange }: any) {
   const [localValue, setLocalValue] = useState(value || 0)
   const [isEditing, setIsEditing] = useState(false)
 
@@ -187,7 +187,7 @@ function ProgressBar({ value, onChange }) {
 }
 
 // Comment Item Component
-function CommentItem({ comment, onDelete }) {
+function CommentItem({ comment, onDelete }: any) {
   return (
     <div className="flex gap-3 p-3 bg-bg-secondary/70 rounded-lg group">
       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-medium shrink-0">
@@ -213,7 +213,7 @@ function CommentItem({ comment, onDelete }) {
 }
 
 // Comments Section Component
-function CommentsSection({ comments = [], onAdd, onDelete }) {
+function CommentsSection({ comments = [], onAdd, onDelete }: any) {
   const [newComment, setNewComment] = useState('')
   const inputRef = useRef<any>(null)
 
@@ -281,7 +281,7 @@ function CommentsSection({ comments = [], onAdd, onDelete }) {
 }
 
 // Image Upload Component with Clipboard Paste Support
-function ImageUploadZone({ onUpload }) {
+function ImageUploadZone({ onUpload }: any) {
   const [isDragOver, setIsDragOver] = useState(false)
   const [isPasting, setIsPasting] = useState(false)
   const fileInputRef = useRef<any>(null)
@@ -322,12 +322,12 @@ function ImageUploadZone({ onUpload }) {
           name: file.name || `Screenshot-${format(new Date(), 'yyyy-MM-dd-HHmmss')}.png`,
           type: 'image',
           path: `clipboard://${file.name || 'screenshot'}`,
-          dataUrl: e.target.result,
+          dataUrl: (e.target as FileReader).result,
           size: file.size,
           createdAt: new Date().toISOString()
         }
         onUpload?.(attachment)
-        resolve()
+        resolve(undefined)
       }
       reader.readAsDataURL(file)
     })
@@ -347,14 +347,14 @@ function ImageUploadZone({ onUpload }) {
     e.preventDefault()
     setIsDragOver(false)
 
-    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'))
+    const files = Array.from(e.dataTransfer.files).filter((f: any) => f.type.startsWith('image/'))
     for (const file of files) {
       await processImageFile(file)
     }
   }
 
   const handleFileSelect = async (e) => {
-    const files = Array.from(e.target.files || [])
+    const files = Array.from(e.target.files || []) as any[]
     for (const file of files) {
       if (file.type.startsWith('image/')) {
         await processImageFile(file)
@@ -416,7 +416,7 @@ function ImageUploadZone({ onUpload }) {
 }
 
 // Image Viewer Modal
-function ImageViewer({ isOpen, onClose, src, name }) {
+function ImageViewer({ isOpen, onClose, src, name }: any) {
   if (!isOpen) return null
 
   return (
@@ -451,7 +451,7 @@ function isImageFile(path) {
 }
 
 // Attachment Item Component
-function AttachmentItem({ attachment, onDelete }) {
+function AttachmentItem({ attachment, onDelete }: any) {
   const [copied, setCopied] = useState(false)
   const [viewerOpen, setViewerOpen] = useState(false)
   const [imageViewerOpen, setImageViewerOpen] = useState(false)
@@ -494,10 +494,10 @@ function AttachmentItem({ attachment, onDelete }) {
               alt={fileName}
               className="w-full h-full object-cover cursor-pointer"
               onClick={handleView}
-              onError={(e) => {
-                e.target.style.display = 'none'
-                e.target.parentElement.innerHTML = '<div class="w-full h-full flex items-center justify-center"><svg class="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>'
-              }}
+              onError={((e: any) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+                (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center"><svg class="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>';
+              }) as any}
             />
           </div>
         ) : (
@@ -566,7 +566,7 @@ function AttachmentItem({ attachment, onDelete }) {
 }
 
 // Linked Document Display Component
-function LinkedDocumentDisplay({ filePath, onRemove }) {
+function LinkedDocumentDisplay({ filePath, onRemove }: any) {
   const [viewerOpen, setViewerOpen] = useState(false)
   const [copied, setCopied] = useState(false)
 
@@ -644,7 +644,7 @@ function textToBlockContent(text) {
   }
 
   const lines = text.replace(/\\n/g, '\n').split('\n')
-  const blocks = []
+  const blocks: any[] = []
 
   lines.forEach((line) => {
     const trimmed = line.trim()
@@ -694,7 +694,7 @@ export function TaskDetailPanel({
   onAddComment,
   onDeleteComment,
   columns = []
-}) {
+}: any) {
   const [newSubtask, setNewSubtask] = useState('')
   const [isEditingDescription, setIsEditingDescription] = useState(false)
   const isNewTask = task?.title === 'New Task'

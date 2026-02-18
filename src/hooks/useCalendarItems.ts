@@ -3,7 +3,7 @@ import { Video, Smartphone, CheckSquare, Briefcase, Users, Target, type LucideIc
 import type { Content } from './useSchedule'
 import { ENDPOINTS } from '../config/api'
 import { useAuth } from './useAuth'
-import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../utils/authHeaders'
+import { fetchGet, fetchMutation } from '../utils/authHeaders'
 
 export interface CalendarFilters {
     contents: boolean
@@ -102,7 +102,7 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
                 fetchMap.push('contents')
             }
             if (filters.tasks) {
-                promises.push(fetchGet(ENDPOINTS.TEMPLATES.replace('templates', 'tasks')))
+                promises.push(fetchGet(ENDPOINTS.TASKS))
                 fetchMap.push('tasks')
             }
             if (filters.jobs) {
@@ -114,7 +114,7 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
                 fetchMap.push('leads')
             }
             if (filters.milestones) {
-                promises.push(fetchGet(ENDPOINTS.SETTINGS.replace('resources/settings', 'skillmastery')))
+                promises.push(fetchGet(ENDPOINTS.SKILL_MASTERY))
                 fetchMap.push('skillMastery')
             }
 
@@ -277,7 +277,7 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
                     break
                 }
                 case 'task': {
-                    await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${item.id}`, 'PATCH', { dueDate: dateStr + 'T00:00:00Z' })
+                    await fetchMutation(`${ENDPOINTS.TASKS}/${item.id}`, 'PATCH', { dueDate: dateStr + 'T00:00:00Z' })
                     setTasks(prev => prev.map(t => t.id === item.id ? { ...t, dueDate: dateStr + 'T00:00:00Z' } : t))
                     break
                 }
@@ -299,7 +299,7 @@ export function useCalendarItems(filters: CalendarFilters = DEFAULT_FILTERS) {
                                 ) || []
                             }))
                         }
-                        await fetchMutation(ENDPOINTS.SETTINGS.replace('resources/settings', 'skillmastery'), 'PUT', newData)
+                        await fetchMutation(ENDPOINTS.SKILL_MASTERY, 'PUT', newData)
                         setSkillMasteryData(newData)
                     }
                     break

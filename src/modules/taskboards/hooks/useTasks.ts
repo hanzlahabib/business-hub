@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { ENDPOINTS } from '../../../config/api'
 import { useAuth } from '../../../hooks/useAuth'
-import { getAuthHeaders, getJsonAuthHeaders, fetchGet, fetchMutation } from '../../../utils/authHeaders'
+import { fetchGet, fetchMutation } from '../../../utils/authHeaders'
 
 export interface Subtask {
   id: string
@@ -36,7 +36,7 @@ export function useTasks(boardId: string | null = null) {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchGet(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}?boardId=${targetBoardId}`)
+      const data = await fetchGet(`${ENDPOINTS.TASKS}?boardId=${targetBoardId}`)
       const sortedData = (Array.isArray(data) ? data : []).sort((a: any, b: any) => a.position - b.position)
       setTasks(sortedData)
       return sortedData
@@ -66,7 +66,7 @@ export function useTasks(boardId: string | null = null) {
         position: maxPosition + 1
       }
 
-      const data = await fetchMutation(ENDPOINTS.TEMPLATES.replace('templates', 'tasks'), 'POST', newTask)
+      const data = await fetchMutation(ENDPOINTS.TASKS, 'POST', newTask)
       setTasks(prev => [...prev, data])
       return data
     } catch (err: any) {
@@ -82,7 +82,7 @@ export function useTasks(boardId: string | null = null) {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${id}`, 'PATCH', updates)
+      const data = await fetchMutation(`${ENDPOINTS.TASKS}/${id}`, 'PATCH', updates)
       setTasks(prev => prev.map(t => t.id === id ? data : t))
       return data
     } catch (err: any) {
@@ -98,7 +98,7 @@ export function useTasks(boardId: string | null = null) {
     setLoading(true)
     setError(null)
     try {
-      await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${id}`, 'DELETE')
+      await fetchMutation(`${ENDPOINTS.TASKS}/${id}`, 'DELETE')
       setTasks(prev => prev.filter(t => t.id !== id))
       return true
     } catch (err: any) {
@@ -141,7 +141,7 @@ export function useTasks(boardId: string | null = null) {
     })
 
     for (const update of updates) {
-      await fetchMutation(`${ENDPOINTS.TEMPLATES.replace('templates', 'tasks')}/${update.id}`, 'PATCH', { position: update.position })
+      await fetchMutation(`${ENDPOINTS.TASKS}/${update.id}`, 'PATCH', { position: update.position })
     }
   }, [user])
 

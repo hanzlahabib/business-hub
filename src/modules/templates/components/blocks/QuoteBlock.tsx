@@ -1,7 +1,7 @@
-// @ts-nocheck
+
 import { useRef, useEffect } from 'react'
 
-export function QuoteBlock({ block, onChange, onKeyDown, isActive }) {
+export function QuoteBlock({ block, onChange, onKeyDown, isActive }: any) {
   const inputRef = useRef<any>(null)
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export function QuoteBlock({ block, onChange, onKeyDown, isActive }) {
         placeholder="Quote..."
         rows={1}
         className="w-full bg-transparent text-text-secondary italic placeholder:text-text-muted resize-none focus:outline-none leading-relaxed"
-        onInput={(e) => {
+        onInput={(e: any) => {
           e.target.style.height = 'auto'
           e.target.style.height = e.target.scrollHeight + 'px'
         }}

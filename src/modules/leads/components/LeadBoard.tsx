@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Search, Filter, Upload, X, Building2, MapPin, Globe, Tag, AlertCircle, RefreshCw, Mail, CheckSquare, Square, Layers, Edit, Trash2 } from 'lucide-react'
@@ -69,7 +69,7 @@ function extractCity(lead) {
   return 'Unknown'
 }
 
-function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop, selectedLeads, onSelectLead, onEditLead, onDeleteLead, onChangeStatus }) {
+function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop, selectedLeads, onSelectLead, onEditLead, onDeleteLead, onChangeStatus }: any) {
   const config = statusConfig[status]
   const [isDragOver, setIsDragOver] = useState(false)
 
@@ -132,12 +132,13 @@ function StatusColumn({ status, leads, onLeadClick, onAddClick, onDrop, selected
               transition={{ duration: 0.3, ease: 'easeOut' }}
               draggable
               onDragStart={(e) => {
-                e.dataTransfer.setData('leadId', lead.id)
+                (e as any).dataTransfer.setData('leadId', lead.id)
               }}
             >
               <LeadCard
                 lead={lead}
                 onClick={onLeadClick}
+                isDragging={false}
                 selected={selectedLeads.includes(lead.id)}
                 onSelect={(l, checked) => onSelectLead(l.id, checked)}
                 onEdit={onEditLead}
@@ -179,7 +180,7 @@ export function LeadBoard({
   onChangeStatus: onChangeStatusProp,
   onBulkEdit,
   onBulkDelete
-}) {
+}: any) {
   const { leadTypes } = useLeadTypes()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
@@ -226,7 +227,7 @@ export function LeadBoard({
   // Get unique values for filter dropdowns with counts
   const filterOptions = useMemo(() => {
     // Industries with count
-    const industryCounts = {}
+    const industryCounts: Record<string, number> = {}
     enrichedLeads.forEach(l => {
       if (l.industry) {
         industryCounts[l.industry] = (industryCounts[l.industry] || 0) + 1
@@ -237,7 +238,7 @@ export function LeadBoard({
       .sort((a, b) => b.count - a.count)
 
     // Priorities with count
-    const priorityCounts = {}
+    const priorityCounts: Record<string, number> = {}
     enrichedLeads.forEach(l => {
       if (l.priority) {
         priorityCounts[l.priority] = (priorityCounts[l.priority] || 0) + 1
@@ -248,7 +249,7 @@ export function LeadBoard({
       .sort((a, b) => b.count - a.count)
 
     // Tags with count
-    const tagCounts = {}
+    const tagCounts: Record<string, number> = {}
     enrichedLeads.forEach(l => {
       (l.tags || []).forEach(tag => {
         tagCounts[tag] = (tagCounts[tag] || 0) + 1
@@ -259,7 +260,7 @@ export function LeadBoard({
       .sort((a, b) => b.count - a.count)
 
     // Countries with count
-    const countryCounts = {}
+    const countryCounts: Record<string, number> = {}
     enrichedLeads.forEach(l => {
       if (l._country && l._country !== 'Unknown') {
         countryCounts[l._country] = (countryCounts[l._country] || 0) + 1
@@ -270,7 +271,7 @@ export function LeadBoard({
       .sort((a, b) => b.count - a.count)
 
     // Cities with count
-    const cityCounts = {}
+    const cityCounts: Record<string, number> = {}
     enrichedLeads.forEach(l => {
       if (l._city && l._city !== 'Unknown') {
         cityCounts[l._city] = (cityCounts[l._city] || 0) + 1

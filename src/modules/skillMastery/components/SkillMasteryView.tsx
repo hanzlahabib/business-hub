@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -11,7 +11,7 @@ import { useSkillMastery } from '../hooks/useSkillMastery'
 import { MarkdownViewer } from '../../../shared/components/MarkdownViewer'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { ReactFlow, Background, Controls, MiniMap, Handle, Position, useNodesState, useEdgesState, addEdge } from '@xyflow/react'
+import { ReactFlow, Background, Controls, MiniMap, Handle, Position, useNodesState, useEdgesState, addEdge, type Node, type Edge } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { PlantNewModal } from './PlantNewModal'
 import { RoutineSection } from './RoutineSection'
@@ -146,7 +146,7 @@ export function SkillMasteryView() {
 }
 
 // ============ GARDEN VIEW ============
-function GardenView({ plants, onSelectPlant, onPlantNew, viewMode, onToggleView, onToggleMilestone, onToggleVocabulary, onToggleResource }) {
+function GardenView({ plants, onSelectPlant, onPlantNew, viewMode, onToggleView, onToggleMilestone, onToggleVocabulary, onToggleResource }: any) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -273,7 +273,7 @@ function GardenView({ plants, onSelectPlant, onPlantNew, viewMode, onToggleView,
 }
 
 // ============ COMPACT CLUSTER VIEW ============
-function CompactView({ plants, onSelect, onPlantNew }) {
+function CompactView({ plants, onSelect, onPlantNew }: any) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -334,7 +334,7 @@ function CompactView({ plants, onSelect, onPlantNew }) {
 }
 
 // ============ NODE CONTEXT MENU ============
-function NodeContextMenu({ id, top, left, right, bottom, onNavigate, onClose }) {
+function NodeContextMenu({ id, top, left, right, bottom, onNavigate, onClose }: any) {
   return (
     <div
       style={{ top, left, right, bottom }}
@@ -353,7 +353,7 @@ function NodeContextMenu({ id, top, left, right, bottom, onNavigate, onClose }) 
 
 
 // ============ GARDEN TREE VIEW (REACT FLOW) ============
-function GardenTreeView({ plants, onSelect, onToggleMilestone, onToggleVocabulary, onToggleResource }) {
+function GardenTreeView({ plants, onSelect, onToggleMilestone, onToggleVocabulary, onToggleResource }: any) {
   // Track expanded state: { [plantId]: { isExpanded: boolean, categories: { [catId]: boolean } } }
   const [expandedState, setExpandedState] = useState<Record<string, any>>({})
   const [menu, setMenu] = useState<any>(null)
@@ -384,7 +384,7 @@ function GardenTreeView({ plants, onSelect, onToggleMilestone, onToggleVocabular
   }
 
   const { nodes: initialNodes, edges: initialEdges } = useMemo(() => {
-    const nodes = [
+    const nodes: any[] = [
       {
         id: 'garden-root',
         type: 'skill',
@@ -393,7 +393,7 @@ function GardenTreeView({ plants, onSelect, onToggleMilestone, onToggleVocabular
       }
     ]
 
-    const edges = []
+    const edges: any[] = []
 
     const filteredPlants = plants.filter(p =>
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -510,8 +510,8 @@ function GardenTreeView({ plants, onSelect, onToggleMilestone, onToggleVocabular
     return { nodes, edges }
   }, [plants, expandedState, searchQuery, onToggleMilestone, onToggleVocabulary, onToggleResource])
 
-  const [nodes, setNodes, onNodesChange] = useNodesState([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
 
   // Layout synchronization
   useEffect(() => {
@@ -637,7 +637,7 @@ function GardenTreeView({ plants, onSelect, onToggleMilestone, onToggleVocabular
   )
 }
 
-function EmptyGarden({ onPlantNew }) {
+function EmptyGarden({ onPlantNew }: any) {
   return (
     <div className="flex flex-col items-center justify-center py-16">
       <motion.div
@@ -667,7 +667,7 @@ function EmptyGarden({ onPlantNew }) {
   )
 }
 
-function PlantCard({ plant, index, onClick }) {
+function PlantCard({ plant, index, onClick }: any) {
   const progress = calculateProgress(plant)
   const stage = getGrowthStage(progress)
   const needsWater = checkNeedsWater(plant)
@@ -737,7 +737,7 @@ function PlantCard({ plant, index, onClick }) {
   )
 }
 
-function PlantVisualization({ stage, progress }) {
+function PlantVisualization({ stage, progress }: any) {
   const stageIndex = GROWTH_STAGES.findIndex(s => s.name === stage.name)
 
   return (
@@ -794,7 +794,7 @@ function PlantDetailView({
   onToggleMilestone,
   onRemoveMilestone,
   onLog
-}) {
+}: any) {
   const [activeSection, setActiveSection] = useState('growth')
   const [showTreeView, setShowTreeView] = useState(false)
 
@@ -1036,7 +1036,7 @@ function PlantDetailView({
 }
 
 // ============ CUSTOM NODES FOR REACT FLOW ============
-const SkillNode = ({ data }) => (
+const SkillNode = ({ data }: any) => (
   <div
     className={`p-4 rounded-2xl border-2 bg-bg-primary shadow-xl min-w-[200px] transition-all ${data.isRoot ? 'border-emerald-500 shadow-emerald-500/10' : 'border-border'
       } ${data.isCategory ? 'cursor-pointer hover:border-emerald-500/50' : ''}`}
@@ -1061,7 +1061,7 @@ const SkillNode = ({ data }) => (
   </div>
 )
 
-const LeafNode = ({ data }) => (
+const LeafNode = ({ data }: any) => (
   <div
     className={`p-3 rounded-xl border bg-bg-secondary shadow-lg min-w-[160px] border-l-4 transition-all hover:scale-105`}
     style={{ borderLeftColor: data.color }}
@@ -1097,7 +1097,7 @@ const nodeTypes = {
 
 // ============ PATH TREE VIEW (DETAIL LEVEL - REACT FLOW) ============
 // ============ PATH TREE VIEW (DETAIL LEVEL - REACT FLOW) ============
-function PathTreeView({ plant, onToggleMilestone, onToggleVocabulary, onToggleResource }) {
+function PathTreeView({ plant, onToggleMilestone, onToggleVocabulary, onToggleResource }: any) {
   const [expandedCategories, setExpandedCategories] = useState({
     milestones: true,
     vocab: true,
@@ -1111,7 +1111,7 @@ function PathTreeView({ plant, onToggleMilestone, onToggleVocabulary, onToggleRe
     const progress = calculateProgress(plant)
     const stage = getGrowthStage(progress)
 
-    const nodes = [
+    const nodes: any[] = [
       {
         id: 'root',
         type: 'skill',
@@ -1120,7 +1120,7 @@ function PathTreeView({ plant, onToggleMilestone, onToggleVocabulary, onToggleRe
       }
     ]
 
-    const edges = []
+    const edges: any[] = []
 
     const categories = [
       { id: 'milestones', label: 'Milestones', icon: '🎯', data: plant.milestones || [], color: stage.color, type: 'milestone' },
@@ -1189,8 +1189,8 @@ function PathTreeView({ plant, onToggleMilestone, onToggleVocabulary, onToggleRe
     return { nodes, edges }
   }, [plant, expandedCategories, onToggleMilestone, onToggleVocabulary, onToggleResource])
 
-  const [nodes, setNodes, onNodesChange] = useNodesState([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
 
   useEffect(() => {
     if (lastPlantId.current !== plant.id) {
@@ -1254,7 +1254,7 @@ function PathTreeView({ plant, onToggleMilestone, onToggleVocabulary, onToggleRe
 }
 
 // ============ GROWTH SECTION (Milestones) ============
-function GrowthSection({ plant, onAddMilestone, onToggleMilestone, onRemoveMilestone }) {
+function GrowthSection({ plant, onAddMilestone, onToggleMilestone, onRemoveMilestone }: any) {
   const [newMilestone, setNewMilestone] = useState('')
   const [selectedLesson, setSelectedLesson] = useState<any>(null)
   const [filter, setFilter] = useState('all')
@@ -1384,7 +1384,7 @@ function GrowthSection({ plant, onAddMilestone, onToggleMilestone, onRemoveMiles
 }
 
 // ============ MILESTONE ROW (Simple row that opens panel) ============
-function MilestoneRow({ milestone, onOpenLesson, onToggleComplete, onRemove }) {
+function MilestoneRow({ milestone, onOpenLesson, onToggleComplete, onRemove }: any) {
   const hasLesson = milestone.lesson || milestone.exercises || milestone.scripts || milestone.quiz
   const hasDetails = milestone.description || milestone.link || milestone.steps?.length > 0 || hasLesson
 
@@ -1460,7 +1460,7 @@ function MilestoneRow({ milestone, onOpenLesson, onToggleComplete, onRemove }) {
 }
 
 // ============ LESSON SIDE PANEL ============
-function LessonPanel({ lesson, onClose }) {
+function LessonPanel({ lesson, onClose }: any) {
   const [activeTab, setActiveTab] = useState('lesson')
 
   if (!lesson) return null
@@ -1687,7 +1687,7 @@ function LessonPanel({ lesson, onClose }) {
 }
 
 // ============ QUIZ SECTION ============
-function QuizSection({ questions }) {
+function QuizSection({ questions }: any) {
   const [answers, setAnswers] = useState<Record<string, any>>({})
   const [showResults, setShowResults] = useState(false)
 
@@ -1748,7 +1748,7 @@ function QuizSection({ questions }) {
 }
 
 // ============ LEAVES SECTION (Vocabulary) ============
-function LeavesSection({ plant, onAdd, onRemove, onToggle }) {
+function LeavesSection({ plant, onAdd, onRemove, onToggle }: any) {
   const [showForm, setShowForm] = useState(false)
   const [newWord, setNewWord] = useState({ word: '', meaning: '', example: '' })
   const [filter, setFilter] = useState('all')
@@ -1892,7 +1892,7 @@ function LeavesSection({ plant, onAdd, onRemove, onToggle }) {
 }
 
 // ============ NUTRIENTS SECTION (Resources) ============
-function NutrientsSection({ plant, onAdd, onRemove, onToggle }) {
+function NutrientsSection({ plant, onAdd, onRemove, onToggle }: any) {
   const [showForm, setShowForm] = useState(false)
   const [newResource, setNewResource] = useState({ title: '', type: 'book', url: '', notes: '' })
   const [markdownViewer, setMarkdownViewer] = useState({ isOpen: false, filePath: '', fileName: '' })
@@ -2048,7 +2048,7 @@ function NutrientsSection({ plant, onAdd, onRemove, onToggle }) {
 
 // Internal Update Modal (kept here for now or extract later)
 
-function PlantSettingsModal({ isOpen, onClose, plant, onUpdate, onDelete, onReset }) {
+function PlantSettingsModal({ isOpen, onClose, plant, onUpdate, onDelete, onReset }: any) {
   const [name, setName] = useState(plant?.name || '')
 
   if (!isOpen || !plant) return null

@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Send, FileText, Eye, AlertCircle, CheckCircle, Loader2, Paperclip, Users, ChevronRight } from 'lucide-react'
@@ -6,7 +6,7 @@ import { useEmailService } from '../../../shared/hooks/useEmailService'
 import { useEmailTemplates } from '../../../shared/hooks/useEmailTemplates'
 import { useCV } from '../../../shared/hooks/useCV'
 
-export function BulkEmailComposer({ isOpen, onClose, leads = [], onSuccess }) {
+export function BulkEmailComposer({ isOpen, onClose, leads = [], onSuccess }: any) {
     const { templates, processTemplate } = useEmailTemplates()
     const { sendEmail } = useEmailService()
     const { cvFiles, fetchCvFiles } = useCV()
@@ -48,7 +48,7 @@ export function BulkEmailComposer({ isOpen, onClose, leads = [], onSuccess }) {
         setProgress({ current: 0, total: leads.length, successes: 0, failures: 0 })
         setResults([])
 
-        const newResults = []
+        const newResults: any[] = []
         let successCount = 0
         let failureCount = 0
 

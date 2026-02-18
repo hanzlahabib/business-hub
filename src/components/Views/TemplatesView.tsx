@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
 import { LayoutGrid, List, Plus, AlertCircle, FileText } from 'lucide-react'

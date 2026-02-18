@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useMemo, useRef, useEffect } from 'react'
 import { Search, Filter, Plus, ChevronDown, MoreHorizontal, X, Building2, Tag, Edit, Trash2, ArrowRight, Mail } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'

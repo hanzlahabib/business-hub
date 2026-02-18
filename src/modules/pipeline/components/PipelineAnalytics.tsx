@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { memo } from 'react'
 import {
   TrendingUp, AlertTriangle, Clock, Target,
@@ -21,7 +21,7 @@ export const PipelineAnalytics = memo(function PipelineAnalytics({
   bottleneck,
   overdueItems,
   stuckItems
-}) {
+}: any) {
   const getHealthColor = (score) => {
     if (score >= 80) return 'text-emerald-500'
     if (score >= 60) return 'text-amber-500'

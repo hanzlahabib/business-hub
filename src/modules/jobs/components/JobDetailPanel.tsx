@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -17,7 +17,7 @@ export function JobDetailPanel({
   onStatusChange,
   onSendEmail,
   onAddInterview
-}) {
+}: any) {
   const [newInterviewDate, setNewInterviewDate] = useState('')
 
   const status = useMemo(() =>
@@ -150,7 +150,7 @@ export function JobDetailPanel({
             <div>
               <h3 className="text-sm font-medium text-text-muted mb-3">Move to Stage</h3>
               <div className="flex flex-wrap gap-2">
-                {Object.values(JOB_STATUS_MAP).map(s => (
+                {Object.values(JOB_STATUS_MAP).map((s: any) => (
                   <button
                     key={s.id}
                     onClick={() => onStatusChange(job.id, s.id)}
@@ -160,8 +160,7 @@ export function JobDetailPanel({
                       }`}
                     style={{
                       backgroundColor: s.color + '30',
-                      color: s.color,
-                      ringColor: job.status === s.id ? s.color : 'transparent'
+                      color: s.color
                     }}
                   >
                     {s.emoji} {s.label}

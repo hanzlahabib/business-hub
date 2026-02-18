@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState } from 'react'
 import { Plus, Trash2, Copy, Check, Pencil, Webhook, Phone, Mail, X, ChevronDown, ChevronRight, Code } from 'lucide-react'
 import { useLeadTypes, LeadType } from '../hooks/useLeadTypes'
@@ -397,8 +397,8 @@ export function LeadTypeManager() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {type.autoCallEnabled && <Phone className="w-4 h-4 text-green-400" title="Auto-call enabled" />}
-                      {type.emailFollowUp && <Mail className="w-4 h-4 text-blue-400" title="Email follow-up enabled" />}
+                      {type.autoCallEnabled && <Phone className="w-4 h-4 text-green-400" />}
+                      {type.emailFollowUp && <Mail className="w-4 h-4 text-blue-400" />}
                       <button
                         onClick={(e) => { e.stopPropagation(); setEditingType(type) }}
                         className="p-1.5 text-text-muted hover:text-text-primary rounded-lg hover:bg-bg-tertiary"
@@ -439,8 +439,8 @@ export function LeadTypeManager() {
                             {type.agentConfig.industry && (
                               <div className="text-xs"><span className="text-text-muted">Industry:</span> <span className="text-text-primary">{type.agentConfig.industry}</span></div>
                             )}
-                            {type.agentConfig.qualifyingQuestions?.length > 0 && (
-                              <div className="text-xs"><span className="text-text-muted">Questions:</span> <span className="text-text-primary">{type.agentConfig.qualifyingQuestions.length}</span></div>
+                            {(type.agentConfig.qualifyingQuestions?.length ?? 0) > 0 && (
+                              <div className="text-xs"><span className="text-text-muted">Questions:</span> <span className="text-text-primary">{type.agentConfig.qualifyingQuestions?.length}</span></div>
                             )}
                           </div>
                         </div>
