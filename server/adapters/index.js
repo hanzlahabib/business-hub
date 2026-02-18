@@ -27,6 +27,7 @@ import {
     MockLLMAdapter,
     MockSTTAdapter
 } from './mock.js'
+import logger from '../config/logger.js'
 
 // Adapter registries — add new adapters here
 const TELEPHONY_ADAPTERS = {
@@ -87,7 +88,7 @@ export function getAdapters(force = false) {
         stt: new STTClass()
     }
 
-    console.log(`🔌 Adapters loaded: telephony=${telephonyProvider}, voice=${voiceProvider}, llm=${llmProvider}, stt=${sttProvider}`)
+    logger.info(`🔌 Adapters loaded: telephony=${telephonyProvider}, voice=${voiceProvider}, llm=${llmProvider}, stt=${sttProvider}`)
 
     return _adapters
 }

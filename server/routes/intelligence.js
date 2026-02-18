@@ -6,6 +6,7 @@ import express from 'express'
 import prisma from '../config/prisma.js'
 import authMiddleware from '../middleware/auth.js'
 import intelligenceService from '../services/intelligenceService.js'
+import logger from '../config/logger.js'
 
 const router = express.Router()
 router.use(authMiddleware)
@@ -19,7 +20,7 @@ router.get('/lead/:leadId', async (req, res) => {
         })
         res.json(intel || null)
     } catch (err) {
-        console.error('Intelligence fetch error:', err.message)
+        logger.error('Intelligence fetch error:', { error: err.message })
         res.status(500).json({ error: 'Failed to fetch intelligence' })
     }
 })
@@ -30,7 +31,7 @@ router.post('/analyze/:leadId', async (req, res) => {
         const intel = await intelligenceService.analyzeLead(req.params.leadId, req.user.id, { force: true })
         res.json(intel)
     } catch (err) {
-        console.error('Intelligence analysis error:', err.message)
+        logger.error('Intelligence analysis error:', { error: err.message })
         res.status(500).json({ error: err.message })
     }
 })
@@ -41,7 +42,7 @@ router.get('/insights', async (req, res) => {
         const insights = await intelligenceService.getStrategyInsights(req.user.id)
         res.json(insights)
     } catch (err) {
-        console.error('Strategy insights error:', err.message)
+        logger.error('Strategy insights error:', { error: err.message })
         res.status(500).json({ error: 'Failed to get strategy insights' })
     }
 })
@@ -57,7 +58,7 @@ router.get('/leaderboard', async (req, res) => {
         })
         res.json(leaders)
     } catch (err) {
-        console.error('Leaderboard error:', err.message)
+        logger.error('Leaderboard error:', { error: err.message })
         res.status(500).json({ error: 'Failed to get leaderboard' })
     }
 })

@@ -10,6 +10,7 @@
  */
 
 import prisma from '../config/prisma.js'
+import logger from '../config/logger.js'
 
 // In-memory cache for fast DNC lookups during batch calls
 let dncCache = new Set()
@@ -62,9 +63,9 @@ export const dncService = {
 
             // Update cache
             dncCache.add(normalized)
-            console.log(`🚫 DNC: Added ${phone} (reason: ${reason})`)
+            logger.info(`🚫 DNC: Added ${phone} (reason: ${reason})`)
         } catch (err) {
-            console.error('DNC add error:', err.message)
+            logger.error('DNC add error:', { error: err.message })
         }
     },
 
@@ -87,9 +88,9 @@ export const dncService = {
             }
 
             dncCache.delete(normalized)
-            console.log(`✅ DNC: Removed ${phone}`)
+            logger.info(`✅ DNC: Removed ${phone}`)
         } catch (err) {
-            console.error('DNC remove error:', err.message)
+            logger.error('DNC remove error:', { error: err.message })
         }
     },
 
@@ -157,7 +158,7 @@ export const dncService = {
                 )
                 cacheLoadedAt = Date.now()
             } catch (err2) {
-                console.error('DNC cache refresh error:', err2.message)
+                logger.error('DNC cache refresh error:', { error: err2.message })
             }
         }
     },

@@ -11,6 +11,7 @@ import prisma from '../config/prisma.js'
 import { getAdaptersForUser } from './apiKeyService.js'
 import eventBus from './eventBus.js'
 import { cacheGet, cacheSet, cacheDelete } from '../config/redisClient.js'
+import logger from '../config/logger.js'
 
 const CACHE_TTL_INTELLIGENCE = 3600  // 1 hour
 const CACHE_TTL_INSIGHTS = 300       // 5 minutes
@@ -46,7 +47,7 @@ export const intelligenceService = {
         if (!force) {
             const cached = await cacheGet(`intel:${leadId}`)
             if (cached) {
-                console.log(`🧠 Intelligence: Cache hit for lead ${leadId}`)
+                logger.info(`🧠 Intelligence: Cache hit for lead ${leadId}`)
                 return cached
             }
         }
@@ -128,7 +129,7 @@ export const intelligenceService = {
                     .trim()
                 intel = JSON.parse(cleaned)
             } catch {
-                console.error('🧠 Intelligence: Failed to parse LLM response, using defaults')
+                logger.error('🧠 Intelligence: Failed to parse LLM response, using defaults')
                 intel = this._defaultIntelligence(lead)
             }
 
@@ -165,7 +166,7 @@ export const intelligenceService = {
                 }
             })
 
-            console.log(`🧠 Intelligence: Analyzed lead ${lead.name} — dealHeat: ${intelligence.dealHeat}`)
+            logger.info(`🧠 Intelligence: Analyzed lead ${lead.name} — dealHeat: ${intelligence.dealHeat}`)
 
             // Cache the result
             await cacheSet(`intel:${leadId}`, intelligence, CACHE_TTL_INTELLIGENCE)
@@ -174,7 +175,7 @@ export const intelligenceService = {
 
             return intelligence
         } catch (err) {
-            console.error(`🧠 Intelligence: Analysis failed for ${leadId}:`, err.message)
+            logger.error(`🧠 Intelligence: Analysis failed for ${leadId}:`, { error: err.message })
             // Return heuristic-based fallback
             return this._saveHeuristicIntelligence(leadId, userId, lead)
         }
@@ -242,10 +243,10 @@ export const intelligenceService = {
                 }
             })
 
-            console.log(`📄 Proposal generated for ${lead.name}: ${proposal.id}`)
+            logger.info(`📄 Proposal generated for ${lead.name}: ${proposal.id}`)
             return proposal
         } catch (err) {
-            console.error(`📄 Proposal generation failed for ${leadId}:`, err.message)
+            logger.error(`📄 Proposal generation failed for ${leadId}:`, { error: err.message })
             // Create a bare draft proposal
             return prisma.proposal.create({
                 data: {
@@ -391,25 +392,25 @@ export const intelligenceService = {
     init() {
         eventBus.on('call:completed', async (event) => {
             if (!event.userId || !event.data?.leadId) return
-            console.log(`🧠 Intelligence: Auto-analyzing lead after call completion`)
+            logger.info(`🧠 Intelligence: Auto-analyzing lead after call completion`)
             try {
                 await this.analyzeLead(event.data.leadId, event.userId)
             } catch (err) {
-                console.error('🧠 Intelligence: Auto-analysis failed:', err.message)
+                logger.error('🧠 Intelligence: Auto-analysis failed:', { error: err.message })
             }
         })
 
         eventBus.on('lead:status-changed', async (event) => {
             if (!event.userId || !event.entityId) return
-            console.log(`🧠 Intelligence: Auto-analyzing lead after status change`)
+            logger.info(`🧠 Intelligence: Auto-analyzing lead after status change`)
             try {
                 await this.analyzeLead(event.entityId, event.userId)
             } catch (err) {
-                console.error('🧠 Intelligence: Auto-analysis failed:', err.message)
+                logger.error('🧠 Intelligence: Auto-analysis failed:', { error: err.message })
             }
         })
 
-        console.log('🧠 Intelligence Service initialized — listening for events')
+        logger.info('🧠 Intelligence Service initialized — listening for events')
     }
 }
 

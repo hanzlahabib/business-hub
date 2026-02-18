@@ -5,6 +5,7 @@ import { sendEmail, sendBulkEmails, testConnection } from '../services/emailServ
 import authMiddleware from '../middleware/auth.js'
 import prisma from '../config/prisma.js'
 import { emailSettingsRepository } from '../repositories/extraRepositories.js'
+import logger from '../config/logger.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -61,7 +62,7 @@ router.post('/send', async (req, res) => {
           })
         }
       } catch (cvError) {
-        console.error('Failed to find CV file:', cvError)
+        logger.error('Failed to find CV file:', { error: cvError })
         // Continue without attachment
       }
     }
@@ -93,13 +94,13 @@ router.post('/send', async (req, res) => {
           }
         })
       } catch (logError) {
-        console.error('Failed to log message/update lead:', logError)
+        logger.error('Failed to log message/update lead:', { error: logError })
       }
     }
 
     res.json(result)
   } catch (error) {
-    console.error('Email send error:', error)
+    logger.error('Email send error:', { error })
     res.status(500).json({ success: false, error: error.message })
   }
 })
@@ -213,7 +214,7 @@ router.post('/send-template', async (req, res) => {
           }
         })
       } catch (logError) {
-        console.error('Failed to log message/update lead:', logError)
+        logger.error('Failed to log message/update lead:', { error: logError })
       }
     }
 
@@ -314,7 +315,7 @@ router.post('/send-bulk', async (req, res) => {
               data: { lastContactedAt: new Date(), status: 'contacted' }
             })
           } catch (logErr) {
-            console.error('Failed to log bulk email message:', logErr)
+            logger.error('Failed to log bulk email message:', { error: logErr })
           }
         }
       }
@@ -325,7 +326,7 @@ router.post('/send-bulk', async (req, res) => {
 
     res.json({ success: true, sent, failed, total: results.length, results })
   } catch (error) {
-    console.error('Bulk email send error:', error)
+    logger.error('Bulk email send error:', { error })
     res.status(500).json({ success: false, error: error.message })
   }
 })

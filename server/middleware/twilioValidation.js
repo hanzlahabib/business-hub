@@ -9,6 +9,7 @@
  */
 
 import crypto from 'crypto'
+import logger from '../config/logger.js'
 
 /**
  * Create middleware that validates Twilio webhook signatures
@@ -24,13 +25,13 @@ export function validateTwilioRequest(options = {}) {
         }
 
         if (!authToken) {
-            console.warn('⚠️ Twilio validation enabled but no auth token configured')
+            logger.warn('⚠️ Twilio validation enabled but no auth token configured')
             return next()
         }
 
         const signature = req.headers['x-twilio-signature']
         if (!signature) {
-            console.warn('⚠️ Missing X-Twilio-Signature header')
+            logger.warn('⚠️ Missing X-Twilio-Signature header')
             return res.status(403).send('Forbidden: Missing signature')
         }
 
@@ -45,7 +46,7 @@ export function validateTwilioRequest(options = {}) {
         const isValid = validateSignature(authToken, signature, url, params)
 
         if (!isValid) {
-            console.warn(`⚠️ Invalid Twilio signature for ${req.originalUrl}`)
+            logger.warn(`⚠️ Invalid Twilio signature for ${req.originalUrl}`)
             return res.status(403).send('Forbidden: Invalid signature')
         }
 

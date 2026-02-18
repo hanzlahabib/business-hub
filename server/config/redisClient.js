@@ -6,6 +6,7 @@
  */
 
 import Redis from 'ioredis'
+import logger from './logger.js'
 
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379'
 
@@ -25,12 +26,12 @@ try {
 
     redis.on('connect', () => {
         isConnected = true
-        console.log('🔴 Redis connected')
+        logger.info('🔴 Redis connected')
     })
 
     redis.on('error', (err) => {
         if (isConnected) {
-            console.error('🔴 Redis error:', err.message)
+            logger.error('🔴 Redis error:', { error: err.message })
         }
         isConnected = false
     })
@@ -39,7 +40,7 @@ try {
         isConnected = false
     })
 } catch (err) {
-    console.warn('🔴 Redis unavailable:', err.message)
+    logger.warn('🔴 Redis unavailable:', { error: err.message })
 }
 
 // ── Cache Helpers ─────────────────────────────────────

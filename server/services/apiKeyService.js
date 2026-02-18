@@ -12,6 +12,7 @@
 
 import prisma from '../config/prisma.js'
 import { createAdapters } from '../adapters/index.js'
+import logger from '../config/logger.js'
 
 // Per-user caches — userId → data
 const _keyCache = new Map()       // userId → apiKeys object from DB
@@ -33,7 +34,7 @@ export async function loadUserKeys(userId) {
         }
         return false
     } catch (error) {
-        console.error(`  Failed to load API keys for user ${userId}:`, error.message)
+        logger.error(`  Failed to load API keys for user ${userId}:`, { error: error.message })
         return false
     }
 }
@@ -57,12 +58,12 @@ export async function loadAllUserKeys() {
         }
 
         if (count > 0) {
-            console.log(`  API keys loaded for ${count} user(s)`)
+            logger.info(`  API keys loaded for ${count} user(s)`)
         } else {
-            console.log('  No saved API keys found in DB')
+            logger.info('  No saved API keys found in DB')
         }
     } catch (error) {
-        console.error('  Failed to load API keys:', error.message)
+        logger.error('  Failed to load API keys:', { error: error.message })
     }
 }
 

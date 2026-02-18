@@ -16,6 +16,7 @@
 
 import prisma from '../config/prisma.js'
 import dncService from './dncService.js'
+import logger from '../config/logger.js'
 
 export const campaignService = {
     /**
@@ -291,7 +292,7 @@ export const campaignService = {
                 data: { stats }
             })
         } catch (err) {
-            console.error('Campaign stats update error:', err.message)
+            logger.error('Campaign stats update error:', { error: err.message })
         }
     }
 }

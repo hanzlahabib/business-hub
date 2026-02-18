@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import logger from '../config/logger.js'
 
 // Create transporter based on provider
 function createTransporter(settings) {
@@ -89,7 +90,7 @@ export async function sendEmail(settings, { to, subject, body, attachments = [] 
       response: info.response
     }
   } catch (error) {
-    console.error('Email send error:', error)
+    logger.error('Email send error:', { error })
     return {
       success: false,
       error: error.message

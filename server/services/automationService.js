@@ -1,5 +1,6 @@
 import prisma from '../config/prisma.js'
 import eventBus from './eventBus.js'
+import logger from '../config/logger.js'
 
 // ── Action Executors ──────────────────────────────────
 
@@ -77,7 +78,7 @@ async function executeSendNotification(userId, event, config) {
     try {
         const { emitNotification } = await import('./callWebSocket.js')
         emitNotification(userId, notification)
-    } catch (e) { console.warn('[AutomationService] WS notification push failed:', e.message) }
+    } catch (e) { logger.warn('[AutomationService] WS notification push failed:', { error: e.message }) }
 }
 
 async function executeUpdateLeadStatus(userId, event, config) {
@@ -93,7 +94,7 @@ async function executeUpdateLeadStatus(userId, event, config) {
 async function executeInitiateCall(userId, event, config) {
     const lead = event.data?.lead
     if (!lead?.id || !lead?.phone) {
-        console.log('[AutomationService] Skipping initiate-call: lead missing id or phone')
+        logger.info('[AutomationService] Skipping initiate-call: lead missing id or phone')
         return
     }
 
@@ -103,14 +104,14 @@ async function executeInitiateCall(userId, event, config) {
 
     // Skip if auto-call disabled on this type
     if (leadType && leadType.autoCallEnabled === false) {
-        console.log(`[AutomationService] Auto-call disabled for type "${leadType.name}", skipping`)
+        logger.info(`[AutomationService] Auto-call disabled for type "${leadType.name}", skipping`)
         return
     }
 
     // Type delay > rule config > default 30s
     const delayMs = leadType?.autoCallDelay ?? config.delayMs ?? 30000
 
-    console.log(`[AutomationService] Scheduling auto-call to ${lead.name} in ${delayMs / 1000}s${leadType ? ` (type: ${leadType.name})` : ''}`)
+    logger.info(`[AutomationService] Scheduling auto-call to ${lead.name} in ${delayMs / 1000}s${leadType ? ` (type: ${leadType.name})` : ''}`)
 
     const scheduledAt = new Date(Date.now() + delayMs)
 
@@ -137,7 +138,7 @@ async function executeInitiateCall(userId, event, config) {
         // Also set an in-memory timer for immediate execution
         setTimeout(() => executeScheduledAction(action.id), delayMs)
     } catch (err) {
-        console.error(`[AutomationService] Failed to schedule auto-call for ${lead.name}:`, err.message)
+        logger.error(`[AutomationService] Failed to schedule auto-call for ${lead.name}:`, { error: err.message })
     }
 }
 
@@ -153,7 +154,7 @@ async function executeScheduledAction(actionId) {
                 leadId: payload.leadId,
                 assistantConfig: payload.assistantConfig
             })
-            console.log(`[AutomationService] Auto-call initiated for lead ${payload.leadName}`)
+            logger.info(`[AutomationService] Auto-call initiated for lead ${payload.leadName}`)
         }
 
         await prisma.scheduledAction.update({
@@ -161,7 +162,7 @@ async function executeScheduledAction(actionId) {
             data: { executed: true, executedAt: new Date() }
         })
     } catch (err) {
-        console.error(`[AutomationService] Scheduled action ${actionId} failed:`, err.message)
+        logger.error(`[AutomationService] Scheduled action ${actionId} failed:`, { error: err.message })
         await prisma.scheduledAction.update({
             where: { id: actionId },
             data: { executed: true, executedAt: new Date(), error: err.message }
@@ -177,7 +178,7 @@ async function recoverScheduledActions() {
         })
 
         if (pending.length === 0) return
-        console.log(`[AutomationService] Recovering ${pending.length} pending scheduled action(s)`)
+        logger.info(`[AutomationService] Recovering ${pending.length} pending scheduled action(s)`)
 
         const now = Date.now()
         for (const action of pending) {
@@ -185,7 +186,7 @@ async function recoverScheduledActions() {
             setTimeout(() => executeScheduledAction(action.id), delay)
         }
     } catch (err) {
-        console.error('[AutomationService] Failed to recover scheduled actions:', err.message)
+        logger.error('[AutomationService] Failed to recover scheduled actions:', { error: err.message })
     }
 }
 
@@ -203,7 +204,7 @@ function evaluateConditions(conditions, eventData) {
             case 'contains': return typeof value === 'string' && value.includes(cond.value)
             case 'exists': return value !== undefined && value !== null
             default:
-                console.warn(`[AutomationService] Unknown operator "${cond.op}", failing safe`)
+                logger.warn(`[AutomationService] Unknown operator "${cond.op}", failing safe`)
                 return false
         }
     })
@@ -240,7 +241,7 @@ async function evaluateRules(event) {
                 try {
                     await executor(event.userId, event, action.config || {})
                 } catch (err) {
-                    console.error(`[AutomationService] Action ${action.type} failed for rule ${rule.name}:`, err.message)
+                    logger.error(`[AutomationService] Action ${action.type} failed for rule ${rule.name}:`, { error: err.message })
                 }
             }
 
@@ -251,7 +252,7 @@ async function evaluateRules(event) {
             }).catch(() => { })
         }
     } catch (err) {
-        console.error('[AutomationService] Rule evaluation failed:', err.message)
+        logger.error('[AutomationService] Rule evaluation failed:', { error: err.message })
     }
 }
 
@@ -378,14 +379,14 @@ async function registerDefaultRules(userId) {
 function init() {
     eventBus.on('*', (event) => {
         evaluateRules(event).catch(err =>
-            console.error('[AutomationService] Unhandled error:', err.message)
+            logger.error('[AutomationService] Unhandled error:', { error: err.message })
         )
     })
 
     // Recover any pending scheduled actions from before restart
     recoverScheduledActions()
 
-    console.log('[AutomationService] Listening for events')
+    logger.info('[AutomationService] Listening for events')
 }
 
 export default { init, registerDefaultRules, evaluateRules }

@@ -14,6 +14,7 @@ import express from 'express'
 import prisma from '../config/prisma.js'
 import { getAdaptersForUser } from '../services/apiKeyService.js'
 import dncService from '../services/dncService.js'
+import logger from '../config/logger.js'
 
 const router = express.Router()
 
@@ -27,7 +28,7 @@ router.use(express.urlencoded({ extended: false }))
 router.post('/twiml', async (req, res) => {
     const { leadId, scriptId } = req.query
     const callSid = req.body.CallSid
-    console.log(`📞 TwiML request: callSid=${callSid}, leadId=${leadId}, scriptId=${scriptId}`)
+    logger.info(`📞 TwiML request: callSid=${callSid}, leadId=${leadId}, scriptId=${scriptId}`)
 
     let contractorName = 'there'
     let pitchScript = getDefaultPitch()
@@ -57,7 +58,7 @@ router.post('/twiml', async (req, res) => {
             }).catch(() => {})
         }
     } catch (err) {
-        console.error('TwiML lead lookup error:', err.message)
+        logger.error('TwiML lead lookup error:', { error: err.message })
     }
 
     const twiml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -82,7 +83,7 @@ router.post('/gather', async (req, res) => {
     const digits = req.body.Digits
     const callSid = req.body.CallSid
 
-    console.log(`📞 Gather response: digits=${digits}, leadId=${leadId}, callSid=${callSid}`)
+    logger.info(`📞 Gather response: digits=${digits}, leadId=${leadId}, callSid=${callSid}`)
 
     let twiml = ''
 
@@ -140,7 +141,7 @@ router.post('/gather', async (req, res) => {
 router.post('/status', async (req, res) => {
     const { CallSid, CallStatus, CallDuration, RecordingUrl, RecordingSid } = req.body
 
-    console.log(`📞 Status update: ${CallSid} → ${CallStatus} (${CallDuration || 0}s)`)
+    logger.info(`📞 Status update: ${CallSid} → ${CallStatus} (${CallDuration || 0}s)`)
 
     try {
         const statusMap = {
@@ -191,7 +192,7 @@ router.post('/status', async (req, res) => {
             data: updateData
         })
     } catch (err) {
-        console.error('Status webhook error:', err.message)
+        logger.error('Status webhook error:', { error: err.message })
     }
 
     res.type('text/xml').send('<Response/>')
@@ -204,7 +205,7 @@ router.post('/status', async (req, res) => {
 router.post('/recording', async (req, res) => {
     const { CallSid, RecordingUrl, RecordingSid, RecordingDuration } = req.body
 
-    console.log(`🎙️ Recording ready: ${CallSid} → ${RecordingUrl} (${RecordingDuration}s)`)
+    logger.info(`🎙️ Recording ready: ${CallSid} → ${RecordingUrl} (${RecordingDuration}s)`)
 
     try {
         if (CallSid && RecordingUrl) {
@@ -214,7 +215,7 @@ router.post('/recording', async (req, res) => {
             })
         }
     } catch (err) {
-        console.error('Recording webhook error:', err.message)
+        logger.error('Recording webhook error:', { error: err.message })
     }
 
     res.type('text/xml').send('<Response/>')
@@ -228,7 +229,7 @@ router.post('/sms', async (req, res) => {
     const from = req.body.From
     const body = (req.body.Body || '').trim().toLowerCase()
 
-    console.log(`💬 Inbound SMS from ${from}: ${body}`)
+    logger.info(`💬 Inbound SMS from ${from}: ${body}`)
 
     let replyMsg = 'Thanks for your reply! Mike from Henderson EV Charger Pros will get back to you shortly.'
 
@@ -258,7 +259,7 @@ router.post('/sms', async (req, res) => {
             }
         }
     } catch (err) {
-        console.error('SMS webhook error:', err.message)
+        logger.error('SMS webhook error:', { error: err.message })
     }
 
     const twiml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -277,7 +278,7 @@ router.post('/sms', async (req, res) => {
 router.post('/amd', async (req, res) => {
     const { CallSid, AnsweredBy, MachineDetectionDuration } = req.body
 
-    console.log(`🤖 AMD result: ${CallSid} → ${AnsweredBy} (${MachineDetectionDuration}ms)`)
+    logger.info(`🤖 AMD result: ${CallSid} → ${AnsweredBy} (${MachineDetectionDuration}ms)`)
 
     try {
         if (CallSid && AnsweredBy) {
@@ -306,7 +307,7 @@ router.post('/amd', async (req, res) => {
             })
         }
     } catch (err) {
-        console.error('AMD webhook error:', err.message)
+        logger.error('AMD webhook error:', { error: err.message })
     }
 
     res.type('text/xml').send('<Response/>')
@@ -321,7 +322,7 @@ router.post('/stream', async (req, res) => {
     const { leadId, scriptId } = req.query
     const callSid = req.body.CallSid
 
-    console.log(`🎙️ Media Stream TwiML: callSid=${callSid}, leadId=${leadId}, scriptId=${scriptId}`)
+    logger.info(`🎙️ Media Stream TwiML: callSid=${callSid}, leadId=${leadId}, scriptId=${scriptId}`)
 
     try {
         if (callSid) {
@@ -331,7 +332,7 @@ router.post('/stream', async (req, res) => {
             }).catch(() => {})
         }
     } catch (err) {
-        console.error('Stream TwiML error:', err.message)
+        logger.error('Stream TwiML error:', { error: err.message })
     }
 
     const wsUrl = process.env.WEBHOOK_BASE_URL
@@ -393,7 +394,7 @@ async function updateCallOutcome(callSid, leadId, outcome, sentiment) {
             })
         }
     } catch (err) {
-        console.error('Update call outcome error:', err.message)
+        logger.error('Update call outcome error:', { error: err.message })
     }
 }
 
@@ -420,9 +421,9 @@ async function sendFollowUpEmail(leadId) {
             body: `Hi ${name},\n\nThanks for speaking with us! We appreciate your interest.\n\nAs discussed, we'd love to help you out. Here's what happens next:\n\n- A team member will follow up with you shortly to discuss the details\n- Feel free to reply to this email with any questions\n\nLooking forward to working with you!\n\nBest regards,\n${settings.fromName || 'The Team'}`
         })
 
-        console.log(`Follow-up email sent to ${lead.email}`)
+        logger.info(`Follow-up email sent to ${lead.email}`)
     } catch (err) {
-        console.error('Follow-up email error:', err.message)
+        logger.error('Follow-up email error:', { error: err.message })
     }
 }
 
@@ -454,7 +455,7 @@ async function sendFollowUpSms(leadId, type) {
             await telephony.sendSms(lead.phone, message)
         }
     } catch (err) {
-        console.error('Follow-up SMS error:', err.message)
+        logger.error('Follow-up SMS error:', { error: err.message })
     }
 }
 

@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio'
+import logger from '../config/logger.js'
 
 // Scrape Google search results for potential leads
 export async function scrapeLeads(query, maxResults = 20) {
@@ -45,7 +46,7 @@ export async function scrapeLeads(query, maxResults = 20) {
             }
         })
     } catch (error) {
-        console.error('Google search scrape error:', error.message)
+        logger.error('Google search scrape error:', { error: error.message })
     }
 
     return results.slice(0, maxResults)

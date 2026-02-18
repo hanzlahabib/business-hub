@@ -5,6 +5,7 @@
 import express from 'express'
 import authMiddleware from '../middleware/auth.js'
 import proposalService from '../services/proposalService.js'
+import logger from '../config/logger.js'
 
 const router = express.Router()
 router.use(authMiddleware)
@@ -18,7 +19,7 @@ router.get('/', async (req, res) => {
         })
         res.json(proposals)
     } catch (err) {
-        console.error('Proposals list error:', err.message)
+        logger.error('Proposals list error:', { error: err.message })
         res.status(500).json({ error: 'Failed to list proposals' })
     }
 })
@@ -29,7 +30,7 @@ router.post('/', async (req, res) => {
         const proposal = await proposalService.create(req.user.id, req.body)
         res.status(201).json(proposal)
     } catch (err) {
-        console.error('Proposal create error:', err.message)
+        logger.error('Proposal create error:', { error: err.message })
         res.status(500).json({ error: err.message })
     }
 })
@@ -40,7 +41,7 @@ router.get('/:id', async (req, res) => {
         const proposal = await proposalService.getById(req.params.id, req.user.id)
         res.json(proposal)
     } catch (err) {
-        console.error('Proposal fetch error:', err.message)
+        logger.error('Proposal fetch error:', { error: err.message })
         res.status(404).json({ error: err.message })
     }
 })
@@ -51,7 +52,7 @@ router.put('/:id', async (req, res) => {
         const proposal = await proposalService.update(req.params.id, req.user.id, req.body)
         res.json(proposal)
     } catch (err) {
-        console.error('Proposal update error:', err.message)
+        logger.error('Proposal update error:', { error: err.message })
         res.status(500).json({ error: err.message })
     }
 })
@@ -62,7 +63,7 @@ router.delete('/:id', async (req, res) => {
         await proposalService.delete(req.params.id, req.user.id)
         res.json({ success: true })
     } catch (err) {
-        console.error('Proposal delete error:', err.message)
+        logger.error('Proposal delete error:', { error: err.message })
         res.status(500).json({ error: err.message })
     }
 })
@@ -73,7 +74,7 @@ router.post('/generate/:leadId', async (req, res) => {
         const proposal = await proposalService.generateDraft(req.params.leadId, req.user.id)
         res.status(201).json(proposal)
     } catch (err) {
-        console.error('Proposal generation error:', err.message)
+        logger.error('Proposal generation error:', { error: err.message })
         res.status(500).json({ error: err.message })
     }
 })

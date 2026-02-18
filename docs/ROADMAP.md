@@ -11,17 +11,17 @@ This document outlines the development roadmap. Production hardening comes first
 Full audit completed (see `docs/PRODUCTION-READINESS.md`). These must be resolved before adding new features.
 
 ### Week 1 — Security Foundation
-- [ ] **Real JWT auth** — bcrypt passwords, JWT tokens, remove `x-user-id` header trust
-- [ ] **CORS lockdown** — restrict to `brain.hanzla.com` + localhost
-- [ ] **Enable Helmet CSP** — content security policy with known sources
-- [ ] **Remove hardcoded secrets/URLs** — fail fast on missing env vars
+- [x] **Real JWT auth** — bcrypt passwords, JWT tokens, Bearer auth (x-user-id deprecated)
+- [x] **CORS lockdown** — restrict to `CORS_ORIGINS` env var
+- [x] **Enable Helmet CSP** — content security policy with known sources
+- [x] **Remove hardcoded secrets/URLs** — Vite env vars, JWT_SECRET from env
 - [ ] **Mass assignment protection** — whitelist fields on all write endpoints
 
 ### Week 2 — Reliability & Performance
 - [ ] **Input validation (zod)** — schemas for all POST/PUT/PATCH routes
-- [ ] **Database indexes** — add `@@index` on 15+ foreign key columns
+- [x] **Database indexes** — added `@@index` on 15+ models
 - [ ] **Error handling** — replace empty catches, add `res.ok` checks in frontend
-- [ ] **Replace console.log** — use Winston logger (200+ calls to migrate)
+- [x] **Replace console.log** — migrated to Winston logger across backend
 - [ ] **Remove @ts-nocheck** — start with auth, API service, context (52 files total)
 
 ### Week 3 — Cleanup & Hardening

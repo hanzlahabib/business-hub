@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import authMiddleware from '../middleware/auth.js'
 import skillMasteryRepository from '../repositories/skillMasteryRepository.js'
+import logger from '../config/logger.js'
 
 const router = Router()
 
@@ -18,7 +19,7 @@ router.get('/', async (req, res) => {
             res.json({ paths: [] })
         }
     } catch (error) {
-        console.error('Error fetching skill mastery:', error)
+        logger.error('Error fetching skill mastery:', { error })
         res.status(500).json({ error: 'Failed to fetch skill mastery data' })
     }
 })
@@ -31,7 +32,7 @@ router.put('/', async (req, res) => {
         const record = await skillMasteryRepository.upsert(userId, data)
         res.json(record.data)
     } catch (error) {
-        console.error('Error saving skill mastery:', error)
+        logger.error('Error saving skill mastery:', { error })
         res.status(500).json({ error: 'Failed to save skill mastery data' })
     }
 })

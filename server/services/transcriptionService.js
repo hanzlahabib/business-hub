@@ -13,6 +13,7 @@
 
 import prisma from '../config/prisma.js'
 import { getAdaptersForUser } from './apiKeyService.js'
+import logger from '../config/logger.js'
 
 export const transcriptionService = {
     /**
@@ -28,7 +29,7 @@ export const transcriptionService = {
         if (!call) throw new Error('Call not found')
         if (!call.recordingUrl) throw new Error('No recording URL for this call')
 
-        console.log(`📝 Transcribing call ${callId}: ${call.recordingUrl}`)
+        logger.info(`📝 Transcribing call ${callId}: ${call.recordingUrl}`)
 
         // Step 1: Transcribe audio
         const { stt } = getAdaptersForUser(userId)
@@ -42,7 +43,7 @@ export const transcriptionService = {
             throw new Error('Transcription returned empty text')
         }
 
-        console.log(`📝 Transcription complete: ${transcription.text.length} chars`)
+        logger.info(`📝 Transcription complete: ${transcription.text.length} chars`)
 
         // Step 2: Save raw transcription
         await prisma.call.update({
@@ -77,7 +78,7 @@ export const transcriptionService = {
             }
         })
 
-        console.log(`📝 Meeting note created: ${note.id}`)
+        logger.info(`📝 Meeting note created: ${note.id}`)
 
         return {
             transcription: transcription.text,
@@ -103,7 +104,7 @@ export const transcriptionService = {
             orderBy: { createdAt: 'desc' }
         })
 
-        console.log(`📝 Found ${calls.length} calls to transcribe`)
+        logger.info(`📝 Found ${calls.length} calls to transcribe`)
 
         const results = []
         for (const call of calls) {
@@ -111,7 +112,7 @@ export const transcriptionService = {
                 const result = await this.transcribeCall(call.id, userId)
                 results.push({ callId: call.id, success: true, ...result })
             } catch (err) {
-                console.error(`Transcription failed for ${call.id}:`, err.message)
+                logger.error(`Transcription failed for ${call.id}:`, { error: err.message })
                 results.push({ callId: call.id, success: false, error: err.message })
             }
         }
@@ -159,7 +160,7 @@ Respond in JSON format with these fields:
                 }
             }
         } catch (err) {
-            console.error('Summary generation error:', err.message)
+            logger.error('Summary generation error:', { error: err.message })
             return {
                 summary: `Call with ${lead?.name || 'unknown'}. Transcription available.`,
                 sentiment: 'neutral',

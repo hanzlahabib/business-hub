@@ -1,4 +1,5 @@
 import { AppError } from '../errors/index.js'
+import logger from '../config/logger.js'
 
 /**
  * Global error handler middleware for Express.
@@ -31,6 +32,6 @@ export function globalErrorHandler(err, req, res, _next) {
     }
 
     // Unknown errors — log but don't leak internals
-    console.error('Unhandled error:', err)
+    logger.error('Unhandled error:', { error: err })
     res.status(500).json({ error: 'Internal server error' })
 }

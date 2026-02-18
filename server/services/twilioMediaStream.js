@@ -19,6 +19,7 @@ import { WebSocketServer } from 'ws'
 import prisma from '../config/prisma.js'
 import { CallConversationEngine } from './callConversationEngine.js'
 import { emitAgentLog, emitCallUpdate } from './callWebSocket.js'
+import logger from '../config/logger.js'
 
 // Active stream sessions (streamSid → session)
 const activeSessions = new Map()
@@ -41,7 +42,7 @@ export function initMediaStreamWebSocket(server) {
     })
 
     wss.on('connection', (ws) => {
-        console.log('🎙️ Twilio Media Stream connected')
+        logger.info('🎙️ Twilio Media Stream connected')
         let session = null
 
         ws.on('message', async (data) => {
@@ -49,24 +50,24 @@ export function initMediaStreamWebSocket(server) {
                 const msg = JSON.parse(data.toString())
                 await handleStreamEvent(ws, msg, session, (s) => { session = s })
             } catch (err) {
-                console.error('Media stream message error:', err.message)
+                logger.error('Media stream message error:', { error: err.message })
             }
         })
 
         ws.on('close', () => {
             if (session) {
-                console.log(`🎙️ Media Stream closed: ${session.streamSid}`)
+                logger.info(`🎙️ Media Stream closed: ${session.streamSid}`)
                 cleanupSession(session)
             }
         })
 
         ws.on('error', (err) => {
-            console.error('Media stream WS error:', err.message)
+            logger.error('Media stream WS error:', { error: err.message })
             if (session) cleanupSession(session)
         })
     })
 
-    console.log('🎙️ Twilio Media Streams WebSocket at /ws/twilio-media')
+    logger.info('🎙️ Twilio Media Streams WebSocket at /ws/twilio-media')
     return wss
 }
 
@@ -76,7 +77,7 @@ export function initMediaStreamWebSocket(server) {
 async function handleStreamEvent(ws, msg, session, setSession) {
     switch (msg.event) {
         case 'connected':
-            console.log('🎙️ Stream protocol:', msg.protocol)
+            logger.info('🎙️ Stream protocol:', { protocol: msg.protocol })
             break
 
         case 'start': {
@@ -84,7 +85,7 @@ async function handleStreamEvent(ws, msg, session, setSession) {
             const leadId = customParameters?.leadId || ''
             const scriptId = customParameters?.scriptId || ''
 
-            console.log(`🎙️ Stream started: streamSid=${streamSid}, callSid=${callSid}, leadId=${leadId}`)
+            logger.info(`🎙️ Stream started: streamSid=${streamSid}, callSid=${callSid}, leadId=${leadId}`)
 
             // Build conversation context and resolve userId
             const context = await buildConversationContext(leadId, scriptId)
@@ -138,7 +139,7 @@ async function handleStreamEvent(ws, msg, session, setSession) {
         }
 
         case 'stop': {
-            console.log(`🎙️ Stream stopped: ${session?.streamSid || 'unknown'}`)
+            logger.info(`🎙️ Stream stopped: ${session?.streamSid || 'unknown'}`)
             if (session) {
                 await session.engine?.stop()
                 cleanupSession(session)
@@ -188,7 +189,7 @@ async function buildConversationContext(leadId, scriptId) {
             context.systemPrompt = getDefaultSystemPrompt(context)
         }
     } catch (err) {
-        console.error('Context build error:', err.message)
+        logger.error('Context build error:', { error: err.message })
         context.systemPrompt = getDefaultSystemPrompt(context)
     }
 
@@ -278,7 +279,7 @@ async function handleConversationEnd(callSid, leadId, outcome) {
             }).catch(() => {})
         }
     } catch (err) {
-        console.error('Conversation end handler error:', err.message)
+        logger.error('Conversation end handler error:', { error: err.message })
     }
 }
 

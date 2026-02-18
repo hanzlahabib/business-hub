@@ -13,6 +13,7 @@
  */
 
 import { getAdaptersForUser } from './apiKeyService.js'
+import logger from '../config/logger.js'
 
 // Silence threshold — how long to wait after speech stops before processing
 const SILENCE_THRESHOLD_MS = 800
@@ -58,7 +59,7 @@ export class CallConversationEngine {
      * Start the engine — initialize STT session and send greeting
      */
     async start() {
-        console.log(`🧠 Conversation engine started: ${this.streamSid}`)
+        logger.info(`🧠 Conversation engine started: ${this.streamSid}`)
 
         // Initialize system message
         this.messages.push({
@@ -121,7 +122,7 @@ export class CallConversationEngine {
             this.onConversationEnd(outcome)
         }
 
-        console.log(`🧠 Conversation engine stopped: ${this.streamSid} (${this.turnCount} turns)`)
+        logger.info(`🧠 Conversation engine stopped: ${this.streamSid} (${this.turnCount} turns)`)
     }
 
     // ============================================
@@ -132,7 +133,7 @@ export class CallConversationEngine {
         try {
             const { stt } = getAdaptersForUser(this.userId)
             if (!stt.streamTranscribe) {
-                console.log('🧠 STT adapter does not support streaming, using buffered mode')
+                logger.info('🧠 STT adapter does not support streaming, using buffered mode')
                 return
             }
 
@@ -148,11 +149,11 @@ export class CallConversationEngine {
                     this._handleTranscript(transcript)
                 },
                 onError: (err) => {
-                    console.error('STT stream error:', err.message)
+                    logger.error('STT stream error:', { error: err.message })
                 }
             })
         } catch (err) {
-            console.error('STT stream init failed:', err.message)
+            logger.error('STT stream init failed:', { error: err.message })
             // Fall back to buffered mode
             this.sttSession = null
         }
@@ -168,7 +169,7 @@ export class CallConversationEngine {
             const text = transcript.text?.trim()
             if (!text) return
 
-            console.log(`🧠 [STT Final] "${text}"`)
+            logger.info(`🧠 [STT Final] "${text}"`)
             this.currentTranscript = text
             this.interimTranscript = ''
 
@@ -213,7 +214,7 @@ export class CallConversationEngine {
                 this._handleUserSpeech(result.text.trim())
             }
         } catch (err) {
-            console.error('Buffered STT error:', err.message)
+            logger.error('Buffered STT error:', { error: err.message })
         }
     }
 
@@ -274,7 +275,7 @@ export class CallConversationEngine {
             await this._speak(aiText)
 
         } catch (err) {
-            console.error('LLM pipeline error:', err.message)
+            logger.error('LLM pipeline error:', { error: err.message })
         } finally {
             this.isProcessing = false
         }
@@ -291,7 +292,7 @@ export class CallConversationEngine {
         if (this.stopped) return
 
         this.isSpeaking = true
-        console.log(`🧠 [TTS] "${text.substring(0, 80)}..."`)
+        logger.info(`🧠 [TTS] "${text.substring(0, 80)}..."`)
 
         try {
             const { voice } = getAdaptersForUser(this.userId)
@@ -317,7 +318,7 @@ export class CallConversationEngine {
                 }
             }
         } catch (err) {
-            console.error('TTS error:', err.message)
+            logger.error('TTS error:', { error: err.message })
         } finally {
             this.isSpeaking = false
         }
@@ -333,7 +334,7 @@ export class CallConversationEngine {
     _handleInterruption() {
         if (!this.isSpeaking) return
 
-        console.log('🧠 User interruption detected — clearing buffer')
+        logger.info('🧠 User interruption detected — clearing buffer')
         this.isSpeaking = false
         if (this.onClearBuffer) this.onClearBuffer()
     }
