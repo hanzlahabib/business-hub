@@ -24,7 +24,7 @@ test.describe('Suite Z: Cleanup', () => {
         expect(sharedState.token).toBeTruthy()
     })
 
-    test('12.1 — Delete all test leads', async ({ request }) => {
+    test('12.1 — Delete all test leads (and their proposals)', async ({ request }) => {
         await ensureLoggedIn(request)
 
         const res = await request.get(`${API}/leads`, {
@@ -35,6 +35,20 @@ test.describe('Suite Z: Cleanup', () => {
         if (Array.isArray(leads)) {
             for (const lead of leads) {
                 if (lead.name?.startsWith('E2E') || lead.email?.includes('e2e')) {
+                    // Delete proposals linked to this lead first (FK constraint)
+                    const propRes = await request.get(`${API}/proposals?leadId=${lead.id}`, {
+                        headers: authHeaders()
+                    })
+                    if (propRes.ok()) {
+                        const proposals = await propRes.json()
+                        if (Array.isArray(proposals)) {
+                            for (const p of proposals) {
+                                await request.delete(`${API}/proposals/${p.id}`, {
+                                    headers: authHeaders()
+                                })
+                            }
+                        }
+                    }
                     await request.delete(`${API}/leads/${lead.id}`, {
                         headers: authHeaders()
                     })
