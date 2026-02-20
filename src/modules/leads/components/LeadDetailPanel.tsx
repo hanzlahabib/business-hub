@@ -45,6 +45,7 @@ export function LeadDetailPanel({
   onCreateBoard,
   onViewBoard,
   onStatusChange,
+  onEnrichLead,
   linkedBoard = null
 }) {
   const [activeTab, setActiveTab] = useState('intelligence')
@@ -56,7 +57,15 @@ export function LeadDetailPanel({
   const [callingLead, setCallingLead] = useState(false)
   const [expandedCallId, setExpandedCallId] = useState<string | null>(null)
   const [liveCallStatus, setLiveCallStatus] = useState<any>(null)
+  const [enriching, setEnriching] = useState(false)
   const activityRefreshRef = useRef<(() => void) | null>(null)
+
+  const handleEnrichLead = useCallback(async () => {
+    if (!lead?.id || !onEnrichLead) return
+    setEnriching(true)
+    await onEnrichLead(lead.id)
+    setEnriching(false)
+  }, [lead?.id, onEnrichLead])
 
   const fetchLeadCalls = useCallback(async (leadId) => {
     if (!user) return
@@ -217,6 +226,16 @@ export function LeadDetailPanel({
               >
                 <MoreHorizontal className="w-4 h-4" />
               </button>
+              {lead.website && (
+                <button
+                  onClick={handleEnrichLead}
+                  disabled={enriching}
+                  className="p-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/20 transition-all disabled:opacity-50"
+                  title="Enrich with AI"
+                >
+                  <Sparkles className={`w-4 h-4 ${enriching ? 'animate-pulse' : ''}`} />
+                </button>
+              )}
             </div>
           </div>
 
@@ -502,16 +521,7 @@ function IntelligenceTab({ lead, heat, circumference, dashOffset }) {
           </div>
         </div>
 
-        {/* Bottom Action Buttons */}
-        <div className="grid grid-cols-2 gap-3">
-          <button className="px-4 py-2.5 rounded-lg border border-border text-sm font-medium text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-all">
-            Re-analyze
-          </button>
-          <button className="px-4 py-2.5 rounded-lg bg-accent-primary hover:bg-blue-600 text-sm font-medium text-white shadow-lg shadow-accent-primary/25 transition-all flex items-center justify-center gap-2">
-            <Send className="w-3.5 h-3.5" />
-            Generate Proposal
-          </button>
-        </div>
+        {/* Action buttons handled by LeadIntelligence component below */}
       </div>
 
       {/* Full Intelligence Data (if backend has it) */}

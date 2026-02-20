@@ -3,7 +3,6 @@ import authService from '../services/authService.js'
 
 /**
  * Auth Middleware: Verifies JWT from Authorization header.
- * Falls back to x-user-id header for backward compatibility (deprecated).
  */
 export const authMiddleware = async (req, res, next) => {
     try {
@@ -21,17 +20,7 @@ export const authMiddleware = async (req, res, next) => {
                 req.user = user
                 return next()
             } catch {
-                // Token invalid/expired — fall through to x-user-id
-            }
-        }
-
-        // Deprecated fallback: x-user-id header (for backward compat during migration)
-        const userId = req.headers['x-user-id']
-        if (userId) {
-            const user = await userRepository.findById(userId)
-            if (user) {
-                req.user = user
-                return next()
+                // Token invalid/expired
             }
         }
 

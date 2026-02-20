@@ -33,7 +33,10 @@ const router = express.Router()
  */
 function verifyVapiSecret(req, res, next) {
     const secret = process.env.VAPI_WEBHOOK_SECRET
-    if (!secret) return next() // Skip if not configured (dev mode)
+    if (!secret) {
+        logger.warn('VAPI_WEBHOOK_SECRET not configured — rejecting webhook request')
+        return res.status(500).json({ error: 'Webhook secret not configured' })
+    }
 
     const provided = req.headers['x-vapi-secret'] || req.query.secret
     if (provided !== secret) {

@@ -60,14 +60,10 @@ export async function login(request) {
 /**
  * Build common headers with JWT Bearer token
  */
-export function authHeaders(userId) {
+export function authHeaders() {
     const headers = { 'Content-Type': 'application/json' }
     if (testState.token) {
         headers['Authorization'] = `Bearer ${testState.token}`
-    }
-    // Fallback to x-user-id for backward compat
-    if (!testState.token && (userId || testState.userId)) {
-        headers['x-user-id'] = userId || testState.userId
     }
     return headers
 }

@@ -77,6 +77,14 @@ export const ENDPOINTS = {
   AGENTS: `${API_SERVER}/api/agents`,
   AGENTS_FLOW_CONFIG: `${API_SERVER}/api/agents/flow-config`,
 
+  // DNC (Do Not Call) Registry
+  DNC_LIST: `${API_SERVER}/api/campaigns/dnc/list`,
+  DNC_ADD: `${API_SERVER}/api/campaigns/dnc/add`,
+  DNC_REMOVE: `${API_SERVER}/api/campaigns/dnc/remove`,
+
+  // Lead Enrichment
+  LEAD_ENRICH: (leadId: string) => `${API_SERVER}/api/scraper/enrich/${leadId}`,
+
   // Intelligence
   INTELLIGENCE_LEAD: (leadId: string) => `${API_SERVER}/api/intelligence/lead/${leadId}`,
   INTELLIGENCE_ANALYZE: (leadId: string) => `${API_SERVER}/api/intelligence/analyze/${leadId}`,

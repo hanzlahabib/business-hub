@@ -193,6 +193,28 @@ export function useLeads() {
     )
   }, [leads])
 
+  const enrichLead = useCallback(async (id: string) => {
+    if (!user) return null
+    try {
+      const data = await fetchMutation(ENDPOINTS.LEAD_ENRICH(id), 'POST')
+      if (data.success && data.lead) {
+        setLeads(prev => prev.map(l => l.id === id ? { ...l, ...data.lead } : l))
+        const fields = data.enrichedFields || []
+        if (fields.length > 0) {
+          toast.success(`Enriched ${fields.length} field${fields.length > 1 ? 's' : ''}: ${fields.join(', ')}`)
+        } else {
+          toast.info(data.message || 'No new data found')
+        }
+        return data
+      }
+      toast.info('No new data found from website')
+      return data
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to enrich lead')
+      return null
+    }
+  }, [user])
+
   const getStats = useCallback(() => {
     const stats = {
       total: leads.length,
@@ -281,7 +303,8 @@ export function useLeads() {
     getLeadsByStatus,
     getLeadsByIndustry,
     searchLeads,
-    getStats
+    getStats,
+    enrichLead
   }
 }
 

@@ -18,7 +18,7 @@ export const callService = {
     async initiateCall(userId, { leadId, scriptId, assistantConfig: rawAssistantConfig = {}, existingCallId }) {
         // Whitelist allowed override fields — prevent systemPrompt injection
         const ALLOWED_OVERRIDES = ['voiceId', 'llmModel', 'openingLine', 'language', 'temperature', 'agentName', 'businessName', 'businessWebsite', 'industry']
-        const assistantConfig = Object.fromEntries(
+        let assistantConfig = Object.fromEntries(
             Object.entries(rawAssistantConfig).filter(([key]) => ALLOWED_OVERRIDES.includes(key))
         )
         const { telephony } = getAdaptersForUser(userId)

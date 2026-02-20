@@ -1,4 +1,4 @@
-import { Phone, BarChart3, ScrollText, Bot, Zap, PieChart, Settings, Keyboard, Activity, CalendarDays } from 'lucide-react'
+import { Phone, BarChart3, ScrollText, Bot, Zap, PieChart, Settings, Keyboard, Activity, CalendarDays, PhoneOff } from 'lucide-react'
 import { CalendarFilters as CalendarFiltersType, CalendarItem } from '../../../hooks/useCalendarItems'
 import { useState, useEffect, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -15,6 +15,7 @@ import { CallActivityLog } from './CallActivityLog'
 import { CallDetailPanel } from './CallDetailPanel'
 import { LiveCallBanner } from './LiveCallBanner'
 import { CallingSchedule } from './CallingSchedule'
+import { DNCListManager } from './DNCListManager'
 import { useCalls } from '../hooks/useCalls'
 import { useCallScripts } from '../hooks/useCallScripts'
 import { useAgents } from '../hooks/useAgents'
@@ -28,6 +29,7 @@ const TABS = [
     { id: 'batch', label: 'Batch Calls', icon: Zap, path: '/calling' },
     { id: 'activity', label: 'Activity', icon: Activity, path: '/calling' },
     { id: 'analytics', label: 'Analytics', icon: PieChart, path: '/calling' },
+    { id: 'dnc', label: 'DNC List', icon: PhoneOff, path: '/calling' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/calling' },
 ]
 
@@ -275,6 +277,10 @@ export function CallingView({
 
                     {activeTab === 'analytics' && (
                         <CallingAnalytics />
+                    )}
+
+                    {activeTab === 'dnc' && (
+                        <DNCListManager />
                     )}
 
                     {activeTab === 'settings' && (

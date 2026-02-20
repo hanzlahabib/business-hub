@@ -68,6 +68,7 @@ interface LeadTableViewProps {
     onChangeStatus?: (leadId: string, status: string) => void
     onBulkEdit?: (ids: string[]) => void
     onBulkDelete?: (ids: string[]) => void
+    onBulkEmail?: (ids: string[]) => void
 }
 
 /* =====================================================
@@ -139,7 +140,7 @@ function FilterDropdown({ label, icon: Icon, value, options, onChange }: {
     )
 }
 
-export function LeadTableView({ leads, loading, onLeadClick, onAddClick, onImportClick, selectedLeadId, onEditLead, onDeleteLead, onChangeStatus, onBulkEdit, onBulkDelete }: LeadTableViewProps) {
+export function LeadTableView({ leads, loading, onLeadClick, onAddClick, onImportClick, selectedLeadId, onEditLead, onDeleteLead, onChangeStatus, onBulkEdit, onBulkDelete, onBulkEmail }: LeadTableViewProps) {
     const { leadTypes } = useLeadTypes()
     const [search, setSearch] = useState('')
     const [statusFilter, setStatusFilter] = useState('')
@@ -469,6 +470,14 @@ export function LeadTableView({ leads, loading, onLeadClick, onAddClick, onImpor
                         >
                             <Edit className="w-4 h-4" />
                             Bulk Edit
+                        </button>
+
+                        <button
+                            onClick={() => onBulkEmail?.(selectedRows)}
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-colors"
+                        >
+                            <Mail className="w-4 h-4" />
+                            Bulk Email
                         </button>
 
                         <button

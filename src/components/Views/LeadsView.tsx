@@ -13,6 +13,7 @@ import {
     BulkEditModal,
     useLeads
 } from '../../modules/leads'
+import { BulkEmailComposer } from '../../modules/leads/components/BulkEmailComposer'
 import { useTaskBoards } from '../../modules/taskboards'
 import { LayoutGrid, List, Layers } from 'lucide-react'
 import { AutomationQuickWidget } from '../../modules/automation'
@@ -22,7 +23,7 @@ import { AlertDialog } from '../ui/alert-dialog'
 export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId: string) => void }) {
     const { leadId } = useParams()
     const navigate = useNavigate()
-    const { leads, loading, error, fetchLeads, createLead, updateLead, deleteLead, changeStatus, bulkUpdate, bulkDelete, importLeads } = useLeads()
+    const { leads, loading, error, fetchLeads, createLead, updateLead, deleteLead, changeStatus, bulkUpdate, bulkDelete, importLeads, enrichLead } = useLeads()
     const { boards, createBoardFromLead, getBoardByLeadId } = useTaskBoards()
 
     // View mode: table (Stitch default) or kanban
@@ -44,6 +45,8 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
     const [bulkSelectedIds, setBulkSelectedIds] = useState<string[]>([])
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
     const [deleteTarget, setDeleteTarget] = useState<{ type: 'single'; lead: any } | { type: 'bulk'; ids: string[] } | null>(null)
+    const [showBulkEmail, setShowBulkEmail] = useState(false)
+    const [bulkEmailLeads, setBulkEmailLeads] = useState<any[]>([])
 
     const handleLeadClick = (lead: any) => {
         navigate(`/leads/${lead.id}`)
@@ -85,6 +88,16 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
         setShowBulkEdit(false)
         setBulkSelectedIds([])
         await fetchLeads()
+    }
+
+    const handleBulkEmail = (ids: string[]) => {
+        const selectedLeads = leads.filter(l => ids.includes(l.id) && l.email)
+        if (selectedLeads.length === 0) {
+            toast.info('No selected leads have email addresses')
+            return
+        }
+        setBulkEmailLeads(selectedLeads)
+        setShowBulkEmail(true)
     }
 
     const handleBulkDelete = (ids: string[]) => {
@@ -221,6 +234,7 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
                         onChangeStatus={handleChangeStatus}
                         onBulkEdit={handleBulkEdit}
                         onBulkDelete={handleBulkDelete}
+                        onBulkEmail={handleBulkEmail}
                     />
                 ) : (
                     <div className="flex-1 overflow-hidden">
@@ -254,6 +268,7 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
                     onCreateBoard={handleCreateBoard}
                     onViewBoard={handleViewBoard}
                     onStatusChange={handleChangeStatus}
+                    onEnrichLead={enrichLead}
                     linkedBoard={linkedBoard as any}
                 />
             )}
@@ -296,6 +311,14 @@ export function LeadsView({ onNavigateToBoard }: { onNavigateToBoard?: (boardId:
                 onClose={() => setShowBulkEdit(false)}
                 selectedCount={bulkSelectedIds.length}
                 onSave={handleBulkSave}
+            />
+
+            {/* Bulk Email Composer */}
+            <BulkEmailComposer
+                isOpen={showBulkEmail}
+                onClose={() => { setShowBulkEmail(false); setBulkEmailLeads([]) }}
+                leads={bulkEmailLeads}
+                onSuccess={fetchLeads}
             />
 
             {/* Delete Confirmation */}

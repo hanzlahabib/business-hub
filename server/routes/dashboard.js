@@ -1,7 +1,8 @@
 import express from 'express'
 import prisma from '../config/prisma.js'
 import authMiddleware from '../middleware/auth.js'
-import { cacheGet, cacheSet } from '../config/redisClient.js'
+import { cacheGet, cacheSet, cacheDelete } from '../config/redisClient.js'
+import eventBus from '../services/eventBus.js'
 
 const DASHBOARD_CACHE_TTL = 120  // 2 minutes
 
@@ -162,5 +163,18 @@ router.get('/trends', async (req, res) => {
         res.status(500).json({ error: err.message })
     }
 })
+
+// Invalidate dashboard cache when key events happen
+const invalidateDashboard = (data) => {
+    const userId = data?.userId
+    if (userId) {
+        cacheDelete(`dashboard:${userId}`)
+        cacheDelete(`dashboard-trends:${userId}`)
+    }
+}
+
+eventBus.on('lead:created', invalidateDashboard)
+eventBus.on('lead:status-changed', invalidateDashboard)
+eventBus.on('call:completed', invalidateDashboard)
 
 export default router

@@ -5,7 +5,7 @@ import logger from '../config/logger.js'
 
 const router = express.Router()
 
-const HENDERSON_OWNER_ID = 'cmlfn3x2z0000rfu4i9vn205w'
+const DEFAULT_WEBHOOK_OWNER_ID = process.env.DEFAULT_WEBHOOK_OWNER_ID
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
 
 /**
@@ -100,7 +100,12 @@ router.post('/leads', async (req, res) => {
       return res.status(400).json({ error: 'name and phone are required' })
     }
 
-    const lead = await leadService.create(HENDERSON_OWNER_ID, {
+    if (!DEFAULT_WEBHOOK_OWNER_ID) {
+      logger.error('DEFAULT_WEBHOOK_OWNER_ID not configured — cannot process legacy webhook')
+      return res.status(500).json({ error: 'Webhook owner not configured' })
+    }
+
+    const lead = await leadService.create(DEFAULT_WEBHOOK_OWNER_ID, {
       name,
       email: email || null,
       phone,
