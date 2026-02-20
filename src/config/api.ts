@@ -6,7 +6,6 @@ const env = import.meta.env.MODE || 'development'
 const isDev = env === 'development'
 
 export const API_SERVER = import.meta.env.VITE_API_SERVER || (isDev ? 'http://localhost:3002' : '')
-export const JSON_SERVER = import.meta.env.VITE_JSON_SERVER || (isDev ? 'http://localhost:3005' : `${API_SERVER}/api/db`)
 export const WS_SERVER = import.meta.env.VITE_WS_SERVER || (isDev ? 'ws://localhost:3002' : '')
 
 // Common endpoints
@@ -28,7 +27,6 @@ export const ENDPOINTS = {
   JOB_TEMPLATES: `${API_SERVER}/api/resources/jobtemplates`,
   JOB_SEARCH_PROMPTS: `${API_SERVER}/api/resources/jobsearchprompts`,
   JOB_OUTREACH_HISTORY: `${API_SERVER}/api/resources/joboutreachhistory`,
-  CV_FILES: `${API_SERVER}/api/resources/cvfiles`,
   USER_PROFILE: `${API_SERVER}/api/auth/profile`,
   EMAIL_SETTINGS: `${API_SERVER}/api/resources/emailsettings`,
   SETTINGS: `${API_SERVER}/api/resources/settings`,

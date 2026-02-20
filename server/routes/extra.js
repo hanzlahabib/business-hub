@@ -517,36 +517,4 @@ router.get('/jobtemplates', async (req, res) => {
 
 // ============ CV FILES ============
 
-router.get('/cvfiles', async (req, res) => {
-    try {
-        res.json([])
-    } catch (e) {
-        res.status(500).json({ error: e.message })
-    }
-})
-
-// ============ USER PROFILE ============
-
-router.get('/userprofile', async (req, res) => {
-    try {
-        const user = await prisma.user.findUnique({ where: { id: req.user.id } })
-        res.json(user || {})
-    } catch (e) {
-        res.status(500).json({ error: e.message })
-    }
-})
-
-router.put('/userprofile', async (req, res) => {
-    try {
-        const { name } = req.body
-        const user = await prisma.user.update({
-            where: { id: req.user.id },
-            data: { name }
-        })
-        res.json(user)
-    } catch (e) {
-        res.status(400).json({ error: e.message })
-    }
-})
-
 export default router

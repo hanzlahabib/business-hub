@@ -33,21 +33,7 @@ test.describe('Suite 7: Outreach', () => {
     })
 })
 
-// =====================================
-// Test Suite 8: CV File Management
-// =====================================
-
-test.describe('Suite 8: CV Files', () => {
-    test('8.1 — List CVs (empty state)', async ({ request }) => {
-        if (!testState.userId) await registerOrLogin(request)
-        const res = await request.get(`${API_URL}/api/resources/cvfiles`, {
-            headers: authHeaders(),
-        })
-        expect(res.status()).toBe(200)
-        const body = await res.json()
-        expect(Array.isArray(body)).toBe(true)
-    })
-})
+// Suite 8 (CV Files) removed — cvfiles route was dead code
 
 // =====================================
 // Test Suite 9: Email Settings

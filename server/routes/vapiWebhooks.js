@@ -229,7 +229,7 @@ async function handleEndOfCallReport(providerCallId, callData, message, metadata
         }
         if (qualifying.budget) leadUpdateData.budget = qualifying.budget
         if (qualifying.timeline) leadUpdateData.timeline = qualifying.timeline
-        if (qualifying.serviceNeeded) leadUpdateData.notes = prisma.$executeRaw ? undefined : undefined // handled below
+        // serviceNeeded is handled below in the qualifying notes append block
         if (qualifying.location) leadUpdateData.location = qualifying.location
 
         await prisma.lead.update({

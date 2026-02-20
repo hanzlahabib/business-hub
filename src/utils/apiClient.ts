@@ -3,7 +3,7 @@
  * Use this for all fetch calls instead of raw fetch().
  */
 
-import { JSON_SERVER, API_SERVER } from '../config/api'
+import { API_SERVER } from '../config/api'
 
 interface ApiClientOptions extends RequestInit {
     /** Number of retries on failure (default: 2) */
@@ -112,24 +112,6 @@ export const apiClient = {
 
     delete: <T = any>(url: string, options?: ApiClientOptions) =>
         request<T>(url, { ...options, method: 'DELETE' })
-}
-
-// Convenience: pre-bound to JSON Server
-export const dbClient = {
-    get: <T = any>(path: string, options?: ApiClientOptions) =>
-        apiClient.get<T>(`${JSON_SERVER}${path}`, options),
-
-    post: <T = any>(path: string, body: any, options?: ApiClientOptions) =>
-        apiClient.post<T>(`${JSON_SERVER}${path}`, body, options),
-
-    put: <T = any>(path: string, body: any, options?: ApiClientOptions) =>
-        apiClient.put<T>(`${JSON_SERVER}${path}`, body, options),
-
-    patch: <T = any>(path: string, body: any, options?: ApiClientOptions) =>
-        apiClient.patch<T>(`${JSON_SERVER}${path}`, body, options),
-
-    delete: <T = any>(path: string, options?: ApiClientOptions) =>
-        apiClient.delete<T>(`${JSON_SERVER}${path}`, options)
 }
 
 // Convenience: pre-bound to API Server
